@@ -36,11 +36,15 @@ Paths below omit the `/api/v1` prefix unless noted.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `POST` | `/auth/register` | — | Register a new user |
-| `POST` | `/auth/login` | — | Login; returns access & refresh tokens |
+| `POST` | `/auth/register` | — | Register a new user (`inviteToken?`, `locale?`); may return `acceptedMembership` |
+| `POST` | `/auth/login` | — | Login; returns access & refresh tokens and `user.emailVerified` |
 | `POST` | `/auth/refresh` | — | Refresh token pair |
 | `POST` | `/auth/logout` | 🔑 | Revoke refresh token |
-| `GET` | `/auth/me` | 🔑 | Current user and company memberships |
+| `GET` | `/auth/me` | 🔑 | Current user (`emailVerified`) and company memberships |
+| `POST` | `/auth/verify-email` | — | Confirm email with token from verification link |
+| `POST` | `/auth/resend-verification` | 🔑 | Resend verification email (`locale?`) |
+| `POST` | `/auth/forgot-password` | — | Request password reset email (`email`, `locale?`) |
+| `POST` | `/auth/reset-password` | — | Set new password with reset token |
 
 ---
 
@@ -51,9 +55,12 @@ Paths below omit the `/api/v1` prefix unless noted.
 | `POST` | `/companies` | 🔑 | Create a company |
 | `GET` | `/companies` | 🔑 | List companies for current user |
 | `GET` | `/companies/{companyId}` | 🏢 | Get company details |
-| `GET` | `/companies/{companyId}/members` | 🏢 | List company members |
-| `POST` | `/companies/{companyId}/members/invite` | 🏢 | Invite member by email |
-| `POST` | `/companies/{companyId}/members/accept` | 🔑 | Accept pending invitation |
+| `GET` | `/companies/{companyId}/members` | 🏢 | List active company members (paginated) |
+| `POST` | `/companies/{companyId}/members/invite` | 🏢 | Invite member by email (`locale?`); returns `invitation` |
+| `GET` | `/companies/{companyId}/members/invitations` | 🏢 | List pending invitations (paginated) |
+| `DELETE` | `/companies/{companyId}/members/invitations/{invitationId}` | 🏢 | Revoke pending invitation (`204`) |
+| `POST` | `/companies/{companyId}/members/accept` | 🔑 | Accept invitation (existing logged-in user) |
+| `DELETE` | `/companies/{companyId}/members/{memberId}` | 🏢 | Remove member (`204`) |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/role` | 🏢 | Change member role |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/permissions` | 🏢 | Set permission grants/denies |
 
@@ -322,4 +329,4 @@ Export endpoints accept JWT + company header **or** API key.
 - [Developer guide](./developer-guide.md) — frontend architecture
 - Interactive docs — run backend and open `/docs`
 
-*For request/response schemas, use OpenAPI at `/docs` or `openapi/api-docs.json`.*
+*OpenAPI snapshot: `openapi/api-docs.json` (108 paths). For request/response schemas, use live `/docs` or the JSON export.*

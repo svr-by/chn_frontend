@@ -53,11 +53,15 @@ See [API integration](./api-integration.md) for full detail. Key points:
 ### Flow
 
 ```text
-Register → POST /auth/register (no tokens)
-Login    → POST /auth/login → { user, accessToken, refreshToken }
-Me       → GET  /auth/me → user + memberships[].effectivePermissions
+Register → POST /auth/register (no tokens; optional inviteToken, locale)
+Verify   → POST /auth/verify-email { token }  (from email link)
+Login    → POST /auth/login → { user.emailVerified, accessToken, refreshToken }
+Me       → GET  /auth/me → user.emailVerified + memberships[].effectivePermissions
 Refresh  → POST /auth/refresh on 401 (rotate both tokens)
 Logout   → POST /auth/logout + { refreshToken } → 204
+Forgot   → POST /auth/forgot-password { email, locale? }
+Reset    → POST /auth/reset-password { token, password }
+Resend   → POST /auth/resend-verification { locale? }  (JWT)
 ```
 
 ### Frontend session model
@@ -67,16 +71,29 @@ Logout   → POST /auth/logout + { refreshToken } → 204
 3. On app load: refresh token if needed → fetch `/auth/me` → validate active company is still in memberships.
 4. Attach `Authorization` + `X-Company-Id` on every company-scoped call.
 
-### Pending invitation
+### Email verification
 
-If `membership.status === "INVITED"`, show accept flow:
+After registration, `user.emailVerified` is `false`. Show a verification prompt and link to resend:
 
-```http
-POST /api/v1/companies/:companyId/members/accept
-Authorization: Bearer <accessToken>
-```
+- `/verify-email?token=…` → `POST /auth/verify-email`
+- Logged-in users: `POST /auth/resend-verification` with optional `locale` (`en` | `ru`)
 
-(No `X-Company-Id` required.)
+Block or warn on login-dependent flows until `emailVerified === true` (handle server `403` if login is rejected).
+
+### Password reset
+
+- `/forgot-password` → `POST /auth/forgot-password` (always shows generic success message)
+- `/reset-password?token=…` → `POST /auth/reset-password` with new password (min 8 chars)
+
+### Company member invitations
+
+Pending invites are listed via `GET .../members/invitations`, not as `INVITED` memberships. `MemberStatus` is only `ACTIVE` | `SUSPENDED`.
+
+**New user:** invitation email → `/register?inviteToken=…` → register with `inviteToken` → optional `acceptedMembership` in response.
+
+**Existing user:** login → `POST /companies/:companyId/members/accept` (JWT only, no `X-Company-Id`).
+
+Team settings (`/app/settings/team`) should show active members, pending invitations (with revoke), invite dialog, role/permission edits, and member removal.
 
 ---
 
@@ -137,9 +154,9 @@ Use separate navigation or tabs: e.g. “Our invoices” vs “Invoices from sup
 
 ### 5.1 Onboarding
 
-1. Register → Login
-2. Create company (`POST /companies`) or accept invitation
-3. Invite colleagues (owner/admin)
+1. Register (optionally with `inviteToken` from email) → verify email
+2. Login → create company (`POST /companies`) or accept invitation (`POST .../members/accept`)
+3. Invite colleagues via `POST .../members/invite`; manage pending invites on team settings
 4. Connect partners (`POST .../partners/invite`)
 5. Select active company in shell/header
 
@@ -284,7 +301,9 @@ GET /api/v1/companies/:companyId/trace/:lineageId
 ## 8. Information architecture
 
 ```text
-/login, /register
+/login, /register, /register?inviteToken=…
+/forgot-password, /reset-password?token=…
+/verify-email?token=…
 /onboarding
 /app
 ├── Company switcher + notification bell
@@ -295,18 +314,14 @@ GET /api/v1/companies/:companyId/trace/:lineageId
     │   ├── New request / Import CSV
     │   └── Products
     ├── Quotes
-    │   ├── My quotes
-    │   └── Comparison (from request detail)
     ├── Selections
-    ├── Finance
-    │   ├── Invoices (inbound / outbound)
-    │   └── Payments
-    ├── Logistics
-    │   ├── Shipping invoices
-    │   └── Consolidations
+    ├── Finance (invoices, payments)
+    ├── Logistics (shipping, consolidations)
     ├── Trace
     ├── Partners
-    └── Team settings
+    └── Team settings (/app/settings/team)
+        ├── Active members
+        └── Pending invitations
 ```
 
 ---

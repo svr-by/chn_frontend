@@ -41,7 +41,7 @@ Phased roadmap aligned with the backend release plan. Includes stack decisions, 
 
 | Location | Purpose |
 |----------|---------|
-| `openapi/api-docs.json` | OpenAPI 3.1 snapshot for Orval codegen |
+| `openapi/api-docs.json` | OpenAPI 3.1 snapshot for Orval codegen (108 paths) |
 | `.cursor/` | Agent handoff specs and planning notes (source material for this docs folder) |
 | Backend `/docs` | Live Swagger UI when the API server runs |
 

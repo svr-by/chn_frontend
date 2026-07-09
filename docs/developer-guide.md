@@ -135,12 +135,18 @@ CHN Backend /api/v1
 
 ### Authentication flow
 
-1. User logs in → store `accessToken`, `refreshToken`, hydrate user via `/auth/me`
+1. User logs in → store tokens; user includes `emailVerified`
 2. Every company-scoped request sends `Authorization` + `X-Company-Id`
 3. On `401`, `baseApi` calls `/auth/refresh` once and retries; on failure → `clearSession()`
 4. `AuthBootstrap` runs refresh → `/auth/me` on app load
 5. `ProtectedRoute` redirects unauthenticated users to `/login`
 6. Users without a company go to `/onboarding`
+
+**Email verification** (post-register): `POST /auth/verify-email`, `POST /auth/resend-verification`.
+
+**Password reset**: `POST /auth/forgot-password`, `POST /auth/reset-password`.
+
+**Member invitations**: pending invites live at `GET .../members/invitations` (not `INVITED` membership status). New users accept via `inviteToken` on register; existing users via `POST .../members/accept`.
 
 ### Permissions
 
@@ -170,9 +176,12 @@ Generated files live in `src/api/generated/`. Add RTK Query endpoints manually i
 
 | Path | Access | Purpose |
 |------|--------|---------|
-| `/login`, `/register` | Guest | Authentication |
+| `/login`, `/register` | Guest | Authentication (`register` supports `?inviteToken=`) |
+| `/forgot-password`, `/reset-password` | Guest | Password reset flow |
+| `/verify-email` | Guest | Email verification from link |
 | `/onboarding` | Authenticated | Create or join a company |
 | `/app` | Authenticated + company | Main shell |
+| `/app/settings/team` | `viewMembers` | Members and pending invitations |
 | `/app/*` | Permission-gated | Domain modules (many are placeholders) |
 
 Stub routes for upcoming phases are generated from `navConfig` and render `PlaceholderPage`.

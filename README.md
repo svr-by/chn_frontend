@@ -98,7 +98,7 @@ Full documentation lives in [`docs/`](./docs/README.md):
 
 ## Current status
 
-**Phase 0** (foundation) and **Phase 1** (identity & shell) are implemented: login, register, onboarding, company switcher, permission-gated navigation, and placeholder routes for upcoming modules. Domain pages (requests, quotes, invoices, etc.) are planned in later phases — see [implementation plan](./docs/implementation-plan.md).
+**Phase 0** (foundation) and **Phase 1** (identity, auth, team management) are complete. Domain modules (requests, quotes, invoices, etc.) start in Phase 2+. See [implementation plan](./docs/implementation-plan.md).
 
 ## License
 

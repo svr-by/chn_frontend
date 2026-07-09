@@ -94,6 +94,17 @@ src/
 
 ---
 
+## API baseline (OpenAPI 1.0)
+
+The current `openapi/api-docs.json` defines **108 paths**. Notable auth and membership changes vs earlier specs:
+
+- Email verification and password reset endpoints under `/auth/*`
+- `user.emailVerified` on user objects
+- Pending member invites are `.../members/invitations`, not `INVITED` memberships
+- Register accepts `inviteToken`; response may include `acceptedMembership`
+
+See [API reference](./api-reference.md) and [API integration](./api-integration.md) for details.
+
 ## Phases
 
 ### Phase 0. Foundation — Done
@@ -113,15 +124,18 @@ src/
 
 - `api/baseApi.ts` with `baseQueryWithReauth`
 - `authSlice`: tokens, `activeCompanyId`, persistence
-- `authApi`, `companiesApi` endpoints
-- Pages: `/login`, `/register`, `/onboarding`
-- `AppLayout`: drawer, header, `CompanySwitcher`
-- `PermissionGate`, `usePermissions`, `navConfig`
-- `ProtectedRoute`, `AuthBootstrap` boot sequence
-- `ApiErrorAlert` with `error.code` → i18n
-- Placeholder routes for upcoming modules
+- `authApi`: register, login, logout, me, refresh, verify-email, resend-verification, forgot/reset password
+- `companiesApi`: list, create, get, accept invite
+- `membersApi`: list members, invite, list/revoke invitations, remove member, update role
+- Pages: `/login`, `/register`, `/register/success`, `/forgot-password`, `/reset-password`, `/verify-email`, `/verify-email-prompt`, `/onboarding`
+- `TeamSettingsPage` at `/app/settings/team`
+- Register with `inviteToken` and `acceptedMembership` handling
+- `emailVerified` gating on protected routes
+- Onboarding uses `user.pendingInvitations` from `/auth/me`
+- `AppLayout`, `CompanySwitcher`, `PermissionGate`, `navConfig`
+- `ApiErrorAlert` with i18n error codes
 
-**Routes:** `/login`, `/register`, `/onboarding`, `/app`
+**Routes:** `/login`, `/register`, `/register/success`, `/forgot-password`, `/reset-password`, `/verify-email`, `/verify-email-prompt`, `/onboarding`, `/app`, `/app/settings/team`
 
 ### Phase 2. Partner network
 

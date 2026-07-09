@@ -52,12 +52,20 @@ Used for CSV import and payment proof uploads. Do not set `Content-Type` manuall
 ## Authentication flow
 
 ```text
-Register  → POST /auth/register        (no tokens returned)
-Login     → POST /auth/login           → accessToken + refreshToken
-Boot      → GET  /auth/me              → user + memberships + effectivePermissions
+Register  → POST /auth/register        (no tokens; optional inviteToken, locale)
+            → verify email via link    → POST /auth/verify-email { token }
+Login     → POST /auth/login           → accessToken + refreshToken + user.emailVerified
+Boot      → GET  /auth/me              → user.emailVerified + memberships + effectivePermissions
 Refresh   → POST /auth/refresh         on 401 (token rotation)
 Logout    → POST /auth/logout          + body { refreshToken } → 204
+Forgot    → POST /auth/forgot-password { email, locale? }
+Reset     → POST /auth/reset-password  { token, password }
+Resend    → POST /auth/resend-verification { locale? }  (JWT required)
 ```
+
+Registration does **not** return tokens. After register, prompt the user to verify email before login (or show a “check your inbox” screen). `user.emailVerified` is returned on login and `/auth/me`.
+
+Optional `locale` on auth and invite endpoints: `"en"` | `"ru"` — used for transactional emails.
 
 ### Token storage
 
@@ -75,14 +83,47 @@ On `401` (except auth endpoints), `baseQueryWithReauth`:
 3. Retries the original request
 4. On failure → `clearSession()` and redirect to login
 
-### Accept company invitation
+### Company member invitations
+
+Pending invites are **not** memberships. `CompanyMember.status` is only `ACTIVE` | `SUSPENDED`. Invitations are a separate resource.
+
+**Invite (admin/owner):**
+
+```http
+POST /api/v1/companies/{companyId}/members/invite
+Authorization: Bearer <accessToken>
+X-Company-Id: <companyId>
+Content-Type: application/json
+
+{ "email": "...", "role": "PROCUREMENT", "locale": "en" }
+```
+
+Response `201`: `{ "invitation": { id, email, role, invitedAt, expiresAt, expired, invitedBy } }`
+
+**List / revoke pending invitations:**
+
+```http
+GET    /api/v1/companies/{companyId}/members/invitations?limit=20&offset=0
+DELETE /api/v1/companies/{companyId}/members/invitations/{invitationId}   → 204
+```
+
+**Accept invitation — two flows:**
+
+1. **New user** — email link opens `/register?inviteToken=…`; pass `inviteToken` in register body. Response may include `acceptedMembership` (company joined on register).
+2. **Existing user** — after login, call accept (no body):
 
 ```http
 POST /api/v1/companies/{companyId}/members/accept
 Authorization: Bearer <accessToken>
 ```
 
-No `X-Company-Id` required. Used when `membership.status === "INVITED"`.
+Response `200`: `{ "member": { … } }`. No `X-Company-Id` required.
+
+**Remove member:**
+
+```http
+DELETE /api/v1/companies/{companyId}/members/{memberId}   → 204
+```
 
 ---
 
