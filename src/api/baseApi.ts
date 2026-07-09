@@ -117,6 +117,6 @@ export function isApiError(data: unknown): data is ApiError {
 export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Me', 'Companies', 'Company'],
+  tagTypes: ['Me', 'Companies', 'Company', 'Members', 'Invitations'],
   endpoints: () => ({}),
 });

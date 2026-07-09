@@ -1,11 +1,19 @@
 import type {
   GetAuthMe200,
+  PostAuthForgotPassword200,
+  PostAuthForgotPasswordBody,
   PostAuthLogin200,
   PostAuthLoginBody,
   PostAuthLogoutBody,
   PostAuthRefreshBody,
   PostAuthRegister201,
   PostAuthRegisterBody,
+  PostAuthResendVerification200,
+  PostAuthResendVerificationBody,
+  PostAuthResetPassword200,
+  PostAuthResetPasswordBody,
+  PostAuthVerifyEmail200,
+  PostAuthVerifyEmailBody,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 import { clearSession, setTokens } from '@/store/slices/authSlice';
@@ -79,6 +87,44 @@ export const authApi = baseApi.injectEndpoints({
         );
       },
     }),
+    verifyEmail: builder.mutation<PostAuthVerifyEmail200, PostAuthVerifyEmailBody>({
+      query: (body) => ({
+        url: '/auth/verify-email',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['Me'],
+    }),
+    resendVerification: builder.mutation<
+      PostAuthResendVerification200,
+      PostAuthResendVerificationBody | void
+    >({
+      query: (body) => ({
+        url: '/auth/resend-verification',
+        method: 'POST',
+        body: body ?? {},
+      }),
+    }),
+    forgotPassword: builder.mutation<
+      PostAuthForgotPassword200,
+      PostAuthForgotPasswordBody
+    >({
+      query: (body) => ({
+        url: '/auth/forgot-password',
+        method: 'POST',
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation<
+      PostAuthResetPassword200,
+      PostAuthResetPasswordBody
+    >({
+      query: (body) => ({
+        url: '/auth/reset-password',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 });
 
@@ -89,4 +135,8 @@ export const {
   useGetMeQuery,
   useLazyGetMeQuery,
   useRefreshMutation,
+  useVerifyEmailMutation,
+  useResendVerificationMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authApi;

@@ -1,5 +1,5 @@
 import type { GetAuthMe200User } from '@/api/generated/models/getAuthMe200User';
-import type { MembershipSummary, Permission } from '@/types/api';
+import type { MembershipSummary, Permission, PendingInvitation } from '@/types/api';
 
 export function hasPermission(
   permissions: Permission[],
@@ -13,6 +13,10 @@ export function hasAnyPermission(
   required: Permission[],
 ): boolean {
   return required.some((permission) => permissions.includes(permission));
+}
+
+export function isEmailVerified(user: GetAuthMe200User | undefined): boolean {
+  return user?.emailVerified === true;
 }
 
 export function getActiveMembership(
@@ -42,17 +46,14 @@ export function getActiveMemberships(
   );
 }
 
-export function getInvitedMemberships(
+export function getPendingInvitations(
   user: GetAuthMe200User | undefined,
-): MembershipSummary[] {
+): PendingInvitation[] {
   if (!user) {
     return [];
   }
 
-  return user.memberships.filter(
-    (membership) =>
-      membership.status === 'INVITED' && membership.company?.id != null,
-  );
+  return user.pendingInvitations.filter((invitation) => !invitation.expired);
 }
 
 export function resolveActiveCompanyId(

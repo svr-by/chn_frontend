@@ -10,7 +10,10 @@ import { authApi, useLoginMutation } from '@/api/endpoints/authApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PasswordField } from '@/components/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { getActiveMemberships } from '@/lib/permissions';
+import {
+  getActiveMemberships,
+  isEmailVerified,
+} from '@/lib/permissions';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -41,6 +44,13 @@ export function LoginPage() {
       const me = await dispatch(
         authApi.endpoints.getMe.initiate(undefined, { forceRefetch: true }),
       ).unwrap();
+
+      if (!isEmailVerified(me.user)) {
+        enqueueSnackbar(t('loginUnverified'), { variant: 'warning' });
+        navigate('/verify-email-prompt');
+        return;
+      }
+
       const activeMemberships = getActiveMemberships(me.user);
       enqueueSnackbar(t('loginSuccess'), { variant: 'success' });
       navigate(activeMemberships.length > 0 ? '/app' : '/onboarding');
@@ -73,6 +83,12 @@ export function LoginPage() {
         error={Boolean(errors.password)}
         helperText={errors.password?.message}
       />
+
+      <Box sx={{ textAlign: 'right', mt: 1 }}>
+        <Link component={RouterLink} to="/forgot-password" underline="hover" variant="body2">
+          {t('forgotPasswordLink')}
+        </Link>
+      </Box>
 
       <Button
         type="submit"

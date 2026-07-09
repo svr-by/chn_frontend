@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import { baseApi } from '@/api/baseApi';
 import '@/api/endpoints/authApi';
 import '@/api/endpoints/companiesApi';
+import '@/api/endpoints/membersApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 export const store = configureStore({

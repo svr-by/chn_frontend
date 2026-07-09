@@ -1,0 +1,125 @@
+import type {
+  GetCompaniesCompanyIdMembers200,
+  GetCompaniesCompanyIdMembersInvitations200,
+  GetCompaniesCompanyIdMembersInvitationsParams,
+  GetCompaniesCompanyIdMembersParams,
+  PatchCompaniesCompanyIdMembersMemberIdPermissions200,
+  PatchCompaniesCompanyIdMembersMemberIdPermissionsBody,
+  PatchCompaniesCompanyIdMembersMemberIdRole200,
+  PatchCompaniesCompanyIdMembersMemberIdRoleBody,
+  PostCompaniesCompanyIdMembersInvite201,
+  PostCompaniesCompanyIdMembersInviteBody,
+} from '@/api/generated/models';
+import { baseApi } from '@/api/baseApi';
+
+type CompanyScopedArgs<T = void> = T extends void
+  ? { companyId: string }
+  : { companyId: string } & T;
+
+export const membersApi = baseApi.injectEndpoints({
+  overrideExisting: false,
+  endpoints: (builder) => ({
+    listMembers: builder.query<
+      GetCompaniesCompanyIdMembers200,
+      CompanyScopedArgs<GetCompaniesCompanyIdMembersParams | void>
+    >({
+      query: ({ companyId, ...params }) => ({
+        url: `/companies/${companyId}/members`,
+        params,
+      }),
+      providesTags: (_result, _error, { companyId }) => [
+        { type: 'Members', id: companyId },
+      ],
+    }),
+    inviteMember: builder.mutation<
+      PostCompaniesCompanyIdMembersInvite201,
+      CompanyScopedArgs<PostCompaniesCompanyIdMembersInviteBody>
+    >({
+      query: ({ companyId, ...body }) => ({
+        url: `/companies/${companyId}/members/invite`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Invitations', id: companyId },
+        'Me',
+      ],
+    }),
+    listInvitations: builder.query<
+      GetCompaniesCompanyIdMembersInvitations200,
+      CompanyScopedArgs<GetCompaniesCompanyIdMembersInvitationsParams | void>
+    >({
+      query: ({ companyId, ...params }) => ({
+        url: `/companies/${companyId}/members/invitations`,
+        params,
+      }),
+      providesTags: (_result, _error, { companyId }) => [
+        { type: 'Invitations', id: companyId },
+      ],
+    }),
+    revokeInvitation: builder.mutation<
+      void,
+      { companyId: string; invitationId: string }
+    >({
+      query: ({ companyId, invitationId }) => ({
+        url: `/companies/${companyId}/members/invitations/${invitationId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Invitations', id: companyId },
+      ],
+    }),
+    removeMember: builder.mutation<void, { companyId: string; memberId: string }>({
+      query: ({ companyId, memberId }) => ({
+        url: `/companies/${companyId}/members/${memberId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Members', id: companyId },
+        'Me',
+      ],
+    }),
+    updateMemberRole: builder.mutation<
+      PatchCompaniesCompanyIdMembersMemberIdRole200,
+      { companyId: string; memberId: string; body: PatchCompaniesCompanyIdMembersMemberIdRoleBody }
+    >({
+      query: ({ companyId, memberId, body }) => ({
+        url: `/companies/${companyId}/members/${memberId}/role`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Members', id: companyId },
+        'Me',
+      ],
+    }),
+    updateMemberPermissions: builder.mutation<
+      PatchCompaniesCompanyIdMembersMemberIdPermissions200,
+      {
+        companyId: string;
+        memberId: string;
+        body: PatchCompaniesCompanyIdMembersMemberIdPermissionsBody;
+      }
+    >({
+      query: ({ companyId, memberId, body }) => ({
+        url: `/companies/${companyId}/members/${memberId}/permissions`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Members', id: companyId },
+        'Me',
+      ],
+    }),
+  }),
+});
+
+export const {
+  useListMembersQuery,
+  useInviteMemberMutation,
+  useListInvitationsQuery,
+  useRevokeInvitationMutation,
+  useRemoveMemberMutation,
+  useUpdateMemberRoleMutation,
+  useUpdateMemberPermissionsMutation,
+} = membersApi;

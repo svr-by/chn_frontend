@@ -41,7 +41,7 @@ export type MemberRole =
   | 'WAREHOUSE'
   | 'VIEWER';
 
-export type MemberStatus = 'INVITED' | 'ACTIVE' | 'SUSPENDED';
+export type MemberStatus = 'ACTIVE' | 'SUSPENDED';
 
 export type PartnerLinkStatus = 'INVITED' | 'ACTIVE' | 'REJECTED';
 
@@ -146,10 +146,15 @@ export interface User {
   email: string;
   firstName: string | null;
   lastName: string | null;
+  emailVerified: boolean;
   createdAt: ISODateTime;
 }
 
 export interface AuthUser extends Omit<User, 'createdAt'> {}
+
+import type { GetAuthMe200UserPendingInvitationsItem } from '@/api/generated/models/getAuthMe200UserPendingInvitationsItem';
+
+export type { GetAuthMe200UserPendingInvitationsItem as PendingInvitation };
 
 export interface MembershipSummary {
   id: UUID;
@@ -169,6 +174,7 @@ export interface MembershipSummary {
 
 export interface CurrentUser extends AuthUser {
   memberships: MembershipSummary[];
+  pendingInvitations: GetAuthMe200UserPendingInvitationsItem[];
 }
 
 export interface AuthTokens {

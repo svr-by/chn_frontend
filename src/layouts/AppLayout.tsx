@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, Outlet, useLocation } from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -20,26 +20,20 @@ import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { useTranslation } from 'react-i18next';
 
-import { useLogoutMutation } from '@/api/endpoints/authApi';
-import { baseApi } from '@/api/baseApi';
 import { CompanySwitcher } from '@/components/CompanySwitcher';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { useLogout } from '@/hooks/useLogout';
 import { usePermissions } from '@/hooks/usePermissions';
 import { navConfig } from '@/lib/navConfig';
-import { authStorage } from '@/lib/authStorage';
-import { clearSession } from '@/store/slices/authSlice';
 
 const DRAWER_WIDTH = 260;
 
 export function AppLayout() {
   const { t } = useTranslation(['common', 'nav']);
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const location = useLocation();
   const { user, hasPermission } = usePermissions();
-  const [logout] = useLogoutMutation();
+  const { logout, isLoggingOut } = useLogout();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(
     null,
@@ -50,18 +44,8 @@ export function AppLayout() {
   );
 
   async function handleLogout() {
-    const refreshToken = authStorage.getRefreshToken();
-    try {
-      if (refreshToken) {
-        await logout({ refreshToken }).unwrap();
-      }
-    } catch {
-      dispatch(clearSession());
-      dispatch(baseApi.util.resetApiState());
-    } finally {
-      setUserMenuAnchor(null);
-      navigate('/login', { replace: true });
-    }
+    setUserMenuAnchor(null);
+    await logout();
   }
 
   const drawer = (
@@ -135,7 +119,7 @@ export function AppLayout() {
             open={Boolean(userMenuAnchor)}
             onClose={() => setUserMenuAnchor(null)}
           >
-            <MenuItem onClick={() => void handleLogout()}>
+            <MenuItem onClick={() => void handleLogout()} disabled={isLoggingOut}>
               {t('common:app.logout')}
             </MenuItem>
           </Menu>

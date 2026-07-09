@@ -1,14 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
 import { Box, Button, Link, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { useRegisterMutation } from '@/api/endpoints/authApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PasswordField } from '@/components/PasswordField';
+import { getApiLocale } from '@/lib/locale';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -22,7 +22,8 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 export function RegisterPage() {
   const { t } = useTranslation('auth');
   const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+  const inviteToken = searchParams.get('inviteToken') ?? undefined;
   const [registerUser, { isLoading, error }] = useRegisterMutation();
 
   const {
@@ -36,14 +37,23 @@ export function RegisterPage() {
 
   async function onSubmit(values: RegisterFormValues) {
     try {
-      await registerUser({
+      const result = await registerUser({
         email: values.email,
         password: values.password,
         firstName: values.firstName || undefined,
         lastName: values.lastName || undefined,
+        inviteToken,
+        locale: getApiLocale(),
       }).unwrap();
-      enqueueSnackbar(t('registerSuccess'), { variant: 'success' });
-      navigate('/login');
+
+      const params = new URLSearchParams();
+      if (values.email) {
+        params.set('email', values.email);
+      }
+      if (result.acceptedMembership) {
+        params.set('inviteAccepted', '1');
+      }
+      navigate(`/register/success?${params.toString()}`);
     } catch {
       // error shown via ApiErrorAlert
     }
@@ -52,6 +62,12 @@ export function RegisterPage() {
   return (
     <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
       <ApiErrorAlert error={error} />
+
+      {inviteToken && (
+        <Box sx={{ mb: 2, typography: 'body2', color: 'text.secondary' }}>
+          {t('registerWithInvite')}
+        </Box>
+      )}
 
       <TextField
         {...register('email')}
@@ -80,8 +96,6 @@ export function RegisterPage() {
         fullWidth
         margin="normal"
         autoComplete="given-name"
-        error={Boolean(errors.firstName)}
-        helperText={errors.firstName?.message}
       />
 
       <TextField
@@ -90,8 +104,6 @@ export function RegisterPage() {
         fullWidth
         margin="normal"
         autoComplete="family-name"
-        error={Boolean(errors.lastName)}
-        helperText={errors.lastName?.message}
       />
 
       <Button

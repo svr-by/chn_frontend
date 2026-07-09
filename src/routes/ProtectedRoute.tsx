@@ -1,19 +1,28 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
+import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
-import { getActiveMemberships } from '@/lib/permissions';
-import { useGetMeQuery } from '@/api/endpoints/authApi';
+import {
+  getActiveMemberships,
+  isEmailVerified,
+} from '@/lib/permissions';
 
 interface ProtectedRouteProps {
   requireCompany?: boolean;
+  requireEmailVerified?: boolean;
 }
 
-export function ProtectedRoute({ requireCompany = true }: ProtectedRouteProps) {
+export function ProtectedRoute({
+  requireCompany = true,
+  requireEmailVerified = true,
+}: ProtectedRouteProps) {
   const location = useLocation();
   const isBootstrapped = useAppSelector((state) => state.auth.isBootstrapped);
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
-  const { data } = useGetMeQuery(undefined, { skip: !hasRefreshToken });
+  const { data, isLoading, isFetching } = useGetMeQuery(undefined, {
+    skip: !hasRefreshToken,
+  });
 
   if (!isBootstrapped) {
     return null;
@@ -21,6 +30,14 @@ export function ProtectedRoute({ requireCompany = true }: ProtectedRouteProps) {
 
   if (!hasRefreshToken) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  if (isLoading || isFetching) {
+    return null;
+  }
+
+  if (requireEmailVerified && data?.user && !isEmailVerified(data.user)) {
+    return <Navigate to="/verify-email-prompt" replace />;
   }
 
   if (requireCompany) {

@@ -6,6 +6,7 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Stack,
   TextField,
   Typography,
@@ -25,7 +26,7 @@ import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { authStorage } from '@/lib/authStorage';
 import {
   getActiveMemberships,
-  getInvitedMemberships,
+  getPendingInvitations,
 } from '@/lib/permissions';
 import { setActiveCompanyId } from '@/store/slices/authSlice';
 
@@ -45,7 +46,7 @@ export function OnboardingPage() {
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
   const { data } = useGetMeQuery(undefined, { skip: !hasRefreshToken });
 
-  const invitedMemberships = getInvitedMemberships(data?.user);
+  const pendingInvitations = getPendingInvitations(data?.user);
   const activeMemberships = getActiveMemberships(data?.user);
 
   const [createCompany, createState] = useCreateCompanyMutation();
@@ -93,18 +94,8 @@ export function OnboardingPage() {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: 'background.default',
-        p: 2,
-      }}
-    >
-      <Card sx={{ width: '100%', maxWidth: 560 }}>
-        <CardContent sx={{ p: 4 }}>
+    <Card sx={{ width: '100%' }}>
+      <CardContent sx={{ p: 4 }}>
           <Typography variant="h5" component="h1" gutterBottom>
             {t('onboardingTitle')}
           </Typography>
@@ -114,12 +105,12 @@ export function OnboardingPage() {
 
           <ApiErrorAlert error={createState.error ?? acceptState.error} />
 
-          {invitedMemberships.length > 0 && (
+          {pendingInvitations.length > 0 && (
             <Stack spacing={2} sx={{ mb: 4 }}>
               <Typography variant="h6">{t('pendingInvites')}</Typography>
-              {invitedMemberships.map((membership) => (
+              {pendingInvitations.map((invitation) => (
                 <Box
-                  key={membership.id}
+                  key={invitation.id}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -129,21 +120,26 @@ export function OnboardingPage() {
                 >
                   <Box>
                     <Typography fontWeight={600}>
-                      {membership.company?.name}
+                      {invitation.company.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {membership.role}
+                      {invitation.role}
                     </Typography>
                   </Box>
-                  <Button
-                    variant="outlined"
-                    disabled={acceptState.isLoading}
-                    onClick={() =>
-                      void handleAccept(membership.company?.id ?? '')
-                    }
-                  >
-                    {t('acceptInvite')}
-                  </Button>
+                  <Stack direction="row" spacing={1} alignItems="center">
+                    {invitation.expired && (
+                      <Chip label={t('inviteExpired')} size="small" color="default" />
+                    )}
+                    <Button
+                      variant="outlined"
+                      disabled={acceptState.isLoading || invitation.expired}
+                      onClick={() =>
+                        void handleAccept(invitation.company.id)
+                      }
+                    >
+                      {t('acceptInvite')}
+                    </Button>
+                  </Stack>
                 </Box>
               ))}
             </Stack>
@@ -189,6 +185,5 @@ export function OnboardingPage() {
           </Box>
         </CardContent>
       </Card>
-    </Box>
   );
 }
