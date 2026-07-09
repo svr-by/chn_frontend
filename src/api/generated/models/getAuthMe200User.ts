@@ -4,6 +4,7 @@
 import type { GetAuthMe200UserFirstName } from './getAuthMe200UserFirstName';
 import type { GetAuthMe200UserLastName } from './getAuthMe200UserLastName';
 import type { GetAuthMe200UserMembershipsItem } from './getAuthMe200UserMembershipsItem';
+import type { GetAuthMe200UserPendingInvitationsItem } from './getAuthMe200UserPendingInvitationsItem';
 
 export type GetAuthMe200User = {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
@@ -12,5 +13,7 @@ export type GetAuthMe200User = {
   email: string;
   firstName: GetAuthMe200UserFirstName;
   lastName: GetAuthMe200UserLastName;
+  emailVerified: boolean;
   memberships: GetAuthMe200UserMembershipsItem[];
+  pendingInvitations: GetAuthMe200UserPendingInvitationsItem[];
 };

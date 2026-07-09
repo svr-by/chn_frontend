@@ -11,4 +11,5 @@ export interface AuthUser {
   email: string;
   firstName: AuthUserFirstName;
   lastName: AuthUserLastName;
+  emailVerified: boolean;
 }

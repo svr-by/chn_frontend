@@ -7,7 +7,6 @@ export type GetCompaniesCompanyId200CompanyMembershipStatus = typeof GetCompanie
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetCompaniesCompanyId200CompanyMembershipStatus = {
-  INVITED: 'INVITED',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
 } as const;

@@ -7,7 +7,6 @@ export type GetAuthMe200UserMembershipsItemStatus = typeof GetAuthMe200UserMembe
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetAuthMe200UserMembershipsItemStatus = {
-  INVITED: 'INVITED',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
 } as const;

@@ -34,6 +34,9 @@ import type {
   GetCompaniesCompanyIdInvoicesInvoiceIdShippableLines200,
   GetCompaniesCompanyIdInvoicesParams,
   GetCompaniesCompanyIdMembers200,
+  GetCompaniesCompanyIdMembersInvitations200,
+  GetCompaniesCompanyIdMembersInvitationsParams,
+  GetCompaniesCompanyIdMembersParams,
   GetCompaniesCompanyIdNotifications200,
   GetCompaniesCompanyIdNotificationsParams,
   GetCompaniesCompanyIdNotificationsUnreadCount200,
@@ -70,6 +73,7 @@ import type {
   GetCompaniesCompanyIdTraceLineageIdEventsParams,
   GetCompaniesCompanyIdTraceSearch200,
   GetCompaniesCompanyIdTraceSearchParams,
+  GetCompaniesParams,
   HealthResponse,
   LineageTrace,
   PatchCompaniesCompanyIdConsolidationsConsolidationId200,
@@ -104,12 +108,20 @@ import type {
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdBody,
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineId200,
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdBody,
+  PostAuthForgotPassword200,
+  PostAuthForgotPasswordBody,
   PostAuthLogin200,
   PostAuthLoginBody,
   PostAuthLogoutBody,
   PostAuthRefreshBody,
   PostAuthRegister201,
   PostAuthRegisterBody,
+  PostAuthResendVerification200,
+  PostAuthResendVerificationBody,
+  PostAuthResetPassword200,
+  PostAuthResetPasswordBody,
+  PostAuthVerifyEmail200,
+  PostAuthVerifyEmailBody,
   PostCompanies201,
   PostCompaniesBody,
   PostCompaniesCompanyIdConsolidations201,
@@ -495,6 +507,254 @@ export const getAuthMe = async ( options?: RequestInit): Promise<getAuthMeRespon
 
 
 
+export type postAuthVerifyEmailResponse200 = {
+  data: PostAuthVerifyEmail200
+  status: 200
+}
+
+export type postAuthVerifyEmailResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthVerifyEmailResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthVerifyEmailResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthVerifyEmailResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthVerifyEmailResponseSuccess = (postAuthVerifyEmailResponse200) & {
+  headers: Headers;
+};
+export type postAuthVerifyEmailResponseError = (postAuthVerifyEmailResponse400 | postAuthVerifyEmailResponse401 | postAuthVerifyEmailResponse403 | postAuthVerifyEmailResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthVerifyEmailResponse = (postAuthVerifyEmailResponseSuccess | postAuthVerifyEmailResponseError)
+
+export const getPostAuthVerifyEmailUrl = () => {
+
+
+  
+
+  return `/auth/verify-email`
+}
+
+export const postAuthVerifyEmail = async (postAuthVerifyEmailBody: PostAuthVerifyEmailBody, options?: RequestInit): Promise<postAuthVerifyEmailResponse> => {
+  
+  const res = await fetch(getPostAuthVerifyEmailUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postAuthVerifyEmailBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthVerifyEmailResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthVerifyEmailResponse
+}
+
+
+
+export type postAuthResendVerificationResponse200 = {
+  data: PostAuthResendVerification200
+  status: 200
+}
+
+export type postAuthResendVerificationResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthResendVerificationResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthResendVerificationResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthResendVerificationResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthResendVerificationResponseSuccess = (postAuthResendVerificationResponse200) & {
+  headers: Headers;
+};
+export type postAuthResendVerificationResponseError = (postAuthResendVerificationResponse400 | postAuthResendVerificationResponse401 | postAuthResendVerificationResponse403 | postAuthResendVerificationResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthResendVerificationResponse = (postAuthResendVerificationResponseSuccess | postAuthResendVerificationResponseError)
+
+export const getPostAuthResendVerificationUrl = () => {
+
+
+  
+
+  return `/auth/resend-verification`
+}
+
+export const postAuthResendVerification = async (postAuthResendVerificationBody: PostAuthResendVerificationBody, options?: RequestInit): Promise<postAuthResendVerificationResponse> => {
+  
+  const res = await fetch(getPostAuthResendVerificationUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postAuthResendVerificationBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthResendVerificationResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthResendVerificationResponse
+}
+
+
+
+export type postAuthForgotPasswordResponse200 = {
+  data: PostAuthForgotPassword200
+  status: 200
+}
+
+export type postAuthForgotPasswordResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthForgotPasswordResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthForgotPasswordResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthForgotPasswordResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthForgotPasswordResponseSuccess = (postAuthForgotPasswordResponse200) & {
+  headers: Headers;
+};
+export type postAuthForgotPasswordResponseError = (postAuthForgotPasswordResponse400 | postAuthForgotPasswordResponse401 | postAuthForgotPasswordResponse403 | postAuthForgotPasswordResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthForgotPasswordResponse = (postAuthForgotPasswordResponseSuccess | postAuthForgotPasswordResponseError)
+
+export const getPostAuthForgotPasswordUrl = () => {
+
+
+  
+
+  return `/auth/forgot-password`
+}
+
+export const postAuthForgotPassword = async (postAuthForgotPasswordBody: PostAuthForgotPasswordBody, options?: RequestInit): Promise<postAuthForgotPasswordResponse> => {
+  
+  const res = await fetch(getPostAuthForgotPasswordUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postAuthForgotPasswordBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthForgotPasswordResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthForgotPasswordResponse
+}
+
+
+
+export type postAuthResetPasswordResponse200 = {
+  data: PostAuthResetPassword200
+  status: 200
+}
+
+export type postAuthResetPasswordResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthResetPasswordResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthResetPasswordResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthResetPasswordResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthResetPasswordResponseSuccess = (postAuthResetPasswordResponse200) & {
+  headers: Headers;
+};
+export type postAuthResetPasswordResponseError = (postAuthResetPasswordResponse400 | postAuthResetPasswordResponse401 | postAuthResetPasswordResponse403 | postAuthResetPasswordResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthResetPasswordResponse = (postAuthResetPasswordResponseSuccess | postAuthResetPasswordResponseError)
+
+export const getPostAuthResetPasswordUrl = () => {
+
+
+  
+
+  return `/auth/reset-password`
+}
+
+export const postAuthResetPassword = async (postAuthResetPasswordBody: PostAuthResetPasswordBody, options?: RequestInit): Promise<postAuthResetPasswordResponse> => {
+  
+  const res = await fetch(getPostAuthResetPasswordUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postAuthResetPasswordBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthResetPasswordResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthResetPasswordResponse
+}
+
+
+
 export type postCompaniesResponse201 = {
   data: PostCompanies201
   status: 201
@@ -591,17 +851,24 @@ export type getCompaniesResponseError = (getCompaniesResponse400 | getCompaniesR
 
 export type getCompaniesResponse = (getCompaniesResponseSuccess | getCompaniesResponseError)
 
-export const getGetCompaniesUrl = () => {
+export const getGetCompaniesUrl = (params?: GetCompaniesParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/companies`
+  return stringifiedParams.length > 0 ? `/companies?${stringifiedParams}` : `/companies`
 }
 
-export const getCompanies = async ( options?: RequestInit): Promise<getCompaniesResponse> => {
+export const getCompanies = async (params?: GetCompaniesParams, options?: RequestInit): Promise<getCompaniesResponse> => {
   
-  const res = await fetch(getGetCompaniesUrl(),
+  const res = await fetch(getGetCompaniesUrl(params),
   {      
     ...options,
     method: 'GET'
@@ -713,17 +980,26 @@ export type getCompaniesCompanyIdMembersResponseError = (getCompaniesCompanyIdMe
 
 export type getCompaniesCompanyIdMembersResponse = (getCompaniesCompanyIdMembersResponseSuccess | getCompaniesCompanyIdMembersResponseError)
 
-export const getGetCompaniesCompanyIdMembersUrl = (companyId: string,) => {
+export const getGetCompaniesCompanyIdMembersUrl = (companyId: string,
+    params?: GetCompaniesCompanyIdMembersParams,) => {
+  const normalizedParams = new URLSearchParams();
 
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
 
-  
+  const stringifiedParams = normalizedParams.toString();
 
-  return `/companies/${companyId}/members`
+  return stringifiedParams.length > 0 ? `/companies/${companyId}/members?${stringifiedParams}` : `/companies/${companyId}/members`
 }
 
-export const getCompaniesCompanyIdMembers = async (companyId: string, options?: RequestInit): Promise<getCompaniesCompanyIdMembersResponse> => {
+export const getCompaniesCompanyIdMembers = async (companyId: string,
+    params?: GetCompaniesCompanyIdMembersParams, options?: RequestInit): Promise<getCompaniesCompanyIdMembersResponse> => {
   
-  const res = await fetch(getGetCompaniesCompanyIdMembersUrl(companyId),
+  const res = await fetch(getGetCompaniesCompanyIdMembersUrl(companyId,params),
   {      
     ...options,
     method: 'GET'
@@ -803,6 +1079,139 @@ export const postCompaniesCompanyIdMembersInvite = async (companyId: string,
 
 
 
+export type getCompaniesCompanyIdMembersInvitationsResponse200 = {
+  data: GetCompaniesCompanyIdMembersInvitations200
+  status: 200
+}
+
+export type getCompaniesCompanyIdMembersInvitationsResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type getCompaniesCompanyIdMembersInvitationsResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type getCompaniesCompanyIdMembersInvitationsResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type getCompaniesCompanyIdMembersInvitationsResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCompaniesCompanyIdMembersInvitationsResponseSuccess = (getCompaniesCompanyIdMembersInvitationsResponse200) & {
+  headers: Headers;
+};
+export type getCompaniesCompanyIdMembersInvitationsResponseError = (getCompaniesCompanyIdMembersInvitationsResponse400 | getCompaniesCompanyIdMembersInvitationsResponse401 | getCompaniesCompanyIdMembersInvitationsResponse403 | getCompaniesCompanyIdMembersInvitationsResponse404) & {
+  headers: Headers;
+};
+
+export type getCompaniesCompanyIdMembersInvitationsResponse = (getCompaniesCompanyIdMembersInvitationsResponseSuccess | getCompaniesCompanyIdMembersInvitationsResponseError)
+
+export const getGetCompaniesCompanyIdMembersInvitationsUrl = (companyId: string,
+    params?: GetCompaniesCompanyIdMembersInvitationsParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/companies/${companyId}/members/invitations?${stringifiedParams}` : `/companies/${companyId}/members/invitations`
+}
+
+export const getCompaniesCompanyIdMembersInvitations = async (companyId: string,
+    params?: GetCompaniesCompanyIdMembersInvitationsParams, options?: RequestInit): Promise<getCompaniesCompanyIdMembersInvitationsResponse> => {
+  
+  const res = await fetch(getGetCompaniesCompanyIdMembersInvitationsUrl(companyId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getCompaniesCompanyIdMembersInvitationsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdMembersInvitationsResponse
+}
+
+
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponseSuccess = (deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse204) & {
+  headers: Headers;
+};
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponseError = (deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse400 | deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse401 | deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse403 | deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse404) & {
+  headers: Headers;
+};
+
+export type deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse = (deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponseSuccess | deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponseError)
+
+export const getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl = (companyId: string,
+    invitationId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/members/invitations/${invitationId}`
+}
+
+export const deleteCompaniesCompanyIdMembersInvitationsInvitationId = async (companyId: string,
+    invitationId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse> => {
+  
+  const res = await fetch(getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl(companyId,invitationId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdMembersInvitationsInvitationIdResponse
+}
+
+
+
 export type postCompaniesCompanyIdMembersAcceptResponse200 = {
   data: PostCompaniesCompanyIdMembersAccept200
   status: 200
@@ -860,6 +1269,69 @@ export const postCompaniesCompanyIdMembersAccept = async (companyId: string, opt
   
   const data: postCompaniesCompanyIdMembersAcceptResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdMembersAcceptResponse
+}
+
+
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse204 = {
+  data: void
+  status: 204
+}
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type deleteCompaniesCompanyIdMembersMemberIdResponseSuccess = (deleteCompaniesCompanyIdMembersMemberIdResponse204) & {
+  headers: Headers;
+};
+export type deleteCompaniesCompanyIdMembersMemberIdResponseError = (deleteCompaniesCompanyIdMembersMemberIdResponse400 | deleteCompaniesCompanyIdMembersMemberIdResponse401 | deleteCompaniesCompanyIdMembersMemberIdResponse403 | deleteCompaniesCompanyIdMembersMemberIdResponse404) & {
+  headers: Headers;
+};
+
+export type deleteCompaniesCompanyIdMembersMemberIdResponse = (deleteCompaniesCompanyIdMembersMemberIdResponseSuccess | deleteCompaniesCompanyIdMembersMemberIdResponseError)
+
+export const getDeleteCompaniesCompanyIdMembersMemberIdUrl = (companyId: string,
+    memberId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/members/${memberId}`
+}
+
+export const deleteCompaniesCompanyIdMembersMemberId = async (companyId: string,
+    memberId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdMembersMemberIdResponse> => {
+  
+  const res = await fetch(getDeleteCompaniesCompanyIdMembersMemberIdUrl(companyId,memberId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCompaniesCompanyIdMembersMemberIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdMembersMemberIdResponse
 }
 
 

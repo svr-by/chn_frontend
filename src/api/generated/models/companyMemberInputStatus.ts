@@ -7,7 +7,6 @@ export type CompanyMemberInputStatus = typeof CompanyMemberInputStatus[keyof typ
 
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const CompanyMemberInputStatus = {
-  INVITED: 'INVITED',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED',
 } as const;
