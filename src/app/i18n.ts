@@ -38,7 +38,10 @@ void i18n.use(initReactI18next).init({
         noAccount: 'Create an account',
         hasAccount: 'Already have an account? Sign in',
         loginSuccess: 'Signed in successfully',
-        loginUnverified: 'Please verify your email before continuing.',
+        loginUnverified: 'Your email is not verified yet. You can verify it anytime from account settings.',
+        accessSuspendedTitle: 'Access suspended',
+        accessSuspendedSubtitle:
+          'Your membership in this company has been suspended. Contact your company administrator for help.',
         registerSuccess: 'Account created. Please sign in.',
         registerSuccessTitle: 'Check your email',
         registerSuccessSubtitle:

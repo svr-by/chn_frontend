@@ -11,8 +11,8 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PasswordField } from '@/components/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import {
-  getActiveMemberships,
   isEmailVerified,
+  resolveAuthenticatedRedirect,
 } from '@/lib/permissions';
 
 const loginSchema = z.object({
@@ -47,13 +47,10 @@ export function LoginPage() {
 
       if (!isEmailVerified(me.user)) {
         enqueueSnackbar(t('loginUnverified'), { variant: 'warning' });
-        navigate('/verify-email-prompt');
-        return;
       }
 
-      const activeMemberships = getActiveMemberships(me.user);
       enqueueSnackbar(t('loginSuccess'), { variant: 'success' });
-      navigate(activeMemberships.length > 0 ? '/app' : '/onboarding');
+      navigate(resolveAuthenticatedRedirect(me.user));
     } catch {
       // error shown via ApiErrorAlert
     }

@@ -3,10 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
-import {
-  getActiveMemberships,
-  isEmailVerified,
-} from '@/lib/permissions';
+import { resolveAuthenticatedRedirect } from '@/lib/permissions';
 
 export function GuestRoute() {
   const isBootstrapped = useAppSelector((state) => state.auth.isBootstrapped);
@@ -24,16 +21,7 @@ export function GuestRoute() {
       return null;
     }
 
-    if (data?.user && !isEmailVerified(data.user)) {
-      return <Navigate to="/verify-email-prompt" replace />;
-    }
-
-    const activeMemberships = getActiveMemberships(data?.user);
-    if (activeMemberships.length > 0) {
-      return <Navigate to="/app" replace />;
-    }
-
-    return <Navigate to="/onboarding" replace />;
+    return <Navigate to={resolveAuthenticatedRedirect(data?.user)} replace />;
   }
 
   return <Outlet />;

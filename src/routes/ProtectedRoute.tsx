@@ -5,17 +5,17 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
 import {
   getActiveMemberships,
-  isEmailVerified,
+  hasSuspendedMemberships,
 } from '@/lib/permissions';
 
 interface ProtectedRouteProps {
   requireCompany?: boolean;
-  requireEmailVerified?: boolean;
+  allowSuspended?: boolean;
 }
 
 export function ProtectedRoute({
   requireCompany = true,
-  requireEmailVerified = true,
+  allowSuspended = false,
 }: ProtectedRouteProps) {
   const location = useLocation();
   const isBootstrapped = useAppSelector((state) => state.auth.isBootstrapped);
@@ -36,15 +36,16 @@ export function ProtectedRoute({
     return null;
   }
 
-  if (requireEmailVerified && data?.user && !isEmailVerified(data.user)) {
-    return <Navigate to="/verify-email-prompt" replace />;
+  const activeMemberships = getActiveMemberships(data?.user);
+  const suspendedOnly =
+    activeMemberships.length === 0 && hasSuspendedMemberships(data?.user);
+
+  if (suspendedOnly && !allowSuspended) {
+    return <Navigate to="/access-suspended" replace />;
   }
 
-  if (requireCompany) {
-    const activeMemberships = getActiveMemberships(data?.user);
-    if (activeMemberships.length === 0) {
-      return <Navigate to="/onboarding" replace />;
-    }
+  if (requireCompany && activeMemberships.length === 0) {
+    return <Navigate to="/onboarding" replace />;
   }
 
   return <Outlet />;

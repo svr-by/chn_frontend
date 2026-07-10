@@ -19,6 +19,35 @@ export function isEmailVerified(user: GetAuthMe200User | undefined): boolean {
   return user?.emailVerified === true;
 }
 
+export function hasSuspendedMemberships(
+  user: GetAuthMe200User | undefined,
+): boolean {
+  if (!user) {
+    return false;
+  }
+
+  return user.memberships.some(
+    (membership) =>
+      membership.status === 'SUSPENDED' && membership.company?.id != null,
+  );
+}
+
+export type AuthenticatedRedirect = '/app' | '/onboarding' | '/access-suspended';
+
+export function resolveAuthenticatedRedirect(
+  user: GetAuthMe200User | undefined,
+): AuthenticatedRedirect {
+  if (getActiveMemberships(user).length > 0) {
+    return '/app';
+  }
+
+  if (hasSuspendedMemberships(user)) {
+    return '/access-suspended';
+  }
+
+  return '/onboarding';
+}
+
 export function getActiveMembership(
   user: GetAuthMe200User | undefined,
   companyId: string | null,

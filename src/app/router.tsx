@@ -3,6 +3,7 @@ import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AppHomePage } from '@/features/app/AppHomePage';
 import { PlaceholderPage } from '@/features/app/PlaceholderPage';
 import { ForgotPasswordPage } from '@/features/auth/ForgotPasswordPage';
+import { AccessSuspendedPage } from '@/features/auth/AccessSuspendedPage';
 import { LoginPage } from '@/features/auth/LoginPage';
 import { RegisterPage } from '@/features/auth/RegisterPage';
 import { RegisterSuccessRoute } from '@/features/auth/RegisterSuccessRoute';
@@ -59,12 +60,13 @@ export const router = createBrowserRouter([
         ],
       },
       {
-        element: <ProtectedRoute requireCompany={false} requireEmailVerified={false} />,
+        element: <ProtectedRoute requireCompany={false} allowSuspended />,
         children: [
           {
             element: <AuthStandaloneLayout />,
             children: [
               { path: '/verify-email-prompt', element: <VerifyEmailPromptPage /> },
+              { path: '/access-suspended', element: <AccessSuspendedPage /> },
             ],
           },
         ],
