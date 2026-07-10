@@ -307,6 +307,36 @@ See [API reference](./api-reference.md) and [API integration](./api-integration.
 5. Permission and status gating
 6. Navigation links to related documents
 7. Manual test against running backend
+8. Add or extend automated tests for new logic (unit/component)
+
+---
+
+## Testing
+
+**Status:** Infrastructure in place (Vitest + Testing Library). E2E (Playwright) planned before release.
+
+| Layer | Tool | Status |
+|-------|------|--------|
+| Unit / component | Vitest + Testing Library | **Done** — Phase 1 baseline |
+| E2E | Playwright | Not started (pre-release milestone) |
+
+**Commands:**
+
+```bash
+npm run test          # single run
+npm run test:watch    # watch mode
+npm run test:coverage # coverage report
+```
+
+**Phase 1 coverage:**
+
+- `lib/permissions.ts` — permission helpers, email verification, memberships
+- `routes/ProtectedRoute.tsx` — auth, email, onboarding redirects
+- `hooks/useLogout.ts` — logout flow
+- Auth pages — `LoginPage`, `ResetPasswordPage` form validation
+- `TeamSettingsPage` — render with mocked RTK Query
+
+Add tests alongside each new phase; expand E2E when request → quote → selection flows exist.
 
 ---
 
