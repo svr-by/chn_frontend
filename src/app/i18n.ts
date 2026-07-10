@@ -123,6 +123,52 @@ void i18n.use(initReactI18next).init({
         removeMemberConfirm:
           'This member will lose access to the company. Continue?',
       },
+      partners: {
+        title: 'Partners',
+        subtitle: 'Manage partner company links for procurement and logistics.',
+        tabs: {
+          inbound: 'Inbound',
+          outbound: 'Outbound',
+          directory: 'Directory',
+        },
+        columns: {
+          name: 'Company',
+          taxId: 'Tax ID',
+          country: 'Country',
+          status: 'Status',
+          invitedAt: 'Invited',
+          actions: 'Actions',
+        },
+        actions: {
+          invite: 'Invite partner',
+          accept: 'Accept',
+          reject: 'Reject',
+          search: 'Search',
+          cancel: 'Cancel',
+        },
+        search: {
+          byName: 'Search by name',
+          byTaxId: 'Search by tax ID',
+          placeholderName: 'Company name',
+          placeholderTaxId: 'Tax ID',
+        },
+        empty: {
+          inbound: 'No inbound partner invitations yet.',
+          outbound: 'No outbound partner invitations yet.',
+          directory: 'Search for a company to invite as a partner.',
+          noResults: 'No companies found.',
+        },
+        status: {
+          invited: 'Invited',
+          active: 'Active',
+          rejected: 'Rejected',
+        },
+        toast: {
+          invited: 'Partner invitation sent',
+          accepted: 'Partner invitation accepted',
+          rejected: 'Partner invitation rejected',
+        },
+      },
       errors: {
         UNKNOWN_ERROR: 'Something went wrong. Please try again.',
         INVALID_CREDENTIALS: 'Invalid email or password.',
@@ -135,11 +181,12 @@ void i18n.use(initReactI18next).init({
         INVITATION_EXPIRED: 'This invitation has expired.',
         INVITATION_NOT_FOUND: 'Invitation not found.',
         EMAIL_NOT_VERIFIED: 'Please verify your email before signing in.',
+        PARTNER_LINK_ALREADY_EXISTS: 'A partner link with this company already exists.',
       },
     },
   },
   defaultNS: 'common',
-  ns: ['common', 'auth', 'nav', 'errors', 'team'],
+  ns: ['common', 'auth', 'nav', 'errors', 'team', 'partners'],
 });
 
 export default i18n;

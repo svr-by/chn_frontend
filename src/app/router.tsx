@@ -12,6 +12,7 @@ import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
+import { PartnersPage } from '@/features/partners/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
 import { AuthStandaloneLayout } from '@/layouts/AuthStandaloneLayout';
@@ -22,9 +23,10 @@ import { ProtectedRoute } from '@/routes/ProtectedRoute';
 import { RootRedirect } from '@/routes/RootRedirect';
 
 const TEAM_PATH = '/app/settings/team';
+const PARTNERS_PATH = '/app/partners';
 
 const stubRoutes = navConfig
-  .filter((item) => item.path !== TEAM_PATH)
+  .filter((item) => item.path !== TEAM_PATH && item.path !== PARTNERS_PATH)
   .map((item) => ({
     path: item.path.replace('/app/', ''),
     element: <PlaceholderPage path={item.path} />,
@@ -88,6 +90,7 @@ export const router = createBrowserRouter([
             element: <AppLayout />,
             children: [
               { index: true, element: <AppHomePage /> },
+              { path: 'partners', element: <PartnersPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               ...stubRoutes,
             ],

@@ -14,6 +14,7 @@ import { baseApi } from '@/api/baseApi';
 import '@/api/endpoints/authApi';
 import '@/api/endpoints/companiesApi';
 import '@/api/endpoints/membersApi';
+import '@/api/endpoints/partnersApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
