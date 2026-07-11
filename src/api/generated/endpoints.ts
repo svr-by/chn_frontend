@@ -136,6 +136,8 @@ import type {
   PostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsBody,
   PostCompaniesCompanyIdImportsJobIdConfirm200,
   PostCompaniesCompanyIdImportsRequestLines202,
+  PostCompaniesCompanyIdImportsRequestLinesCsvPreview200,
+  PostCompaniesCompanyIdImportsRequestLinesHtmPreview200,
   PostCompaniesCompanyIdIntegrationApiKeys201,
   PostCompaniesCompanyIdIntegrationApiKeysBody,
   PostCompaniesCompanyIdIntegrationExports202,
@@ -8500,6 +8502,128 @@ export const deleteCompaniesCompanyIdIntegrationWebhooksWebhookId = async (compa
   
   const data: deleteCompaniesCompanyIdIntegrationWebhooksWebhookIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdIntegrationWebhooksWebhookIdResponse
+}
+
+
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse200 = {
+  data: PostCompaniesCompanyIdImportsRequestLinesCsvPreview200
+  status: 200
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponseSuccess = (postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponseError = (postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse400 | postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse401 | postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse403 | postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse = (postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponseSuccess | postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponseError)
+
+export const getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl = (companyId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/imports/request-lines/csv/preview`
+}
+
+export const postCompaniesCompanyIdImportsRequestLinesCsvPreview = async (companyId: string, options?: RequestInit): Promise<postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl(companyId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdImportsRequestLinesCsvPreviewResponse
+}
+
+
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse200 = {
+  data: PostCompaniesCompanyIdImportsRequestLinesHtmPreview200
+  status: 200
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponseSuccess = (postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponseError = (postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse400 | postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse401 | postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse403 | postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse = (postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponseSuccess | postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponseError)
+
+export const getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl = (companyId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/imports/request-lines/htm/preview`
+}
+
+export const postCompaniesCompanyIdImportsRequestLinesHtmPreview = async (companyId: string, options?: RequestInit): Promise<postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl(companyId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdImportsRequestLinesHtmPreviewResponse
 }
 
 
