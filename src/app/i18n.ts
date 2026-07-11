@@ -15,6 +15,10 @@ void i18n.use(initReactI18next).init({
           home: 'Home',
           company: 'Company',
           logout: 'Log out',
+          profile: 'Profile',
+          accountMenu: 'Account menu',
+          openNav: 'Open navigation',
+          closeNav: 'Close navigation',
           notifications: 'Notifications',
           welcome: 'Welcome, {{company}}',
           homeSubtitle:
@@ -99,6 +103,14 @@ void i18n.use(initReactI18next).init({
         trace: 'Trace',
         partners: 'Partners',
         team: 'Team',
+      },
+      profile: {
+        title: 'Profile',
+        subtitle: 'Your account details.',
+        name: 'Name: {{name}}',
+        email: 'Email: {{email}}',
+        emailVerified: 'Email verified',
+        emailNotVerified: 'Email not verified',
       },
       team: {
         title: 'Team settings',
@@ -395,7 +407,7 @@ void i18n.use(initReactI18next).init({
     },
   },
   defaultNS: 'common',
-  ns: ['common', 'auth', 'nav', 'errors', 'team', 'partners', 'products', 'requests', 'imports', 'enums'],
+  ns: ['common', 'auth', 'nav', 'errors', 'team', 'profile', 'partners', 'products', 'requests', 'imports', 'enums'],
 });
 
 export default i18n;

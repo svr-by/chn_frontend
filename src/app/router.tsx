@@ -17,6 +17,7 @@ import { RequestImportPage } from '@/features/imports/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/RequestNewPage';
 import { RequestsPage } from '@/features/requests/RequestsPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
+import { ProfilePage } from '@/features/settings/ProfilePage';
 import { PartnersPage } from '@/features/partners/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
@@ -109,6 +110,7 @@ export const router = createBrowserRouter([
               { path: 'requests/new', element: <RequestNewPage /> },
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
+              { path: 'settings/profile', element: <ProfilePage /> },
               ...stubRoutes,
             ],
           },
