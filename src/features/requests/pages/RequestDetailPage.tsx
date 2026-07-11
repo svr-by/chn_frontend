@@ -7,9 +7,9 @@ import { useSnackbar } from 'notistack';
 import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { RequestHeaderForm } from '@/features/requests/RequestHeaderForm';
-import { RequestLinesTable } from '@/features/requests/RequestLinesTable';
-import { RequestStatusActions } from '@/features/requests/RequestStatusActions';
+import { RequestHeaderForm } from '@/features/requests/components/RequestHeaderForm';
+import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
+import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 

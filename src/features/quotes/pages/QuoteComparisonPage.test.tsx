@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
-import { QuoteComparisonPage } from '@/features/quotes/QuoteComparisonPage';
+import { QuoteComparisonPage } from '@/features/quotes/pages/QuoteComparisonPage';
 import {
   COMPANY_ID,
   createMembership,

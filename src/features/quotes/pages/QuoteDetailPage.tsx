@@ -8,9 +8,9 @@ import { useGetQuoteQuery } from '@/api/endpoints/quotesApi';
 import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { QuoteHeaderForm } from '@/features/quotes/QuoteHeaderForm';
-import { QuoteLinesTable } from '@/features/quotes/QuoteLinesTable';
-import { QuoteStatusActions } from '@/features/quotes/QuoteStatusActions';
+import { QuoteHeaderForm } from '@/features/quotes/components/QuoteHeaderForm';
+import { QuoteLinesTable } from '@/features/quotes/components/QuoteLinesTable';
+import { QuoteStatusActions } from '@/features/quotes/components/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 

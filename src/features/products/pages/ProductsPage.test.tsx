@@ -7,7 +7,7 @@ import {
   useListProductsQuery,
   useUpdateProductMutation,
 } from '@/api/endpoints/productsApi';
-import { ProductsPage } from '@/features/products/ProductsPage';
+import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import {
   COMPANY_ID,
   createMembership,

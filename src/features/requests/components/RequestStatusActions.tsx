@@ -14,7 +14,7 @@ import { useSnackbar } from 'notistack';
 import { useSubmitRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
-import { RequestDistributeDialog } from '@/features/requests/RequestDistributeDialog';
+import { RequestDistributeDialog } from '@/features/requests/components/RequestDistributeDialog';
 import type { MaterialRequestStatus } from '@/types/api';
 
 interface RequestStatusActionsProps {

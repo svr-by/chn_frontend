@@ -11,7 +11,7 @@ import {
   useRejectPartnerMutation,
   useSearchPartnerDirectoryQuery,
 } from '@/api/endpoints/partnersApi';
-import { PartnersPage } from '@/features/partners/PartnersPage';
+import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import {
   COMPANY_ID,
   createMembership,

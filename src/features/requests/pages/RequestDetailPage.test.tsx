@@ -10,7 +10,7 @@ import {
   useSubmitRequestMutation,
   useUpdateRequestMutation,
 } from '@/api/endpoints/requestsApi';
-import { RequestDetailPage } from '@/features/requests/RequestDetailPage';
+import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
 import {
   COMPANY_ID,
   createMaterialRequest,

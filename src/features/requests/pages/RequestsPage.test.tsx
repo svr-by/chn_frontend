@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useListRequestsQuery } from '@/api/endpoints/requestsApi';
-import { RequestsPage } from '@/features/requests/RequestsPage';
+import { RequestsPage } from '@/features/requests/pages/RequestsPage';
 import {
   COMPANY_ID,
   createMaterialRequestSummary,

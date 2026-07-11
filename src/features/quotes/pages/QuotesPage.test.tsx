@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
-import { QuotesPage } from '@/features/quotes/QuotesPage';
+import { QuotesPage } from '@/features/quotes/pages/QuotesPage';
 import {
   COMPANY_ID,
   createMembership,

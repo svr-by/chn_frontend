@@ -23,7 +23,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
-import { QuoteLineFormDialog } from '@/features/quotes/QuoteLineFormDialog';
+import { QuoteLineFormDialog } from '@/features/quotes/components/QuoteLineFormDialog';
 
 interface QuoteLinesTableProps {
   companyId: string;

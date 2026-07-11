@@ -22,7 +22,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineFormDialog } from '@/features/requests/RequestLineFormDialog';
+import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
 
 interface RequestLinesTableProps {
   companyId: string;

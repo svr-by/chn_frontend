@@ -10,8 +10,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { InboundRequestsPanel } from '@/features/requests/InboundRequestsPanel';
-import { OutboundRequestsPanel } from '@/features/requests/OutboundRequestsPanel';
+import { InboundRequestsPanel } from '@/features/requests/components/InboundRequestsPanel';
+import { OutboundRequestsPanel } from '@/features/requests/components/OutboundRequestsPanel';
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 

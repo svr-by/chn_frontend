@@ -33,8 +33,8 @@ import {
 } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
-import { PartnerInviteDialog } from '@/features/partners/PartnerInviteDialog';
-import { PartnerLinksTable } from '@/features/partners/PartnerLinksTable';
+import { PartnerInviteDialog } from '@/features/partners/components/PartnerInviteDialog';
+import { PartnerLinksTable } from '@/features/partners/components/PartnerLinksTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 const searchSchema = z.object({

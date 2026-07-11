@@ -6,7 +6,7 @@ import {
   useDistributeRequestMutation,
   useSubmitRequestMutation,
 } from '@/api/endpoints/requestsApi';
-import { RequestStatusActions } from '@/features/requests/RequestStatusActions';
+import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import {
   COMPANY_ID,
   createMembership,

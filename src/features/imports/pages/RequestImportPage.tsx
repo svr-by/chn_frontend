@@ -24,8 +24,8 @@ import { PermissionGate } from '@/components/PermissionGate';
 import {
   ImportFormatOptions,
   type ImportFormatValues,
-} from '@/features/imports/ImportFormatOptions';
-import { ImportPreviewTable } from '@/features/imports/ImportPreviewTable';
+} from '@/features/imports/components/ImportFormatOptions';
+import { ImportPreviewTable } from '@/features/imports/components/ImportPreviewTable';
 import { useImportJobPolling } from '@/hooks/useImportJobPolling';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { buildImportFormData } from '@/lib/buildImportFormData';

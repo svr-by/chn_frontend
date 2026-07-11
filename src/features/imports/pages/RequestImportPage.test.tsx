@@ -9,7 +9,7 @@ import {
   usePreviewCsvImportMutation,
   useUploadImportMutation,
 } from '@/api/endpoints/importsApi';
-import { RequestImportPage } from '@/features/imports/RequestImportPage';
+import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import {
   COMPANY_ID,
   createImportJob,
