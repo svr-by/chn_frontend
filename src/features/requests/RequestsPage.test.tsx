@@ -22,6 +22,12 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useListRequestsQuery: vi.fn(),
+  useListInboundRequestsQuery: vi.fn(() => ({
+    data: { requests: [], pagination: { total: 0, limit: 20, offset: 0 } },
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
   useGetRequestQuery: vi.fn(),
   useCreateRequestMutation: vi.fn(),
   useUpdateRequestMutation: vi.fn(),
@@ -71,6 +77,8 @@ describe('RequestsPage', () => {
     });
 
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Outbound' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Inbound' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'New request' })).toBeInTheDocument();
   });
 

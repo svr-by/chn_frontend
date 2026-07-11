@@ -10,15 +10,13 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { StatusBadge } from '@/components/StatusBadge';
-import type { MaterialRequestStatus } from '@/types/api';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
 
 interface DocumentDetailLayoutProps {
   title: string;
   subtitle?: string | null;
-  status?: MaterialRequestStatus;
+  statusBadge?: ReactNode;
   backTo?: string;
   backLabel?: string;
   actions?: ReactNode;
@@ -31,7 +29,7 @@ interface DocumentDetailLayoutProps {
 export function DocumentDetailLayout({
   title,
   subtitle,
-  status,
+  statusBadge,
   backTo,
   backLabel = 'Back',
   actions,
@@ -75,7 +73,7 @@ export function DocumentDetailLayout({
             <Typography variant="h5" component="h1">
               {title}
             </Typography>
-            {status ? <StatusBadge status={status} /> : null}
+            {statusBadge ?? null}
           </Stack>
           {subtitle ? (
             <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>

@@ -1,6 +1,11 @@
+import type { ImportJob } from '@/api/generated/models/importJob';
 import type { GetAuthMe200User } from '@/api/generated/models/getAuthMe200User';
 import type { GetAuthMe200UserMembershipsItem } from '@/api/generated/models/getAuthMe200UserMembershipsItem';
-import type { ImportJob } from '@/api/generated/models/importJob';
+import type { GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200 } from '@/api/generated/models/getCompaniesCompanyIdRequestsRequestIdQuotesComparison200';
+import type { InboundMaterialRequest } from '@/api/generated/models/inboundMaterialRequest';
+import type { QuoteLine } from '@/api/generated/models/quoteLine';
+import type { SupplierQuote } from '@/api/generated/models/supplierQuote';
+import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
 import type { MaterialRequest } from '@/api/generated/models/materialRequest';
 import type { MaterialRequestSummary } from '@/api/generated/models/materialRequestSummary';
 import type { PartnerCompany } from '@/api/generated/models/partnerCompany';
@@ -16,6 +21,10 @@ const PARTNER_LINK_ID = '00000000-0000-0000-0000-000000000031';
 const PRODUCT_ID = '00000000-0000-0000-0000-000000000040';
 const REQUEST_ID = '00000000-0000-0000-0000-000000000050';
 const REQUEST_LINE_ID = '00000000-0000-0000-0000-000000000051';
+const QUOTE_ID = '00000000-0000-0000-0000-000000000070';
+const QUOTE_LINE_ID = '00000000-0000-0000-0000-000000000071';
+const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
+const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
 
 export function createImportPreview(
@@ -220,6 +229,187 @@ export function createTestUser(
   };
 }
 
+export function createQuoteLine(
+  overrides: Partial<QuoteLine> = {},
+): QuoteLine {
+  return {
+    id: QUOTE_LINE_ID,
+    lineNumber: 1,
+    lineageId: '00000000-0000-0000-0000-000000000072',
+    requestLineId: REQUEST_LINE_ID,
+    quantity: '10',
+    unitPrice: '5.50',
+    lineTotal: '55.00',
+    notes: null,
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      lineNumber: 1,
+      description: 'Test line',
+      quantity: '10',
+      unit: 'pcs',
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createSupplierQuote(
+  overrides: Partial<SupplierQuote> = {},
+): SupplierQuote {
+  return {
+    id: QUOTE_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    supplierCompanyId: SUPPLIER_COMPANY_ID,
+    createdByUserId: USER_ID,
+    status: 'DRAFT',
+    currency: 'USD',
+    validUntil: null,
+    notes: null,
+    submittedAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Corp',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Acme Corp',
+    },
+    lines: [createQuoteLine()],
+    ...overrides,
+  };
+}
+
+export function createSupplierQuoteSummary(
+  overrides: Partial<SupplierQuoteSummary> = {},
+): SupplierQuoteSummary {
+  return {
+    id: QUOTE_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    supplierCompanyId: SUPPLIER_COMPANY_ID,
+    status: 'DRAFT',
+    currency: 'USD',
+    validUntil: null,
+    submittedAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Corp',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Acme Corp',
+    },
+    ...overrides,
+  };
+}
+
+export function createInboundMaterialRequest(
+  overrides: Partial<InboundMaterialRequest> = {},
+): InboundMaterialRequest {
+  return {
+    ...createMaterialRequest({ status: 'QUOTING', submittedAt: '2026-01-01T00:00:00.000Z' }),
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Corp',
+      country: null,
+      taxId: null,
+    },
+    distributedAt: '2026-01-02T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createQuoteComparison(
+  overrides: Partial<GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200> = {},
+): GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200 {
+  const supplierAId = '00000000-0000-0000-0000-000000000090';
+  const supplierBId = '00000000-0000-0000-0000-000000000091';
+  const line2Id = '00000000-0000-0000-0000-000000000053';
+
+  return {
+    request: createMaterialRequest({ status: 'QUOTING' }),
+    suppliers: [
+      {
+        companyId: supplierAId,
+        name: 'Supplier A',
+        quoteId: '00000000-0000-0000-0000-000000000092',
+        status: 'SUBMITTED',
+        submittedAt: '2026-01-03T00:00:00.000Z',
+      },
+      {
+        companyId: supplierBId,
+        name: 'Supplier B',
+        quoteId: '00000000-0000-0000-0000-000000000093',
+        status: 'SUBMITTED',
+        submittedAt: '2026-01-03T01:00:00.000Z',
+      },
+    ],
+    lines: [
+      {
+        requestLine: {
+          id: REQUEST_LINE_ID,
+          lineageId: '00000000-0000-0000-0000-000000000052',
+          lineNumber: 1,
+          description: 'Bolt M8',
+          quantity: '100',
+          unit: 'pcs',
+        },
+        offers: [
+          {
+            quoteId: '00000000-0000-0000-0000-000000000092',
+            supplierCompany: { id: supplierAId, name: 'Supplier A', country: null, taxId: null },
+            quoteLineId: QUOTE_LINE_ID,
+            quantity: '100',
+            unitPrice: '1.00',
+            lineTotal: '100.00',
+            currency: 'USD',
+            status: 'SUBMITTED',
+          },
+          {
+            quoteId: '00000000-0000-0000-0000-000000000093',
+            supplierCompany: { id: supplierBId, name: 'Supplier B', country: null, taxId: null },
+            quoteLineId: '00000000-0000-0000-0000-000000000094',
+            quantity: '100',
+            unitPrice: '0.90',
+            lineTotal: '90.00',
+            currency: 'USD',
+            status: 'SUBMITTED',
+          },
+        ],
+      },
+      {
+        requestLine: {
+          id: line2Id,
+          lineageId: '00000000-0000-0000-0000-000000000054',
+          lineNumber: 2,
+          description: 'Nut M8',
+          quantity: '50',
+          unit: 'pcs',
+        },
+        offers: [
+          {
+            quoteId: '00000000-0000-0000-0000-000000000092',
+            supplierCompany: { id: supplierAId, name: 'Supplier A', country: null, taxId: null },
+            quoteLineId: '00000000-0000-0000-0000-000000000095',
+            quantity: '50',
+            unitPrice: '0.50',
+            lineTotal: '25.00',
+            currency: 'USD',
+            status: 'SUBMITTED',
+          },
+        ],
+      },
+    ],
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -230,4 +420,7 @@ export {
   REQUEST_ID,
   REQUEST_LINE_ID,
   IMPORT_JOB_ID,
+  QUOTE_ID,
+  QUOTE_LINE_ID,
+  BUYER_COMPANY_ID,
 };

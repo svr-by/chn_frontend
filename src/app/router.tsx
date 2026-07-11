@@ -13,6 +13,10 @@ import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/RequestDetailPage';
+import { InboundRequestsPage } from '@/features/requests/InboundRequestsPage';
+import { QuoteComparisonPage } from '@/features/quotes/QuoteComparisonPage';
+import { QuoteDetailPage } from '@/features/quotes/QuoteDetailPage';
+import { QuotesPage } from '@/features/quotes/QuotesPage';
 import { RequestImportPage } from '@/features/imports/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/RequestNewPage';
 import { RequestsPage } from '@/features/requests/RequestsPage';
@@ -33,12 +37,18 @@ const PARTNERS_PATH = '/app/partners';
 const PRODUCTS_PATH = '/app/products';
 const REQUESTS_PATH = '/app/requests';
 
+const QUOTES_PATH = '/app/quotes';
+
 const stubRoutes = navConfig
   .filter(
     (item) =>
-      ![TEAM_PATH, PARTNERS_PATH, PRODUCTS_PATH, REQUESTS_PATH].includes(
-        item.path,
-      ),
+      ![
+        TEAM_PATH,
+        PARTNERS_PATH,
+        PRODUCTS_PATH,
+        REQUESTS_PATH,
+        QUOTES_PATH,
+      ].includes(item.path),
   )
   .map((item) => ({
     path: item.path.replace('/app/', ''),
@@ -108,7 +118,15 @@ export const router = createBrowserRouter([
               { path: 'requests', element: <RequestsPage /> },
               { path: 'requests/import', element: <RequestImportPage /> },
               { path: 'requests/new', element: <RequestNewPage /> },
+              { path: 'requests/inbound', element: <InboundRequestsPage /> },
+              {
+                path: 'requests/:requestId/compare',
+                element: <QuoteComparisonPage />,
+              },
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
+              { path: 'quotes', element: <QuotesPage /> },
+              { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
+              { path: 'trace/:lineageId', element: <PlaceholderPage path="/app/trace" /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },
               ...stubRoutes,

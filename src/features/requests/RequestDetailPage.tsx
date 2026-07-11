@@ -6,6 +6,7 @@ import { useSnackbar } from 'notistack';
 
 import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { StatusBadge } from '@/components/StatusBadge';
 import { RequestHeaderForm } from '@/features/requests/RequestHeaderForm';
 import { RequestLinesTable } from '@/features/requests/RequestLinesTable';
 import { RequestStatusActions } from '@/features/requests/RequestStatusActions';
@@ -57,7 +58,7 @@ export function RequestDetailPage() {
     <DocumentDetailLayout
       title={title}
       subtitle={subtitle}
-      status={request?.status}
+      statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
       backTo="/app/requests"
       backLabel={t('actions.backToList')}
       loading={requestQuery.isLoading}

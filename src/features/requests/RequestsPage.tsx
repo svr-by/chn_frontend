@@ -1,104 +1,50 @@
-import { useMemo, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useEffect, useState, type SyntheticEvent } from 'react';
+import { Link as RouterLink, useSearchParams } from 'react-router-dom';
 import {
   Box,
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
+  Tab,
+  Tabs,
   Typography,
 } from '@mui/material';
-import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import type { MaterialRequestSummary } from '@/api/generated/models/materialRequestSummary';
-import { useListRequestsQuery } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { StatusBadge } from '@/components/StatusBadge';
+import { InboundRequestsPanel } from '@/features/requests/InboundRequestsPanel';
+import { OutboundRequestsPanel } from '@/features/requests/OutboundRequestsPanel';
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import type { MaterialRequestStatus } from '@/types/api';
 
-const PAGE_SIZE = 20;
+type RequestsTab = 'outbound' | 'inbound';
 
-const STATUS_OPTIONS: Array<MaterialRequestStatus | 'ALL'> = [
-  'ALL',
-  'DRAFT',
-  'SUBMITTED',
-  'QUOTING',
-  'PARTIALLY_ORDERED',
-  'ORDERED',
-  'CLOSED',
-];
+function parseTab(value: string | null): RequestsTab {
+  return value === 'inbound' ? 'inbound' : 'outbound';
+}
 
 export function RequestsPage() {
   const { t } = useTranslation('requests');
-  const navigate = useNavigate();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-
-  const [pagination, setPagination] = useState<MRT_PaginationState>({
-    pageIndex: 0,
-    pageSize: PAGE_SIZE,
-  });
-  const [statusFilter, setStatusFilter] = useState<MaterialRequestStatus | 'ALL'>(
-    'ALL',
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState<RequestsTab>(() =>
+    parseTab(searchParams.get('tab')),
   );
 
-  const listQuery = useListRequestsQuery(
-    {
-      companyId: companyId ?? '',
-      limit: pagination.pageSize,
-      offset: pagination.pageIndex * pagination.pageSize,
-      ...(statusFilter !== 'ALL' ? { status: statusFilter } : {}),
-    },
-    { skip: !companyId },
-  );
-
-  const columns = useMemo<MRT_ColumnDef<MaterialRequestSummary>[]>(
-    () => [
-      {
-        accessorKey: 'title',
-        header: t('columns.title'),
-        Cell: ({ row }) => row.original.title ?? row.original.reference ?? '—',
-      },
-      {
-        accessorKey: 'reference',
-        header: t('columns.reference'),
-        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
-      },
-      {
-        accessorKey: 'status',
-        header: t('columns.status'),
-        Cell: ({ cell }) => (
-          <StatusBadge status={cell.getValue<MaterialRequestStatus>()} />
-        ),
-      },
-      {
-        accessorKey: 'submittedAt',
-        header: t('columns.submittedAt'),
-        Cell: ({ cell }) => {
-          const value = cell.getValue<string | null>();
-          return value ? new Date(value).toLocaleString() : '—';
-        },
-      },
-      {
-        accessorKey: 'createdAt',
-        header: t('columns.createdAt'),
-        Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleString(),
-      },
-    ],
-    [t],
-  );
+  useEffect(() => {
+    setTab(parseTab(searchParams.get('tab')));
+  }, [searchParams]);
 
   if (!companyId) {
     return null;
   }
 
-  const requests = listQuery.data?.requests ?? [];
-  const total = listQuery.data?.pagination.total ?? 0;
+  function handleTabChange(_event: SyntheticEvent, value: RequestsTab) {
+    setTab(value);
+    if (value === 'outbound') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ tab: value });
+    }
+  }
 
   return (
     <Stack spacing={3}>
@@ -113,68 +59,40 @@ export function RequestsPage() {
             {t('title')}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {t('subtitle')}
+            {tab === 'outbound' ? t('subtitle') : t('inbound.subtitle')}
           </Typography>
         </Box>
-        <PermissionGate permission="manageRequests">
-          <Stack direction="row" spacing={1}>
-            <Button
-              variant="outlined"
-              component={RouterLink}
-              to="/app/requests/import"
-            >
-              {t('actions.import')}
-            </Button>
-            <Button
-              variant="contained"
-              component={RouterLink}
-              to="/app/requests/new"
-            >
-              {t('actions.new')}
-            </Button>
-          </Stack>
-        </PermissionGate>
+        {tab === 'outbound' ? (
+          <PermissionGate permission="manageRequests">
+            <Stack direction="row" spacing={1}>
+              <Button
+                variant="outlined"
+                component={RouterLink}
+                to="/app/requests/import"
+              >
+                {t('actions.import')}
+              </Button>
+              <Button
+                variant="contained"
+                component={RouterLink}
+                to="/app/requests/new"
+              >
+                {t('actions.new')}
+              </Button>
+            </Stack>
+          </PermissionGate>
+        ) : null}
       </Stack>
 
-      <ApiErrorAlert error={listQuery.error} />
+      <Tabs value={tab} onChange={handleTabChange}>
+        <Tab label={t('tabs.outbound')} value="outbound" />
+        <Tab label={t('tabs.inbound')} value="inbound" />
+      </Tabs>
 
-      <FormControl size="small" sx={{ minWidth: 200 }}>
-        <InputLabel id="request-status-filter">{t('statusFilter.label')}</InputLabel>
-        <Select
-          labelId="request-status-filter"
-          label={t('statusFilter.label')}
-          value={statusFilter}
-          onChange={(event) => {
-            setStatusFilter(event.target.value as MaterialRequestStatus | 'ALL');
-            setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-          }}
-        >
-          {STATUS_OPTIONS.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status === 'ALL'
-                ? t('statusFilter.all')
-                : t(`statusFilter.${status.toLowerCase()}`, {
-                    defaultValue: status,
-                  })}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      {!listQuery.isLoading && requests.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
+      {tab === 'outbound' ? (
+        <OutboundRequestsPanel companyId={companyId} />
       ) : (
-        <PaginatedTable
-          columns={columns}
-          data={requests}
-          rowCount={total}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          onRowClick={(row) => navigate(`/app/requests/${row.id}`)}
-          getRowId={(row) => row.id}
-        />
+        <InboundRequestsPanel companyId={companyId} />
       )}
     </Stack>
   );

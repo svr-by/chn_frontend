@@ -44,8 +44,23 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useUpdateRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
   useDeleteRequestLineMutation: vi.fn(),
   useSubmitRequestMutation: vi.fn(),
+  useDistributeRequestMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
   useListRequestsQuery: vi.fn(),
   useCreateRequestMutation: vi.fn(),
+  useListInboundRequestsQuery: vi.fn(),
+  useGetQuoteComparisonQuery: vi.fn(),
+}));
+
+vi.mock('@/api/endpoints/partnersApi', () => ({
+  useListPartnersQuery: vi.fn(() => ({
+    data: { partners: [] },
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
@@ -157,6 +172,9 @@ describe('RequestDetailPage', () => {
     expect(
       screen.queryByRole('button', { name: 'Submit' }),
     ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Distribute' }),
+    ).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Add line' }),
     ).not.toBeInTheDocument();

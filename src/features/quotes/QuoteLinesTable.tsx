@@ -16,59 +16,57 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
+import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
+import { useDeleteQuoteLineMutation } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineFormDialog } from '@/features/requests/RequestLineFormDialog';
+import { QuoteLineFormDialog } from '@/features/quotes/QuoteLineFormDialog';
 
-interface RequestLinesTableProps {
+interface QuoteLinesTableProps {
   companyId: string;
-  requestId: string;
-  lines: RequestLine[];
+  quoteId: string;
+  materialRequestId: string;
+  lines: QuoteLine[];
+  requestLines: RequestLine[];
   editable: boolean;
 }
 
-export function RequestLinesTable({
+export function QuoteLinesTable({
   companyId,
-  requestId,
+  quoteId,
+  materialRequestId,
   lines,
+  requestLines,
   editable,
-}: RequestLinesTableProps) {
-  const { t } = useTranslation('requests');
+}: QuoteLinesTableProps) {
+  const { t } = useTranslation('quotes');
   const { enqueueSnackbar } = useSnackbar();
 
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingLine, setEditingLine] = useState<RequestLine | null>(null);
-  const [lineToDelete, setLineToDelete] = useState<RequestLine | null>(null);
+  const [editingLine, setEditingLine] = useState<QuoteLine | null>(null);
+  const [lineToDelete, setLineToDelete] = useState<QuoteLine | null>(null);
 
-  const [deleteLine, deleteState] = useDeleteRequestLineMutation();
+  const [deleteLine, deleteState] = useDeleteQuoteLineMutation();
 
-  const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(() => {
-    const baseColumns: MRT_ColumnDef<RequestLine>[] = [
+  const existingLineIds = lines.map((line) => line.requestLineId);
+  const hasAvailableRequestLines = requestLines.some(
+    (requestLine) => !existingLineIds.includes(requestLine.id),
+  );
+
+  const columns = useMemo<MRT_ColumnDef<QuoteLine>[]>(() => {
+    const baseColumns: MRT_ColumnDef<QuoteLine>[] = [
       {
         accessorKey: 'lineNumber',
         header: t('columns.lineNumber'),
         size: 60,
       },
       {
-        accessorKey: 'description',
-        header: t('columns.description'),
-      },
-      {
-        id: 'product',
-        header: t('columns.product'),
-        Cell: ({ row }) => {
-          const product = row.original.product;
-          if (!product) {
-            return '—';
-          }
-          return product.sku
-            ? `${product.name} (${product.sku})`
-            : product.name;
-        },
+        id: 'requestLine',
+        header: t('columns.requestLine'),
+        Cell: ({ row }) => row.original.requestLine.description,
       },
       {
         accessorKey: 'quantity',
@@ -76,9 +74,14 @@ export function RequestLinesTable({
         Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
       },
       {
-        accessorKey: 'unit',
-        header: t('columns.unit'),
-        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
+        accessorKey: 'unitPrice',
+        header: t('columns.unitPrice'),
+        Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
+      },
+      {
+        accessorKey: 'lineTotal',
+        header: t('columns.lineTotal'),
+        Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
       },
       {
         id: 'lineage',
@@ -97,7 +100,7 @@ export function RequestLinesTable({
         id: 'actions',
         header: t('columns.actions'),
         Cell: ({ row }) => (
-          <PermissionGate permission="manageRequests">
+          <PermissionGate permission="manageQuotes">
             <Stack direction="row" spacing={1}>
               <Button
                 size="small"
@@ -146,8 +149,9 @@ export function RequestLinesTable({
 
     await deleteLine({
       companyId,
-      requestId,
+      quoteId,
       lineId: lineToDelete.id,
+      materialRequestId,
     }).unwrap();
 
     enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
@@ -158,8 +162,8 @@ export function RequestLinesTable({
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
         <Typography variant="h6">{t('linesTitle')}</Typography>
-        {editable ? (
-          <PermissionGate permission="manageRequests">
+        {editable && hasAvailableRequestLines ? (
+          <PermissionGate permission="manageQuotes">
             <Button
               variant="outlined"
               onClick={() => {
@@ -181,14 +185,17 @@ export function RequestLinesTable({
         <MaterialReactTable table={table} />
       )}
 
-      <RequestLineFormDialog
+      <QuoteLineFormDialog
         open={dialogOpen}
         onClose={() => {
           setDialogOpen(false);
           setEditingLine(null);
         }}
         companyId={companyId}
-        requestId={requestId}
+        quoteId={quoteId}
+        materialRequestId={materialRequestId}
+        requestLines={requestLines}
+        existingLineIds={existingLineIds}
         line={editingLine}
         onSuccess={() =>
           enqueueSnackbar(
