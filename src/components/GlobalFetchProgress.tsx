@@ -10,9 +10,14 @@ export function GlobalFetchProgress() {
       return false;
     }
 
-    return Object.values(apiState.queries).some(
-      (query) => query?.status === 'pending' && query.data !== undefined,
+    const queriesPending = Object.values(apiState.queries).some(
+      (query) => query?.status === 'pending',
     );
+    const mutationsPending = Object.values(apiState.mutations).some(
+      (mutation) => mutation?.status === 'pending',
+    );
+
+    return queriesPending || mutationsPending;
   });
 
   if (!isFetching) {
