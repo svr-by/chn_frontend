@@ -52,6 +52,12 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useCreateRequestMutation: vi.fn(),
   useListInboundRequestsQuery: vi.fn(),
   useGetQuoteComparisonQuery: vi.fn(),
+  useGetRequestSelectionQuery: vi.fn(() => ({
+    data: undefined,
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
 }));
 
 vi.mock('@/api/endpoints/partnersApi', () => ({
@@ -60,6 +66,14 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
     isLoading: false,
     isFetching: false,
     refetch: vi.fn(),
+  })),
+}));
+
+vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
+  useOpenRequestSelection: vi.fn(() => ({
+    openRequestSelection: vi.fn(),
+    isOpening: false,
+    error: null,
   })),
 }));
 

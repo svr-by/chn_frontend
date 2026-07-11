@@ -37,6 +37,14 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useDistributeRequestMutation: vi.fn(),
 }));
 
+vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
+  useOpenRequestSelection: vi.fn(() => ({
+    openRequestSelection: vi.fn(),
+    isOpening: false,
+    error: null,
+  })),
+}));
+
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseSubmitRequestMutation = vi.mocked(useSubmitRequestMutation);
 const mockedUseDistributeRequestMutation = vi.mocked(useDistributeRequestMutation);
@@ -112,6 +120,36 @@ describe('RequestStatusActions', () => {
     expect(
       screen.getByRole('link', { name: 'Compare quotes' }),
     ).toHaveAttribute('href', `/app/requests/${REQUEST_ID}/compare`);
+  });
+
+  it('shows manage selection button on QUOTING with manageSelections', () => {
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['viewRequests', 'manageSelections'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(
+      <RequestStatusActions
+        companyId={COMPANY_ID}
+        requestId={REQUEST_ID}
+        status="QUOTING"
+      />,
+      { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Manage selection' }),
+    ).toBeInTheDocument();
   });
 
   it('shows submit button on DRAFT status', () => {

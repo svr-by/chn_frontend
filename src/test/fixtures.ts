@@ -10,6 +10,9 @@ import type { MaterialRequest } from '@/api/generated/models/materialRequest';
 import type { MaterialRequestSummary } from '@/api/generated/models/materialRequestSummary';
 import type { PartnerCompany } from '@/api/generated/models/partnerCompany';
 import type { Product } from '@/api/generated/models/product';
+import type { PurchaseSelection } from '@/api/generated/models/purchaseSelection';
+import type { PurchaseSelectionSummary } from '@/api/generated/models/purchaseSelectionSummary';
+import type { SelectionLine } from '@/api/generated/models/selectionLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 
@@ -23,6 +26,8 @@ const REQUEST_ID = '00000000-0000-0000-0000-000000000050';
 const REQUEST_LINE_ID = '00000000-0000-0000-0000-000000000051';
 const QUOTE_ID = '00000000-0000-0000-0000-000000000070';
 const QUOTE_LINE_ID = '00000000-0000-0000-0000-000000000071';
+const SELECTION_ID = '00000000-0000-0000-0000-000000000100';
+const SELECTION_LINE_ID = '00000000-0000-0000-0000-000000000101';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -317,8 +322,6 @@ export function createInboundMaterialRequest(
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Corp',
-      country: null,
-      taxId: null,
     },
     distributedAt: '2026-01-02T00:00:00.000Z',
     ...overrides,
@@ -363,7 +366,7 @@ export function createQuoteComparison(
         offers: [
           {
             quoteId: '00000000-0000-0000-0000-000000000092',
-            supplierCompany: { id: supplierAId, name: 'Supplier A', country: null, taxId: null },
+            supplierCompany: { id: supplierAId, name: 'Supplier A' },
             quoteLineId: QUOTE_LINE_ID,
             quantity: '100',
             unitPrice: '1.00',
@@ -373,7 +376,7 @@ export function createQuoteComparison(
           },
           {
             quoteId: '00000000-0000-0000-0000-000000000093',
-            supplierCompany: { id: supplierBId, name: 'Supplier B', country: null, taxId: null },
+            supplierCompany: { id: supplierBId, name: 'Supplier B' },
             quoteLineId: '00000000-0000-0000-0000-000000000094',
             quantity: '100',
             unitPrice: '0.90',
@@ -395,7 +398,7 @@ export function createQuoteComparison(
         offers: [
           {
             quoteId: '00000000-0000-0000-0000-000000000092',
-            supplierCompany: { id: supplierAId, name: 'Supplier A', country: null, taxId: null },
+            supplierCompany: { id: supplierAId, name: 'Supplier A' },
             quoteLineId: '00000000-0000-0000-0000-000000000095',
             quantity: '50',
             unitPrice: '0.50',
@@ -406,6 +409,81 @@ export function createQuoteComparison(
         ],
       },
     ],
+    ...overrides,
+  };
+}
+
+export function createSelectionLine(
+  overrides: Partial<SelectionLine> = {},
+): SelectionLine {
+  return {
+    id: SELECTION_LINE_ID,
+    lineNumber: 1,
+    lineageId: '00000000-0000-0000-0000-000000000102',
+    quantity: '10',
+    notes: null,
+    quoteLine: {
+      id: QUOTE_LINE_ID,
+      quantity: '100',
+      unitPrice: '1.00',
+    },
+    quote: {
+      id: QUOTE_ID,
+      currency: 'USD',
+      supplierCompany: {
+        id: SUPPLIER_COMPANY_ID,
+        name: 'Supplier A',
+      },
+    },
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      description: 'Bolt M8',
+      quantity: '100',
+      unit: 'pcs',
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createPurchaseSelection(
+  overrides: Partial<PurchaseSelection> = {},
+): PurchaseSelection {
+  return {
+    id: SELECTION_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: COMPANY_ID,
+    createdByUserId: USER_ID,
+    status: 'DRAFT',
+    notes: null,
+    confirmedAt: null,
+    cancelledAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    materialRequest: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
+    lines: [createSelectionLine()],
+    ...overrides,
+  };
+}
+
+export function createPurchaseSelectionSummary(
+  overrides: Partial<PurchaseSelectionSummary> = {},
+): PurchaseSelectionSummary {
+  return {
+    id: SELECTION_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: COMPANY_ID,
+    status: 'DRAFT',
+    notes: null,
+    confirmedAt: null,
+    cancelledAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
 }
@@ -422,5 +500,7 @@ export {
   IMPORT_JOB_ID,
   QUOTE_ID,
   QUOTE_LINE_ID,
+  SELECTION_ID,
+  SELECTION_LINE_ID,
   BUYER_COMPANY_ID,
 };

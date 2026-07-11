@@ -10,6 +10,7 @@ import { I18nextProvider } from 'react-i18next';
 import i18n from '@/app/i18n';
 import { theme } from '@/app/theme';
 import type { RootState } from '@/app/store';
+import { store } from '@/app/store';
 import { baseApi } from '@/api/baseApi';
 import '@/api/endpoints/authApi';
 import '@/api/endpoints/companiesApi';
@@ -18,6 +19,7 @@ import '@/api/endpoints/partnersApi';
 import '@/api/endpoints/productsApi';
 import '@/api/endpoints/requestsApi';
 import '@/api/endpoints/quotesApi';
+import '@/api/endpoints/selectionsApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {
@@ -34,7 +36,7 @@ export function createTestStore(preloadedState?: Partial<RootState>) {
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat(baseApi.middleware),
     preloadedState,
-  });
+  } as Parameters<typeof configureStore>[0]) as typeof store;
 }
 
 export function renderWithProviders(

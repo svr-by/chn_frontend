@@ -36,6 +36,14 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useDistributeRequestMutation: vi.fn(),
 }));
 
+vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
+  useOpenRequestSelection: vi.fn(() => ({
+    openRequestSelection: vi.fn(),
+    isOpening: false,
+    error: null,
+  })),
+}));
+
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetQuoteComparisonQuery = vi.mocked(useGetQuoteComparisonQuery);
 
@@ -86,5 +94,39 @@ describe('QuoteComparisonPage', () => {
     expect(screen.getByText('Supplier B')).toBeInTheDocument();
     expect(screen.getAllByText(/1\.00/).length).toBeGreaterThan(0);
     expect(screen.getByText(/0\.90/)).toBeInTheDocument();
+  });
+
+  it('shows open selection button with manageSelections', () => {
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['viewRequests', 'manageSelections'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(
+      <Routes>
+        <Route
+          path="/app/requests/:requestId/compare"
+          element={<QuoteComparisonPage />}
+        />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: `/app/requests/${REQUEST_ID}/compare`,
+      },
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Open selection' }),
+    ).toBeInTheDocument();
   });
 });
