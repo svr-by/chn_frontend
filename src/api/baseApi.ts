@@ -131,6 +131,7 @@ export const baseApi = createApi({
     'Selections',
     'Invoices',
     'Payments',
+    'ShippingInvoices',
   ],
   endpoints: () => ({}),
 });

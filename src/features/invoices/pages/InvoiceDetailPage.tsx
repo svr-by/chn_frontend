@@ -15,10 +15,17 @@ import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTa
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
+import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
 const PAYMENT_ALLOWED_STATUSES = new Set(['ISSUED', 'PARTIALLY_PAID']);
+const SHIPPING_ALLOWED_STATUSES = new Set([
+  'ISSUED',
+  'PARTIALLY_PAID',
+  'PAID',
+  'CONFIRMED',
+]);
 
 export function InvoiceDetailPage() {
   const { t } = useTranslation('invoices');
@@ -42,6 +49,15 @@ export function InvoiceDetailPage() {
     invoice &&
     PAYMENT_ALLOWED_STATUSES.has(invoice.status) &&
     hasPermission('managePayments');
+  const canCreateShipping =
+    invoice &&
+    SHIPPING_ALLOWED_STATUSES.has(invoice.status) &&
+    hasPermission('manageShippingInvoices');
+  const showShippingLink =
+    invoice && SHIPPING_ALLOWED_STATUSES.has(invoice.status);
+
+  const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
+    useCreateShippingInvoiceFromInvoice();
 
   const billableQuery = useGetBillableLinesQuery(
     { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
@@ -101,6 +117,17 @@ export function InvoiceDetailPage() {
                 </Button>
               </PermissionGate>
             ) : null}
+            {canCreateShipping ? (
+              <PermissionGate permission="manageShippingInvoices">
+                <Button
+                  variant="outlined"
+                  disabled={isCreatingShipping}
+                  onClick={() => createShippingInvoiceFromInvoice(invoice.id)}
+                >
+                  {t('actions.createShippingInvoice')}
+                </Button>
+              </PermissionGate>
+            ) : null}
           </Stack>
         ) : null
       }
@@ -157,6 +184,18 @@ export function InvoiceDetailPage() {
                 {t('detail.confirmedAt', {
                   date: new Date(invoice.confirmedAt).toLocaleString(),
                 })}
+              </Typography>
+            ) : null}
+            {showShippingLink ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.shipping')}:{' '}
+                <Link
+                  component={RouterLink}
+                  to={`/app/shipping-invoices?supplierInvoiceId=${invoice.id}`}
+                  underline="hover"
+                >
+                  {t('detail.viewShipping')}
+                </Link>
               </Typography>
             ) : null}
             {invoice.status !== 'DRAFT' ? (

@@ -23,6 +23,8 @@ import { InvoicesPage } from '@/features/invoices/pages/InvoicesPage';
 import { InvoiceDetailPage } from '@/features/invoices/pages/InvoiceDetailPage';
 import { PaymentsPage } from '@/features/payments/pages/PaymentsPage';
 import { PaymentDetailPage } from '@/features/payments/pages/PaymentDetailPage';
+import { ShippingInvoicesPage } from '@/features/shipping/pages/ShippingInvoicesPage';
+import { ShippingInvoiceDetailPage } from '@/features/shipping/pages/ShippingInvoiceDetailPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
@@ -47,6 +49,7 @@ const QUOTES_PATH = '/app/quotes';
 const SELECTIONS_PATH = '/app/selections';
 const INVOICES_PATH = '/app/invoices';
 const PAYMENTS_PATH = '/app/payments';
+const SHIPPING_INVOICES_PATH = '/app/shipping-invoices';
 
 const stubRoutes = navConfig
   .filter(
@@ -60,6 +63,7 @@ const stubRoutes = navConfig
         SELECTIONS_PATH,
         INVOICES_PATH,
         PAYMENTS_PATH,
+        SHIPPING_INVOICES_PATH,
       ].includes(item.path),
   )
   .map((item) => ({
@@ -144,6 +148,11 @@ export const router = createBrowserRouter([
               { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
               { path: 'payments', element: <PaymentsPage /> },
               { path: 'payments/:paymentId', element: <PaymentDetailPage /> },
+              { path: 'shipping-invoices', element: <ShippingInvoicesPage /> },
+              {
+                path: 'shipping-invoices/:shippingInvoiceId',
+                element: <ShippingInvoiceDetailPage />,
+              },
               { path: 'trace/:lineageId', element: <PlaceholderPage path="/app/trace" /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },

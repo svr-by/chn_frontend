@@ -1,6 +1,7 @@
 import type {
   GetCompaniesCompanyIdInvoices200,
   GetCompaniesCompanyIdInvoicesInvoiceId200,
+  GetCompaniesCompanyIdInvoicesInvoiceIdShippableLines200,
   GetCompaniesCompanyIdInvoicesParams,
   PatchCompaniesCompanyIdInvoicesInvoiceId200,
   PatchCompaniesCompanyIdInvoicesInvoiceIdBody,
@@ -249,6 +250,17 @@ export const invoicesApi = baseApi.injectEndpoints({
           purchaseSelectionId,
         ),
     }),
+    getShippableLines: builder.query<
+      GetCompaniesCompanyIdInvoicesInvoiceIdShippableLines200,
+      { companyId: string; invoiceId: string }
+    >({
+      query: ({ companyId, invoiceId }) => ({
+        url: `/companies/${companyId}/invoices/${invoiceId}/shippable-lines`,
+      }),
+      providesTags: (_result, _error, { invoiceId }) => [
+        { type: 'Invoices', id: `shippable-${invoiceId}` },
+      ],
+    }),
     confirmInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdConfirm200,
       {
@@ -287,4 +299,6 @@ export const {
   useDeleteInvoiceLineMutation,
   useIssueInvoiceMutation,
   useConfirmInvoiceMutation,
+  useGetShippableLinesQuery,
+  useLazyGetShippableLinesQuery,
 } = invoicesApi;
