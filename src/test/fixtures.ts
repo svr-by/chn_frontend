@@ -13,6 +13,12 @@ import type { Product } from '@/api/generated/models/product';
 import type { PurchaseSelection } from '@/api/generated/models/purchaseSelection';
 import type { PurchaseSelectionSummary } from '@/api/generated/models/purchaseSelectionSummary';
 import type { SelectionLine } from '@/api/generated/models/selectionLine';
+import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
+import type { SupplierInvoiceSummary } from '@/api/generated/models/supplierInvoiceSummary';
+import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
+import type { Payment } from '@/api/generated/models/payment';
+import type { PaymentSummary } from '@/api/generated/models/paymentSummary';
+import type { BillableLine } from '@/api/generated/models/billableLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 
@@ -28,6 +34,9 @@ const QUOTE_ID = '00000000-0000-0000-0000-000000000070';
 const QUOTE_LINE_ID = '00000000-0000-0000-0000-000000000071';
 const SELECTION_ID = '00000000-0000-0000-0000-000000000100';
 const SELECTION_LINE_ID = '00000000-0000-0000-0000-000000000101';
+const INVOICE_ID = '00000000-0000-0000-0000-000000000110';
+const INVOICE_LINE_ID = '00000000-0000-0000-0000-000000000111';
+const PAYMENT_ID = '00000000-0000-0000-0000-000000000120';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -488,6 +497,165 @@ export function createPurchaseSelectionSummary(
   };
 }
 
+export function createInvoiceLine(
+  overrides: Partial<InvoiceLine> = {},
+): InvoiceLine {
+  return {
+    id: INVOICE_LINE_ID,
+    lineNumber: 1,
+    lineageId: '00000000-0000-0000-0000-000000000112',
+    quantity: '10',
+    unitPrice: '1.00',
+    lineTotal: '10.00',
+    notes: null,
+    selectionLine: {
+      id: SELECTION_LINE_ID,
+      quantity: '10',
+    },
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      description: 'Bolt M8',
+      quantity: '100',
+      unit: 'pcs',
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createSupplierInvoice(
+  overrides: Partial<SupplierInvoice> = {},
+): SupplierInvoice {
+  return {
+    id: INVOICE_ID,
+    materialRequestId: REQUEST_ID,
+    purchaseSelectionId: SELECTION_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    supplierCompanyId: SUPPLIER_COMPANY_ID,
+    createdByUserId: USER_ID,
+    status: 'DRAFT',
+    currency: 'USD',
+    invoiceNumber: null,
+    notes: null,
+    issuedAt: null,
+    confirmedAt: null,
+    totalAmount: '10.00',
+    confirmedPaidAmount: '0.00',
+    remainingAmount: '10.00',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    lines: [createInvoiceLine()],
+    payments: [],
+    ...overrides,
+  };
+}
+
+export function createSupplierInvoiceSummary(
+  overrides: Partial<SupplierInvoiceSummary> = {},
+): SupplierInvoiceSummary {
+  return {
+    id: INVOICE_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    supplierCompanyId: SUPPLIER_COMPANY_ID,
+    status: 'DRAFT',
+    currency: 'USD',
+    invoiceNumber: null,
+    issuedAt: null,
+    confirmedAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    ...overrides,
+  };
+}
+
+export function createPayment(
+  overrides: Partial<Payment> = {},
+): Payment {
+  return {
+    id: PAYMENT_ID,
+    invoiceId: INVOICE_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    registeredByUserId: USER_ID,
+    confirmedByUserId: null,
+    status: 'PENDING',
+    amount: '10.00',
+    currency: 'USD',
+    fileName: null,
+    rejectionReason: null,
+    notes: null,
+    uploadedAt: null,
+    confirmedAt: null,
+    rejectedAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    invoice: {
+      id: INVOICE_ID,
+      status: 'ISSUED',
+      currency: 'USD',
+      buyerCompanyId: BUYER_COMPANY_ID,
+      supplierCompanyId: SUPPLIER_COMPANY_ID,
+    },
+    ...overrides,
+  };
+}
+
+export function createPaymentSummary(
+  overrides: Partial<PaymentSummary> = {},
+): PaymentSummary {
+  return {
+    id: PAYMENT_ID,
+    invoiceId: INVOICE_ID,
+    status: 'PENDING',
+    amount: '10.00',
+    currency: 'USD',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createBillableLine(
+  overrides: Partial<BillableLine> = {},
+): BillableLine {
+  return {
+    selectionLineId: SELECTION_LINE_ID,
+    lineageId: '00000000-0000-0000-0000-000000000112',
+    quantity: '10',
+    unitPrice: '1.00',
+    lineTotal: '10.00',
+    quoteLine: {
+      id: QUOTE_LINE_ID,
+      quantity: '100',
+      unitPrice: '1.00',
+    },
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      description: 'Bolt M8',
+      quantity: '100',
+      unit: 'pcs',
+    },
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -502,5 +670,9 @@ export {
   QUOTE_LINE_ID,
   SELECTION_ID,
   SELECTION_LINE_ID,
+  INVOICE_ID,
+  INVOICE_LINE_ID,
+  PAYMENT_ID,
   BUYER_COMPANY_ID,
+  SUPPLIER_COMPANY_ID,
 };
