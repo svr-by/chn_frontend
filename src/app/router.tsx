@@ -11,6 +11,10 @@ import { ResetPasswordPage } from '@/features/auth/ResetPasswordPage';
 import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
+import { ProductsPage } from '@/features/products/ProductsPage';
+import { RequestDetailPage } from '@/features/requests/RequestDetailPage';
+import { RequestNewPage } from '@/features/requests/RequestNewPage';
+import { RequestsPage } from '@/features/requests/RequestsPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
 import { PartnersPage } from '@/features/partners/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
@@ -24,9 +28,16 @@ import { RootRedirect } from '@/routes/RootRedirect';
 
 const TEAM_PATH = '/app/settings/team';
 const PARTNERS_PATH = '/app/partners';
+const PRODUCTS_PATH = '/app/products';
+const REQUESTS_PATH = '/app/requests';
 
 const stubRoutes = navConfig
-  .filter((item) => item.path !== TEAM_PATH && item.path !== PARTNERS_PATH)
+  .filter(
+    (item) =>
+      ![TEAM_PATH, PARTNERS_PATH, PRODUCTS_PATH, REQUESTS_PATH].includes(
+        item.path,
+      ),
+  )
   .map((item) => ({
     path: item.path.replace('/app/', ''),
     element: <PlaceholderPage path={item.path} />,
@@ -91,6 +102,10 @@ export const router = createBrowserRouter([
             children: [
               { index: true, element: <AppHomePage /> },
               { path: 'partners', element: <PartnersPage /> },
+              { path: 'products', element: <ProductsPage /> },
+              { path: 'requests', element: <RequestsPage /> },
+              { path: 'requests/new', element: <RequestNewPage /> },
+              { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               ...stubRoutes,
             ],
