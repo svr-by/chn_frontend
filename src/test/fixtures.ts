@@ -19,6 +19,10 @@ import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
 import type { Payment } from '@/api/generated/models/payment';
 import type { PaymentSummary } from '@/api/generated/models/paymentSummary';
 import type { BillableLine } from '@/api/generated/models/billableLine';
+import type { ShippableLine } from '@/api/generated/models/shippableLine';
+import type { ShippingInvoice } from '@/api/generated/models/shippingInvoice';
+import type { ShippingInvoiceSummary } from '@/api/generated/models/shippingInvoiceSummary';
+import type { ShippingLine } from '@/api/generated/models/shippingLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 
@@ -37,6 +41,8 @@ const SELECTION_LINE_ID = '00000000-0000-0000-0000-000000000101';
 const INVOICE_ID = '00000000-0000-0000-0000-000000000110';
 const INVOICE_LINE_ID = '00000000-0000-0000-0000-000000000111';
 const PAYMENT_ID = '00000000-0000-0000-0000-000000000120';
+const SHIPPING_INVOICE_ID = '00000000-0000-0000-0000-000000000130';
+const SHIPPING_LINE_ID = '00000000-0000-0000-0000-000000000131';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -656,6 +662,126 @@ export function createBillableLine(
   };
 }
 
+export function createShippableLine(
+  overrides: Partial<ShippableLine> = {},
+): ShippableLine {
+  return {
+    invoiceLineId: INVOICE_LINE_ID,
+    lineNumber: 1,
+    lineageId: '00000000-0000-0000-0000-000000000112',
+    invoiceQuantity: '10',
+    shippedQuantity: '0',
+    remainingQuantity: '10',
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      description: 'Bolt M8',
+      quantity: '100',
+      unit: 'pcs',
+    },
+    ...overrides,
+  };
+}
+
+export function createShippingLine(
+  overrides: Partial<ShippingLine> = {},
+): ShippingLine {
+  return {
+    id: SHIPPING_LINE_ID,
+    lineNumber: 1,
+    lineageId: '00000000-0000-0000-0000-000000000112',
+    quantity: '10',
+    notes: null,
+    invoiceLine: {
+      id: INVOICE_LINE_ID,
+      quantity: '10',
+      unitPrice: '1.00',
+      lineTotal: '10.00',
+    },
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      description: 'Bolt M8',
+      quantity: '100',
+      unit: 'pcs',
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createShippingInvoice(
+  overrides: Partial<ShippingInvoice> = {},
+): ShippingInvoice {
+  return {
+    id: SHIPPING_INVOICE_ID,
+    supplierInvoiceId: INVOICE_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    supplierCompanyId: SUPPLIER_COMPANY_ID,
+    managedByCompanyId: SUPPLIER_COMPANY_ID,
+    createdByUserId: USER_ID,
+    status: 'DRAFT',
+    trackingNumber: null,
+    carrier: null,
+    notes: null,
+    issuedAt: null,
+    inTransitAt: null,
+    deliveredAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    managedByCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    supplierInvoice: {
+      id: INVOICE_ID,
+      status: 'ISSUED',
+      invoiceNumber: 'INV-001',
+    },
+    lines: [createShippingLine()],
+    ...overrides,
+  };
+}
+
+export function createShippingInvoiceSummary(
+  overrides: Partial<ShippingInvoiceSummary> = {},
+): ShippingInvoiceSummary {
+  return {
+    id: SHIPPING_INVOICE_ID,
+    status: 'DRAFT',
+    supplierInvoiceId: INVOICE_ID,
+    materialRequestId: REQUEST_ID,
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    supplierCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    managedByCompany: {
+      id: SUPPLIER_COMPANY_ID,
+      name: 'Supplier A',
+    },
+    trackingNumber: null,
+    carrier: null,
+    lineCount: 1,
+    issuedAt: null,
+    inTransitAt: null,
+    deliveredAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -673,6 +799,8 @@ export {
   INVOICE_ID,
   INVOICE_LINE_ID,
   PAYMENT_ID,
+  SHIPPING_INVOICE_ID,
+  SHIPPING_LINE_ID,
   BUYER_COMPANY_ID,
   SUPPLIER_COMPANY_ID,
 };

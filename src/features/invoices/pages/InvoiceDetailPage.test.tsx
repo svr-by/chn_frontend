@@ -29,6 +29,7 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
 
 vi.mock('@/api/endpoints/invoicesApi', () => ({
   useGetInvoiceQuery: vi.fn(),
+  useLazyGetShippableLinesQuery: vi.fn(() => [vi.fn(), { isLoading: false }]),
   useUpdateInvoiceMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
@@ -57,6 +58,13 @@ vi.mock('@/api/endpoints/invoicesApi', () => ({
 
 vi.mock('@/api/endpoints/paymentsApi', () => ({
   useRegisterPaymentMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
+}));
+
+vi.mock('@/api/endpoints/shippingInvoicesApi', () => ({
+  useCreateShippingInvoiceMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
