@@ -1,5 +1,6 @@
 import type { GetAuthMe200User } from '@/api/generated/models/getAuthMe200User';
 import type { GetAuthMe200UserMembershipsItem } from '@/api/generated/models/getAuthMe200UserMembershipsItem';
+import type { ImportJob } from '@/api/generated/models/importJob';
 import type { MaterialRequest } from '@/api/generated/models/materialRequest';
 import type { MaterialRequestSummary } from '@/api/generated/models/materialRequestSummary';
 import type { PartnerCompany } from '@/api/generated/models/partnerCompany';
@@ -15,6 +16,71 @@ const PARTNER_LINK_ID = '00000000-0000-0000-0000-000000000031';
 const PRODUCT_ID = '00000000-0000-0000-0000-000000000040';
 const REQUEST_ID = '00000000-0000-0000-0000-000000000050';
 const REQUEST_LINE_ID = '00000000-0000-0000-0000-000000000051';
+const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
+
+export function createImportPreview(
+  overrides: Partial<{
+    validRowCount: number;
+    invalidRowCount: number;
+  }> = {},
+) {
+  const validRowCount = overrides.validRowCount ?? 1;
+  const invalidRowCount = overrides.invalidRowCount ?? 1;
+
+  return {
+    preview: {
+      validRowCount,
+      invalidRowCount,
+      rows: [
+        {
+          rowNumber: 1,
+          data: { description: 'Office paper', quantity: '10.5' },
+          errors: [],
+          parsed: {
+            description: 'Office paper',
+            quantity: '10.5',
+            unit: 'pack',
+            sku: 'PAPER-A4',
+            productId: PRODUCT_ID,
+            notes: null,
+          },
+        },
+        {
+          rowNumber: 2,
+          data: { description: 'Pens', quantity: '' },
+          errors: ['Quantity is required'],
+          parsed: undefined,
+        },
+      ],
+    },
+    columnMapping: {
+      description: 'description',
+      quantity: 'quantity',
+      unit: 'unit',
+      sku: 'sku',
+    },
+  };
+}
+
+export function createImportJob(overrides: Partial<ImportJob> = {}): ImportJob {
+  return {
+    id: IMPORT_JOB_ID,
+    companyId: COMPANY_ID,
+    createdByUserId: USER_ID,
+    type: 'REQUEST_LINES',
+    status: 'PREVIEW_READY',
+    fileName: 'lines.csv',
+    fieldDelimiter: ',',
+    decimalSeparator: '.',
+    requestTitle: 'Imported request',
+    preview: createImportPreview().preview,
+    materialRequestId: null,
+    errorMessage: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
 
 export function createProduct(overrides: Partial<Product> = {}): Product {
   return {
@@ -163,4 +229,5 @@ export {
   PRODUCT_ID,
   REQUEST_ID,
   REQUEST_LINE_ID,
+  IMPORT_JOB_ID,
 };
