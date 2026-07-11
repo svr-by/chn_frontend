@@ -5,6 +5,7 @@ import type {
   GetCompaniesCompanyIdRequestsInboundParams,
   GetCompaniesCompanyIdRequestsParams,
   GetCompaniesCompanyIdRequestsRequestId200,
+  GetCompaniesCompanyIdRequestsRequestIdBillableLines200,
   GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
   GetCompaniesCompanyIdRequestsRequestIdSelection200,
   PatchCompaniesCompanyIdRequestsRequestId200,
@@ -189,6 +190,17 @@ export const requestsApi = baseApi.injectEndpoints({
         { type: 'Selections', id: requestId },
       ],
     }),
+    getBillableLines: builder.query<
+      GetCompaniesCompanyIdRequestsRequestIdBillableLines200,
+      { companyId: string; requestId: string }
+    >({
+      query: ({ companyId, requestId }) => ({
+        url: `/companies/${companyId}/requests/${requestId}/billable-lines`,
+      }),
+      providesTags: (_result, _error, { requestId }) => [
+        { type: 'Invoices', id: `billable-${requestId}` },
+      ],
+    }),
   }),
 });
 
@@ -206,4 +218,6 @@ export const {
   useGetQuoteComparisonQuery,
   useGetRequestSelectionQuery,
   useLazyGetRequestSelectionQuery,
+  useGetBillableLinesQuery,
+  useLazyGetBillableLinesQuery,
 } = requestsApi;

@@ -9,6 +9,13 @@ interface FileUploadZoneProps {
   file: File | null;
   onFileChange: (file: File | null) => void;
   disabled?: boolean;
+  translationNamespace?: string;
+  hintKey?: string;
+  dropIdleKey?: string;
+  dropActiveKey?: string;
+  browseKey?: string;
+  selectedKey?: string;
+  clearKey?: string;
 }
 
 const DEFAULT_ACCEPT: Accept = {
@@ -21,8 +28,15 @@ export function FileUploadZone({
   file,
   onFileChange,
   disabled = false,
+  translationNamespace = 'imports',
+  hintKey = 'upload.hint',
+  dropIdleKey = 'upload.dropIdle',
+  dropActiveKey = 'upload.dropActive',
+  browseKey = 'upload.browse',
+  selectedKey = 'upload.selected',
+  clearKey = 'upload.clear',
 }: FileUploadZoneProps) {
-  const { t } = useTranslation('imports');
+  const { t } = useTranslation(translationNamespace);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -59,26 +73,26 @@ export function FileUploadZone({
         <input {...getInputProps()} />
         <CloudUploadIcon color="action" sx={{ fontSize: 40, mb: 1 }} />
         <Typography variant="body1" gutterBottom>
-          {isDragActive ? t('upload.dropActive') : t('upload.dropIdle')}
+          {isDragActive ? t(dropActiveKey) : t(dropIdleKey)}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {t('upload.hint')}
+          {t(hintKey)}
         </Typography>
         <Button variant="outlined" onClick={open} disabled={disabled}>
-          {t('upload.browse')}
+          {t(browseKey)}
         </Button>
       </Box>
       {file ? (
         <Stack direction="row" spacing={1} alignItems="center">
           <Typography variant="body2">
-            {t('upload.selected', { name: file.name })}
+            {t(selectedKey, { name: file.name })}
           </Typography>
           <Button
             size="small"
             onClick={() => onFileChange(null)}
             disabled={disabled}
           >
-            {t('upload.clear')}
+            {t(clearKey)}
           </Button>
         </Stack>
       ) : null}

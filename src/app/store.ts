@@ -10,6 +10,8 @@ import '@/api/endpoints/requestsApi';
 import '@/api/endpoints/importsApi';
 import '@/api/endpoints/quotesApi';
 import '@/api/endpoints/selectionsApi';
+import '@/api/endpoints/invoicesApi';
+import '@/api/endpoints/paymentsApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 export const store = configureStore({

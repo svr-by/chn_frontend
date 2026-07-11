@@ -19,6 +19,10 @@ import { QuoteDetailPage } from '@/features/quotes/pages/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/QuotesPage';
 import { SelectionDetailPage } from '@/features/selections/pages/SelectionDetailPage';
 import { SelectionsPage } from '@/features/selections/pages/SelectionsPage';
+import { InvoicesPage } from '@/features/invoices/pages/InvoicesPage';
+import { InvoiceDetailPage } from '@/features/invoices/pages/InvoiceDetailPage';
+import { PaymentsPage } from '@/features/payments/pages/PaymentsPage';
+import { PaymentDetailPage } from '@/features/payments/pages/PaymentDetailPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
@@ -41,6 +45,8 @@ const REQUESTS_PATH = '/app/requests';
 
 const QUOTES_PATH = '/app/quotes';
 const SELECTIONS_PATH = '/app/selections';
+const INVOICES_PATH = '/app/invoices';
+const PAYMENTS_PATH = '/app/payments';
 
 const stubRoutes = navConfig
   .filter(
@@ -52,6 +58,8 @@ const stubRoutes = navConfig
         REQUESTS_PATH,
         QUOTES_PATH,
         SELECTIONS_PATH,
+        INVOICES_PATH,
+        PAYMENTS_PATH,
       ].includes(item.path),
   )
   .map((item) => ({
@@ -132,6 +140,10 @@ export const router = createBrowserRouter([
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
               { path: 'selections', element: <SelectionsPage /> },
               { path: 'selections/:selectionId', element: <SelectionDetailPage /> },
+              { path: 'invoices', element: <InvoicesPage /> },
+              { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
+              { path: 'payments', element: <PaymentsPage /> },
+              { path: 'payments/:paymentId', element: <PaymentDetailPage /> },
               { path: 'trace/:lineageId', element: <PlaceholderPage path="/app/trace" /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },
