@@ -6,6 +6,7 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Stack,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,7 @@ import { useSubmitRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestDistributeDialog } from '@/features/requests/components/RequestDistributeDialog';
+import { useOpenRequestSelection } from '@/features/selections/hooks/useOpenRequestSelection';
 import type { MaterialRequestStatus } from '@/types/api';
 
 interface RequestStatusActionsProps {
@@ -34,6 +36,8 @@ export function RequestStatusActions({
   const [distributeOpen, setDistributeOpen] = useState(false);
 
   const [submitRequest, submitState] = useSubmitRequestMutation();
+  const { openRequestSelection, isOpening, error: openSelectionError } =
+    useOpenRequestSelection();
 
   if (status === 'DRAFT') {
     return (
@@ -90,15 +94,27 @@ export function RequestStatusActions({
 
   if (status === 'QUOTING' || status === 'PARTIALLY_ORDERED') {
     return (
-      <PermissionGate permission="viewRequests">
-        <Button
-          variant="outlined"
-          component={RouterLink}
-          to={`/app/requests/${requestId}/compare`}
-        >
-          {t('actions.compare')}
-        </Button>
-      </PermissionGate>
+      <Stack direction="row" spacing={1}>
+        <PermissionGate permission="viewRequests">
+          <Button
+            variant="outlined"
+            component={RouterLink}
+            to={`/app/requests/${requestId}/compare`}
+          >
+            {t('actions.compare')}
+          </Button>
+        </PermissionGate>
+        <PermissionGate permission="manageSelections">
+          <Button
+            variant="contained"
+            onClick={() => openRequestSelection(requestId)}
+            disabled={isOpening}
+          >
+            {t('actions.manageSelection')}
+          </Button>
+        </PermissionGate>
+        <ApiErrorAlert error={openSelectionError} />
+      </Stack>
     );
   }
 

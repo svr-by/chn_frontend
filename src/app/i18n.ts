@@ -205,6 +205,12 @@ void i18n.use(initReactI18next).init({
         IMPORT_JOB_NOT_FOUND: 'Import job not found.',
         IMPORT_JOB_NOT_CONFIRMABLE: 'This import job cannot be confirmed.',
         IMPORT_NO_VALID_ROWS: 'No valid rows to import.',
+        SELECTION_NOT_DRAFT: 'This selection is no longer a draft.',
+        SELECTION_ALREADY_EXISTS: 'A selection already exists for this request.',
+        QUOTE_LINE_NOT_SELECTABLE: 'This quote line cannot be selected.',
+        SELECTION_QUANTITY_EXCEEDS_QUOTE:
+          'Selected quantity exceeds the quoted quantity.',
+        SELECTION_HAS_NO_LINES: 'Add at least one line before confirming.',
       },
       enums: {
         materialRequestStatus: {
@@ -222,6 +228,11 @@ void i18n.use(initReactI18next).init({
           accepted: 'Accepted',
           rejected: 'Rejected',
           expired: 'Expired',
+        },
+        purchaseSelectionStatus: {
+          draft: 'Draft',
+          confirmed: 'Confirmed',
+          cancelled: 'Cancelled',
         },
       },
       products: {
@@ -298,6 +309,7 @@ void i18n.use(initReactI18next).init({
           inbound: 'Inbound requests',
           distribute: 'Distribute',
           compare: 'Compare quotes',
+          manageSelection: 'Manage selection',
           create: 'Create request',
           submit: 'Submit',
           addLine: 'Add line',
@@ -348,6 +360,7 @@ void i18n.use(initReactI18next).init({
           reference: 'Reference: {{reference}}',
           createdAt: 'Created {{date}}',
           submittedAt: 'Submitted {{date}}',
+          selection: 'Selection',
         },
         toast: {
           created: 'Request created',
@@ -481,6 +494,89 @@ void i18n.use(initReactI18next).init({
           notFound: 'Quote not found',
         },
       },
+      selections: {
+        title: 'Selections',
+        subtitle: 'Choose quote lines and quantities to order from suppliers.',
+        linesTitle: 'Lines',
+        columns: {
+          request: 'Request',
+          status: 'Status',
+          confirmedAt: 'Confirmed',
+          createdAt: 'Created',
+          lineNumber: '#',
+          requestLine: 'Request line',
+          supplier: 'Supplier',
+          quoteQuantity: 'Quote qty',
+          unitPrice: 'Unit price',
+          selectedQuantity: 'Selected qty',
+          currency: 'Currency',
+          lineage: 'Trace',
+          notes: 'Notes',
+          actions: 'Actions',
+        },
+        actions: {
+          confirm: 'Confirm selection',
+          cancel: 'Cancel selection',
+          openSelection: 'Open selection',
+          addLine: 'Add line',
+          editLine: 'Edit',
+          deleteLine: 'Delete',
+          save: 'Save',
+          saveHeader: 'Save notes',
+          dismiss: 'Dismiss',
+          backToList: 'Back to selections',
+        },
+        statusFilter: {
+          label: 'Status',
+          all: 'All statuses',
+          draft: 'Draft',
+          confirmed: 'Confirmed',
+          cancelled: 'Cancelled',
+        },
+        empty: {
+          list: 'No selections found.',
+          lines: 'No lines yet. Add a line to continue.',
+          selectableOffers: 'No quote lines available to select.',
+        },
+        form: {
+          notes: 'Notes',
+          requestLine: 'Request line',
+          supplier: 'Supplier',
+          maxQuantity: 'Max quantity',
+          quantity: 'Quantity',
+          offer: 'Quote offer',
+          offerOption:
+            '{{description}} — {{supplier}} @ {{price}} {{currency}} (max {{max}})',
+          addLineTitle: 'Add line',
+          editLineTitle: 'Edit line',
+        },
+        confirm: {
+          confirmTitle: 'Confirm selection',
+          confirmMessage:
+            'Confirm this selection? Quote and request statuses will update.',
+          cancelTitle: 'Cancel selection',
+          cancelMessage: 'Cancel this draft selection?',
+          deleteLineTitle: 'Delete line',
+          deleteLineMessage: 'Remove this line from the selection?',
+        },
+        detail: {
+          fallbackTitle: 'Selection {{id}}',
+          request: 'Request',
+          confirmedAt: 'Confirmed {{date}}',
+          cancelledAt: 'Cancelled {{date}}',
+          invoices: 'Invoices',
+          viewInvoices: 'View invoices',
+        },
+        toast: {
+          updated: 'Selection updated',
+          confirmed: 'Selection confirmed',
+          cancelled: 'Selection cancelled',
+          lineAdded: 'Line added',
+          lineUpdated: 'Line updated',
+          lineDeleted: 'Line deleted',
+          notFound: 'Selection not found',
+        },
+      },
       imports: {
         title: 'Import request from CSV',
         subtitle:
@@ -545,7 +641,7 @@ void i18n.use(initReactI18next).init({
     },
   },
   defaultNS: 'common',
-  ns: ['common', 'auth', 'nav', 'errors', 'team', 'profile', 'partners', 'products', 'requests', 'imports', 'quotes', 'enums'],
+  ns: ['common', 'auth', 'nav', 'errors', 'team', 'profile', 'partners', 'products', 'requests', 'imports', 'quotes', 'selections', 'enums'],
 });
 
 export default i18n;

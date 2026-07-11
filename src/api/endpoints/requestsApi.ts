@@ -6,6 +6,7 @@ import type {
   GetCompaniesCompanyIdRequestsParams,
   GetCompaniesCompanyIdRequestsRequestId200,
   GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
+  GetCompaniesCompanyIdRequestsRequestIdSelection200,
   PatchCompaniesCompanyIdRequestsRequestId200,
   PatchCompaniesCompanyIdRequestsRequestIdBody,
   PatchCompaniesCompanyIdRequestsRequestIdLinesLineId200,
@@ -177,6 +178,17 @@ export const requestsApi = baseApi.injectEndpoints({
         { type: 'Requests', id: `${requestId}-comparison` },
       ],
     }),
+    getRequestSelection: builder.query<
+      GetCompaniesCompanyIdRequestsRequestIdSelection200,
+      { companyId: string; requestId: string }
+    >({
+      query: ({ companyId, requestId }) => ({
+        url: `/companies/${companyId}/requests/${requestId}/selection`,
+      }),
+      providesTags: (_result, _error, { requestId }) => [
+        { type: 'Selections', id: requestId },
+      ],
+    }),
   }),
 });
 
@@ -192,4 +204,6 @@ export const {
   useListInboundRequestsQuery,
   useDistributeRequestMutation,
   useGetQuoteComparisonQuery,
+  useGetRequestSelectionQuery,
+  useLazyGetRequestSelectionQuery,
 } = requestsApi;

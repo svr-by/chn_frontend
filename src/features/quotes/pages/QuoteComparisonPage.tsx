@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack, Typography } from '@mui/material';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -17,6 +17,8 @@ import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
+import { PermissionGate } from '@/components/PermissionGate';
+import { useOpenRequestSelection } from '@/features/selections/hooks/useOpenRequestSelection';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 type ComparisonRow = QuoteComparisonLine & {
@@ -33,9 +35,11 @@ function findOffer(
 }
 
 export function QuoteComparisonPage() {
-  const { t } = useTranslation('quotes');
+  const { t } = useTranslation(['quotes', 'selections']);
   const { requestId } = useParams<{ requestId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const { openRequestSelection, isOpening, error: openSelectionError } =
+    useOpenRequestSelection();
 
   const comparisonQuery = useGetQuoteComparisonQuery(
     { companyId: companyId ?? '', requestId: requestId ?? '' },
@@ -174,9 +178,23 @@ export function QuoteComparisonPage() {
       backLabel={t('comparison.backToRequest')}
       loading={comparisonQuery.isLoading}
       error={comparisonQuery.error}
+      actions={
+        requestId ? (
+          <PermissionGate permission="manageSelections">
+            <Button
+              variant="contained"
+              onClick={() => openRequestSelection(requestId)}
+              disabled={isOpening}
+            >
+              {t('selections:actions.openSelection')}
+            </Button>
+          </PermissionGate>
+        ) : null
+      }
     >
       <Stack spacing={2}>
         <ApiErrorAlert error={comparisonQuery.error} />
+        <ApiErrorAlert error={openSelectionError} />
 
         {suppliers.length === 0 ? (
           <Typography color="text.secondary">

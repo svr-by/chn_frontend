@@ -17,6 +17,8 @@ import { InboundRequestsPage } from '@/features/requests/pages/InboundRequestsPa
 import { QuoteComparisonPage } from '@/features/quotes/pages/QuoteComparisonPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/QuotesPage';
+import { SelectionDetailPage } from '@/features/selections/pages/SelectionDetailPage';
+import { SelectionsPage } from '@/features/selections/pages/SelectionsPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
@@ -38,6 +40,7 @@ const PRODUCTS_PATH = '/app/products';
 const REQUESTS_PATH = '/app/requests';
 
 const QUOTES_PATH = '/app/quotes';
+const SELECTIONS_PATH = '/app/selections';
 
 const stubRoutes = navConfig
   .filter(
@@ -48,6 +51,7 @@ const stubRoutes = navConfig
         PRODUCTS_PATH,
         REQUESTS_PATH,
         QUOTES_PATH,
+        SELECTIONS_PATH,
       ].includes(item.path),
   )
   .map((item) => ({
@@ -126,6 +130,8 @@ export const router = createBrowserRouter([
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'quotes', element: <QuotesPage /> },
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
+              { path: 'selections', element: <SelectionsPage /> },
+              { path: 'selections/:selectionId', element: <SelectionDetailPage /> },
               { path: 'trace/:lineageId', element: <PlaceholderPage path="/app/trace" /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },

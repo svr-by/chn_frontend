@@ -14,6 +14,10 @@ export function parseDecimal(value: string): Decimal {
   return new Decimal(value.trim());
 }
 
+export function isDecimalLte(a: string, b: string): boolean {
+  return parseDecimal(a).lte(parseDecimal(b));
+}
+
 export interface FormatDecimalOptions {
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;

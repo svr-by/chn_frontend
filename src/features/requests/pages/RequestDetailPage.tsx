@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Typography } from '@mui/material';
+import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
+import { Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
+import {
+  useGetRequestQuery,
+  useGetRequestSelectionQuery,
+} from '@/api/endpoints/requestsApi';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
+import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { RequestHeaderForm } from '@/features/requests/components/RequestHeaderForm';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
@@ -26,7 +30,13 @@ export function RequestDetailPage() {
     { skip: !companyId || !requestId },
   );
 
+  const selectionQuery = useGetRequestSelectionQuery(
+    { companyId: companyId ?? '', requestId: requestId ?? '' },
+    { skip: !companyId || !requestId },
+  );
+
   const request = requestQuery.data?.request;
+  const selection = selectionQuery.data?.selection;
   const isDraft = request?.status === 'DRAFT';
   const canEdit = isDraft && hasPermission('manageRequests');
 
@@ -85,6 +95,18 @@ export function RequestDetailPage() {
                 {t('detail.submittedAt', {
                   date: new Date(request.submittedAt).toLocaleString(),
                 })}
+              </Typography>
+            ) : null}
+            {selection ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.selection')}:{' '}
+                <Link
+                  component={RouterLink}
+                  to={`/app/selections/${selection.id}`}
+                  underline="hover"
+                >
+                  <SelectionStatusBadge status={selection.status} />
+                </Link>
               </Typography>
             ) : null}
           </Stack>
