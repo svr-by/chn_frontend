@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Link, Stack, Typography } from '@mui/material';
+import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -11,6 +11,8 @@ import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { ShippingInvoiceHeaderForm } from '@/features/shipping/components/ShippingInvoiceHeaderForm';
 import { ShippingInvoiceLinesTable } from '@/features/shipping/components/ShippingInvoiceLinesTable';
 import { ShippingStatusActions } from '@/features/shipping/components/ShippingStatusActions';
+import { useCreateConsolidationFromShippingInvoice } from '@/features/consolidations/hooks/useCreateConsolidationFromShippingInvoice';
+import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -21,6 +23,8 @@ export function ShippingInvoiceDetailPage() {
   const { shippingInvoiceId } = useParams<{ shippingInvoiceId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const { hasPermission } = usePermissions();
+  const { createConsolidationFromShippingInvoice, isCreating } =
+    useCreateConsolidationFromShippingInvoice();
 
   const shippingQuery = useGetShippingInvoiceQuery(
     { companyId: companyId ?? '', shippingInvoiceId: shippingInvoiceId ?? '' },
@@ -31,6 +35,10 @@ export function ShippingInvoiceDetailPage() {
   const supplierInvoiceId = shippingInvoice?.supplierInvoiceId;
   const isDraft = shippingInvoice?.status === 'DRAFT';
   const canEdit = isDraft && hasPermission('manageShippingInvoices');
+  const canCreateConsolidation =
+    shippingInvoice?.status === 'DELIVERED' &&
+    hasPermission('manageConsolidations');
+  const showConsolidationsLink = shippingInvoice?.status === 'DELIVERED';
 
   const shippableQuery = useGetShippableLinesQuery(
     { companyId: companyId ?? '', invoiceId: supplierInvoiceId ?? '' },
@@ -76,12 +84,27 @@ export function ShippingInvoiceDetailPage() {
       error={shippingQuery.error}
       actions={
         shippingInvoice ? (
-          <ShippingStatusActions
-            companyId={companyId}
-            shippingInvoiceId={shippingInvoice.id}
-            supplierInvoiceId={shippingInvoice.supplierInvoiceId}
-            status={shippingInvoice.status}
-          />
+          <Stack direction="row" spacing={1}>
+            <ShippingStatusActions
+              companyId={companyId}
+              shippingInvoiceId={shippingInvoice.id}
+              supplierInvoiceId={shippingInvoice.supplierInvoiceId}
+              status={shippingInvoice.status}
+            />
+            {canCreateConsolidation ? (
+              <PermissionGate permission="manageConsolidations">
+                <Button
+                  variant="outlined"
+                  onClick={() =>
+                    createConsolidationFromShippingInvoice(shippingInvoice.id)
+                  }
+                  disabled={isCreating}
+                >
+                  {t('actions.createConsolidation')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </Stack>
         ) : null
       }
       meta={
@@ -148,6 +171,18 @@ export function ShippingInvoiceDetailPage() {
                 {t('detail.deliveredAt', {
                   date: new Date(shippingInvoice.deliveredAt).toLocaleString(),
                 })}
+              </Typography>
+            ) : null}
+            {showConsolidationsLink ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.consolidations')}:{' '}
+                <Link
+                  component={RouterLink}
+                  to="/app/consolidations"
+                  underline="hover"
+                >
+                  {t('detail.viewConsolidations')}
+                </Link>
               </Typography>
             ) : null}
           </Stack>

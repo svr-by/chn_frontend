@@ -224,6 +224,11 @@ void i18n.use(initReactI18next).init({
           'Shipping line quantity exceeds the remaining amount.',
         NO_SHIPPABLE_LINES: 'No shippable lines available for this invoice.',
         INVOICE_NOT_ISSUED: 'The invoice must be issued before shipping.',
+        CONSOLIDATION_NOT_DRAFT: 'This consolidation is no longer a draft.',
+        SHIPPING_INVOICE_NOT_CONSOLIDATABLE:
+          'This shipping invoice is not eligible for consolidation.',
+        CONSOLIDATION_HAS_NO_SHIPPING_INVOICES:
+          'Add at least one shipping invoice before planning.',
       },
       enums: {
         materialRequestStatus: {
@@ -265,6 +270,19 @@ void i18n.use(initReactI18next).init({
           issued: 'Issued',
           in_transit: 'In transit',
           delivered: 'Delivered',
+        },
+        consolidationStatus: {
+          draft: 'Draft',
+          planned: 'Planned',
+          in_transit: 'In transit',
+          customs: 'Customs',
+          delivered: 'Delivered',
+        },
+        transportMode: {
+          road: 'Road',
+          air: 'Air',
+          rail: 'Rail',
+          sea: 'Sea',
         },
       },
       products: {
@@ -829,6 +847,7 @@ void i18n.use(initReactI18next).init({
           issue: 'Issue shipping invoice',
           markInTransit: 'Mark in transit',
           markDelivered: 'Mark delivered',
+          createConsolidation: 'Create consolidation',
           addLine: 'Add line',
           editLine: 'Edit',
           deleteLine: 'Delete',
@@ -899,6 +918,8 @@ void i18n.use(initReactI18next).init({
           issuedAt: 'Issued {{date}}',
           inTransitAt: 'In transit {{date}}',
           deliveredAt: 'Delivered {{date}}',
+          consolidations: 'Consolidations',
+          viewConsolidations: 'View consolidations',
         },
         toast: {
           updated: 'Shipping invoice updated',
@@ -910,6 +931,114 @@ void i18n.use(initReactI18next).init({
           lineDeleted: 'Line deleted',
           notFound: 'Shipping invoice not found',
           noShippableLines: 'No shippable lines available for this invoice.',
+        },
+      },
+      consolidations: {
+        title: 'Consolidations',
+        subtitle: 'Group delivered shipping invoices for transport tracking.',
+        shippingInvoicesTitle: 'Shipping invoices',
+        columns: {
+          buyer: 'Buyer',
+          supplier: 'Supplier',
+          shippingInvoice: 'Shipping invoice',
+          status: 'Status',
+          transportMode: 'Transport mode',
+          trackingNumber: 'Tracking #',
+          carrier: 'Carrier',
+          origin: 'Origin',
+          destination: 'Destination',
+          shippingInvoiceCount: 'Shipments',
+          plannedAt: 'Planned',
+          deliveredAt: 'Delivered',
+          lineNumber: '#',
+          notes: 'Notes',
+          actions: 'Actions',
+        },
+        actions: {
+          create: 'Create consolidation',
+          plan: 'Plan consolidation',
+          markInTransit: 'Mark in transit',
+          markCustoms: 'Mark at customs',
+          markDelivered: 'Mark delivered',
+          addShippingInvoice: 'Add shipping invoice',
+          removeShippingInvoice: 'Remove',
+          saveHeader: 'Save details',
+          dismiss: 'Dismiss',
+          backToList: 'Back to consolidations',
+        },
+        statusFilter: {
+          label: 'Status',
+          all: 'All statuses',
+          draft: 'Draft',
+          planned: 'Planned',
+          in_transit: 'In transit',
+          customs: 'Customs',
+          delivered: 'Delivered',
+        },
+        empty: {
+          list: 'No consolidations found.',
+          shippingInvoices:
+            'No shipping invoices yet. Add a delivered shipment to continue.',
+        },
+        form: {
+          transportMode: 'Transport mode',
+          transportModeNone: 'Not specified',
+          carrier: 'Carrier',
+          trackingNumber: 'Tracking number',
+          origin: 'Origin',
+          destination: 'Destination',
+          notes: 'Notes',
+        },
+        create: {
+          title: 'Create consolidation',
+          shippingInvoices: 'Shipping invoices',
+          shippingInvoiceFallback: 'Shipment {{id}}',
+          shippingInvoiceOption:
+            '{{id}} — {{supplier}} (tracking: {{tracking}})',
+        },
+        addShippingInvoice: {
+          title: 'Add shipping invoice',
+          shippingInvoice: 'Shipping invoice',
+        },
+        confirm: {
+          planTitle: 'Plan consolidation',
+          planMessage:
+            'Plan this consolidation? Shipping invoices will no longer be editable.',
+          inTransitTitle: 'Mark in transit',
+          inTransitMessage: 'Mark this consolidation as in transit?',
+          customsTitle: 'Mark at customs',
+          customsMessage: 'Mark this consolidation as at customs?',
+          deliveredTitle: 'Mark delivered',
+          deliveredMessage: 'Mark this consolidation as delivered?',
+          removeShippingInvoiceTitle: 'Remove shipping invoice',
+          removeShippingInvoiceMessage:
+            'Remove this shipping invoice from the consolidation?',
+        },
+        detail: {
+          fallbackTitle: 'Consolidation {{id}}',
+          buyer: 'Buyer: {{name}}',
+          transportMode: 'Transport: {{value}}',
+          carrier: 'Carrier: {{value}}',
+          trackingNumber: 'Tracking: {{value}}',
+          origin: 'Origin: {{value}}',
+          destination: 'Destination: {{value}}',
+          plannedAt: 'Planned {{date}}',
+          inTransitAt: 'In transit {{date}}',
+          customsAt: 'Customs {{date}}',
+          deliveredAt: 'Delivered {{date}}',
+        },
+        toast: {
+          updated: 'Consolidation updated',
+          planned: 'Consolidation planned',
+          inTransit: 'Consolidation marked in transit',
+          customs: 'Consolidation marked at customs',
+          delivered: 'Consolidation marked delivered',
+          shippingInvoiceRemoved: 'Shipping invoice removed',
+          notFound: 'Consolidation not found',
+          noConsolidatable:
+            'No delivered shipping invoices available for consolidation.',
+          notConsolidatable:
+            'This shipping invoice is not eligible for consolidation.',
         },
       },
       imports: {
@@ -976,7 +1105,7 @@ void i18n.use(initReactI18next).init({
     },
   },
   defaultNS: 'common',
-  ns: ['common', 'auth', 'nav', 'errors', 'team', 'profile', 'partners', 'products', 'requests', 'imports', 'quotes', 'selections', 'invoices', 'payments', 'shipping', 'enums'],
+  ns: ['common', 'auth', 'nav', 'errors', 'team', 'profile', 'partners', 'products', 'requests', 'imports', 'quotes', 'selections', 'invoices', 'payments', 'shipping', 'consolidations', 'enums'],
 });
 
 export default i18n;
