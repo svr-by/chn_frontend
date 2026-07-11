@@ -7,6 +7,7 @@ import '@/api/endpoints/membersApi';
 import '@/api/endpoints/partnersApi';
 import '@/api/endpoints/productsApi';
 import '@/api/endpoints/requestsApi';
+import '@/api/endpoints/importsApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 export const store = configureStore({

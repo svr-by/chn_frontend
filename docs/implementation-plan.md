@@ -26,9 +26,10 @@ Each phase ends with a working, testable UI slice.
 |-------|------|--------|
 | 0 | Foundation | **Done** |
 | 1 | Identity & shell | **Done** |
-| 2 | Partner network | Not started (placeholder route) |
-| 3 | Products & requests | Not started |
-| 4–13 | See below | Not started |
+| 2 | Partner network | **Done** |
+| 3 | Products & requests | **Done** |
+| 4 | CSV request import | **Done** |
+| 5–13 | See below | Not started |
 
 ---
 

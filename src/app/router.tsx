@@ -13,6 +13,7 @@ import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/RequestDetailPage';
+import { RequestImportPage } from '@/features/imports/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/RequestNewPage';
 import { RequestsPage } from '@/features/requests/RequestsPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
@@ -104,6 +105,7 @@ export const router = createBrowserRouter([
               { path: 'partners', element: <PartnersPage /> },
               { path: 'products', element: <ProductsPage /> },
               { path: 'requests', element: <RequestsPage /> },
+              { path: 'requests/import', element: <RequestImportPage /> },
               { path: 'requests/new', element: <RequestNewPage /> },
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },

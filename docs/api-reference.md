@@ -240,6 +240,8 @@ Paths below omit the `/api/v1` prefix unless noted.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `POST` | `/companies/{companyId}/imports/request-lines` | 🏢 | Upload CSV; returns import job (`202`) |
+| `POST` | `/companies/{companyId}/imports/request-lines/csv/preview` | 🏢 | Parse CSV in memory; returns import preview (`200`) |
+| `POST` | `/companies/{companyId}/imports/request-lines/htm/preview` | 🏢 | Parse 1C HTM in memory; returns import preview (`200`, preview only) |
 | `GET` | `/companies/{companyId}/imports/{jobId}` | 🏢 | Get import job status and preview |
 | `POST` | `/companies/{companyId}/imports/{jobId}/confirm` | 🏢 | Create request from valid rows |
 

@@ -185,6 +185,14 @@ void i18n.use(initReactI18next).init({
         REQUEST_NOT_DRAFT: 'This request is no longer a draft.',
         REQUEST_HAS_NO_LINES: 'Add at least one line before submitting.',
         PRODUCT_NOT_FOUND: 'Product not found.',
+        UPLOAD_FILE_REQUIRED: 'Please select a file to upload.',
+        UPLOAD_FILE_TOO_LARGE: 'The file is too large.',
+        CSV_PARSE_ERROR: 'Failed to parse the CSV file.',
+        IMPORT_DUPLICATE_COLUMNS: 'The file has duplicate column headers.',
+        IMPORT_TOO_MANY_ROWS: 'The file has too many rows.',
+        IMPORT_JOB_NOT_FOUND: 'Import job not found.',
+        IMPORT_JOB_NOT_CONFIRMABLE: 'This import job cannot be confirmed.',
+        IMPORT_NO_VALID_ROWS: 'No valid rows to import.',
       },
       enums: {
         materialRequestStatus: {
@@ -261,6 +269,7 @@ void i18n.use(initReactI18next).init({
         },
         actions: {
           new: 'New request',
+          import: 'Import CSV',
           create: 'Create request',
           submit: 'Submit',
           addLine: 'Add line',
@@ -322,10 +331,71 @@ void i18n.use(initReactI18next).init({
           notFound: 'Request not found',
         },
       },
+      imports: {
+        title: 'Import request from CSV',
+        subtitle:
+          'Upload a CSV file, preview parsed lines, and create a draft request.',
+        noPermission: 'You do not have permission to import requests.',
+        workerHint:
+          'Final import requires the backend worker (npm run worker). Preview works without it.',
+        upload: {
+          dropIdle: 'Drag and drop a CSV file here',
+          dropActive: 'Drop the file here',
+          hint: 'CSV files only (.csv)',
+          browse: 'Browse files',
+          selected: 'Selected: {{name}}',
+          clear: 'Clear',
+        },
+        format: {
+          fieldDelimiter: 'Column delimiter',
+          decimalSeparator: 'Decimal separator',
+          title: 'Request title',
+          titlePlaceholder: 'Optional title for the new request',
+          delimiters: {
+            ',': 'Comma (,)',
+            ';': 'Semicolon (;)',
+            tab: 'Tab',
+          },
+          decimals: {
+            '.': 'Dot (.)',
+            ',': 'Comma (,)',
+          },
+        },
+        preview: {
+          valid: 'Valid',
+          columnMapping: 'Column mapping',
+          mappingEntry: '{{field}} → {{column}}',
+          summary: {
+            valid: '{{count}} valid rows',
+            invalid: '{{count}} invalid rows',
+          },
+          columns: {
+            rowNumber: '#',
+            description: 'Description',
+            quantity: 'Quantity',
+            unit: 'Unit',
+            sku: 'SKU',
+            notes: 'Notes',
+            errors: 'Status',
+          },
+        },
+        actions: {
+          preview: 'Preview',
+          import: 'Import',
+          back: 'Back to requests',
+        },
+        status: {
+          parsing: 'Processing import ({{status}})…',
+        },
+        toast: {
+          imported: 'Request imported successfully',
+          importFailed: 'Import failed. Check the file and try again.',
+        },
+      },
     },
   },
   defaultNS: 'common',
-  ns: ['common', 'auth', 'nav', 'errors', 'team', 'partners', 'products', 'requests', 'enums'],
+  ns: ['common', 'auth', 'nav', 'errors', 'team', 'partners', 'products', 'requests', 'imports', 'enums'],
 });
 
 export default i18n;

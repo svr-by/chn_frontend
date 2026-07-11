@@ -126,6 +126,7 @@ export const baseApi = createApi({
     'Partners',
     'Products',
     'Requests',
+    'Imports',
   ],
   endpoints: () => ({}),
 });

@@ -57,6 +57,17 @@ After updating the OpenAPI snapshot from the backend:
 npm run codegen
 ```
 
+### Backend worker (CSV import)
+
+CSV import confirmation requires the backend worker process:
+
+```bash
+cd chn_backend
+npm run worker
+```
+
+Sync CSV preview works without the worker; creating a request from an uploaded file does not.
+
 ## Scripts
 
 | Command | Description |
@@ -98,7 +109,7 @@ Full documentation lives in [`docs/`](./docs/README.md):
 
 ## Current status
 
-**Phase 0** (foundation) and **Phase 1** (identity, auth, team management) are complete. Domain modules (requests, quotes, invoices, etc.) start in Phase 2+. See [implementation plan](./docs/implementation-plan.md).
+**Phases 0–4** are implemented for their scoped features: foundation, identity/auth, partners, product catalog, material requests, and **CSV request import** (`/app/requests/import`). See [implementation plan](./docs/implementation-plan.md).
 
 ## License
 

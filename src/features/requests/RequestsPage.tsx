@@ -117,13 +117,22 @@ export function RequestsPage() {
           </Typography>
         </Box>
         <PermissionGate permission="manageRequests">
-          <Button
-            variant="contained"
-            component={RouterLink}
-            to="/app/requests/new"
-          >
-            {t('actions.new')}
-          </Button>
+          <Stack direction="row" spacing={1}>
+            <Button
+              variant="outlined"
+              component={RouterLink}
+              to="/app/requests/import"
+            >
+              {t('actions.import')}
+            </Button>
+            <Button
+              variant="contained"
+              component={RouterLink}
+              to="/app/requests/new"
+            >
+              {t('actions.new')}
+            </Button>
+          </Stack>
         </PermissionGate>
       </Stack>
 
