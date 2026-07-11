@@ -59,6 +59,17 @@ vi.mock('@/api/endpoints/shippingInvoicesApi', () => ({
   ]),
 }));
 
+vi.mock(
+  '@/features/consolidations/hooks/useCreateConsolidationFromShippingInvoice',
+  () => ({
+    useCreateConsolidationFromShippingInvoice: vi.fn(() => ({
+      createConsolidationFromShippingInvoice: vi.fn(),
+      isCreating: false,
+      error: undefined,
+    })),
+  }),
+);
+
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetShippingInvoiceQuery = vi.mocked(useGetShippingInvoiceQuery);
 const mockedUseGetShippableLinesQuery = vi.mocked(useGetShippableLinesQuery);
@@ -82,6 +93,7 @@ describe('ShippingInvoiceDetailPage', () => {
               effectivePermissions: [
                 'viewShippingInvoices',
                 'manageShippingInvoices',
+                'manageConsolidations',
               ],
             }),
           ],
@@ -146,5 +158,35 @@ describe('ShippingInvoiceDetailPage', () => {
 
     expect(screen.getByText('Mark in transit')).toBeInTheDocument();
     expect(screen.queryByText('Add line')).not.toBeInTheDocument();
+  });
+
+  it('shows create consolidation for DELIVERED shipping invoice', () => {
+    mockedUseGetShippingInvoiceQuery.mockReturnValue({
+      data: {
+        shippingInvoice: createShippingInvoice({
+          status: 'DELIVERED',
+          deliveredAt: '2026-01-05T00:00:00.000Z',
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetShippingInvoiceQuery>);
+
+    renderWithProviders(
+      <Routes>
+        <Route
+          path="/app/shipping-invoices/:shippingInvoiceId"
+          element={<ShippingInvoiceDetailPage />}
+        />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: `/app/shipping-invoices/${SHIPPING_INVOICE_ID}`,
+      },
+    );
+
+    expect(screen.getByText('Create consolidation')).toBeInTheDocument();
+    expect(screen.getByText('View consolidations')).toBeInTheDocument();
   });
 });

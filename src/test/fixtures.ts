@@ -22,6 +22,9 @@ import type { BillableLine } from '@/api/generated/models/billableLine';
 import type { ShippableLine } from '@/api/generated/models/shippableLine';
 import type { ShippingInvoice } from '@/api/generated/models/shippingInvoice';
 import type { ShippingInvoiceSummary } from '@/api/generated/models/shippingInvoiceSummary';
+import type { Consolidation } from '@/api/generated/models/consolidation';
+import type { ConsolidationShippingInvoiceEntry } from '@/api/generated/models/consolidationShippingInvoiceEntry';
+import type { ConsolidationSummary } from '@/api/generated/models/consolidationSummary';
 import type { ShippingLine } from '@/api/generated/models/shippingLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
@@ -43,6 +46,8 @@ const INVOICE_LINE_ID = '00000000-0000-0000-0000-000000000111';
 const PAYMENT_ID = '00000000-0000-0000-0000-000000000120';
 const SHIPPING_INVOICE_ID = '00000000-0000-0000-0000-000000000130';
 const SHIPPING_LINE_ID = '00000000-0000-0000-0000-000000000131';
+const CONSOLIDATION_ID = '00000000-0000-0000-0000-000000000140';
+const CONSOLIDATION_ENTRY_ID = '00000000-0000-0000-0000-000000000141';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -782,6 +787,89 @@ export function createShippingInvoiceSummary(
   };
 }
 
+export function createConsolidationShippingInvoiceEntry(
+  overrides: Partial<ConsolidationShippingInvoiceEntry> = {},
+): ConsolidationShippingInvoiceEntry {
+  const shippingInvoice = createShippingInvoice({
+    status: 'DELIVERED',
+    deliveredAt: '2026-01-05T00:00:00.000Z',
+  });
+
+  return {
+    id: CONSOLIDATION_ENTRY_ID,
+    lineNumber: 1,
+    notes: null,
+    shippingInvoice: {
+      id: shippingInvoice.id,
+      status: shippingInvoice.status,
+      materialRequestId: shippingInvoice.materialRequestId,
+      supplierCompanyId: shippingInvoice.supplierCompanyId,
+      supplierCompany: shippingInvoice.supplierCompany,
+      trackingNumber: shippingInvoice.trackingNumber,
+      carrier: shippingInvoice.carrier,
+      lines: shippingInvoice.lines,
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createConsolidation(
+  overrides: Partial<Consolidation> = {},
+): Consolidation {
+  return {
+    id: CONSOLIDATION_ID,
+    buyerCompanyId: BUYER_COMPANY_ID,
+    createdByUserId: USER_ID,
+    status: 'DRAFT',
+    transportMode: 'ROAD',
+    carrier: 'Fast Freight',
+    trackingNumber: 'TRK-001',
+    origin: 'Shanghai',
+    destination: 'Moscow',
+    notes: null,
+    plannedAt: null,
+    inTransitAt: null,
+    customsAt: null,
+    deliveredAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    shippingInvoices: [createConsolidationShippingInvoiceEntry()],
+    ...overrides,
+  };
+}
+
+export function createConsolidationSummary(
+  overrides: Partial<ConsolidationSummary> = {},
+): ConsolidationSummary {
+  return {
+    id: CONSOLIDATION_ID,
+    status: 'DRAFT',
+    buyerCompanyId: BUYER_COMPANY_ID,
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Co',
+    },
+    transportMode: 'ROAD',
+    carrier: 'Fast Freight',
+    trackingNumber: 'TRK-001',
+    origin: 'Shanghai',
+    destination: 'Moscow',
+    shippingInvoiceCount: 1,
+    plannedAt: null,
+    inTransitAt: null,
+    customsAt: null,
+    deliveredAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -801,6 +889,8 @@ export {
   PAYMENT_ID,
   SHIPPING_INVOICE_ID,
   SHIPPING_LINE_ID,
+  CONSOLIDATION_ID,
+  CONSOLIDATION_ENTRY_ID,
   BUYER_COMPANY_ID,
   SUPPLIER_COMPANY_ID,
 };
