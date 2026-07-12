@@ -31,6 +31,12 @@ describe('resolveDocumentPath', () => {
     expect(
       resolveDocumentPath('INVOICE', INVOICE_ID, { tab: 'comments' }),
     ).toBe(`/app/invoices/${INVOICE_ID}?tab=comments`);
+    expect(
+      resolveDocumentPath('INVOICE', INVOICE_ID, { tab: 'trace' }),
+    ).toBe(`/app/invoices/${INVOICE_ID}?tab=trace`);
+    expect(
+      resolveDocumentPath('INVOICE', INVOICE_ID, { tab: 'related' }),
+    ).toBe(`/app/invoices/${INVOICE_ID}?tab=related`);
   });
 
   it('returns null when document id or type is missing', () => {
@@ -43,6 +49,8 @@ describe('parseDocumentDetailTab', () => {
   it('parses supported tab values', () => {
     expect(parseDocumentDetailTab('comments')).toBe('comments');
     expect(parseDocumentDetailTab('activity')).toBe('activity');
+    expect(parseDocumentDetailTab('trace')).toBe('trace');
+    expect(parseDocumentDetailTab('related')).toBe('related');
     expect(parseDocumentDetailTab('details')).toBeNull();
     expect(parseDocumentDetailTab(null)).toBeNull();
   });

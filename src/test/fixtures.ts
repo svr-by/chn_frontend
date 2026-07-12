@@ -31,6 +31,10 @@ import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 import type { Comment } from '@/api/generated/models/comment';
 import type { ActivityItem } from '@/api/generated/models/activityItem';
 import type { Notification } from '@/api/generated/models/notification';
+import type { LineageTrace } from '@/api/generated/models/lineageTrace';
+import type { LineageEvent } from '@/api/generated/models/lineageEvent';
+import type { TraceSearchItem } from '@/api/generated/models/traceSearchItem';
+import type { DocumentRelationships } from '@/api/generated/models/documentRelationships';
 
 const COMPANY_ID = '00000000-0000-0000-0000-000000000010';
 const USER_ID = '00000000-0000-0000-0000-000000000001';
@@ -54,6 +58,8 @@ const CONSOLIDATION_ENTRY_ID = '00000000-0000-0000-0000-000000000141';
 const COMMENT_ID = '00000000-0000-0000-0000-000000000150';
 const NOTIFICATION_ID = '00000000-0000-0000-0000-000000000160';
 const ACTIVITY_ID = '00000000-0000-0000-0000-000000000170';
+const LINEAGE_ID = '00000000-0000-0000-0000-000000000052';
+const LINEAGE_EVENT_ID = '00000000-0000-0000-0000-000000000180';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -930,6 +936,125 @@ export function createNotification(
   };
 }
 
+export function createTraceSearchItem(
+  overrides: Partial<TraceSearchItem> = {},
+): TraceSearchItem {
+  return {
+    lineageId: LINEAGE_ID,
+    requestId: REQUEST_ID,
+    requestTitle: 'Office supplies',
+    description: 'Office paper',
+    quantity: '10.0000',
+    unit: 'pack',
+    pipelineStatus: 'quoted',
+    updatedAt: '2026-01-01T12:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createLineageTrace(
+  overrides: Partial<LineageTrace> = {},
+): LineageTrace {
+  return {
+    lineageId: LINEAGE_ID,
+    request: {
+      id: REQUEST_ID,
+      companyId: COMPANY_ID,
+      title: 'Office supplies',
+      reference: 'REQ-001',
+      status: 'QUOTING',
+      submittedAt: '2026-01-01T00:00:00.000Z',
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    },
+    requestLine: {
+      id: REQUEST_LINE_ID,
+      lineNumber: 1,
+      lineageId: LINEAGE_ID,
+      description: 'Office paper',
+      quantity: '10.0000',
+      unit: 'pack',
+      attributes: null,
+      notes: null,
+      product: null,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      updatedAt: '2026-01-01T00:00:00.000Z',
+    },
+    quotes: [
+      {
+        quoteId: QUOTE_ID,
+        supplierCompany: {
+          id: SUPPLIER_COMPANY_ID,
+          name: 'Supplier Ltd',
+        },
+        status: 'SUBMITTED',
+        currency: 'USD',
+        line: {
+          id: QUOTE_LINE_ID,
+          lineNumber: 1,
+          lineageId: LINEAGE_ID,
+          quantity: '10.0000',
+          unitPrice: '5.0000',
+          lineTotal: '50.0000',
+          notes: null,
+        },
+      },
+    ],
+    selections: [],
+    invoices: [],
+    shipments: [],
+    consolidations: [],
+    ...overrides,
+  };
+}
+
+export function createLineageEvent(
+  overrides: Partial<LineageEvent> = {},
+): LineageEvent {
+  return {
+    id: LINEAGE_EVENT_ID,
+    documentType: 'INVOICE',
+    documentId: INVOICE_ID,
+    eventType: 'INVOICE_ISSUED',
+    createdAt: '2026-01-01T12:00:00.000Z',
+    actor: {
+      userId: USER_ID,
+      companyId: COMPANY_ID,
+      name: 'Jane Doe',
+    },
+    ...overrides,
+  };
+}
+
+export function createDocumentRelationships(
+  overrides: Partial<DocumentRelationships> = {},
+): DocumentRelationships {
+  return {
+    nodes: [
+      {
+        id: REQUEST_ID,
+        documentType: 'MATERIAL_REQUEST',
+        status: 'QUOTING',
+        label: 'Office supplies',
+      },
+      {
+        id: INVOICE_ID,
+        documentType: 'INVOICE',
+        status: 'ISSUED',
+        label: 'INV-001',
+      },
+    ],
+    edges: [
+      {
+        fromId: REQUEST_ID,
+        toId: INVOICE_ID,
+        relation: 'generates',
+      },
+    ],
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -953,6 +1078,8 @@ export {
   CONSOLIDATION_ENTRY_ID,
   COMMENT_ID,
   NOTIFICATION_ID,
+  LINEAGE_ID,
+  LINEAGE_EVENT_ID,
   ACTIVITY_ID,
   BUYER_COMPANY_ID,
   SUPPLIER_COMPANY_ID,
