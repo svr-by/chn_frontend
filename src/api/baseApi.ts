@@ -133,6 +133,10 @@ export const baseApi = createApi({
     'Payments',
     'ShippingInvoices',
     'Consolidations',
+    'Comments',
+    'Activity',
+    'Notifications',
+    'NotificationUnreadCount',
   ],
   endpoints: () => ({}),
 });

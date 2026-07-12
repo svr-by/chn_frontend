@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetShippableLinesQuery } from '@/api/endpoints/invoicesApi';
 import { useGetShippingInvoiceQuery } from '@/api/endpoints/shippingInvoicesApi';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { ShippingInvoiceHeaderForm } from '@/features/shipping/components/ShippingInvoiceHeaderForm';
 import { ShippingInvoiceLinesTable } from '@/features/shipping/components/ShippingInvoiceLinesTable';
@@ -190,21 +191,28 @@ export function ShippingInvoiceDetailPage() {
       }
     >
       {shippingInvoice ? (
-        <Stack spacing={3}>
-          <ShippingInvoiceHeaderForm
-            companyId={companyId}
-            shippingInvoice={shippingInvoice}
-            editable={canEdit}
-          />
-          <ShippingInvoiceLinesTable
-            companyId={companyId}
-            shippingInvoiceId={shippingInvoice.id}
-            supplierInvoiceId={shippingInvoice.supplierInvoiceId}
-            lines={shippingInvoice.lines}
-            shippableLines={shippableQuery.data?.lines ?? []}
-            editable={canEdit}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="SHIPPING_INVOICE"
+          documentId={shippingInvoice.id}
+          details={
+            <Stack spacing={3}>
+              <ShippingInvoiceHeaderForm
+                companyId={companyId}
+                shippingInvoice={shippingInvoice}
+                editable={canEdit}
+              />
+              <ShippingInvoiceLinesTable
+                companyId={companyId}
+                shippingInvoiceId={shippingInvoice.id}
+                supplierInvoiceId={shippingInvoice.supplierInvoiceId}
+                lines={shippingInvoice.lines}
+                shippableLines={shippableQuery.data?.lines ?? []}
+                editable={canEdit}
+              />
+            </Stack>
+          }
+        />
       ) : null}
     </DocumentDetailLayout>
   );

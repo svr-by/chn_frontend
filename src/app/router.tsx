@@ -27,6 +27,7 @@ import { ShippingInvoicesPage } from '@/features/shipping/pages/ShippingInvoices
 import { ShippingInvoiceDetailPage } from '@/features/shipping/pages/ShippingInvoiceDetailPage';
 import { ConsolidationsPage } from '@/features/consolidations/pages/ConsolidationsPage';
 import { ConsolidationDetailPage } from '@/features/consolidations/pages/ConsolidationDetailPage';
+import { NotificationsPage } from '@/features/notifications/pages/NotificationsPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
@@ -162,6 +163,7 @@ export const router = createBrowserRouter([
                 path: 'consolidations/:consolidationId',
                 element: <ConsolidationDetailPage />,
               },
+              { path: 'notifications', element: <NotificationsPage /> },
               { path: 'trace/:lineageId', element: <PlaceholderPage path="/app/trace" /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },

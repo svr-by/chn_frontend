@@ -9,6 +9,7 @@ import {
   useGetConsolidationQuery,
 } from '@/api/endpoints/consolidationsApi';
 import { ConsolidationStatusBadge } from '@/components/ConsolidationStatusBadge';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { ConsolidationHeaderForm } from '@/features/consolidations/components/ConsolidationHeaderForm';
 import { ConsolidationShippingInvoicesTable } from '@/features/consolidations/components/ConsolidationShippingInvoicesTable';
@@ -159,22 +160,29 @@ export function ConsolidationDetailPage() {
       }
     >
       {consolidation ? (
-        <Stack spacing={3}>
-          <ConsolidationHeaderForm
-            companyId={companyId}
-            consolidation={consolidation}
-            editable={canEdit}
-          />
-          <ConsolidationShippingInvoicesTable
-            companyId={companyId}
-            consolidationId={consolidation.id}
-            entries={consolidation.shippingInvoices}
-            consolidatableInvoices={
-              consolidatableQuery.data?.shippingInvoices ?? []
-            }
-            editable={canEdit}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="CONSOLIDATION"
+          documentId={consolidation.id}
+          details={
+            <Stack spacing={3}>
+              <ConsolidationHeaderForm
+                companyId={companyId}
+                consolidation={consolidation}
+                editable={canEdit}
+              />
+              <ConsolidationShippingInvoicesTable
+                companyId={companyId}
+                consolidationId={consolidation.id}
+                entries={consolidation.shippingInvoices}
+                consolidatableInvoices={
+                  consolidatableQuery.data?.shippingInvoices ?? []
+                }
+                editable={canEdit}
+              />
+            </Stack>
+          }
+        />
       ) : null}
     </DocumentDetailLayout>
   );

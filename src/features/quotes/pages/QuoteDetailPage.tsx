@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetQuoteQuery } from '@/api/endpoints/quotesApi';
 import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { QuoteHeaderForm } from '@/features/quotes/components/QuoteHeaderForm';
 import { QuoteLinesTable } from '@/features/quotes/components/QuoteLinesTable';
@@ -113,21 +114,28 @@ export function QuoteDetailPage() {
       }
     >
       {quote ? (
-        <Stack spacing={4}>
-          <QuoteHeaderForm
-            companyId={companyId}
-            quote={quote}
-            editable={canEdit}
-          />
-          <QuoteLinesTable
-            companyId={companyId}
-            quoteId={quote.id}
-            materialRequestId={quote.materialRequestId}
-            lines={quote.lines}
-            requestLines={request?.lines ?? []}
-            editable={canEdit}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="SUPPLIER_QUOTE"
+          documentId={quote.id}
+          details={
+            <Stack spacing={4}>
+              <QuoteHeaderForm
+                companyId={companyId}
+                quote={quote}
+                editable={canEdit}
+              />
+              <QuoteLinesTable
+                companyId={companyId}
+                quoteId={quote.id}
+                materialRequestId={quote.materialRequestId}
+                lines={quote.lines}
+                requestLines={request?.lines ?? []}
+                editable={canEdit}
+              />
+            </Stack>
+          }
+        />
       ) : null}
     </DocumentDetailLayout>
   );

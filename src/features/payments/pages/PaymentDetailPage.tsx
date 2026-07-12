@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetPaymentQuery } from '@/api/endpoints/paymentsApi';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';
 import { PaymentUploadSection } from '@/features/payments/components/PaymentUploadSection';
@@ -129,11 +130,20 @@ export function PaymentDetailPage() {
         ) : null
       }
     >
-      {payment && canUpload ? (
-        <PaymentUploadSection
+      {payment ? (
+        <DocumentDetailTabs
           companyId={companyId}
-          paymentId={payment.id}
-          invoiceId={payment.invoiceId}
+          documentType="PAYMENT"
+          documentId={payment.id}
+          details={
+            canUpload ? (
+              <PaymentUploadSection
+                companyId={companyId}
+                paymentId={payment.id}
+                invoiceId={payment.invoiceId}
+              />
+            ) : null
+          }
         />
       ) : null}
     </DocumentDetailLayout>

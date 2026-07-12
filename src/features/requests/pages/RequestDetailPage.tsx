@@ -8,6 +8,7 @@ import {
   useGetRequestQuery,
   useGetRequestSelectionQuery,
 } from '@/api/endpoints/requestsApi';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
@@ -114,19 +115,26 @@ export function RequestDetailPage() {
       }
     >
       {request ? (
-        <Stack spacing={4}>
-          <RequestHeaderForm
-            companyId={companyId}
-            request={request}
-            editable={canEdit}
-          />
-          <RequestLinesTable
-            companyId={companyId}
-            requestId={request.id}
-            lines={request.lines}
-            editable={canEdit}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="MATERIAL_REQUEST"
+          documentId={request.id}
+          details={
+            <Stack spacing={4}>
+              <RequestHeaderForm
+                companyId={companyId}
+                request={request}
+                editable={canEdit}
+              />
+              <RequestLinesTable
+                companyId={companyId}
+                requestId={request.id}
+                lines={request.lines}
+                editable={canEdit}
+              />
+            </Stack>
+          }
+        />
       ) : null}
     </DocumentDetailLayout>
   );

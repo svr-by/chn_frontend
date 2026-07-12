@@ -7,6 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { useGetSelectionQuery } from '@/api/endpoints/selectionsApi';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { SelectionHeaderForm } from '@/features/selections/components/SelectionHeaderForm';
 import { SelectionLinesTable } from '@/features/selections/components/SelectionLinesTable';
@@ -129,21 +130,28 @@ export function SelectionDetailPage() {
       }
     >
       {selection ? (
-        <Stack spacing={3}>
-          <SelectionHeaderForm
-            companyId={companyId}
-            selection={selection}
-            editable={canEdit}
-          />
-          <SelectionLinesTable
-            companyId={companyId}
-            selectionId={selection.id}
-            materialRequestId={selection.materialRequestId}
-            lines={selection.lines}
-            comparisonLines={comparisonQuery.data?.lines ?? []}
-            editable={canEdit}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="PURCHASE_SELECTION"
+          documentId={selection.id}
+          details={
+            <Stack spacing={3}>
+              <SelectionHeaderForm
+                companyId={companyId}
+                selection={selection}
+                editable={canEdit}
+              />
+              <SelectionLinesTable
+                companyId={companyId}
+                selectionId={selection.id}
+                materialRequestId={selection.materialRequestId}
+                lines={selection.lines}
+                comparisonLines={comparisonQuery.data?.lines ?? []}
+                editable={canEdit}
+              />
+            </Stack>
+          }
+        />
       ) : null}
     </DocumentDetailLayout>
   );

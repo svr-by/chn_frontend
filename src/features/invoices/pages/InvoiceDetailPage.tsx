@@ -8,6 +8,7 @@ import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
 import { PermissionGate } from '@/components/PermissionGate';
+import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
 import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderForm';
@@ -215,29 +216,36 @@ export function InvoiceDetailPage() {
       }
     >
       {invoice ? (
-        <Stack spacing={3}>
-          <InvoiceHeaderForm
-            companyId={companyId}
-            invoice={invoice}
-            editable={canEdit}
-          />
-          <InvoiceLinesTable
-            companyId={companyId}
-            invoiceId={invoice.id}
-            materialRequestId={invoice.materialRequestId}
-            purchaseSelectionId={invoice.purchaseSelectionId}
-            currency={invoice.currency}
-            lines={invoice.lines}
-            billableLines={billableQuery.data?.lines ?? []}
-            editable={canEdit}
-          />
-          {showPayments ? (
-            <InvoicePaymentsTable
-              payments={invoice.payments ?? []}
-              currency={invoice.currency}
-            />
-          ) : null}
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="INVOICE"
+          documentId={invoice.id}
+          details={
+            <Stack spacing={3}>
+              <InvoiceHeaderForm
+                companyId={companyId}
+                invoice={invoice}
+                editable={canEdit}
+              />
+              <InvoiceLinesTable
+                companyId={companyId}
+                invoiceId={invoice.id}
+                materialRequestId={invoice.materialRequestId}
+                purchaseSelectionId={invoice.purchaseSelectionId}
+                currency={invoice.currency}
+                lines={invoice.lines}
+                billableLines={billableQuery.data?.lines ?? []}
+                editable={canEdit}
+              />
+              {showPayments ? (
+                <InvoicePaymentsTable
+                  payments={invoice.payments ?? []}
+                  currency={invoice.currency}
+                />
+              ) : null}
+            </Stack>
+          }
+        />
       ) : null}
 
       {invoice && canRegisterPayment ? (

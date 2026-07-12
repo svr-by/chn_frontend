@@ -18,7 +18,7 @@ import {
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useTranslation } from 'react-i18next';
 
 import { useLogout } from '@/hooks/useLogout';
@@ -121,9 +121,7 @@ export function AppLayout() {
             <MenuIcon />
           </IconButton>
           <Box sx={{ flex: 1 }} />
-          <IconButton color="inherit" disabled aria-label={t('common:app.notifications')}>
-            <NotificationsNoneIcon />
-          </IconButton>
+          <NotificationBell />
           <IconButton
             color="inherit"
             onClick={(event) => setUserMenuAnchor(event.currentTarget)}
