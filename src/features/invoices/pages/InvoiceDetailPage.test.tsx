@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
@@ -65,6 +66,27 @@ vi.mock('@/api/endpoints/paymentsApi', () => ({
 
 vi.mock('@/api/endpoints/shippingInvoicesApi', () => ({
   useCreateShippingInvoiceMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
+}));
+
+vi.mock('@/api/endpoints/commentsApi', () => ({
+  useLazyListDocumentCommentsQuery: vi.fn(() => [
+    vi.fn().mockReturnValue({
+      unwrap: vi.fn().mockResolvedValue({ comments: [], nextCursor: null }),
+    }),
+    { isLoading: false, reset: vi.fn() },
+    { lastArg: undefined },
+  ]),
+  useLazyListDocumentActivityQuery: vi.fn(() => [
+    vi.fn().mockReturnValue({
+      unwrap: vi.fn().mockResolvedValue({ activity: [], nextCursor: null }),
+    }),
+    { isLoading: false, reset: vi.fn() },
+    { lastArg: undefined },
+  ]),
+  useCreateDocumentCommentMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
@@ -152,5 +174,36 @@ describe('InvoiceDetailPage', () => {
 
     expect(screen.getByText('Register payment')).toBeInTheDocument();
     expect(screen.queryByText('Add line')).not.toBeInTheDocument();
+  });
+
+  it('switches to comments tab', async () => {
+    const user = userEvent.setup();
+
+    mockedUseGetInvoiceQuery.mockReturnValue({
+      data: {
+        invoice: createSupplierInvoice({
+          status: 'ISSUED',
+          issuedAt: '2026-01-02T00:00:00.000Z',
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetInvoiceQuery>);
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/invoices/:invoiceId" element={<InvoiceDetailPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: `/app/invoices/${INVOICE_ID}`,
+      },
+    );
+
+    await user.click(screen.getByRole('tab', { name: 'Comments' }));
+
+    expect(await screen.findByText('No comments yet.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Post comment' })).toBeInTheDocument();
   });
 });

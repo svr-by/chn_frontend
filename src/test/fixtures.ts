@@ -28,6 +28,9 @@ import type { ConsolidationSummary } from '@/api/generated/models/consolidationS
 import type { ShippingLine } from '@/api/generated/models/shippingLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
+import type { Comment } from '@/api/generated/models/comment';
+import type { ActivityItem } from '@/api/generated/models/activityItem';
+import type { Notification } from '@/api/generated/models/notification';
 
 const COMPANY_ID = '00000000-0000-0000-0000-000000000010';
 const USER_ID = '00000000-0000-0000-0000-000000000001';
@@ -48,6 +51,9 @@ const SHIPPING_INVOICE_ID = '00000000-0000-0000-0000-000000000130';
 const SHIPPING_LINE_ID = '00000000-0000-0000-0000-000000000131';
 const CONSOLIDATION_ID = '00000000-0000-0000-0000-000000000140';
 const CONSOLIDATION_ENTRY_ID = '00000000-0000-0000-0000-000000000141';
+const COMMENT_ID = '00000000-0000-0000-0000-000000000150';
+const NOTIFICATION_ID = '00000000-0000-0000-0000-000000000160';
+const ACTIVITY_ID = '00000000-0000-0000-0000-000000000170';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
@@ -870,6 +876,60 @@ export function createConsolidationSummary(
   };
 }
 
+export function createComment(overrides: Partial<Comment> = {}): Comment {
+  return {
+    id: COMMENT_ID,
+    documentType: 'INVOICE',
+    documentId: INVOICE_ID,
+    body: 'Please confirm delivery date.',
+    createdAt: '2026-01-01T12:00:00.000Z',
+    updatedAt: '2026-01-01T12:00:00.000Z',
+    author: {
+      userId: USER_ID,
+      companyId: COMPANY_ID,
+      companyName: 'Acme Corp',
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+    },
+    ...overrides,
+  };
+}
+
+export function createActivityItem(
+  overrides: Partial<ActivityItem> = {},
+): ActivityItem {
+  return {
+    id: ACTIVITY_ID,
+    source: 'event',
+    createdAt: '2026-01-01T12:00:00.000Z',
+    actor: {
+      userId: USER_ID,
+      companyId: COMPANY_ID,
+      name: 'Jane Doe',
+    },
+    eventType: 'INVOICE_ISSUED',
+    ...overrides,
+  };
+}
+
+export function createNotification(
+  overrides: Partial<Notification> = {},
+): Notification {
+  return {
+    id: NOTIFICATION_ID,
+    type: 'COMMENT_ADDED',
+    documentType: 'INVOICE',
+    documentId: INVOICE_ID,
+    commentId: COMMENT_ID,
+    documentEventId: null,
+    title: 'New comment on invoice',
+    body: 'Please confirm delivery date.',
+    readAt: null,
+    createdAt: '2026-01-01T12:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -891,6 +951,9 @@ export {
   SHIPPING_LINE_ID,
   CONSOLIDATION_ID,
   CONSOLIDATION_ENTRY_ID,
+  COMMENT_ID,
+  NOTIFICATION_ID,
+  ACTIVITY_ID,
   BUYER_COMPANY_ID,
   SUPPLIER_COMPANY_ID,
 };
