@@ -34,6 +34,7 @@ import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
+import { IntegrationsSettingsPage } from '@/features/integrations/pages/IntegrationsSettingsPage';
 import { ProfilePage } from '@/features/settings/ProfilePage';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
@@ -46,6 +47,7 @@ import { ProtectedRoute } from '@/routes/ProtectedRoute';
 import { RootRedirect } from '@/routes/RootRedirect';
 
 const TEAM_PATH = '/app/settings/team';
+const INTEGRATIONS_PATH = '/app/settings/integrations';
 const PARTNERS_PATH = '/app/partners';
 const PRODUCTS_PATH = '/app/products';
 const REQUESTS_PATH = '/app/requests';
@@ -63,6 +65,7 @@ const stubRoutes = navConfig
     (item) =>
       ![
         TEAM_PATH,
+        INTEGRATIONS_PATH,
         PARTNERS_PATH,
         PRODUCTS_PATH,
         REQUESTS_PATH,
@@ -171,6 +174,7 @@ export const router = createBrowserRouter([
               { path: 'trace', element: <TraceSearchPage /> },
               { path: 'trace/:lineageId', element: <TraceDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
+              { path: 'settings/integrations', element: <IntegrationsSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },
               ...stubRoutes,
             ],

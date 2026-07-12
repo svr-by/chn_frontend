@@ -141,6 +141,10 @@ export const baseApi = createApi({
     'LineageTrace',
     'LineageEvents',
     'DocumentRelationships',
+    'IntegrationApiKeys',
+    'IntegrationMappings',
+    'IntegrationWebhooks',
+    'IntegrationExports',
   ],
   endpoints: () => ({}),
 });

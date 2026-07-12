@@ -3,6 +3,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CategoryIcon from '@mui/icons-material/Category';
 import GroupsIcon from '@mui/icons-material/Groups';
+import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import HubIcon from '@mui/icons-material/Hub';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
@@ -98,6 +99,13 @@ export const navConfig: NavItem[] = [
     permission: 'viewMembers',
     phase: 1,
     icon: GroupsIcon,
+  },
+  {
+    labelKey: 'integrations',
+    path: '/app/settings/integrations',
+    permission: 'manageIntegrations',
+    phase: 12,
+    icon: IntegrationInstructionsIcon,
   },
 ];
 
