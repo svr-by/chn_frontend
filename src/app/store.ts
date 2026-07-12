@@ -16,6 +16,7 @@ import '@/api/endpoints/shippingInvoicesApi';
 import '@/api/endpoints/consolidationsApi';
 import '@/api/endpoints/commentsApi';
 import '@/api/endpoints/notificationsApi';
+import '@/api/endpoints/traceApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 export const store = configureStore({

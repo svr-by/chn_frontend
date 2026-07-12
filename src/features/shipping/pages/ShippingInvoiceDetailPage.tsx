@@ -16,6 +16,7 @@ import { useCreateConsolidationFromShippingInvoice } from '@/features/consolidat
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function ShippingInvoiceDetailPage() {
   const { t } = useTranslation('shipping');
@@ -195,6 +196,7 @@ export function ShippingInvoiceDetailPage() {
           companyId={companyId}
           documentType="SHIPPING_INVOICE"
           documentId={shippingInvoice.id}
+          lineageEntries={shippingInvoice.lines.map(mapNestedRequestLineToLineageEntry)}
           details={
             <Stack spacing={3}>
               <ShippingInvoiceHeaderForm

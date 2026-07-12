@@ -135,6 +135,7 @@ export function PaymentDetailPage() {
           companyId={companyId}
           documentType="PAYMENT"
           documentId={payment.id}
+          paymentInvoiceId={payment.invoiceId}
           details={
             canUpload ? (
               <PaymentUploadSection

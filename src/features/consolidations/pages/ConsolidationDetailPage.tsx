@@ -164,6 +164,7 @@ export function ConsolidationDetailPage() {
           companyId={companyId}
           documentType="CONSOLIDATION"
           documentId={consolidation.id}
+          lineageEntries={[]}
           details={
             <Stack spacing={3}>
               <ConsolidationHeaderForm

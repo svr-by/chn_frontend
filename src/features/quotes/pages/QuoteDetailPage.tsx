@@ -14,6 +14,7 @@ import { QuoteLinesTable } from '@/features/quotes/components/QuoteLinesTable';
 import { QuoteStatusActions } from '@/features/quotes/components/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -118,6 +119,7 @@ export function QuoteDetailPage() {
           companyId={companyId}
           documentType="SUPPLIER_QUOTE"
           documentId={quote.id}
+          lineageEntries={quote.lines.map(mapNestedRequestLineToLineageEntry)}
           details={
             <Stack spacing={4}>
               <QuoteHeaderForm

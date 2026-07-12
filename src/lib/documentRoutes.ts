@@ -1,6 +1,6 @@
 import type { DocumentType } from '@/types/api';
 
-export type DocumentDetailTab = 'comments' | 'activity';
+export type DocumentDetailTab = 'comments' | 'activity' | 'trace' | 'related';
 
 const DOCUMENT_PATH_BUILDERS: Record<
   DocumentType,
@@ -40,7 +40,12 @@ export function resolveDocumentPath(
 export function parseDocumentDetailTab(
   value: string | null,
 ): DocumentDetailTab | null {
-  if (value === 'comments' || value === 'activity') {
+  if (
+    value === 'comments' ||
+    value === 'activity' ||
+    value === 'trace' ||
+    value === 'related'
+  ) {
     return value;
   }
   return null;

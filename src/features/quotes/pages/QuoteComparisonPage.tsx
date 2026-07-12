@@ -14,6 +14,7 @@ import type { QuoteOffer } from '@/api/generated/models/quoteOffer';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { LineageLink } from '@/components/LineageLink';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -84,6 +85,13 @@ export function QuoteComparisonPage() {
         muiTableBodyCellProps: {
           sx: { position: 'sticky', left: 60, zIndex: 1, bgcolor: 'background.paper' },
         },
+      },
+      {
+        id: 'lineage',
+        header: t('comparison.columns.lineage'),
+        Cell: ({ row }) => (
+          <LineageLink lineageId={row.original.requestLine.lineageId} />
+        ),
       },
       {
         id: 'quantity',

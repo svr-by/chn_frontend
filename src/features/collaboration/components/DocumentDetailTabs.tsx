@@ -7,6 +7,14 @@ import type { CommentDocumentType } from '@/api/generated/models/commentDocument
 import { DocumentActivityPanel } from '@/features/collaboration/components/DocumentActivityPanel';
 import { DocumentCommentsPanel } from '@/features/collaboration/components/DocumentCommentsPanel';
 import {
+  DocumentRelatedPanel,
+} from '@/features/trace/components/DocumentRelatedPanel';
+import {
+  DocumentTracePanel,
+  type LineageEntry,
+} from '@/features/trace/components/DocumentTracePanel';
+import { usePermissions } from '@/hooks/usePermissions';
+import {
   parseDocumentDetailTab,
   type DocumentDetailTab,
 } from '@/lib/documentRoutes';
@@ -18,6 +26,9 @@ interface DocumentDetailTabsProps {
   documentType: CommentDocumentType;
   documentId: string;
   details: ReactNode;
+  lineageEntries?: LineageEntry[];
+  paymentInvoiceId?: string;
+  requestId?: string;
 }
 
 interface TabPanelProps {
@@ -39,8 +50,13 @@ export function DocumentDetailTabs({
   documentType,
   documentId,
   details,
+  lineageEntries,
+  paymentInvoiceId,
+  requestId,
 }: DocumentDetailTabsProps) {
   const { t } = useTranslation('collaboration');
+  const { hasPermission } = usePermissions();
+  const canViewTrace = hasPermission('viewTrace');
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = parseDocumentDetailTab(searchParams.get('tab'));
   const [activeTab, setActiveTab] = useState<TabValue>(tabFromUrl ?? 'details');
@@ -74,6 +90,12 @@ export function DocumentDetailTabs({
         <Tab value="details" label={t('tabs.details')} />
         <Tab value="comments" label={t('tabs.comments')} />
         <Tab value="activity" label={t('tabs.activity')} />
+        {canViewTrace ? (
+          <Tab value="trace" label={t('tabs.trace')} />
+        ) : null}
+        {canViewTrace ? (
+          <Tab value="related" label={t('tabs.related')} />
+        ) : null}
       </Tabs>
 
       <TabPanel value="details" activeTab={activeTab}>
@@ -93,6 +115,24 @@ export function DocumentDetailTabs({
           documentId={documentId}
         />
       </TabPanel>
+      {canViewTrace ? (
+        <TabPanel value="trace" activeTab={activeTab}>
+          <DocumentTracePanel
+            lineageEntries={lineageEntries}
+            paymentInvoiceId={paymentInvoiceId}
+            requestId={requestId}
+          />
+        </TabPanel>
+      ) : null}
+      {canViewTrace ? (
+        <TabPanel value="related" activeTab={activeTab}>
+          <DocumentRelatedPanel
+            companyId={companyId}
+            documentType={documentType}
+            documentId={documentId}
+          />
+        </TabPanel>
+      ) : null}
     </Box>
   );
 }

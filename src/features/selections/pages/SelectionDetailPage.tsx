@@ -14,6 +14,7 @@ import { SelectionLinesTable } from '@/features/selections/components/SelectionL
 import { SelectionStatusActions } from '@/features/selections/components/SelectionStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function SelectionDetailPage() {
   const { t } = useTranslation('selections');
@@ -134,6 +135,7 @@ export function SelectionDetailPage() {
           companyId={companyId}
           documentType="PURCHASE_SELECTION"
           documentId={selection.id}
+          lineageEntries={selection.lines.map(mapNestedRequestLineToLineageEntry)}
           details={
             <Stack spacing={3}>
               <SelectionHeaderForm

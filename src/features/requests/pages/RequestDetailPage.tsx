@@ -17,6 +17,7 @@ import { RequestLinesTable } from '@/features/requests/components/RequestLinesTa
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mapRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function RequestDetailPage() {
   const { t } = useTranslation('requests');
@@ -119,6 +120,8 @@ export function RequestDetailPage() {
           companyId={companyId}
           documentType="MATERIAL_REQUEST"
           documentId={request.id}
+          requestId={request.id}
+          lineageEntries={request.lines.map(mapRequestLineToLineageEntry)}
           details={
             <Stack spacing={4}>
               <RequestHeaderForm

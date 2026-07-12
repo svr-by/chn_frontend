@@ -137,6 +137,10 @@ export const baseApi = createApi({
     'Activity',
     'Notifications',
     'NotificationUnreadCount',
+    'Trace',
+    'LineageTrace',
+    'LineageEvents',
+    'DocumentRelationships',
   ],
   endpoints: () => ({}),
 });

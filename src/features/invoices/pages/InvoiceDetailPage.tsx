@@ -19,6 +19,7 @@ import { PaymentRegisterDialog } from '@/features/payments/components/PaymentReg
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 const PAYMENT_ALLOWED_STATUSES = new Set(['ISSUED', 'PARTIALLY_PAID']);
 const SHIPPING_ALLOWED_STATUSES = new Set([
@@ -220,6 +221,7 @@ export function InvoiceDetailPage() {
           companyId={companyId}
           documentType="INVOICE"
           documentId={invoice.id}
+          lineageEntries={invoice.lines.map(mapNestedRequestLineToLineageEntry)}
           details={
             <Stack spacing={3}>
               <InvoiceHeaderForm
