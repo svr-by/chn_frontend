@@ -1,0 +1,22 @@
+{
+  "title": "Настройки команды",
+  "activeMembers": "Активные участники",
+  "pendingInvitations": "Ожидающие приглашения",
+  "inviteMember": "Пригласить участника",
+  "sendInvite": "Отправить приглашение",
+  "inviteSent": "Приглашение отправлено",
+  "invitationRevoked": "Приглашение отозвано",
+  "memberRemoved": "Участник удалён",
+  "roleUpdated": "Роль обновлена",
+  "member": "Участник",
+  "role": "Роль",
+  "status": "Статус",
+  "actions": "Действия",
+  "expiresAt": "Истекает",
+  "expired": "Истёк",
+  "revoke": "Отозвать",
+  "remove": "Удалить",
+  "cancel": "Отмена",
+  "removeMemberTitle": "Удалить участника",
+  "removeMemberConfirm": "Этот участник потеряет доступ к компании. Продолжить?"
+}

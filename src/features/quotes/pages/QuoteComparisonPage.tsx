@@ -1,6 +1,16 @@
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Divider,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -35,7 +45,78 @@ function findOffer(
   );
 }
 
+function ComparisonMobileCards({
+  lines,
+  suppliers,
+}: {
+  lines: ComparisonRow[];
+  suppliers: QuoteComparisonSupplier[];
+}) {
+  const { t } = useTranslation('quotes');
+
+  return (
+    <Stack spacing={2}>
+      {lines.map((line) => (
+        <Card key={line.id} variant="outlined">
+          <CardContent>
+            <Stack spacing={1.5}>
+              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                <Typography variant="subtitle2">
+                  #{line.requestLine.lineNumber}
+                </Typography>
+                <Typography variant="body1" sx={{ flex: 1 }}>
+                  {line.requestLine.description}
+                </Typography>
+                <LineageLink lineageId={line.requestLine.lineageId} />
+              </Stack>
+              <Typography variant="body2" color="text.secondary">
+                {t('comparison.columns.quantity')}:{' '}
+                <DecimalDisplay value={line.requestLine.quantity} />{' '}
+                {line.requestLine.unit ?? '—'}
+              </Typography>
+              <Divider />
+              {suppliers.map((supplier) => {
+                const offer = findOffer(line.offers, supplier.companyId);
+                return (
+                  <Box key={supplier.companyId}>
+                    <Stack spacing={0.5}>
+                      <Typography variant="subtitle2">{supplier.name}</Typography>
+                      <QuoteStatusBadge status={supplier.status} />
+                      {offer ? (
+                        <Stack spacing={0.25}>
+                          <Typography variant="body2">
+                            {t('comparison.cell.unitPrice')}:{' '}
+                            <DecimalDisplay value={offer.unitPrice} />
+                          </Typography>
+                          <Typography variant="body2">
+                            {t('comparison.cell.quantity')}:{' '}
+                            <DecimalDisplay value={offer.quantity} />
+                          </Typography>
+                          <Typography variant="body2">
+                            {t('comparison.cell.total')}:{' '}
+                            <DecimalDisplay value={offer.lineTotal} /> {offer.currency}
+                          </Typography>
+                        </Stack>
+                      ) : (
+                        <Typography variant="body2" color="text.secondary">
+                          —
+                        </Typography>
+                      )}
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </Stack>
+          </CardContent>
+        </Card>
+      ))}
+    </Stack>
+  );
+}
+
 export function QuoteComparisonPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation(['quotes', 'selections']);
   const { requestId } = useParams<{ requestId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
@@ -208,6 +289,8 @@ export function QuoteComparisonPage() {
           <Typography color="text.secondary">
             {t('comparison.empty')}
           </Typography>
+        ) : isMobile ? (
+          <ComparisonMobileCards lines={tableData} suppliers={suppliers} />
         ) : (
           <Box>
             <MaterialReactTable table={table} />

@@ -1,0 +1,29 @@
+{
+  "tabs": {
+    "ariaLabel": "Document sections",
+    "details": "Details",
+    "comments": "Comments",
+    "activity": "Activity",
+    "trace": "Trace",
+    "related": "Related"
+  },
+  "comments": {
+    "placeholder": "Write a comment…",
+    "submit": "Post comment",
+    "charCount": "{{count}} / {{max}} characters",
+    "maxLength": "Comment must be at most {{max}} characters",
+    "required": "Comment cannot be empty",
+    "empty": "No comments yet.",
+    "loadMore": "Load more comments",
+    "loadingMore": "Loading…",
+    "postSuccess": "Comment posted",
+    "postError": "Failed to post comment"
+  },
+  "activity": {
+    "empty": "No activity yet.",
+    "loadMore": "Load more activity",
+    "loadingMore": "Loading…",
+    "systemActor": "System",
+    "unknownEvent": "Activity recorded"
+  }
+}

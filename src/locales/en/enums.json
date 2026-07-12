@@ -1,0 +1,97 @@
+{
+  "materialRequestStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "quoting": "Quoting",
+    "partially_ordered": "Partially ordered",
+    "ordered": "Ordered",
+    "closed": "Closed"
+  },
+  "supplierQuoteStatus": {
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "partially_accepted": "Partially accepted",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "expired": "Expired"
+  },
+  "purchaseSelectionStatus": {
+    "draft": "Draft",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled"
+  },
+  "supplierInvoiceStatus": {
+    "draft": "Draft",
+    "issued": "Issued",
+    "partially_paid": "Partially paid",
+    "paid": "Paid",
+    "confirmed": "Confirmed"
+  },
+  "paymentStatus": {
+    "pending": "Pending",
+    "uploaded": "Uploaded",
+    "confirmed": "Confirmed",
+    "rejected": "Rejected"
+  },
+  "shippingInvoiceStatus": {
+    "draft": "Draft",
+    "issued": "Issued",
+    "in_transit": "In transit",
+    "delivered": "Delivered"
+  },
+  "consolidationStatus": {
+    "draft": "Draft",
+    "planned": "Planned",
+    "in_transit": "In transit",
+    "customs": "Customs",
+    "delivered": "Delivered"
+  },
+  "transportMode": {
+    "road": "Road",
+    "air": "Air",
+    "rail": "Rail",
+    "sea": "Sea"
+  },
+  "memberRole": {
+    "owner": "Owner",
+    "admin": "Admin",
+    "procurement": "Procurement",
+    "supplier": "Supplier",
+    "accountant": "Accountant",
+    "viewer": "Viewer"
+  },
+  "activityEventType": {
+    "SELECTION_CREATED": "Selection created",
+    "SELECTION_LINE_ADDED": "Selection line added",
+    "SELECTION_LINE_UPDATED": "Selection line updated",
+    "SELECTION_LINE_REMOVED": "Selection line removed",
+    "SELECTION_CONFIRMED": "Selection confirmed",
+    "SELECTION_CANCELLED": "Selection cancelled",
+    "INVOICE_CREATED": "Invoice created",
+    "INVOICE_LINE_ADDED": "Invoice line added",
+    "INVOICE_LINE_UPDATED": "Invoice line updated",
+    "INVOICE_LINE_REMOVED": "Invoice line removed",
+    "INVOICE_ISSUED": "Invoice issued",
+    "INVOICE_CONFIRMED": "Invoice confirmed",
+    "PAYMENT_REGISTERED": "Payment registered",
+    "PAYMENT_UPLOADED": "Payment proof uploaded",
+    "PAYMENT_CONFIRMED": "Payment confirmed",
+    "PAYMENT_REJECTED": "Payment rejected",
+    "SHIPPING_INVOICE_CREATED": "Shipping invoice created",
+    "SHIPPING_INVOICE_ISSUED": "Shipping invoice issued",
+    "SHIPPING_INVOICE_IN_TRANSIT": "Shipping invoice in transit",
+    "SHIPPING_INVOICE_DELIVERED": "Shipping invoice delivered",
+    "SHIPPING_LINE_ADDED": "Shipping line added",
+    "SHIPPING_LINE_UPDATED": "Shipping line updated",
+    "SHIPPING_LINE_REMOVED": "Shipping line removed",
+    "CONSOLIDATION_CREATED": "Consolidation created",
+    "CONSOLIDATION_PLANNED": "Consolidation planned",
+    "CONSOLIDATION_IN_TRANSIT": "Consolidation in transit",
+    "CONSOLIDATION_CUSTOMS": "Consolidation at customs",
+    "CONSOLIDATION_DELIVERED": "Consolidation delivered",
+    "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "Shipping invoice added to consolidation",
+    "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "Shipping invoice removed from consolidation",
+    "REQUEST_IMPORTED_FROM_INTEGRATION": "Request imported from integration",
+    "REQUEST_UPDATED_FROM_INTEGRATION": "Request updated from integration"
+  }
+}

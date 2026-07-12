@@ -1,0 +1,81 @@
+{
+  "title": "Traceability",
+  "subtitle": "Search traceable request lines across the procurement chain.",
+  "search": {
+    "placeholder": "Search description or reference",
+    "statusFilter": "Pipeline status",
+    "statusAll": "All statuses",
+    "requestFilter": "Request ID",
+    "apply": "Search",
+    "empty": "No traceable lines found."
+  },
+  "columns": {
+    "lineageId": "Lineage",
+    "description": "Description",
+    "quantity": "Quantity",
+    "request": "Request",
+    "pipelineStatus": "Status",
+    "updatedAt": "Updated"
+  },
+  "pipelineStatus": {
+    "unknown": "Unknown",
+    "quoted": "Quoted",
+    "selected": "Selected",
+    "invoiced": "Invoiced",
+    "shipped": "Shipped",
+    "consolidated": "Consolidated"
+  },
+  "detail": {
+    "title": "Lineage trace",
+    "requestLine": "Request line",
+    "auditEvents": "Audit events",
+    "backToSearch": "Back to search",
+    "openRequest": "Open request: {{title}}",
+    "loading": "Loading trace…",
+    "notFound": "Lineage trace not found"
+  },
+  "pipeline": {
+    "emptyStage": "Not reached yet",
+    "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
+    "invoiceMeta": "{{supplier}} · {{payments}} payment(s)",
+    "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
+    "consolidationTransport": "Transport: {{mode}}",
+    "consolidationViaShipping": "Via shipping invoice",
+    "stages": {
+      "request": "Material request",
+      "quotes": "Supplier quotes",
+      "selections": "Purchase selections",
+      "invoices": "Invoices",
+      "shipments": "Shipping invoices",
+      "consolidations": "Consolidations"
+    }
+  },
+  "events": {
+    "empty": "No audit events for this lineage.",
+    "loadMore": "Load more events",
+    "loadingMore": "Loading…"
+  },
+  "documentTrace": {
+    "empty": "No traceable lines on this document.",
+    "paymentHint": "Payments are traced through the parent invoice lines.",
+    "openInvoice": "Open invoice {{id}}",
+    "searchByRequest": "Search all lines for this request",
+    "viewFull": "View full trace",
+    "actions": "Actions"
+  },
+  "related": {
+    "empty": "No related documents.",
+    "connections": "Connections",
+    "edgeFormat": "{{from}} → {{to}} ({{relation}})",
+    "documentTypes": {
+      "MATERIAL_REQUEST": "Request",
+      "SUPPLIER_QUOTE": "Quote",
+      "PURCHASE_SELECTION": "Selection",
+      "INVOICE": "Invoice",
+      "PAYMENT": "Payment",
+      "SHIPPING_INVOICE": "Shipping",
+      "CONSOLIDATION": "Consolidation"
+    }
+  },
+  "relations": {}
+}

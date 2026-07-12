@@ -1,0 +1,23 @@
+{
+  "app": {
+    "title": "CHN",
+    "home": "首页",
+    "company": "公司",
+    "logout": "退出登录",
+    "profile": "个人资料",
+    "accountMenu": "账户菜单",
+    "openNav": "打开导航",
+    "closeNav": "关闭导航",
+    "notifications": "通知",
+    "welcome": "欢迎，{{company}}",
+    "homeSubtitle": "使用导航访问采购、财务和物流模块。",
+    "availableSections": "可用模块",
+    "noSections": "当前权限下无可用模块。",
+    "comingSoon": "此模块将在阶段 {{phase}} 开放。",
+    "language": "语言",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统"
+  }
+}

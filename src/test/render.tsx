@@ -3,12 +3,11 @@ import { render, type RenderOptions } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
-import { CssBaseline, ThemeProvider } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
 import { I18nextProvider } from 'react-i18next';
 
+import { AppThemeProvider } from '@/app/AppThemeProvider';
 import i18n from '@/app/i18n';
-import { theme } from '@/app/theme';
 import type { RootState } from '@/app/store';
 import { store } from '@/app/store';
 import { baseApi } from '@/api/baseApi';
@@ -52,14 +51,13 @@ export function renderWithProviders(
   function Wrapper({ children }: { children: ReactNode }) {
     return (
       <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <I18nextProvider i18n={i18n}>
+        <I18nextProvider i18n={i18n}>
+          <AppThemeProvider>
             <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
               <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
             </SnackbarProvider>
-          </I18nextProvider>
-        </ThemeProvider>
+          </AppThemeProvider>
+        </I18nextProvider>
       </Provider>
     );
   }

@@ -1,0 +1,97 @@
+{
+  "materialRequestStatus": {
+    "draft": "草稿",
+    "submitted": "已提交",
+    "quoting": "报价中",
+    "partially_ordered": "部分下单",
+    "ordered": "已下单",
+    "closed": "已关闭"
+  },
+  "supplierQuoteStatus": {
+    "draft": "草稿",
+    "submitted": "已提交",
+    "partially_accepted": "部分接受",
+    "accepted": "已接受",
+    "rejected": "已拒绝",
+    "expired": "已过期"
+  },
+  "purchaseSelectionStatus": {
+    "draft": "草稿",
+    "confirmed": "已确认",
+    "cancelled": "已取消"
+  },
+  "supplierInvoiceStatus": {
+    "draft": "草稿",
+    "issued": "已开具",
+    "partially_paid": "部分付款",
+    "paid": "已付款",
+    "confirmed": "已确认"
+  },
+  "paymentStatus": {
+    "pending": "待处理",
+    "uploaded": "已上传",
+    "confirmed": "已确认",
+    "rejected": "已拒绝"
+  },
+  "shippingInvoiceStatus": {
+    "draft": "草稿",
+    "issued": "已开具",
+    "in_transit": "运输中",
+    "delivered": "已送达"
+  },
+  "consolidationStatus": {
+    "draft": "草稿",
+    "planned": "已规划",
+    "in_transit": "运输中",
+    "customs": "清关",
+    "delivered": "已送达"
+  },
+  "transportMode": {
+    "road": "公路",
+    "air": "空运",
+    "rail": "铁路",
+    "sea": "海运"
+  },
+  "memberRole": {
+    "owner": "所有者",
+    "admin": "管理员",
+    "procurement": "采购",
+    "supplier": "供应商",
+    "accountant": "会计",
+    "viewer": "查看者"
+  },
+  "activityEventType": {
+    "SELECTION_CREATED": "选择已创建",
+    "SELECTION_LINE_ADDED": "选择行已添加",
+    "SELECTION_LINE_UPDATED": "选择行已更新",
+    "SELECTION_LINE_REMOVED": "选择行已删除",
+    "SELECTION_CONFIRMED": "选择已确认",
+    "SELECTION_CANCELLED": "选择已取消",
+    "INVOICE_CREATED": "发票已创建",
+    "INVOICE_LINE_ADDED": "发票行已添加",
+    "INVOICE_LINE_UPDATED": "发票行已更新",
+    "INVOICE_LINE_REMOVED": "发票行已删除",
+    "INVOICE_ISSUED": "发票已开具",
+    "INVOICE_CONFIRMED": "发票已确认",
+    "PAYMENT_REGISTERED": "付款已登记",
+    "PAYMENT_UPLOADED": "付款凭证已上传",
+    "PAYMENT_CONFIRMED": "付款已确认",
+    "PAYMENT_REJECTED": "付款已拒绝",
+    "SHIPPING_INVOICE_CREATED": "运输发票已创建",
+    "SHIPPING_INVOICE_ISSUED": "运输发票已开具",
+    "SHIPPING_INVOICE_IN_TRANSIT": "运输发票运输中",
+    "SHIPPING_INVOICE_DELIVERED": "运输发票已送达",
+    "SHIPPING_LINE_ADDED": "运输行已添加",
+    "SHIPPING_LINE_UPDATED": "运输行已更新",
+    "SHIPPING_LINE_REMOVED": "运输行已删除",
+    "CONSOLIDATION_CREATED": "集运已创建",
+    "CONSOLIDATION_PLANNED": "集运已规划",
+    "CONSOLIDATION_IN_TRANSIT": "集运运输中",
+    "CONSOLIDATION_CUSTOMS": "集运清关中",
+    "CONSOLIDATION_DELIVERED": "集运已送达",
+    "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "运输发票已添加到集运",
+    "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "运输发票已从集运中移除",
+    "REQUEST_IMPORTED_FROM_INTEGRATION": "申请已从集成导入",
+    "REQUEST_UPDATED_FROM_INTEGRATION": "申请已从集成更新"
+  }
+}

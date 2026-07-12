@@ -7,6 +7,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 
 import { authStorage } from '@/lib/authStorage';
+import { getUiLocale } from '@/lib/locale';
 import { clearSession, setTokens } from '@/store/slices/authSlice';
 import type { ApiError } from '@/types/api';
 
@@ -62,6 +63,8 @@ const rawBaseQuery = fetchBaseQuery({
     if (activeCompanyId) {
       headers.set('X-Company-Id', activeCompanyId);
     }
+
+    headers.set('Accept-Language', getUiLocale());
 
     return headers;
   },

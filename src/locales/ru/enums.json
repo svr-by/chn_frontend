@@ -1,0 +1,97 @@
+{
+  "materialRequestStatus": {
+    "draft": "Черновик",
+    "submitted": "Отправлено",
+    "quoting": "Формирование предложения",
+    "partially_ordered": "Частично заказано",
+    "ordered": "Заказано",
+    "closed": "Закрыто"
+  },
+  "supplierQuoteStatus": {
+    "draft": "Черновик",
+    "submitted": "Отправлено",
+    "partially_accepted": "Частично принято",
+    "accepted": "Принято",
+    "rejected": "Отклонено",
+    "expired": "Истёк"
+  },
+  "purchaseSelectionStatus": {
+    "draft": "Черновик",
+    "confirmed": "Подтверждено",
+    "cancelled": "Отменено"
+  },
+  "supplierInvoiceStatus": {
+    "draft": "Черновик",
+    "issued": "Выставлен",
+    "partially_paid": "Частично оплачено",
+    "paid": "Оплачено",
+    "confirmed": "Подтверждено"
+  },
+  "paymentStatus": {
+    "pending": "Ожидает",
+    "uploaded": "Загружено",
+    "confirmed": "Подтверждено",
+    "rejected": "Отклонено"
+  },
+  "shippingInvoiceStatus": {
+    "draft": "Черновик",
+    "issued": "Выставлен",
+    "in_transit": "В пути",
+    "delivered": "Доставлено"
+  },
+  "consolidationStatus": {
+    "draft": "Черновик",
+    "planned": "Запланировано",
+    "in_transit": "В пути",
+    "customs": "Таможня",
+    "delivered": "Доставлено"
+  },
+  "transportMode": {
+    "road": "Авто",
+    "air": "Авиа",
+    "rail": "Ж/д",
+    "sea": "Море"
+  },
+  "memberRole": {
+    "owner": "Владелец",
+    "admin": "Администратор",
+    "procurement": "Закупки",
+    "supplier": "Поставщик",
+    "accountant": "Бухгалтер",
+    "viewer": "Наблюдатель"
+  },
+  "activityEventType": {
+    "SELECTION_CREATED": "Выбор создан",
+    "SELECTION_LINE_ADDED": "Позиция выбора добавлена",
+    "SELECTION_LINE_UPDATED": "Позиция выбора обновлена",
+    "SELECTION_LINE_REMOVED": "Позиция выбора удалена",
+    "SELECTION_CONFIRMED": "Выбор подтверждён",
+    "SELECTION_CANCELLED": "Выбор отменён",
+    "INVOICE_CREATED": "Счёт создан",
+    "INVOICE_LINE_ADDED": "Позиция счёта добавлена",
+    "INVOICE_LINE_UPDATED": "Позиция счёта обновлена",
+    "INVOICE_LINE_REMOVED": "Позиция счёта удалена",
+    "INVOICE_ISSUED": "Счёт выставлен",
+    "INVOICE_CONFIRMED": "Счёт подтверждён",
+    "PAYMENT_REGISTERED": "Платёж зарегистрирован",
+    "PAYMENT_UPLOADED": "Подтверждение платежа загружено",
+    "PAYMENT_CONFIRMED": "Платёж подтверждён",
+    "PAYMENT_REJECTED": "Платёж отклонён",
+    "SHIPPING_INVOICE_CREATED": "Транспортная накладная создана",
+    "SHIPPING_INVOICE_ISSUED": "Транспортная накладная выставлена",
+    "SHIPPING_INVOICE_IN_TRANSIT": "Транспортная накладная в пути",
+    "SHIPPING_INVOICE_DELIVERED": "Транспортная накладная доставлена",
+    "SHIPPING_LINE_ADDED": "Позиция доставки добавлена",
+    "SHIPPING_LINE_UPDATED": "Позиция доставки обновлена",
+    "SHIPPING_LINE_REMOVED": "Позиция доставки удалена",
+    "CONSOLIDATION_CREATED": "Консолидация создана",
+    "CONSOLIDATION_PLANNED": "Консолидация запланирована",
+    "CONSOLIDATION_IN_TRANSIT": "Консолидация в пути",
+    "CONSOLIDATION_CUSTOMS": "Консолидация на таможне",
+    "CONSOLIDATION_DELIVERED": "Консолидация доставлена",
+    "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "Транспортная накладная добавлена в консолидацию",
+    "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "Транспортная накладная удалена из консолидации",
+    "REQUEST_IMPORTED_FROM_INTEGRATION": "Заявка импортирована из интеграции",
+    "REQUEST_UPDATED_FROM_INTEGRATION": "Заявка обновлена из интеграции"
+  }
+}

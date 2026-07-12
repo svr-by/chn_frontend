@@ -1,0 +1,8 @@
+{
+  "title": "个人资料",
+  "subtitle": "您的账户详情。",
+  "name": "名称：{{name}}",
+  "email": "邮箱：{{email}}",
+  "emailVerified": "邮箱已验证",
+  "emailNotVerified": "邮箱未验证"
+}

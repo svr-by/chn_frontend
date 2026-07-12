@@ -1,0 +1,207 @@
+{
+  "title": "Интеграции",
+  "subtitle": "Управление API-ключами, сопоставлениями внешних кодов, webhook и массовым экспортом данных.",
+  "noPermission": "У вас нет прав на управление интеграциями.",
+  "tabs": {
+    "apiKeys": "API-ключи",
+    "mappings": "Сопоставления",
+    "webhooks": "Webhooks",
+    "exports": "Экспорт"
+  },
+  "common": {
+    "cancel": "Отмена",
+    "edit": "Редактировать",
+    "delete": "Удалить",
+    "save": "Сохранить"
+  },
+  "secretReveal": {
+    "apiKeyTitle": "API-ключ создан",
+    "webhookTitle": "Секрет webhook",
+    "warning": "Скопируйте это значение сейчас. После закрытия окна оно больше не будет показано.",
+    "copy": "Копировать в буфер обмена",
+    "copied": "Скопировано в буфер обмена",
+    "copiedHint": "Сохраните надёжно на своей стороне перед закрытием.",
+    "copyFailed": "Не удалось скопировать в буфер обмена",
+    "dismiss": "Я сохранил(а)"
+  },
+  "scopeGroups": {
+    "members": "Команда и компания",
+    "partners": "Партнёры",
+    "catalog": "Каталог",
+    "procurement": "Закупки",
+    "finance": "Финансы",
+    "logistics": "Логистика",
+    "other": "Другое"
+  },
+  "scopes": {
+    "manageMembers": "Управление участниками",
+    "manageMemberPermissions": "Управление правами участников",
+    "manageCompany": "Управление компанией",
+    "viewMembers": "Просмотр участников",
+    "viewPartners": "Просмотр партнёров",
+    "managePartners": "Управление партнёрами",
+    "viewProducts": "Просмотр товаров",
+    "manageProducts": "Управление товарами",
+    "viewRequests": "Просмотр заявок",
+    "manageRequests": "Управление заявками",
+    "viewQuotes": "Просмотр коммерческих предложений",
+    "manageQuotes": "Управление коммерческими предложениями",
+    "viewSelections": "Просмотр выбора предложений",
+    "manageSelections": "Управление выбором предложений",
+    "viewInvoices": "Просмотр счетов",
+    "manageInvoices": "Управление счетами",
+    "viewPayments": "Просмотр платежей",
+    "managePayments": "Управление платежами",
+    "confirmPayments": "Подтвердить платежи",
+    "viewShippingInvoices": "Просмотр транспортных накладных",
+    "manageShippingInvoices": "Управление транспортными накладными",
+    "viewConsolidations": "Просмотр консолидаций",
+    "manageConsolidations": "Управление консолидациями",
+    "viewNotifications": "Просмотр уведомлений",
+    "viewTrace": "Просмотр трассировки",
+    "manageIntegrations": "Управление интеграциями"
+  },
+  "apiKeys": {
+    "title": "API-ключи",
+    "create": "Создать API-ключ",
+    "created": "API-ключ создан",
+    "revoked": "API-ключ отозван",
+    "revoke": "Отозвать",
+    "revokeTitle": "Отозвать API-ключ",
+    "revokeConfirm": "Внешние системы, использующие этот ключ, потеряют доступ. Продолжить?",
+    "revokedLabel": "Отозван",
+    "scopeCount": "области доступа",
+    "empty": "API-ключей пока нет.",
+    "presets": {
+      "readOnly": "Предустановка только для чтения",
+      "fullAccess": "Предустановка полного доступа",
+      "clear": "Очистить всё"
+    },
+    "fields": {
+      "name": "Название ключа",
+      "expiresAt": "Срок действия (необязательно)",
+      "expiresAtHint": "Оставьте пустым для бессрочного ключа."
+    },
+    "columns": {
+      "name": "Название",
+      "prefix": "Префикс",
+      "scopes": "Области доступа",
+      "lastUsed": "Последнее использование",
+      "expires": "Истекает",
+      "actions": "Действия"
+    }
+  },
+  "mappingTypes": {
+    "COUNTERPARTY_CODE": "Код контрагента",
+    "PRODUCT_SKU": "SKU товара"
+  },
+  "mappings": {
+    "title": "Сопоставления партнёров и товаров",
+    "create": "Создать сопоставление",
+    "edit": "Редактировать сопоставление",
+    "created": "Сопоставление создано",
+    "updated": "Сопоставление обновлено",
+    "deleted": "Сопоставление удалено",
+    "deleteTitle": "Удалить сопоставление",
+    "deleteConfirm": "Удалить это сопоставление внешнего кода?",
+    "empty": "Сопоставлений пока нет.",
+    "fields": {
+      "type": "Тип сопоставления",
+      "internalKey": "Внутренний ключ",
+      "externalCode": "Внешний код"
+    },
+    "internalKeyHints": {
+      "COUNTERPARTY_CODE": "Идентификатор партнёра в CHN (ID компании или ИНН).",
+      "PRODUCT_SKU": "SKU товара из вашего каталога."
+    },
+    "columns": {
+      "type": "Тип",
+      "internalKey": "Внутренний ключ",
+      "externalCode": "Внешний код",
+      "actions": "Действия"
+    }
+  },
+  "webhooks": {
+    "title": "Webhooks",
+    "create": "Создать webhook",
+    "edit": "Редактировать webhook",
+    "created": "Webhook создан",
+    "updated": "Webhook обновлён",
+    "deleted": "Webhook удалён",
+    "deleteTitle": "Удалить webhook",
+    "deleteConfirm": "Удалить эту конечную точку webhook?",
+    "empty": "Webhook пока нет.",
+    "eventCount": "события",
+    "eventTypesHint": "Выберите события жизненного цикла документов для подписки.",
+    "fields": {
+      "url": "URL конечной точки",
+      "eventTypes": "Типы событий",
+      "isActive": "Активный"
+    },
+    "columns": {
+      "url": "URL",
+      "events": "События",
+      "status": "Статус",
+      "actions": "Действия"
+    },
+    "status": {
+      "active": "Активный",
+      "inactive": "Неактивный"
+    }
+  },
+  "webhookEventTypes": {
+    "SELECTION_CREATED": "Выбор создан",
+    "SELECTION_CONFIRMED": "Выбор подтверждён",
+    "SELECTION_CANCELLED": "Выбор отменён",
+    "INVOICE_CREATED": "Счёт создан",
+    "INVOICE_ISSUED": "Счёт выставлен",
+    "INVOICE_CONFIRMED": "Счёт подтверждён",
+    "PAYMENT_REGISTERED": "Платёж зарегистрирован",
+    "PAYMENT_CONFIRMED": "Платёж подтверждён",
+    "PAYMENT_REJECTED": "Платёж отклонён",
+    "SHIPPING_INVOICE_CREATED": "Транспортная накладная создана",
+    "SHIPPING_INVOICE_ISSUED": "Транспортная накладная выставлена",
+    "SHIPPING_INVOICE_IN_TRANSIT": "Транспортная накладная в пути",
+    "SHIPPING_INVOICE_DELIVERED": "Транспортная накладная доставлена",
+    "CONSOLIDATION_CREATED": "Консолидация создана",
+    "CONSOLIDATION_PLANNED": "Консолидация запланирована",
+    "CONSOLIDATION_IN_TRANSIT": "Консолидация в пути",
+    "CONSOLIDATION_CUSTOMS": "Консолидация на таможне",
+    "CONSOLIDATION_DELIVERED": "Консолидация доставлена",
+    "REQUEST_IMPORTED_FROM_INTEGRATION": "Заявка импортирована из интеграции",
+    "REQUEST_UPDATED_FROM_INTEGRATION": "Заявка обновлена из интеграции"
+  },
+  "exportTypes": {
+    "REQUESTS": "Заявки на материалы",
+    "INVOICES": "Счета",
+    "SHIPPING_INVOICES": "Транспортные накладные",
+    "CONSOLIDATIONS": "Консолидации",
+    "LINEAGE": "Трассировки происхождения"
+  },
+  "exports": {
+    "title": "Массовые задания экспорта",
+    "workerHint": "Экспорт требует backend worker (npm run worker). Без него задания могут завершиться ошибкой.",
+    "start": "Запустить экспорт",
+    "started": "Задание экспорта запущено",
+    "reset": "Очистить задание",
+    "download": "Скачать файл экспорта",
+    "downloaded": "Файл экспорта скачан",
+    "downloadFailed": "Не удалось скачать файл экспорта",
+    "failedGeneric": "Задание экспорта не выполнено. Проверьте логи worker и повторите попытку.",
+    "jobStatus": "Статус задания: {{status}}",
+    "fields": {
+      "type": "Тип экспорта",
+      "status": "Фильтр по статусу",
+      "statusHint": "Необязательный фильтр по статусу документа.",
+      "updatedSince": "Обновлено с",
+      "partnerCompanyId": "ID компании-партнёра"
+    },
+    "status": {
+      "unknown": "Неизвестно",
+      "PENDING": "Ожидает",
+      "PROCESSING": "Обработка",
+      "COMPLETED": "Завершено",
+      "FAILED": "Ошибка"
+    }
+  }
+}

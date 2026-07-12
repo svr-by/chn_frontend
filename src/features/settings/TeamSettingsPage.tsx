@@ -40,6 +40,13 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { getApiLocale } from '@/lib/locale';
 import type { MemberRole } from '@/types/api';
 
+function formatMemberRole(
+  t: (key: string) => string,
+  role: MemberRole,
+): string {
+  return t(`enums:memberRole.${role.toLowerCase()}`);
+}
+
 const inviteSchema = z.object({
   email: z.string().email(),
   role: z.enum([
@@ -217,10 +224,14 @@ export function TeamSettingsPage() {
               <TableCell>
                 <PermissionGate
                   permission="manageMembers"
-                  fallback={<Typography variant="body2">{member.role}</Typography>}
+                  fallback={
+                    <Typography variant="body2">
+                      {formatMemberRole(t, member.role)}
+                    </Typography>
+                  }
                 >
                   {member.role === 'OWNER' ? (
-                    member.role
+                    formatMemberRole(t, member.role)
                   ) : (
                     <Select
                       size="small"
@@ -235,7 +246,7 @@ export function TeamSettingsPage() {
                     >
                       {assignableRoles.map((role) => (
                         <MenuItem key={role} value={role}>
-                          {role}
+                          {formatMemberRole(t, role)}
                         </MenuItem>
                       ))}
                     </Select>
@@ -278,7 +289,7 @@ export function TeamSettingsPage() {
           {(invitationsQuery.data?.invitations ?? []).map((invitation) => (
             <TableRow key={invitation.id}>
               <TableCell>{invitation.email}</TableCell>
-              <TableCell>{invitation.role}</TableCell>
+              <TableCell>{formatMemberRole(t, invitation.role)}</TableCell>
               <TableCell>
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="body2">
@@ -330,7 +341,7 @@ export function TeamSettingsPage() {
               >
                 {assignableRoles.map((role) => (
                   <MenuItem key={role} value={role}>
-                    {role}
+                    {formatMemberRole(t, role)}
                   </MenuItem>
                 ))}
               </Select>

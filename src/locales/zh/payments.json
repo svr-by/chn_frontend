@@ -1,0 +1,69 @@
+{
+  "title": "付款",
+  "subtitle": "已登记的付款及凭证上传。",
+  "columns": {
+    "invoice": "发票",
+    "amount": "金额",
+    "status": "状态",
+    "createdAt": "已创建"
+  },
+  "actions": {
+    "register": "登记付款",
+    "upload": "上传凭证",
+    "confirm": "确认付款",
+    "reject": "拒绝付款",
+    "dismiss": "关闭",
+    "backToList": "返回付款"
+  },
+  "statusFilter": {
+    "label": "状态",
+    "all": "全部状态",
+    "pending": "待处理",
+    "uploaded": "已上传",
+    "confirmed": "已确认",
+    "rejected": "已拒绝"
+  },
+  "filter": {
+    "invoice": "按发票 {{id}} 筛选",
+    "clearInvoice": "清除筛选"
+  },
+  "empty": {
+    "list": "未找到付款。"
+  },
+  "register": {
+    "title": "登记付款",
+    "amount": "金额",
+    "notes": "备注"
+  },
+  "upload": {
+    "title": "上传付款凭证",
+    "dropIdle": "将凭证文件拖放到此处",
+    "dropActive": "在此释放文件",
+    "hint": "PDF 或图片文件 (.pdf, .jpg, .png)",
+    "browse": "浏览文件",
+    "selected": "已选择：{{name}}",
+    "clear": "清除"
+  },
+  "reject": {
+    "title": "拒绝付款",
+    "message": "请说明拒绝此付款的原因。",
+    "reason": "拒绝原因"
+  },
+  "detail": {
+    "fallbackTitle": "付款 {{id}}",
+    "amount": "金额",
+    "invoice": "发票",
+    "fileName": "文件：{{name}}",
+    "uploadedAt": "已上传 {{date}}",
+    "confirmedAt": "已确认 {{date}}",
+    "rejectedAt": "已拒绝 {{date}}",
+    "rejectionReason": "原因：{{reason}}",
+    "notes": "备注：{{notes}}"
+  },
+  "toast": {
+    "uploaded": "付款凭证已上传",
+    "confirmed": "付款已确认",
+    "rejected": "付款已拒绝",
+    "notFound": "未找到付款"
+  }
+}

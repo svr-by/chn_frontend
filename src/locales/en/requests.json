@@ -1,0 +1,119 @@
+{
+  "title": "Requests",
+  "subtitle": "Outbound material requests for procurement.",
+  "tabs": {
+    "outbound": "Outbound",
+    "inbound": "Inbound"
+  },
+  "linesTitle": "Lines",
+  "columns": {
+    "title": "Title",
+    "reference": "Reference",
+    "status": "Status",
+    "submittedAt": "Submitted",
+    "createdAt": "Created",
+    "lineNumber": "#",
+    "description": "Description",
+    "product": "Product",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "notes": "Notes",
+    "lineage": "Trace",
+    "actions": "Actions"
+  },
+  "actions": {
+    "new": "New request",
+    "import": "Import CSV",
+    "inbound": "Inbound requests",
+    "distribute": "Distribute",
+    "compare": "Compare quotes",
+    "manageSelection": "Manage selection",
+    "create": "Create request",
+    "submit": "Submit",
+    "addLine": "Add line",
+    "editLine": "Edit",
+    "deleteLine": "Delete",
+    "save": "Save",
+    "saveHeader": "Save details",
+    "cancel": "Cancel",
+    "backToList": "Back to requests"
+  },
+  "statusFilter": {
+    "label": "Status",
+    "all": "All statuses",
+    "draft": "Draft",
+    "submitted": "Submitted",
+    "quoting": "Quoting",
+    "partially_ordered": "Partially ordered",
+    "ordered": "Ordered",
+    "closed": "Closed"
+  },
+  "empty": {
+    "list": "No requests found.",
+    "lines": "No lines yet. Add a line to continue."
+  },
+  "form": {
+    "newTitle": "New request",
+    "newSubtitle": "Create a draft request and add line items on the next screen.",
+    "title": "Title",
+    "reference": "Reference",
+    "notes": "Notes",
+    "product": "Product (optional)",
+    "productPlaceholder": "Search catalog",
+    "description": "Description",
+    "quantity": "Quantity",
+    "unit": "Unit",
+    "addLineTitle": "Add line",
+    "editLineTitle": "Edit line"
+  },
+  "confirm": {
+    "submitTitle": "Submit request",
+    "submitMessage": "Submit this request? Lines will no longer be editable.",
+    "deleteLineTitle": "Delete line",
+    "deleteLineMessage": "Remove this line from the request?"
+  },
+  "detail": {
+    "fallbackTitle": "Request {{id}}",
+    "reference": "Reference: {{reference}}",
+    "createdAt": "Created {{date}}",
+    "submittedAt": "Submitted {{date}}",
+    "selection": "Selection"
+  },
+  "toast": {
+    "created": "Request created",
+    "updated": "Request updated",
+    "submitted": "Request submitted",
+    "lineAdded": "Line added",
+    "lineUpdated": "Line updated",
+    "lineDeleted": "Line deleted",
+    "notFound": "Request not found"
+  },
+  "distribute": {
+    "title": "Distribute to suppliers",
+    "message": "Select partner companies to receive this request.",
+    "loading": "Loading partners…",
+    "empty": "No active partners found. Connect partners before distributing.",
+    "goToPartners": "Go to partners",
+    "toast": {
+      "success": "Request distributed to suppliers"
+    }
+  },
+  "inbound": {
+    "title": "Inbound requests",
+    "subtitle": "Material requests distributed to your company by buyers.",
+    "columns": {
+      "buyer": "Buyer",
+      "distributedAt": "Distributed"
+    },
+    "actions": {
+      "createQuote": "Create quote",
+      "openQuote": "Open quote"
+    },
+    "empty": {
+      "list": "No inbound requests found."
+    },
+    "toast": {
+      "quoteCreated": "Quote created"
+    }
+  }
+}

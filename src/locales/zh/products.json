@@ -1,0 +1,45 @@
+{
+  "title": "产品",
+  "subtitle": "管理公司商品目录。",
+  "columns": {
+    "name": "名称",
+    "sku": "SKU",
+    "unit": "单位",
+    "isActive": "状态",
+    "updatedAt": "已更新",
+    "actions": "操作"
+  },
+  "actions": {
+    "create": "添加产品",
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消"
+  },
+  "search": {
+    "label": "搜索",
+    "placeholder": "名称或 SKU",
+    "submit": "搜索"
+  },
+  "filter": {
+    "label": "状态",
+    "all": "全部",
+    "active": "活跃",
+    "inactive": "未活跃"
+  },
+  "empty": {
+    "list": "未找到产品。"
+  },
+  "form": {
+    "createTitle": "添加产品",
+    "editTitle": "编辑产品",
+    "name": "名称",
+    "sku": "SKU",
+    "unit": "单位",
+    "description": "描述",
+    "isActive": "活跃"
+  },
+  "toast": {
+    "created": "产品已创建",
+    "updated": "产品已更新"
+  }
+}

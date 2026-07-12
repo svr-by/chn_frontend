@@ -1,0 +1,102 @@
+{
+  "title": "Консолидации",
+  "subtitle": "Группируйте доставленные транспортные накладные для отслеживания перевозки.",
+  "shippingInvoicesTitle": "Транспортные накладные",
+  "columns": {
+    "buyer": "Покупатель",
+    "supplier": "Поставщик",
+    "shippingInvoice": "Транспортная накладная",
+    "status": "Статус",
+    "transportMode": "Вид транспорта",
+    "trackingNumber": "Трек №",
+    "carrier": "Перевозчик",
+    "origin": "Пункт отправления",
+    "destination": "Пункт назначения",
+    "shippingInvoiceCount": "Отправки",
+    "plannedAt": "Запланировано",
+    "deliveredAt": "Доставлено",
+    "lineNumber": "#",
+    "notes": "Примечания",
+    "actions": "Действия"
+  },
+  "actions": {
+    "create": "Создать консолидацию",
+    "plan": "Запланировать консолидацию",
+    "markInTransit": "Отметить как отправленное",
+    "markCustoms": "Отметить на таможне",
+    "markDelivered": "Отметить как доставленное",
+    "addShippingInvoice": "Добавить транспортную накладную",
+    "removeShippingInvoice": "Удалить",
+    "saveHeader": "Сохранить данные",
+    "dismiss": "Закрыть",
+    "backToList": "Назад к консолидациям"
+  },
+  "statusFilter": {
+    "label": "Статус",
+    "all": "Все статусы",
+    "draft": "Черновик",
+    "planned": "Запланировано",
+    "in_transit": "В пути",
+    "customs": "Таможня",
+    "delivered": "Доставлено"
+  },
+  "empty": {
+    "list": "Консолидации не найдены.",
+    "shippingInvoices": "Транспортных накладных пока нет. Добавьте доставленную отправку, чтобы продолжить."
+  },
+  "form": {
+    "transportMode": "Вид транспорта",
+    "transportModeNone": "Не указано",
+    "carrier": "Перевозчик",
+    "trackingNumber": "Номер отслеживания",
+    "origin": "Пункт отправления",
+    "destination": "Пункт назначения",
+    "notes": "Примечания"
+  },
+  "create": {
+    "title": "Создать консолидацию",
+    "shippingInvoices": "Транспортные накладные",
+    "shippingInvoiceFallback": "Отправка {{id}}",
+    "shippingInvoiceOption": "{{id}} — {{supplier}} (отслеживание: {{tracking}})"
+  },
+  "addShippingInvoice": {
+    "title": "Добавить транспортную накладную",
+    "shippingInvoice": "Транспортная накладная"
+  },
+  "confirm": {
+    "planTitle": "Запланировать консолидацию",
+    "planMessage": "Запланировать эту консолидацию? Транспортные накладные больше нельзя будет редактировать.",
+    "inTransitTitle": "Отметить как отправленное",
+    "inTransitMessage": "Отметить эту консолидацию как отправленную?",
+    "customsTitle": "Отметить на таможне",
+    "customsMessage": "Отметить эту консолидацию как находящуюся на таможне?",
+    "deliveredTitle": "Отметить как доставленное",
+    "deliveredMessage": "Отметить эту консолидацию как доставленную?",
+    "removeShippingInvoiceTitle": "Удалить транспортную накладную",
+    "removeShippingInvoiceMessage": "Удалить эту транспортную накладную из консолидации?"
+  },
+  "detail": {
+    "fallbackTitle": "Консолидация {{id}}",
+    "buyer": "Покупатель: {{name}}",
+    "transportMode": "Транспорт: {{value}}",
+    "carrier": "Перевозчик: {{value}}",
+    "trackingNumber": "Отслеживание: {{value}}",
+    "origin": "Пункт отправления: {{value}}",
+    "destination": "Пункт назначения: {{value}}",
+    "plannedAt": "Запланировано {{date}}",
+    "inTransitAt": "В пути {{date}}",
+    "customsAt": "Таможня {{date}}",
+    "deliveredAt": "Доставлено {{date}}"
+  },
+  "toast": {
+    "updated": "Консолидация обновлена",
+    "planned": "Консолидация запланирована",
+    "inTransit": "Консолидация отмечена как отправленная",
+    "customs": "Консолидация отмечена на таможне",
+    "delivered": "Консолидация отмечена как доставленная",
+    "shippingInvoiceRemoved": "Транспортная накладная удалена",
+    "notFound": "Консолидация не найдена",
+    "noConsolidatable": "Нет доставленных транспортных накладных для консолидации.",
+    "notConsolidatable": "Эта транспортная накладная не подходит для консолидации."
+  }
+}

@@ -83,7 +83,17 @@ export function DocumentDetailLayout({
           {meta ? <Box sx={{ mt: 1 }}>{meta}</Box> : null}
         </Box>
         {actions ? (
-          <Stack direction="row" spacing={1} flexWrap="wrap">
+          <Stack
+            direction="row"
+            spacing={1}
+            flexWrap="wrap"
+            sx={{
+              width: { xs: '100%', sm: 'auto' },
+              '& .MuiButton-root': {
+                width: { xs: '100%', sm: 'auto' },
+              },
+            }}
+          >
             {actions}
           </Stack>
         ) : null}

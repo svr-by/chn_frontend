@@ -1,0 +1,81 @@
+{
+  "title": "可追溯性",
+  "subtitle": "在采购链中搜索可溯源的申请行。",
+  "search": {
+    "placeholder": "搜索描述或参考号",
+    "statusFilter": "流程状态",
+    "statusAll": "全部状态",
+    "requestFilter": "申请 ID",
+    "apply": "搜索",
+    "empty": "未找到可溯源行。"
+  },
+  "columns": {
+    "lineageId": "溯源链",
+    "description": "描述",
+    "quantity": "数量",
+    "request": "申请",
+    "pipelineStatus": "状态",
+    "updatedAt": "已更新"
+  },
+  "pipelineStatus": {
+    "unknown": "未知",
+    "quoted": "已报价",
+    "selected": "已选择",
+    "invoiced": "已开票",
+    "shipped": "已发货",
+    "consolidated": "已集运"
+  },
+  "detail": {
+    "title": "溯源追踪",
+    "requestLine": "申请行",
+    "auditEvents": "审计事件",
+    "backToSearch": "返回搜索",
+    "openRequest": "打开申请：{{title}}",
+    "loading": "正在加载溯源…",
+    "notFound": "未找到溯源追踪"
+  },
+  "pipeline": {
+    "emptyStage": "尚未到达",
+    "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
+    "invoiceMeta": "{{supplier}} · {{payments}} 笔付款",
+    "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
+    "consolidationTransport": "运输：{{mode}}",
+    "consolidationViaShipping": "通过运输发票",
+    "stages": {
+      "request": "物料申请",
+      "quotes": "供应商报价",
+      "selections": "采购选择",
+      "invoices": "发票",
+      "shipments": "运输发票",
+      "consolidations": "集运"
+    }
+  },
+  "events": {
+    "empty": "此溯源链暂无审计事件。",
+    "loadMore": "加载更多事件",
+    "loadingMore": "加载中…"
+  },
+  "documentTrace": {
+    "empty": "此文档无可溯源行。",
+    "paymentHint": "付款通过父发票行进行溯源。",
+    "openInvoice": "打开发票 {{id}}",
+    "searchByRequest": "搜索此申请的所有行",
+    "viewFull": "查看完整溯源",
+    "actions": "操作"
+  },
+  "related": {
+    "empty": "暂无关联文档。",
+    "connections": "连接",
+    "edgeFormat": "{{from}} → {{to}}（{{relation}}）",
+    "documentTypes": {
+      "MATERIAL_REQUEST": "申请",
+      "SUPPLIER_QUOTE": "报价",
+      "PURCHASE_SELECTION": "选择",
+      "INVOICE": "发票",
+      "PAYMENT": "付款",
+      "SHIPPING_INVOICE": "运输",
+      "CONSOLIDATION": "集运"
+    }
+  },
+  "relations": {}
+}

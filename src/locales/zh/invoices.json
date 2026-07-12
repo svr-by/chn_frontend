@@ -1,0 +1,117 @@
+{
+  "title": "发票",
+  "subtitle": "已确认采购选择对应的供应商发票。",
+  "linesTitle": "行",
+  "paymentsTitle": "付款",
+  "tabs": {
+    "inbound": "入站",
+    "outbound": "出站"
+  },
+  "columns": {
+    "buyer": "买方",
+    "supplier": "供应商",
+    "request": "申请",
+    "status": "状态",
+    "invoiceNumber": "发票 #",
+    "issuedAt": "已开具",
+    "createdAt": "已创建",
+    "lineNumber": "#",
+    "requestLine": "申请行",
+    "quantity": "数量",
+    "unitPrice": "单价",
+    "lineTotal": "行合计",
+    "lineage": "溯源",
+    "notes": "备注",
+    "actions": "操作"
+  },
+  "paymentsColumns": {
+    "status": "状态",
+    "amount": "金额",
+    "actions": "操作"
+  },
+  "amounts": {
+    "total": "合计",
+    "confirmedPaid": "已确认付款",
+    "remaining": "剩余"
+  },
+  "actions": {
+    "create": "创建发票",
+    "issue": "开具发票",
+    "confirmInvoice": "确认发票",
+    "addLine": "添加行",
+    "editLine": "编辑",
+    "deleteLine": "删除",
+    "save": "保存",
+    "saveHeader": "保存详情",
+    "dismiss": "关闭",
+    "backToList": "返回发票",
+    "registerPayment": "登记付款",
+    "viewPayment": "查看付款",
+    "createShippingInvoice": "创建运输发票"
+  },
+  "statusFilter": {
+    "label": "状态",
+    "all": "全部状态",
+    "draft": "草稿",
+    "issued": "已开具",
+    "partially_paid": "部分付款",
+    "paid": "已付款",
+    "confirmed": "已确认"
+  },
+  "filter": {
+    "request": "按申请 {{id}} 筛选",
+    "clearRequest": "清除筛选"
+  },
+  "empty": {
+    "list": "未找到发票。",
+    "lines": "暂无行。请添加一行以继续。",
+    "billableLines": "暂无可开票行。"
+  },
+  "form": {
+    "invoiceNumber": "发票号码",
+    "notes": "备注",
+    "requestLine": "申请行",
+    "maxQuantity": "最大数量",
+    "quantity": "数量",
+    "billableLine": "可开票行",
+    "billableLineOption": "{{description}} — 数量 {{quantity}} @ {{price}}（合计 {{total}}）",
+    "addLineTitle": "添加行",
+    "editLineTitle": "编辑行"
+  },
+  "create": {
+    "title": "创建发票",
+    "request": "物料申请"
+  },
+  "confirm": {
+    "issueTitle": "开具发票",
+    "issueMessage": "开具此发票？行项目将不可编辑，且可登记付款。",
+    "confirmTitle": "确认发票",
+    "confirmMessage": "确认此发票已完全核对？",
+    "deleteLineTitle": "删除行",
+    "deleteLineMessage": "从发票中移除此行？"
+  },
+  "detail": {
+    "fallbackTitle": "发票 {{id}}",
+    "titleWithNumber": "发票 {{number}}",
+    "supplier": "供应商：{{name}}",
+    "buyer": "买方：{{name}}",
+    "request": "申请",
+    "selection": "选择",
+    "issuedAt": "已开具 {{date}}",
+    "confirmedAt": "已确认 {{date}}",
+    "payments": "付款",
+    "viewPayments": "查看付款",
+    "shipping": "运输",
+    "viewShipping": "查看运输发票"
+  },
+  "toast": {
+    "updated": "发票已更新",
+    "issued": "发票已开具",
+    "confirmed": "发票已确认",
+    "lineAdded": "行已添加",
+    "lineUpdated": "行已更新",
+    "lineDeleted": "行已删除",
+    "notFound": "未找到发票",
+    "noBillableLines": "此申请暂无可开票行。"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "requests": "Requests",
+  "products": "Products",
+  "quotes": "Quotes",
+  "selections": "Selections",
+  "invoices": "Invoices",
+  "payments": "Payments",
+  "shipping": "Shipping invoices",
+  "consolidations": "Consolidations",
+  "trace": "Trace",
+  "partners": "Partners",
+  "team": "Team",
+  "integrations": "Integrations"
+}

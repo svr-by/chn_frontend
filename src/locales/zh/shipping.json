@@ -1,0 +1,115 @@
+{
+  "title": "运输发票",
+  "subtitle": "与供应商发票关联的运输申报。",
+  "linesTitle": "行",
+  "tabs": {
+    "inbound": "入站",
+    "outbound": "出站"
+  },
+  "columns": {
+    "buyer": "买方",
+    "supplier": "供应商",
+    "supplierInvoice": "发票",
+    "request": "申请",
+    "status": "状态",
+    "trackingNumber": "跟踪号 #",
+    "carrier": "承运商",
+    "lineCount": "行",
+    "issuedAt": "已开具",
+    "deliveredAt": "已送达",
+    "lineNumber": "#",
+    "requestLine": "申请行",
+    "quantity": "数量",
+    "lineage": "溯源",
+    "notes": "备注",
+    "actions": "操作"
+  },
+  "actions": {
+    "create": "创建运输发票",
+    "issue": "开具运输发票",
+    "markInTransit": "标记为运输中",
+    "markDelivered": "标记为已送达",
+    "createConsolidation": "创建集运",
+    "addLine": "添加行",
+    "editLine": "编辑",
+    "deleteLine": "删除",
+    "save": "保存",
+    "saveHeader": "保存详情",
+    "dismiss": "关闭",
+    "backToList": "返回运输发票"
+  },
+  "statusFilter": {
+    "label": "状态",
+    "all": "全部状态",
+    "draft": "草稿",
+    "issued": "已开具",
+    "in_transit": "运输中",
+    "delivered": "已送达"
+  },
+  "filter": {
+    "supplierInvoice": "按发票 {{id}} 筛选",
+    "clearSupplierInvoice": "清除发票筛选",
+    "request": "按申请 {{id}} 筛选",
+    "clearRequest": "清除筛选"
+  },
+  "empty": {
+    "list": "未找到运输发票。",
+    "lines": "暂无行。请添加一行以继续。",
+    "shippableLines": "暂无可发货行。"
+  },
+  "form": {
+    "trackingNumber": "跟踪号",
+    "carrier": "承运商",
+    "notes": "备注",
+    "requestLine": "申请行",
+    "maxQuantity": "最大数量",
+    "quantity": "数量",
+    "remainingQuantity": "剩余",
+    "invoiceQuantity": "已开票",
+    "shippedQuantity": "已发货",
+    "shippableLine": "发票行",
+    "shippableLineOption": "{{description}} — 剩余 {{remaining}}（已开票 {{invoice}}，已发货 {{shipped}}）",
+    "addLineTitle": "添加行",
+    "editLineTitle": "编辑行"
+  },
+  "create": {
+    "title": "创建运输发票",
+    "supplierInvoice": "供应商发票",
+    "invoiceFallback": "发票 {{id}}"
+  },
+  "confirm": {
+    "issueTitle": "开具运输发票",
+    "issueMessage": "开具此运输发票？行项目将不可编辑。",
+    "inTransitTitle": "标记为运输中",
+    "inTransitMessage": "将此发货单标记为运输中？",
+    "deliveredTitle": "标记为已送达",
+    "deliveredMessage": "将此发货单标记为已送达？",
+    "deleteLineTitle": "删除行",
+    "deleteLineMessage": "从运输发票中移除此行？"
+  },
+  "detail": {
+    "fallbackTitle": "运输 {{id}}",
+    "supplier": "供应商：{{name}}",
+    "buyer": "买方：{{name}}",
+    "supplierInvoice": "发票",
+    "request": "申请",
+    "trackingNumber": "跟踪：{{value}}",
+    "carrier": "承运商：{{value}}",
+    "issuedAt": "已开具 {{date}}",
+    "inTransitAt": "运输中 {{date}}",
+    "deliveredAt": "已送达 {{date}}",
+    "consolidations": "集运",
+    "viewConsolidations": "查看集运"
+  },
+  "toast": {
+    "updated": "运输发票已更新",
+    "issued": "运输发票已开具",
+    "inTransit": "发货单已标记为运输中",
+    "delivered": "发货单已标记为已送达",
+    "lineAdded": "行已添加",
+    "lineUpdated": "行已更新",
+    "lineDeleted": "行已删除",
+    "notFound": "未找到运输发票",
+    "noShippableLines": "此发票暂无可发货行。"
+  }
+}

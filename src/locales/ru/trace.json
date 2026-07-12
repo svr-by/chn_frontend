@@ -1,0 +1,81 @@
+{
+  "title": "Прослеживаемость",
+  "subtitle": "Поиск отслеживаемых позиций заявок по цепочке закупок.",
+  "search": {
+    "placeholder": "Поиск по описанию или референсу",
+    "statusFilter": "Статус в цепочке",
+    "statusAll": "Все статусы",
+    "requestFilter": "ID заявки",
+    "apply": "Поиск",
+    "empty": "Отслеживаемые позиции не найдены."
+  },
+  "columns": {
+    "lineageId": "Происхождение",
+    "description": "Описание",
+    "quantity": "Количество",
+    "request": "Заявка",
+    "pipelineStatus": "Статус",
+    "updatedAt": "Обновлено"
+  },
+  "pipelineStatus": {
+    "unknown": "Неизвестно",
+    "quoted": "Предложено",
+    "selected": "Выбрано",
+    "invoiced": "Выставлен счёт",
+    "shipped": "Отгружено",
+    "consolidated": "Консолидировано"
+  },
+  "detail": {
+    "title": "Трассировка происхождения",
+    "requestLine": "Позиция заявки",
+    "auditEvents": "События аудита",
+    "backToSearch": "Назад к поиску",
+    "openRequest": "Открыть заявку: {{title}}",
+    "loading": "Загрузка трассировки…",
+    "notFound": "Трассировка происхождения не найдена"
+  },
+  "pipeline": {
+    "emptyStage": "Ещё не достигнуто",
+    "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
+    "invoiceMeta": "{{supplier}} · {{payments}} платеж(ей)",
+    "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
+    "consolidationTransport": "Транспорт: {{mode}}",
+    "consolidationViaShipping": "Через транспортную накладную",
+    "stages": {
+      "request": "Заявка на материалы",
+      "quotes": "Предложения поставщиков",
+      "selections": "Закупочный выбор",
+      "invoices": "Счета",
+      "shipments": "Транспортные накладные",
+      "consolidations": "Консолидации"
+    }
+  },
+  "events": {
+    "empty": "Нет событий аудита для этой цепочки происхождения.",
+    "loadMore": "Загрузить ещё события",
+    "loadingMore": "Загрузка…"
+  },
+  "documentTrace": {
+    "empty": "На этом документе нет отслеживаемых позиций.",
+    "paymentHint": "Платежи отслеживаются через родительские позиции счёта.",
+    "openInvoice": "Открыть счёт {{id}}",
+    "searchByRequest": "Искать все позиции этой заявки",
+    "viewFull": "Просмотреть полную трассировку",
+    "actions": "Действия"
+  },
+  "related": {
+    "empty": "Связанных документов нет.",
+    "connections": "Подключения",
+    "edgeFormat": "{{from}} → {{to}} ({{relation}})",
+    "documentTypes": {
+      "MATERIAL_REQUEST": "Заявка",
+      "SUPPLIER_QUOTE": "Коммерческое предложение",
+      "PURCHASE_SELECTION": "Выбор",
+      "INVOICE": "Счёт",
+      "PAYMENT": "Платёж",
+      "SHIPPING_INVOICE": "Доставка",
+      "CONSOLIDATION": "Консолидация"
+    }
+  },
+  "relations": {}
+}

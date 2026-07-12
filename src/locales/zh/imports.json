@@ -1,0 +1,59 @@
+{
+  "title": "从 CSV 导入申请",
+  "subtitle": "上传 CSV 文件，预览解析行并创建草稿申请。",
+  "noPermission": "您没有导入申请的权限。",
+  "workerHint": "最终导入需要后端 worker (npm run worker)。预览无需 worker。",
+  "upload": {
+    "dropIdle": "将 CSV 文件拖放到此处",
+    "dropActive": "在此释放文件",
+    "hint": "仅支持 CSV 文件 (.csv)",
+    "browse": "浏览文件",
+    "selected": "已选择：{{name}}",
+    "clear": "清除"
+  },
+  "format": {
+    "fieldDelimiter": "列分隔符",
+    "decimalSeparator": "小数分隔符",
+    "title": "申请标题",
+    "titlePlaceholder": "新申请的可选标题",
+    "delimiters": {
+      ",": "逗号 (,)",
+      ";": "分号 (;)",
+      "tab": "制表符"
+    },
+    "decimals": {
+      ".": "点 (.)",
+      ",": "逗号 (,)"
+    }
+  },
+  "preview": {
+    "valid": "有效",
+    "columnMapping": "列映射",
+    "mappingEntry": "{{field}} → {{column}}",
+    "summary": {
+      "valid": "{{count}} 行有效",
+      "invalid": "{{count}} 行无效"
+    },
+    "columns": {
+      "rowNumber": "#",
+      "description": "描述",
+      "quantity": "数量",
+      "unit": "单位",
+      "sku": "SKU",
+      "notes": "备注",
+      "errors": "状态"
+    }
+  },
+  "actions": {
+    "preview": "预览",
+    "import": "导入",
+    "back": "返回申请列表"
+  },
+  "status": {
+    "parsing": "正在处理导入 ({{status}})…"
+  },
+  "toast": {
+    "imported": "申请导入成功",
+    "importFailed": "导入失败。请检查文件后重试。"
+  }
+}

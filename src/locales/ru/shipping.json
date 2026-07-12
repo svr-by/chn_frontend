@@ -1,0 +1,115 @@
+{
+  "title": "Транспортные накладные",
+  "subtitle": "Транспортные декларации, связанные со счетами поставщиков.",
+  "linesTitle": "Позиции",
+  "tabs": {
+    "inbound": "Входящие",
+    "outbound": "Исходящие"
+  },
+  "columns": {
+    "buyer": "Покупатель",
+    "supplier": "Поставщик",
+    "supplierInvoice": "Счёт",
+    "request": "Заявка",
+    "status": "Статус",
+    "trackingNumber": "Трек №",
+    "carrier": "Перевозчик",
+    "lineCount": "Позиции",
+    "issuedAt": "Выставлен",
+    "deliveredAt": "Доставлено",
+    "lineNumber": "#",
+    "requestLine": "Позиция заявки",
+    "quantity": "Количество",
+    "lineage": "Трассировка",
+    "notes": "Примечания",
+    "actions": "Действия"
+  },
+  "actions": {
+    "create": "Создать транспортную накладную",
+    "issue": "Выставить транспортную накладную",
+    "markInTransit": "Отметить как отправленное",
+    "markDelivered": "Отметить как доставленное",
+    "createConsolidation": "Создать консолидацию",
+    "addLine": "Добавить позицию",
+    "editLine": "Редактировать",
+    "deleteLine": "Удалить",
+    "save": "Сохранить",
+    "saveHeader": "Сохранить данные",
+    "dismiss": "Закрыть",
+    "backToList": "Назад к транспортным накладным"
+  },
+  "statusFilter": {
+    "label": "Статус",
+    "all": "Все статусы",
+    "draft": "Черновик",
+    "issued": "Выставлен",
+    "in_transit": "В пути",
+    "delivered": "Доставлено"
+  },
+  "filter": {
+    "supplierInvoice": "Отфильтровано по счёту {{id}}",
+    "clearSupplierInvoice": "Сбросить фильтр по счёту",
+    "request": "Отфильтровано по заявке {{id}}",
+    "clearRequest": "Сбросить фильтр"
+  },
+  "empty": {
+    "list": "Транспортные накладные не найдены.",
+    "lines": "Позиций пока нет. Добавьте позицию, чтобы продолжить.",
+    "shippableLines": "Нет доступных отгружаемых позиций."
+  },
+  "form": {
+    "trackingNumber": "Номер отслеживания",
+    "carrier": "Перевозчик",
+    "notes": "Примечания",
+    "requestLine": "Позиция заявки",
+    "maxQuantity": "Макс. количество",
+    "quantity": "Количество",
+    "remainingQuantity": "Остаток",
+    "invoiceQuantity": "Выставлен счёт",
+    "shippedQuantity": "Отгружено",
+    "shippableLine": "Позиция счёта",
+    "shippableLineOption": "{{description}} — остаток {{remaining}} (выставлено {{invoice}}, отгружено {{shipped}})",
+    "addLineTitle": "Добавить позицию",
+    "editLineTitle": "Редактировать позицию"
+  },
+  "create": {
+    "title": "Создать транспортную накладную",
+    "supplierInvoice": "Счёт поставщика",
+    "invoiceFallback": "Счёт {{id}}"
+  },
+  "confirm": {
+    "issueTitle": "Выставить транспортную накладную",
+    "issueMessage": "Выставить эту транспортную накладную? Позиции больше нельзя будет редактировать.",
+    "inTransitTitle": "Отметить как отправленное",
+    "inTransitMessage": "Отметить эту отправку как отправленную?",
+    "deliveredTitle": "Отметить как доставленное",
+    "deliveredMessage": "Отметить эту отправку как доставленную?",
+    "deleteLineTitle": "Удалить позицию",
+    "deleteLineMessage": "Удалить эту позицию из транспортной накладной?"
+  },
+  "detail": {
+    "fallbackTitle": "Доставка {{id}}",
+    "supplier": "Поставщик: {{name}}",
+    "buyer": "Покупатель: {{name}}",
+    "supplierInvoice": "Счёт",
+    "request": "Заявка",
+    "trackingNumber": "Отслеживание: {{value}}",
+    "carrier": "Перевозчик: {{value}}",
+    "issuedAt": "Выставлен {{date}}",
+    "inTransitAt": "В пути {{date}}",
+    "deliveredAt": "Доставлено {{date}}",
+    "consolidations": "Консолидации",
+    "viewConsolidations": "Просмотр консолидаций"
+  },
+  "toast": {
+    "updated": "Транспортная накладная обновлена",
+    "issued": "Транспортная накладная выставлена",
+    "inTransit": "Отправка отмечена как отправленная",
+    "delivered": "Отправка отмечена как доставленная",
+    "lineAdded": "Позиция добавлена",
+    "lineUpdated": "Позиция обновлена",
+    "lineDeleted": "Позиция удалена",
+    "notFound": "Транспортная накладная не найдена",
+    "noShippableLines": "Нет отгружаемых позиций для этого счёта."
+  }
+}

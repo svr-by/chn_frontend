@@ -1,0 +1,207 @@
+{
+  "title": "集成",
+  "subtitle": "管理 API 密钥、外部代码映射、Webhook 和批量数据导出。",
+  "noPermission": "您没有管理集成的权限。",
+  "tabs": {
+    "apiKeys": "API 密钥",
+    "mappings": "映射",
+    "webhooks": "Webhooks",
+    "exports": "导出"
+  },
+  "common": {
+    "cancel": "取消",
+    "edit": "编辑",
+    "delete": "删除",
+    "save": "保存"
+  },
+  "secretReveal": {
+    "apiKeyTitle": "API 密钥已创建",
+    "webhookTitle": "Webhook 密钥",
+    "warning": "请立即复制此值。关闭对话框后将无法再次查看。",
+    "copy": "复制到剪贴板",
+    "copied": "已复制到剪贴板",
+    "copiedHint": "关闭前请在本地安全保存。",
+    "copyFailed": "复制到剪贴板失败",
+    "dismiss": "我已保存"
+  },
+  "scopeGroups": {
+    "members": "团队与公司",
+    "partners": "合作伙伴",
+    "catalog": "目录",
+    "procurement": "采购",
+    "finance": "财务",
+    "logistics": "物流",
+    "other": "其他"
+  },
+  "scopes": {
+    "manageMembers": "管理成员",
+    "manageMemberPermissions": "管理成员权限",
+    "manageCompany": "管理公司",
+    "viewMembers": "查看成员",
+    "viewPartners": "查看合作伙伴",
+    "managePartners": "管理合作伙伴",
+    "viewProducts": "查看产品",
+    "manageProducts": "管理产品",
+    "viewRequests": "查看申请",
+    "manageRequests": "管理申请",
+    "viewQuotes": "查看报价",
+    "manageQuotes": "管理报价",
+    "viewSelections": "查看采购选择",
+    "manageSelections": "管理采购选择",
+    "viewInvoices": "查看发票",
+    "manageInvoices": "管理发票",
+    "viewPayments": "查看付款",
+    "managePayments": "管理付款",
+    "confirmPayments": "确认付款",
+    "viewShippingInvoices": "查看运输发票",
+    "manageShippingInvoices": "管理运输发票",
+    "viewConsolidations": "查看集运",
+    "manageConsolidations": "管理集运",
+    "viewNotifications": "查看通知",
+    "viewTrace": "查看溯源",
+    "manageIntegrations": "管理集成"
+  },
+  "apiKeys": {
+    "title": "API 密钥",
+    "create": "创建 API 密钥",
+    "created": "API 密钥已创建",
+    "revoked": "API 密钥已撤销",
+    "revoke": "撤销",
+    "revokeTitle": "撤销 API 密钥",
+    "revokeConfirm": "使用此密钥的外部系统将失去访问权限。是否继续？",
+    "revokedLabel": "已撤销",
+    "scopeCount": "权限范围",
+    "empty": "暂无 API 密钥。",
+    "presets": {
+      "readOnly": "只读预设",
+      "fullAccess": "完全访问预设",
+      "clear": "全部清除"
+    },
+    "fields": {
+      "name": "密钥名称",
+      "expiresAt": "过期时间（可选）",
+      "expiresAtHint": "留空表示密钥永不过期。"
+    },
+    "columns": {
+      "name": "名称",
+      "prefix": "前缀",
+      "scopes": "权限范围",
+      "lastUsed": "上次使用",
+      "expires": "过期时间",
+      "actions": "操作"
+    }
+  },
+  "mappingTypes": {
+    "COUNTERPARTY_CODE": "交易方代码",
+    "PRODUCT_SKU": "产品 SKU"
+  },
+  "mappings": {
+    "title": "合作伙伴与产品映射",
+    "create": "创建映射",
+    "edit": "编辑映射",
+    "created": "映射已创建",
+    "updated": "映射已更新",
+    "deleted": "映射已删除",
+    "deleteTitle": "删除映射",
+    "deleteConfirm": "删除此外部代码映射？",
+    "empty": "暂无映射。",
+    "fields": {
+      "type": "映射类型",
+      "internalKey": "内部键",
+      "externalCode": "外部代码"
+    },
+    "internalKeyHints": {
+      "COUNTERPARTY_CODE": "CHN 中的合作伙伴标识（公司 ID 或税号）。",
+      "PRODUCT_SKU": "来自目录的产品 SKU。"
+    },
+    "columns": {
+      "type": "类型",
+      "internalKey": "内部键",
+      "externalCode": "外部代码",
+      "actions": "操作"
+    }
+  },
+  "webhooks": {
+    "title": "Webhooks",
+    "create": "创建 Webhook",
+    "edit": "编辑 Webhook",
+    "created": "Webhook 已创建",
+    "updated": "Webhook 已更新",
+    "deleted": "Webhook 已删除",
+    "deleteTitle": "删除 Webhook",
+    "deleteConfirm": "删除此 Webhook 端点？",
+    "empty": "暂无 Webhook。",
+    "eventCount": "事件",
+    "eventTypesHint": "选择要订阅的文档生命周期事件。",
+    "fields": {
+      "url": "端点 URL",
+      "eventTypes": "事件类型",
+      "isActive": "活跃"
+    },
+    "columns": {
+      "url": "URL",
+      "events": "事件",
+      "status": "状态",
+      "actions": "操作"
+    },
+    "status": {
+      "active": "活跃",
+      "inactive": "未活跃"
+    }
+  },
+  "webhookEventTypes": {
+    "SELECTION_CREATED": "选择已创建",
+    "SELECTION_CONFIRMED": "选择已确认",
+    "SELECTION_CANCELLED": "选择已取消",
+    "INVOICE_CREATED": "发票已创建",
+    "INVOICE_ISSUED": "发票已开具",
+    "INVOICE_CONFIRMED": "发票已确认",
+    "PAYMENT_REGISTERED": "付款已登记",
+    "PAYMENT_CONFIRMED": "付款已确认",
+    "PAYMENT_REJECTED": "付款已拒绝",
+    "SHIPPING_INVOICE_CREATED": "运输发票已创建",
+    "SHIPPING_INVOICE_ISSUED": "运输发票已开具",
+    "SHIPPING_INVOICE_IN_TRANSIT": "运输发票运输中",
+    "SHIPPING_INVOICE_DELIVERED": "运输发票已送达",
+    "CONSOLIDATION_CREATED": "集运已创建",
+    "CONSOLIDATION_PLANNED": "集运已规划",
+    "CONSOLIDATION_IN_TRANSIT": "集运运输中",
+    "CONSOLIDATION_CUSTOMS": "集运清关中",
+    "CONSOLIDATION_DELIVERED": "集运已送达",
+    "REQUEST_IMPORTED_FROM_INTEGRATION": "申请已从集成导入",
+    "REQUEST_UPDATED_FROM_INTEGRATION": "申请已从集成更新"
+  },
+  "exportTypes": {
+    "REQUESTS": "物料申请",
+    "INVOICES": "发票",
+    "SHIPPING_INVOICES": "运输发票",
+    "CONSOLIDATIONS": "集运",
+    "LINEAGE": "溯源追踪"
+  },
+  "exports": {
+    "title": "批量导出任务",
+    "workerHint": "导出任务需要后端 worker (npm run worker)。未运行时任务可能失败。",
+    "start": "开始导出",
+    "started": "导出任务已启动",
+    "reset": "清除任务",
+    "download": "下载导出文件",
+    "downloaded": "导出文件已下载",
+    "downloadFailed": "下载导出文件失败",
+    "failedGeneric": "导出任务失败。请检查 worker 日志后重试。",
+    "jobStatus": "任务状态：{{status}}",
+    "fields": {
+      "type": "导出类型",
+      "status": "状态筛选",
+      "statusHint": "可选的文档状态筛选。",
+      "updatedSince": "更新自",
+      "partnerCompanyId": "合作伙伴公司 ID"
+    },
+    "status": {
+      "unknown": "未知",
+      "PENDING": "待处理",
+      "PROCESSING": "处理中",
+      "COMPLETED": "已完成",
+      "FAILED": "失败"
+    }
+  }
+}

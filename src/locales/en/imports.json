@@ -1,0 +1,59 @@
+{
+  "title": "Import request from CSV",
+  "subtitle": "Upload a CSV file, preview parsed lines, and create a draft request.",
+  "noPermission": "You do not have permission to import requests.",
+  "workerHint": "Final import requires the backend worker (npm run worker). Preview works without it.",
+  "upload": {
+    "dropIdle": "Drag and drop a CSV file here",
+    "dropActive": "Drop the file here",
+    "hint": "CSV files only (.csv)",
+    "browse": "Browse files",
+    "selected": "Selected: {{name}}",
+    "clear": "Clear"
+  },
+  "format": {
+    "fieldDelimiter": "Column delimiter",
+    "decimalSeparator": "Decimal separator",
+    "title": "Request title",
+    "titlePlaceholder": "Optional title for the new request",
+    "delimiters": {
+      ",": "Comma (,)",
+      ";": "Semicolon (;)",
+      "tab": "Tab"
+    },
+    "decimals": {
+      ".": "Dot (.)",
+      ",": "Comma (,)"
+    }
+  },
+  "preview": {
+    "valid": "Valid",
+    "columnMapping": "Column mapping",
+    "mappingEntry": "{{field}} → {{column}}",
+    "summary": {
+      "valid": "{{count}} valid rows",
+      "invalid": "{{count}} invalid rows"
+    },
+    "columns": {
+      "rowNumber": "#",
+      "description": "Description",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "sku": "SKU",
+      "notes": "Notes",
+      "errors": "Status"
+    }
+  },
+  "actions": {
+    "preview": "Preview",
+    "import": "Import",
+    "back": "Back to requests"
+  },
+  "status": {
+    "parsing": "Processing import ({{status}})…"
+  },
+  "toast": {
+    "imported": "Request imported successfully",
+    "importFailed": "Import failed. Check the file and try again."
+  }
+}

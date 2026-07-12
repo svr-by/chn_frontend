@@ -1,0 +1,14 @@
+{
+  "title": "通知",
+  "markAllRead": "全部标记为已读",
+  "markAllReadSuccess": "所有通知已标记为已读",
+  "markAllReadError": "标记通知为已读失败",
+  "markReadError": "标记通知为已读失败",
+  "empty": "暂无通知。",
+  "loadMore": "加载更多",
+  "loadingMore": "加载中…",
+  "all": "全部",
+  "unreadOnly": "仅未读",
+  "viewAll": "查看全部通知",
+  "noPermission": "您没有查看通知的权限。"
+}

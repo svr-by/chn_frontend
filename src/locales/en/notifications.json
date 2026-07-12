@@ -1,0 +1,14 @@
+{
+  "title": "Notifications",
+  "markAllRead": "Mark all read",
+  "markAllReadSuccess": "All notifications marked as read",
+  "markAllReadError": "Failed to mark notifications as read",
+  "markReadError": "Failed to mark notification as read",
+  "empty": "No notifications.",
+  "loadMore": "Load more",
+  "loadingMore": "Loading…",
+  "all": "All",
+  "unreadOnly": "Unread only",
+  "viewAll": "View all notifications",
+  "noPermission": "You do not have permission to view notifications."
+}

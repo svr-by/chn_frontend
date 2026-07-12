@@ -4,6 +4,7 @@ import {
   type MRT_ColumnDef,
   type MRT_PaginationState,
 } from 'material-react-table';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 interface PaginatedTableProps<T extends object> {
   columns: MRT_ColumnDef<T>[];
@@ -32,6 +33,9 @@ export function PaginatedTable<T extends object>({
   onRowClick,
   getRowId,
 }: PaginatedTableProps<T>) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const table = useMaterialReactTable({
     columns,
     data,
@@ -43,6 +47,7 @@ export function PaginatedTable<T extends object>({
     manualPagination: true,
     rowCount,
     onPaginationChange,
+    layoutMode: isMobile ? 'grid-no-grow' : 'semantic',
     state: {
       pagination,
       isLoading,
@@ -55,6 +60,9 @@ export function PaginatedTable<T extends object>({
         })
       : undefined,
     getRowId: getRowId ? (row) => getRowId(row) : undefined,
+    muiTableContainerProps: {
+      sx: { overflowX: 'auto' },
+    },
     muiTablePaperProps: {
       elevation: 0,
       sx: { border: 1, borderColor: 'divider' },

@@ -1,0 +1,69 @@
+{
+  "title": "Payments",
+  "subtitle": "Registered payments and proof uploads.",
+  "columns": {
+    "invoice": "Invoice",
+    "amount": "Amount",
+    "status": "Status",
+    "createdAt": "Created"
+  },
+  "actions": {
+    "register": "Register payment",
+    "upload": "Upload proof",
+    "confirm": "Confirm payment",
+    "reject": "Reject payment",
+    "dismiss": "Dismiss",
+    "backToList": "Back to payments"
+  },
+  "statusFilter": {
+    "label": "Status",
+    "all": "All statuses",
+    "pending": "Pending",
+    "uploaded": "Uploaded",
+    "confirmed": "Confirmed",
+    "rejected": "Rejected"
+  },
+  "filter": {
+    "invoice": "Filtered by invoice {{id}}",
+    "clearInvoice": "Clear filter"
+  },
+  "empty": {
+    "list": "No payments found."
+  },
+  "register": {
+    "title": "Register payment",
+    "amount": "Amount",
+    "notes": "Notes"
+  },
+  "upload": {
+    "title": "Upload payment proof",
+    "dropIdle": "Drag and drop a proof file here",
+    "dropActive": "Drop the file here",
+    "hint": "PDF or image files (.pdf, .jpg, .png)",
+    "browse": "Browse files",
+    "selected": "Selected: {{name}}",
+    "clear": "Clear"
+  },
+  "reject": {
+    "title": "Reject payment",
+    "message": "Provide a reason for rejecting this payment.",
+    "reason": "Rejection reason"
+  },
+  "detail": {
+    "fallbackTitle": "Payment {{id}}",
+    "amount": "Amount",
+    "invoice": "Invoice",
+    "fileName": "File: {{name}}",
+    "uploadedAt": "Uploaded {{date}}",
+    "confirmedAt": "Confirmed {{date}}",
+    "rejectedAt": "Rejected {{date}}",
+    "rejectionReason": "Reason: {{reason}}",
+    "notes": "Notes: {{notes}}"
+  },
+  "toast": {
+    "uploaded": "Payment proof uploaded",
+    "confirmed": "Payment confirmed",
+    "rejected": "Payment rejected",
+    "notFound": "Payment not found"
+  }
+}

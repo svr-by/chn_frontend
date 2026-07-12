@@ -1,0 +1,29 @@
+{
+  "tabs": {
+    "ariaLabel": "文档模块",
+    "details": "详情",
+    "comments": "评论",
+    "activity": "活动",
+    "trace": "溯源",
+    "related": "关联"
+  },
+  "comments": {
+    "placeholder": "写评论…",
+    "submit": "发布评论",
+    "charCount": "{{count}} / {{max}} 个字符",
+    "maxLength": "评论最多 {{max}} 个字符",
+    "required": "评论不能为空",
+    "empty": "暂无评论。",
+    "loadMore": "加载更多评论",
+    "loadingMore": "加载中…",
+    "postSuccess": "评论已发布",
+    "postError": "发布评论失败"
+  },
+  "activity": {
+    "empty": "暂无活动。",
+    "loadMore": "加载更多活动",
+    "loadingMore": "加载中…",
+    "systemActor": "系统",
+    "unknownEvent": "活动已记录"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "title": "Partners",
+  "subtitle": "Manage partner company links for procurement and logistics.",
+  "tabs": {
+    "inbound": "Inbound",
+    "outbound": "Outbound",
+    "directory": "Directory"
+  },
+  "columns": {
+    "name": "Company",
+    "taxId": "Tax ID",
+    "country": "Country",
+    "status": "Status",
+    "invitedAt": "Invited",
+    "actions": "Actions"
+  },
+  "actions": {
+    "invite": "Invite partner",
+    "accept": "Accept",
+    "reject": "Reject",
+    "search": "Search",
+    "cancel": "Cancel"
+  },
+  "search": {
+    "byName": "Search by name",
+    "byTaxId": "Search by tax ID",
+    "placeholderName": "Company name",
+    "placeholderTaxId": "Tax ID"
+  },
+  "empty": {
+    "inbound": "No inbound partner invitations yet.",
+    "outbound": "No outbound partner invitations yet.",
+    "directory": "Search for a company to invite as a partner.",
+    "noResults": "No companies found."
+  },
+  "status": {
+    "invited": "Invited",
+    "active": "Active",
+    "rejected": "Rejected"
+  },
+  "toast": {
+    "invited": "Partner invitation sent",
+    "accepted": "Partner invitation accepted",
+    "rejected": "Partner invitation rejected"
+  }
+}

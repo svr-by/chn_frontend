@@ -12,8 +12,11 @@ import {
   ListItemText,
   Menu,
   MenuItem,
+  Stack,
   Toolbar,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
@@ -21,6 +24,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useTranslation } from 'react-i18next';
 
+import { CompanySwitcher } from '@/components/CompanySwitcher';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeModeToggle } from '@/components/ThemeModeToggle';
 import { useLogout } from '@/hooks/useLogout';
 import { usePermissions } from '@/hooks/usePermissions';
 import { GlobalFetchProgress } from '@/components/GlobalFetchProgress';
@@ -29,6 +35,8 @@ import { navConfig } from '@/lib/navConfig';
 const DRAWER_WIDTH = 260;
 
 export function AppLayout() {
+  const theme = useTheme();
+  const isCompact = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation(['common', 'nav']);
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,6 +77,10 @@ export function AppLayout() {
         </Typography>
       </Toolbar>
       <Divider />
+      <Box sx={{ px: 2, py: 1.5, display: { xs: 'block', md: 'none' } }}>
+        <CompanySwitcher />
+      </Box>
+      <Divider sx={{ display: { xs: 'block', md: 'none' } }} />
       <List sx={{ flex: 1, px: 1 }}>
         <ListItemButton
           component={RouterLink}
@@ -79,7 +91,10 @@ export function AppLayout() {
           <ListItemIcon sx={{ minWidth: 40 }}>
             <HomeIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary={t('common:app.home')} />
+          <ListItemText
+            primary={t('common:app.home')}
+            primaryTypographyProps={{ noWrap: true }}
+          />
         </ListItemButton>
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
@@ -94,7 +109,10 @@ export function AppLayout() {
               <ListItemIcon sx={{ minWidth: 40 }}>
                 <Icon fontSize="small" />
               </ListItemIcon>
-              <ListItemText primary={t(`nav:${item.labelKey}`)} />
+              <ListItemText
+                primary={t(`nav:${item.labelKey}`)}
+                primaryTypographyProps={{ noWrap: true }}
+              />
             </ListItemButton>
           );
         })}
@@ -111,24 +129,48 @@ export function AppLayout() {
           width: '100%',
         }}
       >
-        <Toolbar sx={{ gap: 1 }}>
+        <Toolbar sx={{ gap: { xs: 0.5, sm: 1 }, minHeight: { xs: 56, sm: 64 } }}>
           <IconButton
             color="inherit"
             edge="start"
             onClick={toggleNav}
             aria-label={navOpen ? t('common:app.closeNav') : t('common:app.openNav')}
+            size="large"
           >
             <MenuIcon />
           </IconButton>
-          <Box sx={{ flex: 1 }} />
-          <NotificationBell />
-          <IconButton
-            color="inherit"
-            onClick={(event) => setUserMenuAnchor(event.currentTarget)}
-            aria-label={t('common:app.accountMenu')}
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ display: { xs: 'block', sm: 'none' }, mr: 1 }}
           >
-            <AccountCircleIcon />
-          </IconButton>
+            {t('common:app.title')}
+          </Typography>
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              minWidth: 0,
+            }}
+          >
+            <Box sx={{ display: { xs: 'none', md: 'block' }, minWidth: 0 }}>
+              <CompanySwitcher />
+            </Box>
+          </Box>
+          <Stack direction="row" alignItems="center" spacing={0}>
+            <LanguageSwitcher />
+            <ThemeModeToggle />
+            <NotificationBell />
+            <IconButton
+              color="inherit"
+              onClick={(event) => setUserMenuAnchor(event.currentTarget)}
+              aria-label={t('common:app.accountMenu')}
+              size="large"
+            >
+              <AccountCircleIcon />
+            </IconButton>
+          </Stack>
           <Menu
             anchorEl={userMenuAnchor}
             open={Boolean(userMenuAnchor)}
@@ -152,7 +194,7 @@ export function AppLayout() {
         sx={{
           zIndex: (muiTheme) => muiTheme.zIndex.drawer,
           '& .MuiDrawer-paper': {
-            width: DRAWER_WIDTH,
+            width: isCompact ? 'min(100vw, 320px)' : DRAWER_WIDTH,
             boxSizing: 'border-box',
           },
         }}
@@ -165,8 +207,8 @@ export function AppLayout() {
         sx={{
           flexGrow: 1,
           width: '100%',
-          p: 3,
-          mt: 8,
+          p: { xs: 2, sm: 3 },
+          mt: { xs: 7, sm: 8 },
         }}
       >
         <Outlet />

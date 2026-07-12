@@ -1,0 +1,14 @@
+{
+  "requests": "申请",
+  "products": "产品",
+  "quotes": "报价",
+  "selections": "采购选择",
+  "invoices": "发票",
+  "payments": "付款",
+  "shipping": "运输发票",
+  "consolidations": "集运",
+  "trace": "溯源",
+  "partners": "合作伙伴",
+  "team": "团队",
+  "integrations": "集成"
+}

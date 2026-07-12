@@ -1,0 +1,22 @@
+{
+  "title": "Team settings",
+  "activeMembers": "Active members",
+  "pendingInvitations": "Pending invitations",
+  "inviteMember": "Invite member",
+  "sendInvite": "Send invitation",
+  "inviteSent": "Invitation sent",
+  "invitationRevoked": "Invitation revoked",
+  "memberRemoved": "Member removed",
+  "roleUpdated": "Role updated",
+  "member": "Member",
+  "role": "Role",
+  "status": "Status",
+  "actions": "Actions",
+  "expiresAt": "Expires",
+  "expired": "Expired",
+  "revoke": "Revoke",
+  "remove": "Remove",
+  "cancel": "Cancel",
+  "removeMemberTitle": "Remove member",
+  "removeMemberConfirm": "This member will lose access to the company. Continue?"
+}

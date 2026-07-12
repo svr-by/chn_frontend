@@ -1,0 +1,102 @@
+{
+  "title": "集运",
+  "subtitle": "将已送达的运输发票分组以便运输跟踪。",
+  "shippingInvoicesTitle": "运输发票",
+  "columns": {
+    "buyer": "买方",
+    "supplier": "供应商",
+    "shippingInvoice": "运输发票",
+    "status": "状态",
+    "transportMode": "运输方式",
+    "trackingNumber": "跟踪号 #",
+    "carrier": "承运商",
+    "origin": "起运地",
+    "destination": "目的地",
+    "shippingInvoiceCount": "发货单",
+    "plannedAt": "已规划",
+    "deliveredAt": "已送达",
+    "lineNumber": "#",
+    "notes": "备注",
+    "actions": "操作"
+  },
+  "actions": {
+    "create": "创建集运",
+    "plan": "规划集运",
+    "markInTransit": "标记为运输中",
+    "markCustoms": "标记为清关中",
+    "markDelivered": "标记为已送达",
+    "addShippingInvoice": "添加运输发票",
+    "removeShippingInvoice": "移除",
+    "saveHeader": "保存详情",
+    "dismiss": "关闭",
+    "backToList": "返回集运"
+  },
+  "statusFilter": {
+    "label": "状态",
+    "all": "全部状态",
+    "draft": "草稿",
+    "planned": "已规划",
+    "in_transit": "运输中",
+    "customs": "清关",
+    "delivered": "已送达"
+  },
+  "empty": {
+    "list": "未找到集运。",
+    "shippingInvoices": "暂无运输发票。请添加已送达的发货单以继续。"
+  },
+  "form": {
+    "transportMode": "运输方式",
+    "transportModeNone": "未指定",
+    "carrier": "承运商",
+    "trackingNumber": "跟踪号",
+    "origin": "起运地",
+    "destination": "目的地",
+    "notes": "备注"
+  },
+  "create": {
+    "title": "创建集运",
+    "shippingInvoices": "运输发票",
+    "shippingInvoiceFallback": "发货单 {{id}}",
+    "shippingInvoiceOption": "{{id}} — {{supplier}}（跟踪：{{tracking}}）"
+  },
+  "addShippingInvoice": {
+    "title": "添加运输发票",
+    "shippingInvoice": "运输发票"
+  },
+  "confirm": {
+    "planTitle": "规划集运",
+    "planMessage": "规划此集运？运输发票将不可编辑。",
+    "inTransitTitle": "标记为运输中",
+    "inTransitMessage": "将此集运标记为运输中？",
+    "customsTitle": "标记为清关中",
+    "customsMessage": "将此集运标记为清关中？",
+    "deliveredTitle": "标记为已送达",
+    "deliveredMessage": "将此集运标记为已送达？",
+    "removeShippingInvoiceTitle": "移除运输发票",
+    "removeShippingInvoiceMessage": "从集运中移除此运输发票？"
+  },
+  "detail": {
+    "fallbackTitle": "集运 {{id}}",
+    "buyer": "买方：{{name}}",
+    "transportMode": "运输：{{value}}",
+    "carrier": "承运商：{{value}}",
+    "trackingNumber": "跟踪：{{value}}",
+    "origin": "起运地：{{value}}",
+    "destination": "目的地：{{value}}",
+    "plannedAt": "已规划 {{date}}",
+    "inTransitAt": "运输中 {{date}}",
+    "customsAt": "清关 {{date}}",
+    "deliveredAt": "已送达 {{date}}"
+  },
+  "toast": {
+    "updated": "集运已更新",
+    "planned": "集运已规划",
+    "inTransit": "集运已标记为运输中",
+    "customs": "集运已标记为清关中",
+    "delivered": "集运已标记为已送达",
+    "shippingInvoiceRemoved": "运输发票已移除",
+    "notFound": "未找到集运",
+    "noConsolidatable": "暂无可用于集运的已送达运输发票。",
+    "notConsolidatable": "此运输发票不符合集运条件。"
+  }
+}

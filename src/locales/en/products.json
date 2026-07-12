@@ -1,0 +1,45 @@
+{
+  "title": "Products",
+  "subtitle": "Manage your company product catalog.",
+  "columns": {
+    "name": "Name",
+    "sku": "SKU",
+    "unit": "Unit",
+    "isActive": "Status",
+    "updatedAt": "Updated",
+    "actions": "Actions"
+  },
+  "actions": {
+    "create": "Add product",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Name or SKU",
+    "submit": "Search"
+  },
+  "filter": {
+    "label": "Status",
+    "all": "All",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
+  "empty": {
+    "list": "No products found."
+  },
+  "form": {
+    "createTitle": "Add product",
+    "editTitle": "Edit product",
+    "name": "Name",
+    "sku": "SKU",
+    "unit": "Unit",
+    "description": "Description",
+    "isActive": "Active"
+  },
+  "toast": {
+    "created": "Product created",
+    "updated": "Product updated"
+  }
+}

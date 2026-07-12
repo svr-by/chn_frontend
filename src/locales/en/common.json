@@ -1,0 +1,23 @@
+{
+  "app": {
+    "title": "CHN",
+    "home": "Home",
+    "company": "Company",
+    "logout": "Log out",
+    "profile": "Profile",
+    "accountMenu": "Account menu",
+    "openNav": "Open navigation",
+    "closeNav": "Close navigation",
+    "notifications": "Notifications",
+    "welcome": "Welcome, {{company}}",
+    "homeSubtitle": "Use the navigation to access procurement, finance, and logistics modules.",
+    "availableSections": "Available sections",
+    "noSections": "No sections are available for your current permissions.",
+    "comingSoon": "This section will be available in Phase {{phase}}.",
+    "language": "Language",
+    "theme": "Theme",
+    "themeLight": "Light",
+    "themeDark": "Dark",
+    "themeSystem": "System"
+  }
+}

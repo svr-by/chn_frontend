@@ -1,0 +1,8 @@
+{
+  "title": "Профиль",
+  "subtitle": "Данные вашего аккаунта.",
+  "name": "Название: {{name}}",
+  "email": "Email: {{email}}",
+  "emailVerified": "Email подтверждён",
+  "emailNotVerified": "Email не подтверждён"
+}

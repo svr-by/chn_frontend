@@ -1,0 +1,117 @@
+{
+  "title": "Invoices",
+  "subtitle": "Supplier invoices for confirmed purchase selections.",
+  "linesTitle": "Lines",
+  "paymentsTitle": "Payments",
+  "tabs": {
+    "inbound": "Inbound",
+    "outbound": "Outbound"
+  },
+  "columns": {
+    "buyer": "Buyer",
+    "supplier": "Supplier",
+    "request": "Request",
+    "status": "Status",
+    "invoiceNumber": "Invoice #",
+    "issuedAt": "Issued",
+    "createdAt": "Created",
+    "lineNumber": "#",
+    "requestLine": "Request line",
+    "quantity": "Quantity",
+    "unitPrice": "Unit price",
+    "lineTotal": "Line total",
+    "lineage": "Trace",
+    "notes": "Notes",
+    "actions": "Actions"
+  },
+  "paymentsColumns": {
+    "status": "Status",
+    "amount": "Amount",
+    "actions": "Actions"
+  },
+  "amounts": {
+    "total": "Total",
+    "confirmedPaid": "Confirmed paid",
+    "remaining": "Remaining"
+  },
+  "actions": {
+    "create": "Create invoice",
+    "issue": "Issue invoice",
+    "confirmInvoice": "Confirm invoice",
+    "addLine": "Add line",
+    "editLine": "Edit",
+    "deleteLine": "Delete",
+    "save": "Save",
+    "saveHeader": "Save details",
+    "dismiss": "Dismiss",
+    "backToList": "Back to invoices",
+    "registerPayment": "Register payment",
+    "viewPayment": "View payment",
+    "createShippingInvoice": "Create shipping invoice"
+  },
+  "statusFilter": {
+    "label": "Status",
+    "all": "All statuses",
+    "draft": "Draft",
+    "issued": "Issued",
+    "partially_paid": "Partially paid",
+    "paid": "Paid",
+    "confirmed": "Confirmed"
+  },
+  "filter": {
+    "request": "Filtered by request {{id}}",
+    "clearRequest": "Clear filter"
+  },
+  "empty": {
+    "list": "No invoices found.",
+    "lines": "No lines yet. Add a line to continue.",
+    "billableLines": "No billable lines available."
+  },
+  "form": {
+    "invoiceNumber": "Invoice number",
+    "notes": "Notes",
+    "requestLine": "Request line",
+    "maxQuantity": "Max quantity",
+    "quantity": "Quantity",
+    "billableLine": "Billable line",
+    "billableLineOption": "{{description}} — qty {{quantity}} @ {{price}} (total {{total}})",
+    "addLineTitle": "Add line",
+    "editLineTitle": "Edit line"
+  },
+  "create": {
+    "title": "Create invoice",
+    "request": "Material request"
+  },
+  "confirm": {
+    "issueTitle": "Issue invoice",
+    "issueMessage": "Issue this invoice? Lines will no longer be editable and payments can be registered.",
+    "confirmTitle": "Confirm invoice",
+    "confirmMessage": "Confirm this invoice as fully reconciled?",
+    "deleteLineTitle": "Delete line",
+    "deleteLineMessage": "Remove this line from the invoice?"
+  },
+  "detail": {
+    "fallbackTitle": "Invoice {{id}}",
+    "titleWithNumber": "Invoice {{number}}",
+    "supplier": "Supplier: {{name}}",
+    "buyer": "Buyer: {{name}}",
+    "request": "Request",
+    "selection": "Selection",
+    "issuedAt": "Issued {{date}}",
+    "confirmedAt": "Confirmed {{date}}",
+    "payments": "Payments",
+    "viewPayments": "View payments",
+    "shipping": "Shipping",
+    "viewShipping": "View shipping invoices"
+  },
+  "toast": {
+    "updated": "Invoice updated",
+    "issued": "Invoice issued",
+    "confirmed": "Invoice confirmed",
+    "lineAdded": "Line added",
+    "lineUpdated": "Line updated",
+    "lineDeleted": "Line deleted",
+    "notFound": "Invoice not found",
+    "noBillableLines": "No billable lines available for this request."
+  }
+}

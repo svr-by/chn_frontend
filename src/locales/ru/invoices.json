@@ -1,0 +1,117 @@
+{
+  "title": "Счета",
+  "subtitle": "Счета поставщиков по подтверждённым закупочным выборам.",
+  "linesTitle": "Позиции",
+  "paymentsTitle": "Платежи",
+  "tabs": {
+    "inbound": "Входящие",
+    "outbound": "Исходящие"
+  },
+  "columns": {
+    "buyer": "Покупатель",
+    "supplier": "Поставщик",
+    "request": "Заявка",
+    "status": "Статус",
+    "invoiceNumber": "Счёт №",
+    "issuedAt": "Выставлен",
+    "createdAt": "Создано",
+    "lineNumber": "#",
+    "requestLine": "Позиция заявки",
+    "quantity": "Количество",
+    "unitPrice": "Цена за единицу",
+    "lineTotal": "Итого по позиции",
+    "lineage": "Трассировка",
+    "notes": "Примечания",
+    "actions": "Действия"
+  },
+  "paymentsColumns": {
+    "status": "Статус",
+    "amount": "Сумма",
+    "actions": "Действия"
+  },
+  "amounts": {
+    "total": "Итого",
+    "confirmedPaid": "Подтверждена оплата",
+    "remaining": "Остаток"
+  },
+  "actions": {
+    "create": "Создать счёт",
+    "issue": "Выставить счёт",
+    "confirmInvoice": "Подтвердить счёт",
+    "addLine": "Добавить позицию",
+    "editLine": "Редактировать",
+    "deleteLine": "Удалить",
+    "save": "Сохранить",
+    "saveHeader": "Сохранить данные",
+    "dismiss": "Закрыть",
+    "backToList": "Назад к счетам",
+    "registerPayment": "Зарегистрировать платёж",
+    "viewPayment": "Просмотр платежа",
+    "createShippingInvoice": "Создать транспортную накладную"
+  },
+  "statusFilter": {
+    "label": "Статус",
+    "all": "Все статусы",
+    "draft": "Черновик",
+    "issued": "Выставлен",
+    "partially_paid": "Частично оплачено",
+    "paid": "Оплачено",
+    "confirmed": "Подтверждено"
+  },
+  "filter": {
+    "request": "Отфильтровано по заявке {{id}}",
+    "clearRequest": "Сбросить фильтр"
+  },
+  "empty": {
+    "list": "Счета не найдены.",
+    "lines": "Позиций пока нет. Добавьте позицию, чтобы продолжить.",
+    "billableLines": "Нет доступных оплачиваемых позиций."
+  },
+  "form": {
+    "invoiceNumber": "Номер счёта",
+    "notes": "Примечания",
+    "requestLine": "Позиция заявки",
+    "maxQuantity": "Макс. количество",
+    "quantity": "Количество",
+    "billableLine": "Оплачиваемая позиция",
+    "billableLineOption": "{{description}} — кол-во {{quantity}} @ {{price}} (итого {{total}})",
+    "addLineTitle": "Добавить позицию",
+    "editLineTitle": "Редактировать позицию"
+  },
+  "create": {
+    "title": "Создать счёт",
+    "request": "Заявка на материалы"
+  },
+  "confirm": {
+    "issueTitle": "Выставить счёт",
+    "issueMessage": "Выставить этот счёт? Позиции больше нельзя будет редактировать, можно будет регистрировать платежи.",
+    "confirmTitle": "Подтвердить счёт",
+    "confirmMessage": "Подтвердить полную сверку этого счёта?",
+    "deleteLineTitle": "Удалить позицию",
+    "deleteLineMessage": "Удалить эту позицию из счёта?"
+  },
+  "detail": {
+    "fallbackTitle": "Счёт {{id}}",
+    "titleWithNumber": "Счёт {{number}}",
+    "supplier": "Поставщик: {{name}}",
+    "buyer": "Покупатель: {{name}}",
+    "request": "Заявка",
+    "selection": "Выбор",
+    "issuedAt": "Выставлен {{date}}",
+    "confirmedAt": "Подтверждено {{date}}",
+    "payments": "Платежи",
+    "viewPayments": "Просмотр платежей",
+    "shipping": "Доставка",
+    "viewShipping": "Просмотр транспортных накладных"
+  },
+  "toast": {
+    "updated": "Счёт обновлён",
+    "issued": "Счёт выставлен",
+    "confirmed": "Счёт подтверждён",
+    "lineAdded": "Позиция добавлена",
+    "lineUpdated": "Позиция обновлена",
+    "lineDeleted": "Позиция удалена",
+    "notFound": "Счёт не найден",
+    "noBillableLines": "Нет оплачиваемых позиций для этой заявки."
+  }
+}
