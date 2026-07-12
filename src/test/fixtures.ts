@@ -35,6 +35,10 @@ import type { LineageTrace } from '@/api/generated/models/lineageTrace';
 import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItem } from '@/api/generated/models/traceSearchItem';
 import type { DocumentRelationships } from '@/api/generated/models/documentRelationships';
+import type { CompanyApiKey } from '@/api/generated/models/companyApiKey';
+import type { PartnerExternalMapping } from '@/api/generated/models/partnerExternalMapping';
+import type { IntegrationWebhook } from '@/api/generated/models/integrationWebhook';
+import type { ExportJob } from '@/api/generated/models/exportJob';
 
 const COMPANY_ID = '00000000-0000-0000-0000-000000000010';
 const USER_ID = '00000000-0000-0000-0000-000000000001';
@@ -63,6 +67,10 @@ const LINEAGE_EVENT_ID = '00000000-0000-0000-0000-000000000180';
 const BUYER_COMPANY_ID = '00000000-0000-0000-0000-000000000080';
 const SUPPLIER_COMPANY_ID = COMPANY_ID;
 const IMPORT_JOB_ID = '00000000-0000-0000-0000-000000000060';
+const API_KEY_ID = '00000000-0000-0000-0000-000000000190';
+const MAPPING_ID = '00000000-0000-0000-0000-000000000191';
+const WEBHOOK_ID = '00000000-0000-0000-0000-000000000192';
+const EXPORT_JOB_ID = '00000000-0000-0000-0000-000000000193';
 
 export function createImportPreview(
   overrides: Partial<{
@@ -1055,6 +1063,70 @@ export function createDocumentRelationships(
   };
 }
 
+export function createApiKey(
+  overrides: Partial<CompanyApiKey> = {},
+): CompanyApiKey {
+  return {
+    id: API_KEY_ID,
+    companyId: COMPANY_ID,
+    name: 'ERP sync',
+    keyPrefix: 'chn_live_abcd',
+    scopes: ['viewRequests', 'viewInvoices'],
+    lastUsedAt: null,
+    expiresAt: null,
+    revokedAt: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createPartnerMapping(
+  overrides: Partial<PartnerExternalMapping> = {},
+): PartnerExternalMapping {
+  return {
+    id: MAPPING_ID,
+    companyId: COMPANY_ID,
+    mappingType: 'COUNTERPARTY_CODE',
+    internalKey: PARTNER_COMPANY_ID,
+    externalCode: 'EXT-001',
+    metadata: {},
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createIntegrationWebhook(
+  overrides: Partial<IntegrationWebhook> = {},
+): IntegrationWebhook {
+  return {
+    id: WEBHOOK_ID,
+    companyId: COMPANY_ID,
+    url: 'https://example.com/webhooks/chn',
+    eventTypes: ['INVOICE_ISSUED', 'PAYMENT_CONFIRMED'],
+    isActive: true,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createExportJob(
+  overrides: Partial<ExportJob> = {},
+): ExportJob {
+  return {
+    id: EXPORT_JOB_ID,
+    companyId: COMPANY_ID,
+    type: 'REQUESTS',
+    status: 'PENDING',
+    filters: {},
+    errorMessage: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
 export {
   COMPANY_ID,
   USER_ID,
@@ -1065,6 +1137,10 @@ export {
   REQUEST_ID,
   REQUEST_LINE_ID,
   IMPORT_JOB_ID,
+  API_KEY_ID,
+  MAPPING_ID,
+  WEBHOOK_ID,
+  EXPORT_JOB_ID,
   QUOTE_ID,
   QUOTE_LINE_ID,
   SELECTION_ID,
