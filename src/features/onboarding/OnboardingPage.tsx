@@ -31,9 +31,8 @@ import {
 import { setActiveCompanyId } from '@/store/slices/authSlice';
 
 const companySchema = z.object({
-  name: z.string().min(1),
+  name: z.string().min(3),
   taxId: z.string().optional(),
-  country: z.string().optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -58,7 +57,7 @@ export function OnboardingPage() {
     formState: { errors },
   } = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema),
-    defaultValues: { name: '', taxId: '', country: '' },
+    defaultValues: { name: '', taxId: '' },
   });
 
   useEffect(() => {
@@ -83,7 +82,6 @@ export function OnboardingPage() {
       const result = await createCompany({
         name: values.name,
         taxId: values.taxId || undefined,
-        country: values.country || undefined,
       }).unwrap();
       dispatch(setActiveCompanyId(result.company.id));
       enqueueSnackbar(t('companyCreated'), { variant: 'success' });
@@ -96,10 +94,10 @@ export function OnboardingPage() {
   return (
     <Card sx={{ width: '100%' }}>
       <CardContent sx={{ p: 4 }}>
-          <Typography variant="h5" component="h1" gutterBottom>
+          <Typography variant="h5" component="h1" gutterBottom textAlign="center">
             {t('onboardingTitle')}
           </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }} textAlign="center">
             {t('onboardingSubtitle')}
           </Typography>
 
@@ -145,7 +143,7 @@ export function OnboardingPage() {
             </Stack>
           )}
 
-          <Typography variant="h6" sx={{ mb: 2 }}>
+          <Typography variant="h6" sx={{ mb: 2 }} textAlign="center">
             {t('createCompany')}
           </Typography>
 
@@ -164,12 +162,6 @@ export function OnboardingPage() {
             <TextField
               {...register('taxId')}
               label={t('taxId')}
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              {...register('country')}
-              label={t('country')}
               fullWidth
               margin="normal"
             />

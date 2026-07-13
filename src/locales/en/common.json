@@ -1,6 +1,7 @@
 {
   "app": {
     "title": "CHN",
+    "tagline": "One board for your entire supply chain",
     "home": "Home",
     "company": "Company",
     "logout": "Log out",

@@ -6,10 +6,10 @@ export function AccessSuspendedPage() {
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom textAlign="center">
         {t('accessSuspendedTitle')}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="text.secondary" textAlign="center">
         {t('accessSuspendedSubtitle')}
       </Typography>
     </Box>

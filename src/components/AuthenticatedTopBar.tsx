@@ -1,14 +1,29 @@
+import LogoutIcon from '@mui/icons-material/Logout';
 import {
   AppBar,
-  Button,
+  Box,
+  IconButton,
+  Stack,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
+import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { ThemeModeToggle } from '@/components/ThemeModeToggle';
 import { useLogout } from '@/hooks/useLogout';
 import { authStorage } from '@/lib/authStorage';
+
+function LocaleThemeControls() {
+  return (
+    <Stack direction="row" alignItems="center">
+      <LanguageSwitcher />
+      <ThemeModeToggle />
+    </Stack>
+  );
+}
 
 export function AuthenticatedTopBar() {
   const { t } = useTranslation('common');
@@ -17,15 +32,33 @@ export function AuthenticatedTopBar() {
   const { logout, isLoggingOut } = useLogout();
 
   if (!hasSession) {
-    return null;
+    return (
+      <Stack
+        direction="row"
+        alignItems="center"
+        sx={{
+          position: 'fixed',
+          top: 8,
+          right: 8,
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+        }}
+      >
+        <LocaleThemeControls />
+      </Stack>
+    );
   }
 
   return (
-    <AppBar position="fixed" color="default" elevation={1}>
-      <Toolbar sx={{ gap: 2 }}>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          {t('app.title')}
-        </Typography>
+    <AppBar position="fixed" color="default" elevation={0}>
+      <Toolbar sx={{ gap: 1 }}>
+        <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
+          <Box
+            component="img"
+            src="/assets/logo_short.png"
+            alt={t('app.title')}
+            sx={{ display: 'block', height: 28, width: 'auto' }}
+          />
+        </Box>
         {data?.user.email && (
           <Typography
             variant="body2"
@@ -36,18 +69,19 @@ export function AuthenticatedTopBar() {
             {data.user.email}
           </Typography>
         )}
-        <Button
-          color="inherit"
-          onClick={() => void logout()}
-          disabled={isLoggingOut}
-        >
-          {t('app.logout')}
-        </Button>
+        <LocaleThemeControls />
+        <Tooltip title={t('app.logout')}>
+          <IconButton
+            color="inherit"
+            onClick={() => void logout()}
+            disabled={isLoggingOut}
+            aria-label={t('app.logout')}
+            size="large"
+          >
+            <LogoutIcon />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );
-}
-
-export function useHasAuthSession(): boolean {
-  return Boolean(authStorage.getRefreshToken());
 }

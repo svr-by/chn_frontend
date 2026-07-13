@@ -39,7 +39,6 @@ import { ProfilePage } from '@/features/settings/ProfilePage';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
-import { AuthStandaloneLayout } from '@/layouts/AuthStandaloneLayout';
 import { navConfig } from '@/lib/navConfig';
 import { AuthBootstrap } from '@/routes/AuthBootstrap';
 import { GuestRoute } from '@/routes/GuestRoute';
@@ -116,7 +115,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute requireCompany={false} allowSuspended />,
         children: [
           {
-            element: <AuthStandaloneLayout />,
+            element: <AuthLayout variant="plain" />,
             children: [
               { path: '/verify-email-prompt', element: <VerifyEmailPromptPage /> },
               { path: '/access-suspended', element: <AccessSuspendedPage /> },
@@ -128,7 +127,7 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute requireCompany={false} />,
         children: [
           {
-            element: <AuthStandaloneLayout />,
+            element: <AuthLayout variant="plain" />,
             children: [{ path: '/onboarding', element: <OnboardingPage /> }],
           },
         ],

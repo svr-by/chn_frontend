@@ -93,7 +93,7 @@ export function AppLayout() {
           </ListItemIcon>
           <ListItemText
             primary={t('common:app.home')}
-            primaryTypographyProps={{ noWrap: true }}
+            slotProps={{ primary: { noWrap: true } }}
           />
         </ListItemButton>
         {visibleNavItems.map((item) => {
@@ -111,7 +111,7 @@ export function AppLayout() {
               </ListItemIcon>
               <ListItemText
                 primary={t(`nav:${item.labelKey}`)}
-                primaryTypographyProps={{ noWrap: true }}
+                slotProps={{ primary: { noWrap: true } }}
               />
             </ListItemButton>
           );
@@ -139,13 +139,17 @@ export function AppLayout() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ display: { xs: 'block', sm: 'none' }, mr: 1 }}
-          >
-            {t('common:app.title')}
-          </Typography>
+          <Box
+            component="img"
+            src="/assets/logo_short_white.png"
+            alt={t('common:app.title')}
+            sx={{
+              display: { xs: 'block', sm: 'none' },
+              height: 28,
+              width: 'auto',
+              mr: 1,
+            }}
+          />
           <Box
             sx={{
               flex: 1,

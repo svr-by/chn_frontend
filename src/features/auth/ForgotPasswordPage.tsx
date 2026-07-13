@@ -41,11 +41,11 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
-      <Typography variant="h6" gutterBottom>
+    <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)} >
+      <Typography variant="h6" gutterBottom textAlign="center">
         {t('forgotPasswordTitle')}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} textAlign="center">
         {t('forgotPasswordSubtitle')}
       </Typography>
 

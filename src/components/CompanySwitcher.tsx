@@ -31,11 +31,11 @@ export function CompanySwitcher() {
 
     return (
       <FormControl size="small" sx={{ minWidth: 180 }}>
-        <InputLabel id="company-switcher-label">{t('app.company')}</InputLabel>
         <Select
           labelId="company-switcher-label"
           value={activeCompanyId ?? ''}
           label={t('app.company')}
+          variant="standard"
           disabled
         >
           <MenuItem value={activeCompanyId ?? ''}>{companyName}</MenuItem>
