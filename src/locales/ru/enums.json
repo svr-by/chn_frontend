@@ -55,8 +55,9 @@
   "memberRole": {
     "owner": "Владелец",
     "admin": "Администратор",
-    "procurement": "Закупки",
-    "supplier": "Поставщик",
+    "procurement": "Снабженец",
+    "logistics": "Логист",
+    "warehouse": "Сотрудник склада",
     "accountant": "Бухгалтер",
     "viewer": "Наблюдатель"
   },
