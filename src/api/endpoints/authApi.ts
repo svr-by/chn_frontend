@@ -16,7 +16,11 @@ import type {
   PostAuthVerifyEmailBody,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
-import { clearSession, setTokens } from '@/store/slices/authSlice';
+import {
+  clearSession,
+  setBootstrapped,
+  setTokens,
+} from '@/store/slices/authSlice';
 
 export const authApi = baseApi.injectEndpoints({
   overrideExisting: false,
@@ -43,6 +47,9 @@ export const authApi = baseApi.injectEndpoints({
               refreshToken: data.refreshToken,
             }),
           );
+          // Force AuthBootstrap to re-run and restore activeCompanyId after
+          // logout left isBootstrapped=true with a cleared company.
+          dispatch(setBootstrapped(false));
         } catch {
           // handled by caller
         }

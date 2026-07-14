@@ -11,9 +11,12 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PasswordField } from '@/components/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import {
+  getActiveMemberships,
   isEmailVerified,
+  resolveActiveCompanyId,
   resolveAuthenticatedRedirect,
 } from '@/lib/permissions';
+import { setActiveCompanyId } from '@/store/slices/authSlice';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -44,6 +47,12 @@ export function LoginPage() {
       const me = await dispatch(
         authApi.endpoints.getMe.initiate(undefined, { forceRefetch: true }),
       ).unwrap();
+
+      const resolvedCompanyId = resolveActiveCompanyId(
+        null,
+        getActiveMemberships(me.user),
+      );
+      dispatch(setActiveCompanyId(resolvedCompanyId));
 
       if (!isEmailVerified(me.user)) {
         enqueueSnackbar(t('loginUnverified'), { variant: 'warning' });

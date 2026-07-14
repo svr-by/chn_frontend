@@ -18,9 +18,11 @@ export function useLogout() {
         await logout({ refreshToken }).unwrap();
       }
     } catch {
+      // Session is also cleared in logout mutation onQueryStarted when the
+      // request succeeds; clear here for failures / missing token.
+    } finally {
       dispatch(clearSession());
       dispatch(baseApi.util.resetApiState());
-    } finally {
       navigate('/login', { replace: true });
     }
   }

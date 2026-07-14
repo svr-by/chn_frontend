@@ -18,10 +18,8 @@ export function AuthBootstrap() {
   const activeCompanyId = useAppSelector((state) => state.auth.activeCompanyId);
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
 
-  const { data, isLoading, isError, isUninitialized } = useGetMeQuery(
-    undefined,
-    { skip: !hasRefreshToken },
-  );
+  const { data, isLoading, isError, isUninitialized, isFetching } =
+    useGetMeQuery(undefined, { skip: !hasRefreshToken });
 
   useEffect(() => {
     if (!hasRefreshToken) {
@@ -29,7 +27,7 @@ export function AuthBootstrap() {
       return;
     }
 
-    if (isLoading || isUninitialized) {
+    if (isLoading || isUninitialized || isFetching) {
       return;
     }
 
@@ -57,6 +55,7 @@ export function AuthBootstrap() {
     dispatch,
     hasRefreshToken,
     isError,
+    isFetching,
     isLoading,
     isUninitialized,
   ]);
