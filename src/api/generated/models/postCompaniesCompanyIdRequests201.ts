@@ -5,4 +5,9 @@ import type { MaterialRequest } from './materialRequest';
 
 export type PostCompaniesCompanyIdRequests201 = {
   request: MaterialRequest;
+  /**
+   * @minimum -9007199254740991
+   * @maximum 9007199254740991
+   */
+  productsCreated?: number;
 };

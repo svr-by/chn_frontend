@@ -4,9 +4,11 @@
 import type { PatchCompaniesCompanyIdRequestsRequestIdBodyTitle } from './patchCompaniesCompanyIdRequestsRequestIdBodyTitle';
 import type { PatchCompaniesCompanyIdRequestsRequestIdBodyReference } from './patchCompaniesCompanyIdRequestsRequestIdBodyReference';
 import type { PatchCompaniesCompanyIdRequestsRequestIdBodyNotes } from './patchCompaniesCompanyIdRequestsRequestIdBodyNotes';
+import type { PatchCompaniesCompanyIdRequestsRequestIdBodyLinesItem } from './patchCompaniesCompanyIdRequestsRequestIdBodyLinesItem';
 
 export type PatchCompaniesCompanyIdRequestsRequestIdBody = {
   title?: PatchCompaniesCompanyIdRequestsRequestIdBodyTitle;
   reference?: PatchCompaniesCompanyIdRequestsRequestIdBodyReference;
   notes?: PatchCompaniesCompanyIdRequestsRequestIdBodyNotes;
+  lines?: PatchCompaniesCompanyIdRequestsRequestIdBodyLinesItem[];
 };
