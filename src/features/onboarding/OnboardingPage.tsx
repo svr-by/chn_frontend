@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -8,6 +8,8 @@ import {
   CardContent,
   Chip,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -38,7 +40,7 @@ const companySchema = z.object({
 type CompanyFormValues = z.infer<typeof companySchema>;
 
 export function OnboardingPage() {
-  const { t } = useTranslation('auth');
+  const { t } = useTranslation(['auth', 'enums']);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -47,6 +49,8 @@ export function OnboardingPage() {
 
   const pendingInvitations = getPendingInvitations(data?.user);
   const activeMemberships = getActiveMemberships(data?.user);
+  const hasPendingInvites = pendingInvitations.length > 0;
+  const [tab, setTab] = useState(0);
 
   const [createCompany, createState] = useCreateCompanyMutation();
   const [acceptInvite, acceptState] = useAcceptInviteMutation();
@@ -65,6 +69,12 @@ export function OnboardingPage() {
       navigate('/app', { replace: true });
     }
   }, [activeMemberships.length, navigate]);
+
+  useEffect(() => {
+    if (!hasPendingInvites) {
+      setTab(0);
+    }
+  }, [hasPendingInvites]);
 
   async function handleAccept(companyId: string) {
     try {
@@ -103,9 +113,20 @@ export function OnboardingPage() {
 
           <ApiErrorAlert error={createState.error ?? acceptState.error} />
 
-          {pendingInvitations.length > 0 && (
-            <Stack spacing={2} sx={{ mb: 4 }}>
-              <Typography variant="h6">{t('pendingInvites')}</Typography>
+          {hasPendingInvites && (
+            <Tabs
+              value={tab}
+              onChange={(_event, value: number) => setTab(value)}
+              variant="fullWidth"
+              sx={{ mb: 3 }}
+            >
+              <Tab label={t('pendingInvites')} />
+              <Tab label={t('createCompany')} />
+            </Tabs>
+          )}
+
+          {hasPendingInvites && tab === 0 && (
+            <Stack spacing={2}>
               {pendingInvitations.map((invitation) => (
                 <Box
                   key={invitation.id}
@@ -121,19 +142,23 @@ export function OnboardingPage() {
                       {invitation.company.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {invitation.role}
+                      {t(`memberRole.${invitation.role.toLowerCase()}`, {
+                        ns: 'enums',
+                      })}
                     </Typography>
                   </Box>
                   <Stack direction="row" spacing={1} alignItems="center">
                     {invitation.expired && (
-                      <Chip label={t('inviteExpired')} size="small" color="default" />
+                      <Chip
+                        label={t('inviteExpired')}
+                        size="small"
+                        color="default"
+                      />
                     )}
                     <Button
                       variant="outlined"
                       disabled={acceptState.isLoading || invitation.expired}
-                      onClick={() =>
-                        void handleAccept(invitation.company.id)
-                      }
+                      onClick={() => void handleAccept(invitation.company.id)}
                     >
                       {t('acceptInvite')}
                     </Button>
@@ -143,38 +168,41 @@ export function OnboardingPage() {
             </Stack>
           )}
 
-          <Typography variant="h6" sx={{ mb: 2 }} textAlign="center">
-            {t('createCompany')}
-          </Typography>
-
-          <Box
-            component="form"
-            onSubmit={(event) => void handleSubmit(onCreateCompany)(event)}
-          >
-            <TextField
-              {...register('name')}
-              label={t('companyName')}
-              fullWidth
-              margin="normal"
-              error={Boolean(errors.name)}
-              helperText={errors.name?.message}
-            />
-            <TextField
-              {...register('taxId')}
-              label={t('taxId')}
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              fullWidth
-              sx={{ mt: 2 }}
-              disabled={createState.isLoading}
+          {(!hasPendingInvites || tab === 1) && (
+            <Box
+              component="form"
+              onSubmit={(event) => void handleSubmit(onCreateCompany)(event)}
             >
-              {t('createCompanyButton')}
-            </Button>
-          </Box>
+              {!hasPendingInvites && (
+                <Typography variant="h6" sx={{ mb: 2 }} textAlign="center">
+                  {t('createCompany')}
+                </Typography>
+              )}
+              <TextField
+                {...register('name')}
+                label={t('companyName')}
+                fullWidth
+                margin="normal"
+                error={Boolean(errors.name)}
+                helperText={errors.name?.message}
+              />
+              <TextField
+                {...register('taxId')}
+                label={t('taxId')}
+                fullWidth
+                margin="normal"
+              />
+              <Button
+                type="submit"
+                variant="contained"
+                fullWidth
+                sx={{ mt: 2 }}
+                disabled={createState.isLoading}
+              >
+                {t('createCompanyButton')}
+              </Button>
+            </Box>
+          )}
         </CardContent>
       </Card>
   );
