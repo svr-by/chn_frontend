@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Autocomplete,
@@ -26,17 +26,13 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalInput } from '@/components/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 
-const lineSchema = z.object({
-  productId: z.string().uuid().nullable().optional(),
-  description: z.string().trim().min(1),
-  quantity: z.string().refine(isValidDecimal, {
-    message: 'Invalid quantity',
-  }),
-  unit: z.string().trim().optional(),
-  notes: z.string().trim().optional(),
-});
-
-type LineFormValues = z.infer<typeof lineSchema>;
+type LineFormValues = {
+  productId?: string | null;
+  description: string;
+  quantity: string;
+  unit?: string;
+  notes?: string;
+};
 
 interface RequestLineFormDialogProps {
   open: boolean;
@@ -55,7 +51,7 @@ export function RequestLineFormDialog({
   line,
   onSuccess,
 }: RequestLineFormDialogProps) {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'validation']);
   const isEdit = Boolean(line);
 
   const [productSearch, setProductSearch] = useState('');
@@ -74,6 +70,26 @@ export function RequestLineFormDialog({
 
   const [addLine, addState] = useAddRequestLineMutation();
   const [updateLine, updateState] = useUpdateRequestLineMutation();
+
+  const lineSchema = useMemo(
+    () =>
+      z.object({
+        productId: z
+          .string()
+          .uuid({ message: t('validation:invalidUuid') })
+          .nullable()
+          .optional(),
+        description: z.string().trim().min(1, {
+          message: t('validation:required'),
+        }),
+        quantity: z.string().refine(isValidDecimal, {
+          message: t('validation:invalidQuantity'),
+        }),
+        unit: z.string().trim().optional(),
+        notes: z.string().trim().optional(),
+      }),
+    [t],
+  );
 
   const {
     register,

@@ -1,0 +1,8 @@
+{
+  "required": "此字段为必填项",
+  "minLength": "至少需要 {{min}} 个字符",
+  "notEmpty": "不能为空",
+  "invalidQuantity": "请输入有效数量（最多 4 位小数）",
+  "invalidUuid": "无效的标识符",
+  "minItems": "请至少选择 {{min}} 项"
+}

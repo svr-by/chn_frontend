@@ -1,0 +1,8 @@
+{
+  "required": "This field is required",
+  "minLength": "Must be at least {{min}} characters",
+  "notEmpty": "Must not be empty",
+  "invalidQuantity": "Enter a valid quantity (up to 4 decimal places)",
+  "invalidUuid": "Invalid identifier",
+  "minItems": "Select at least {{min}} item(s)"
+}

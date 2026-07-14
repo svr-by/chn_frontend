@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Stack, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
@@ -10,13 +10,11 @@ import type { MaterialRequest } from '@/api/generated/models/materialRequest';
 import { useUpdateRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 
-const headerSchema = z.object({
-  title: z.string().trim().optional(),
-  reference: z.string().trim().optional(),
-  notes: z.string().trim().optional(),
-});
-
-type HeaderFormValues = z.infer<typeof headerSchema>;
+type HeaderFormValues = {
+  title: string;
+  reference?: string;
+  notes?: string;
+};
 
 interface RequestHeaderFormProps {
   companyId: string;
@@ -34,11 +32,23 @@ export function RequestHeaderForm({
 
   const [updateRequest, updateState] = useUpdateRequestMutation();
 
+  const headerSchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().trim().min(3, {
+          message: t('validation:minLength', { min: 3 }),
+        }),
+        reference: z.string().trim().optional(),
+        notes: z.string().trim().optional(),
+      }),
+    [],
+  );
+
   const {
     register,
     handleSubmit,
     reset,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<HeaderFormValues>({
     resolver: zodResolver(headerSchema),
     defaultValues: {
@@ -94,10 +104,18 @@ export function RequestHeaderForm({
     <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       <ApiErrorAlert error={updateState.error} />
       <Stack spacing={2}>
-        <TextField label={t('form.title')} fullWidth {...register('title')} />
+        <TextField
+          label={t('form.title')}
+          fullWidth
+          error={Boolean(errors.title)}
+          helperText={errors.title?.message}
+          {...register('title')}
+        />
         <TextField
           label={t('form.reference')}
           fullWidth
+          error={Boolean(errors.reference)}
+          helperText={errors.reference?.message}
           {...register('reference')}
         />
         <TextField
@@ -105,6 +123,8 @@ export function RequestHeaderForm({
           fullWidth
           multiline
           minRows={2}
+          error={Boolean(errors.notes)}
+          helperText={errors.notes?.message}
           {...register('notes')}
         />
         <Box>

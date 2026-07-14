@@ -7,6 +7,7 @@ import {
   DialogTitle,
   FormControlLabel,
   FormGroup,
+  FormHelperText,
   Link,
   Stack,
   Typography,
@@ -20,10 +21,6 @@ import { z } from 'zod';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-
-const distributeSchema = z.object({
-  supplierCompanyIds: z.array(z.string().uuid()).min(1),
-});
 
 interface RequestDistributeDialogProps {
   open: boolean;
@@ -40,9 +37,10 @@ export function RequestDistributeDialog({
   onClose,
   onDistributed,
 }: RequestDistributeDialogProps) {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'validation']);
   const { enqueueSnackbar } = useSnackbar();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const partnersQuery = useListPartnersQuery(
     { companyId },
@@ -50,6 +48,18 @@ export function RequestDistributeDialog({
   );
 
   const [distributeRequest, distributeState] = useDistributeRequestMutation();
+
+  const distributeSchema = useMemo(
+    () =>
+      z.object({
+        supplierCompanyIds: z
+          .array(
+            z.string().uuid({ message: t('validation:invalidUuid') }),
+          )
+          .min(1, { message: t('validation:minItems', { min: 1 }) }),
+      }),
+    [t],
+  );
 
   const activePartners = useMemo(
     () =>
@@ -60,6 +70,7 @@ export function RequestDistributeDialog({
   );
 
   function togglePartner(companyIdToToggle: string) {
+    setValidationError(null);
     setSelectedIds((current) =>
       current.includes(companyIdToToggle)
         ? current.filter((id) => id !== companyIdToToggle)
@@ -72,6 +83,9 @@ export function RequestDistributeDialog({
       supplierCompanyIds: selectedIds,
     });
     if (!parsed.success) {
+      setValidationError(
+        parsed.error.issues[0]?.message ?? t('validation:minItems', { min: 1 }),
+      );
       return;
     }
 
@@ -83,12 +97,14 @@ export function RequestDistributeDialog({
 
     enqueueSnackbar(t('distribute.toast.success'), { variant: 'success' });
     setSelectedIds([]);
+    setValidationError(null);
     onDistributed?.();
     onClose();
   }
 
   function handleClose() {
     setSelectedIds([]);
+    setValidationError(null);
     onClose();
   }
 
@@ -126,12 +142,17 @@ export function RequestDistributeDialog({
             ))}
           </FormGroup>
         )}
+        {validationError ? (
+          <FormHelperText error sx={{ mt: 1 }}>
+            {validationError}
+          </FormHelperText>
+        ) : null}
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>{t('actions.cancel')}</Button>
         <Button
           variant="contained"
-          onClick={handleDistribute}
+          onClick={() => void handleDistribute()}
           disabled={
             distributeState.isLoading ||
             selectedIds.length === 0 ||

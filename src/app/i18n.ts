@@ -45,6 +45,7 @@ export const I18N_NAMESPACES = [
   'trace',
   'integrations',
   'enums',
+  'validation',
 ] as const;
 
 const initialLocale = getUiLocale();

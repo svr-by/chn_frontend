@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -17,31 +18,46 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
-const optionalString = z
-  .string()
-  .trim()
-  .transform((value) => (value === '' ? undefined : value))
-  .optional()
-  .refine((value) => value === undefined || value.length >= 1, {
-    message: 'Must not be empty',
-  });
-
-const requestSchema = z.object({
-  title: optionalString,
-  reference: optionalString,
-  notes: optionalString,
-});
-
-type RequestFormValues = z.infer<typeof requestSchema>;
+type RequestFormValues = {
+  title: string;
+  reference?: string;
+  notes?: string;
+};
 
 export function RequestNewPage() {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'validation']);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const { hasPermission } = usePermissions();
 
   const [createRequest, createState] = useCreateRequestMutation();
+
+  const requestSchema = useMemo(
+    () =>
+      z.object({
+        title: z.string().trim().min(3, {
+          message: t('validation:minLength', { min: 3 }),
+        }),
+        reference: z
+          .string()
+          .trim()
+          .transform((value) => (value === '' ? undefined : value))
+          .optional()
+          .refine((value) => value === undefined || value.length >= 1, {
+            message: t('validation:notEmpty'),
+          }),
+        notes: z
+          .string()
+          .trim()
+          .transform((value) => (value === '' ? undefined : value))
+          .optional()
+          .refine((value) => value === undefined || value.length >= 1, {
+            message: t('validation:notEmpty'),
+          }),
+      }),
+    [t],
+  );
 
   const {
     register,
