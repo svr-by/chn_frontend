@@ -1,4 +1,4 @@
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, Navigate } from 'react-router-dom';
 import { Box, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -13,7 +13,8 @@ export function AppHomePage() {
     hasPermission(item.permission),
   );
 
-  return (
+  // TODO: Change this when we have a home page
+  return true ? <Navigate to="/app/requests" /> : (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
         {t('common:app.welcome', {

@@ -82,7 +82,8 @@ export function AppLayout() {
       </Box>
       <Divider sx={{ display: { xs: 'block', md: 'none' } }} />
       <List sx={{ flex: 1, px: 1 }}>
-        <ListItemButton
+        {/* // TODO: Uncomment this when we have a home page */}
+        {/* <ListItemButton
           component={RouterLink}
           to="/app"
           selected={location.pathname === '/app'}
@@ -95,7 +96,7 @@ export function AppLayout() {
             primary={t('common:app.home')}
             slotProps={{ primary: { noWrap: true } }}
           />
-        </ListItemButton>
+        </ListItemButton> */}
         {visibleNavItems.map((item) => {
           const Icon = item.icon;
           return (
