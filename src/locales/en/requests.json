@@ -8,6 +8,46 @@
     "notes": "Notes"
   },
   "linesTitle": "Lines",
+  "requestLines": {
+    "title": "Request lines",
+    "subtitle": "A buyer work queue with all company request lines, newest requests first.",
+    "fallbackRequest": "Request {{id}}",
+    "empty": "No request lines found.",
+    "columns": {
+      "lineNumber": "#",
+      "description": "Description",
+      "product": "Product",
+      "quantity": "Quantity",
+      "request": "Request",
+      "pipeline": "Pipeline",
+      "createdAt": "Line created",
+      "updatedAt": "Updated"
+    },
+    "filters": {
+      "title": "Filters",
+      "open": "Filters",
+      "openWithCount": "Filters ({{count}})",
+      "close": "Close filters",
+      "q": "Search",
+      "status": "Request status",
+      "requestId": "Request ID",
+      "productId": "Product ID",
+      "createdByUserId": "Created by user ID",
+      "undistributed": "Only undistributed lines",
+      "withoutQuotes": "Only lines without quotes",
+      "apply": "Apply",
+      "reset": "Reset"
+    },
+    "pipeline": {
+      "none": "No pipeline links",
+      "distributed": "Distributed",
+      "quote": "Quote",
+      "selection": "Selection",
+      "invoice": "Invoice",
+      "shipping": "Shipping",
+      "consolidation": "Consolidation"
+    }
+  },
   "columns": {
     "title": "Title",
     "status": "Status",

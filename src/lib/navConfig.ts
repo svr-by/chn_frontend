@@ -1,15 +1,9 @@
 import type { SvgIconComponent } from '@mui/icons-material';
-import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CategoryIcon from '@mui/icons-material/Category';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GroupsIcon from '@mui/icons-material/Groups';
-import IntegrationInstructionsIcon from '@mui/icons-material/IntegrationInstructions';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import HubIcon from '@mui/icons-material/Hub';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
 
 import type { Permission } from '@/types/api';
@@ -29,6 +23,13 @@ export const navConfig: NavItem[] = [
     permission: 'viewRequests',
     phase: 3,
     icon: AssignmentIcon,
+  },
+  {
+    labelKey: 'requestLines',
+    path: '/app/request-lines',
+    permission: 'viewRequests',
+    phase: 3,
+    icon: FormatListBulletedIcon,
   },
   {
     labelKey: 'products',

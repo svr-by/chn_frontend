@@ -31,6 +31,7 @@ import { NotificationsPage } from '@/features/notifications/pages/NotificationsP
 import { TraceDetailPage } from '@/features/trace/pages/TraceDetailPage';
 import { TraceSearchPage } from '@/features/trace/pages/TraceSearchPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
+import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
 import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
@@ -50,6 +51,7 @@ const INTEGRATIONS_PATH = '/app/settings/integrations';
 const PARTNERS_PATH = '/app/partners';
 const PRODUCTS_PATH = '/app/products';
 const REQUESTS_PATH = '/app/requests';
+const REQUEST_LINES_PATH = '/app/request-lines';
 
 const QUOTES_PATH = '/app/quotes';
 const SELECTIONS_PATH = '/app/selections';
@@ -68,6 +70,7 @@ const stubRoutes = navConfig
         PARTNERS_PATH,
         PRODUCTS_PATH,
         REQUESTS_PATH,
+        REQUEST_LINES_PATH,
         QUOTES_PATH,
         SELECTIONS_PATH,
         INVOICES_PATH,
@@ -143,6 +146,7 @@ export const router = createBrowserRouter([
               { path: 'partners', element: <PartnersPage /> },
               { path: 'products', element: <ProductsPage /> },
               { path: 'requests', element: <RequestsPage /> },
+              { path: 'request-lines', element: <RequestLinesPage /> },
               { path: 'requests/import', element: <RequestImportPage /> },
               { path: 'requests/new', element: <RequestNewPage /> },
               { path: 'requests/inbound', element: <InboundRequestsPage /> },

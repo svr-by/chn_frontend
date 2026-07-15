@@ -19,7 +19,6 @@ import {
   useTheme,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import HomeIcon from '@mui/icons-material/Home';
 import MenuIcon from '@mui/icons-material/Menu';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useTranslation } from 'react-i18next';

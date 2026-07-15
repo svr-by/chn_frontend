@@ -12,7 +12,6 @@ import { DocumentDetailTabs } from '@/features/collaboration/components/Document
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
-import { RequestHeaderForm } from '@/features/requests/components/RequestHeaderForm';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';

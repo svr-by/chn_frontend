@@ -8,6 +8,46 @@
     "notes": "Примечания"
   },
   "linesTitle": "Позиции",
+  "requestLines": {
+    "title": "Потребности",
+    "subtitle": "Список потребностей компании по всем заявкам, новые потребности первыми.",
+    "fallbackRequest": "Заявка {{id}}",
+    "empty": "Строки заявок не найдены.",
+    "columns": {
+      "lineNumber": "#",
+      "description": "Описание",
+      "product": "Товар",
+      "quantity": "Количество",
+      "request": "Заявка",
+      "pipeline": "Процесс",
+      "createdAt": "Строка создана",
+      "updatedAt": "Обновлено"
+    },
+    "filters": {
+      "title": "Фильтры",
+      "open": "Фильтры",
+      "openWithCount": "Фильтры ({{count}})",
+      "close": "Закрыть фильтры",
+      "q": "Поиск",
+      "status": "Статус заявки",
+      "requestId": "ID заявки",
+      "productId": "ID товара",
+      "createdByUserId": "ID автора",
+      "undistributed": "Только нераспределённые строки",
+      "withoutQuotes": "Только строки без КП",
+      "apply": "Применить",
+      "reset": "Сбросить"
+    },
+    "pipeline": {
+      "none": "Нет связей процесса",
+      "distributed": "Распределено",
+      "quote": "КП",
+      "selection": "Выбор",
+      "invoice": "Счёт",
+      "shipping": "Отгрузка",
+      "consolidation": "Консолидация"
+    }
+  },
   "columns": {
     "title": "Название",
     "status": "Статус",

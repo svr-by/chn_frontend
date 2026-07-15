@@ -8,6 +8,46 @@
     "notes": "备注"
   },
   "linesTitle": "行",
+  "requestLines": {
+    "title": "申请行",
+    "subtitle": "采购工作队列，显示公司所有申请行，最新申请优先。",
+    "fallbackRequest": "申请 {{id}}",
+    "empty": "未找到申请行。",
+    "columns": {
+      "lineNumber": "#",
+      "description": "描述",
+      "product": "产品",
+      "quantity": "数量",
+      "request": "申请",
+      "pipeline": "流程",
+      "createdAt": "行已创建",
+      "updatedAt": "已更新"
+    },
+    "filters": {
+      "title": "筛选",
+      "open": "筛选",
+      "openWithCount": "筛选 ({{count}})",
+      "close": "关闭筛选",
+      "q": "搜索",
+      "status": "申请状态",
+      "requestId": "申请 ID",
+      "productId": "产品 ID",
+      "createdByUserId": "创建用户 ID",
+      "undistributed": "仅未分发行",
+      "withoutQuotes": "仅无报价行",
+      "apply": "应用",
+      "reset": "重置"
+    },
+    "pipeline": {
+      "none": "无流程关联",
+      "distributed": "已分发",
+      "quote": "报价",
+      "selection": "选择",
+      "invoice": "发票",
+      "shipping": "运输",
+      "consolidation": "集运"
+    }
+  },
   "columns": {
     "title": "标题",
     "status": "状态",

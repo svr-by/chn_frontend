@@ -34,6 +34,7 @@ import type { Notification } from '@/api/generated/models/notification';
 import type { LineageTrace } from '@/api/generated/models/lineageTrace';
 import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItem } from '@/api/generated/models/traceSearchItem';
+import type { RequestLineListItem } from '@/api/generated/models/requestLineListItem';
 import type { DocumentRelationships } from '@/api/generated/models/documentRelationships';
 import type { CompanyApiKey } from '@/api/generated/models/companyApiKey';
 import type { PartnerExternalMapping } from '@/api/generated/models/partnerExternalMapping';
@@ -207,6 +208,46 @@ export function createMaterialRequestSummary(
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createRequestLineListItem(
+  overrides: Partial<RequestLineListItem> = {},
+): RequestLineListItem {
+  return {
+    id: REQUEST_LINE_ID,
+    lineNumber: 1,
+    lineageId: LINEAGE_ID,
+    description: 'Office paper',
+    quantity: '10.0000',
+    unit: 'pack',
+    attributes: { importSku: 'PAPER-A4' },
+    notes: null,
+    product: {
+      id: PRODUCT_ID,
+      name: 'A4 Paper',
+      sku: 'PAPER-A4',
+      unit: 'pack',
+    },
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-02T00:00:00.000Z',
+    request: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      reference: 'REQ-001',
+      status: 'SUBMITTED',
+      createdByUserId: USER_ID,
+    },
+    links: {
+      distributed: true,
+      hasQuote: true,
+      hasSelection: false,
+      hasInvoice: false,
+      hasShipping: false,
+      hasConsolidation: false,
+      stage: 'quoted',
+    },
     ...overrides,
   };
 }

@@ -1,5 +1,7 @@
 import type {
   DeleteCompaniesCompanyIdRequestsRequestIdLinesLineId200,
+  GetCompaniesCompanyIdRequestLines200,
+  GetCompaniesCompanyIdRequestLinesParams,
   GetCompaniesCompanyIdRequests200,
   GetCompaniesCompanyIdRequestsInbound200,
   GetCompaniesCompanyIdRequestsInboundParams,
@@ -46,6 +48,16 @@ export const requestsApi = baseApi.injectEndpoints({
     >({
       query: ({ companyId, ...params }) => ({
         url: `/companies/${companyId}/requests`,
+        params,
+      }),
+      providesTags: (_result, _error, { companyId }) => requestListTag(companyId),
+    }),
+    listRequestLines: builder.query<
+      GetCompaniesCompanyIdRequestLines200,
+      CompanyScopedArgs<GetCompaniesCompanyIdRequestLinesParams>
+    >({
+      query: ({ companyId, ...params }) => ({
+        url: `/companies/${companyId}/request-lines`,
         params,
       }),
       providesTags: (_result, _error, { companyId }) => requestListTag(companyId),
@@ -217,6 +229,7 @@ export const requestsApi = baseApi.injectEndpoints({
 
 export const {
   useListRequestsQuery,
+  useListRequestLinesQuery,
   useGetRequestQuery,
   useCreateRequestMutation,
   useUpdateRequestMutation,
