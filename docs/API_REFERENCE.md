@@ -8,6 +8,7 @@ Concise REST API catalog for **CHN Procurement & Logistics** backend.
 | Base URL | `/api/v1` |
 | Format | JSON (`application/json`) |
 | Auth | Bearer JWT and/or `X-Company-Id` header |
+| Company context | `X-Company-Id` = active session company; `:companyId` in path = resource scope; **both must match** on company-scoped routes |
 | Errors | `{ "error": { "code", "message", "details?" } }` |
 
 **Legend — Auth**
@@ -20,6 +21,17 @@ Concise REST API catalog for **CHN Procurement & Logistics** backend.
 | 🔐 | JWT or API key (`Authorization: Bearer chn_live_…` or `X-Api-Key`) + company context |
 
 Paths below omit the `/api/v1` prefix unless noted.
+
+### Company context
+
+Company-scoped routes use **two aligned identifiers**:
+
+- **`X-Company-Id` header** — active company for the session (membership check and permissions).
+- **`:companyId` path segment** — resource scope in the URL (REST hierarchy, shareable links).
+
+Send the same UUID in both places. A mismatch returns `400` with code `COMPANY_ID_MISMATCH`.
+
+Exception: `POST /companies/{companyId}/members/accept` requires only Bearer JWT; `companyId` comes from the path.
 
 ---
 
@@ -36,15 +48,15 @@ Paths below omit the `/api/v1` prefix unless noted.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `POST` | `/auth/register` | — | Register a new user (`inviteToken?`, `locale?`); may return `acceptedMembership` |
-| `POST` | `/auth/login` | — | Login; returns access & refresh tokens and `user.emailVerified` |
+| `POST` | `/auth/register` | — | Register a new user; optional `inviteToken` auto-accepts company invitation; sends verification email (`locale?`: `en` \| `ru`) |
+| `POST` | `/auth/login` | — | Login; returns access & refresh tokens |
 | `POST` | `/auth/refresh` | — | Refresh token pair |
 | `POST` | `/auth/logout` | 🔑 | Revoke refresh token |
-| `GET` | `/auth/me` | 🔑 | Current user (`emailVerified`) and company memberships |
-| `POST` | `/auth/verify-email` | — | Confirm email with token from verification link |
+| `GET` | `/auth/me` | 🔑 | Current user, company memberships, and pending invitations |
+| `POST` | `/auth/verify-email` | — | Confirm email with token from verification email |
 | `POST` | `/auth/resend-verification` | 🔑 | Resend verification email (`locale?`) |
-| `POST` | `/auth/forgot-password` | — | Request password reset email (`email`, `locale?`) |
-| `POST` | `/auth/reset-password` | — | Set new password with reset token |
+| `POST` | `/auth/forgot-password` | — | Request password reset email (`locale?`) |
+| `POST` | `/auth/reset-password` | — | Reset password with token from email |
 
 ---
 
@@ -53,14 +65,14 @@ Paths below omit the `/api/v1` prefix unless noted.
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `POST` | `/companies` | 🔑 | Create a company |
-| `GET` | `/companies` | 🔑 | List companies for current user |
+| `GET` | `/companies` | 🔑 | List companies for current user (paginated: `limit`, `offset`) |
 | `GET` | `/companies/{companyId}` | 🏢 | Get company details |
-| `GET` | `/companies/{companyId}/members` | 🏢 | List active company members (paginated) |
-| `POST` | `/companies/{companyId}/members/invite` | 🏢 | Invite member by email (`locale?`); returns `invitation` |
-| `GET` | `/companies/{companyId}/members/invitations` | 🏢 | List pending invitations (paginated) |
-| `DELETE` | `/companies/{companyId}/members/invitations/{invitationId}` | 🏢 | Revoke pending invitation (`204`) |
-| `POST` | `/companies/{companyId}/members/accept` | 🔑 | Accept invitation (existing logged-in user) |
-| `DELETE` | `/companies/{companyId}/members/{memberId}` | 🏢 | Remove member (`204`) |
+| `GET` | `/companies/{companyId}/members` | 🏢 | List company members (paginated) |
+| `GET` | `/companies/{companyId}/members/invitations` | 🏢 | List pending invitations (`MemberInvitation`, including expired; paginated) |
+| `POST` | `/companies/{companyId}/members/invite` | 🏢 | Invite member by email (`locale?`; always creates `MemberInvitation`) |
+| `DELETE` | `/companies/{companyId}/members/invitations/{invitationId}` | 🏢 | Revoke pending invitation |
+| `POST` | `/companies/{companyId}/members/accept` | 🔑 | Accept pending invitation |
+| `DELETE` | `/companies/{companyId}/members/{memberId}` | 🏢 | Remove active member (hard delete; not OWNER) |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/role` | 🏢 | Change member role |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/permissions` | 🏢 | Set permission grants/denies |
 
@@ -88,6 +100,9 @@ Paths below omit the `/api/v1` prefix unless noted.
 | `POST` | `/companies/{companyId}/products` | 🏢 | Create product |
 | `GET` | `/companies/{companyId}/products/{productId}` | 🏢 | Get product |
 | `PATCH` | `/companies/{companyId}/products/{productId}` | 🏢 | Update product |
+| `DELETE` | `/companies/{companyId}/products/{productId}` | 🏢 | Hard-delete product (`204`) |
+
+Hard delete removes the catalog row. Linked `RequestLine.productId` values become `null` (`onDelete: SetNull`); the line keeps `description` and `attributes.importSku` (SKU snapshot from import / line sync). Partner mappings with `PRODUCT_SKU` for that product id are also removed. Requires `manageProducts`.
 
 ---
 
@@ -95,20 +110,108 @@ Paths below omit the `/api/v1` prefix unless noted.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `GET` | `/companies/{companyId}/requests` | 🏢 | List material requests |
-| `POST` | `/companies/{companyId}/requests` | 🏢 | Create draft request |
+| `GET` | `/companies/{companyId}/requests` | 🏢 | List material requests (`status?`, `productId?`) |
+| `GET` | `/companies/{companyId}/request-lines` | 🏢 | List request lines across company (work-queue filters + pipeline links) |
+| `POST` | `/companies/{companyId}/requests` | 🏢 | Create draft request (optionally with lines in one request) |
 | `GET` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Get request with lines |
-| `PATCH` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Update draft request |
+| `PATCH` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Update draft request (optionally full-replace `lines`) |
+| `DELETE` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Delete draft request (`204`, DRAFT only) |
 | `POST` | `/companies/{companyId}/requests/{requestId}/lines` | 🏢 | Add request line |
 | `PATCH` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Update request line |
 | `DELETE` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Remove request line |
-| `POST` | `/companies/{companyId}/requests/{requestId}/submit` | 🏢 | Submit request |
+| `POST` | `/companies/{companyId}/requests/{requestId}/submit` | 🏢 | Submit request (`createProducts?`) |
 | `POST` | `/companies/{companyId}/requests/{requestId}/distribute` | 🏢 | Send request to suppliers |
 | `GET` | `/companies/{companyId}/requests/inbound` | 🏢 | Inbound requests (supplier view) |
 | `GET` | `/companies/{companyId}/requests/{requestId}/billable-lines` | 🏢 | Lines available for invoicing |
 | `GET` | `/companies/{companyId}/requests/{requestId}/selection` | 🏢 | Selection for request |
 | `GET` | `/companies/{companyId}/requests/{requestId}/quotes/comparison` | 🏢 | Quote comparison matrix |
 | `GET` | `/companies/{companyId}/requests/{requestId}/export` | 🏢 | Export request as CSV |
+
+### Create request (`POST /companies/{companyId}/requests`)
+
+Creates a **draft** (`DRAFT`). Submit is a separate call: `POST .../requests/{requestId}/submit`.
+
+**Without `lines`** — empty draft (backward compatible): only header fields (`title`, `reference`, `notes`).
+
+**With `lines`** — atomic bulk-create of header + all request lines in one transaction.
+
+Request body (relevant fields):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `title` | string? | Request title |
+| `reference` | string? | External reference |
+| `notes` | string? | Notes |
+| `lines` | array? | Request lines (min 1 when provided) |
+
+Each line in `lines`:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `productId` | uuid? | Explicit catalog product (from autocomplete) |
+| `description` | string | Line description (required) |
+| `quantity` | string | Positive decimal, up to 4 fractional digits |
+| `unit` | string? | Unit of measure |
+| `sku` | string? | SKU from file import (stored in `attributes.importSku`) |
+| `notes` | string? | Line notes |
+| `attributes` | object? | JSON attributes |
+
+**Product resolution on draft create/edit** (when `productId` is not set):
+
+1. Match by `sku` (case-insensitive) in company catalog.
+2. Else match by `description` as product `name` (case-insensitive exact).
+3. If still unmatched — line is free-form (`productId: null`). New products are **not** created at this stage.
+
+Response `201`: `{ "request": { ... } }`
+
+### List request lines (`GET /companies/{companyId}/request-lines`)
+
+Flat work-queue of request lines across the company. Requires `viewRequests`.
+
+Query params: `limit`, `offset`, `status` (request status), `createdByUserId`, `requestId`, `productId`, `q` (description / product sku|name / request title / `attributes.importSku`), `undistributed=true` (request has no distributions), `withoutQuotes=true` (line has no quote lines), `sortBy=requestCreatedAt|updatedAt` (default `updatedAt`), `sortOrder=asc|desc` (default `desc`).
+
+Each item includes the line, a short `request` summary, and `links` flags for UI icons: `distributed`, `hasQuote`, `hasSelection`, `hasInvoice`, `hasShipping`, `hasConsolidation`, plus derived `stage` (`quoted`…`consolidated` or `null`). Unlike `GET .../trace/search`, this endpoint paginates in the database and targets buyer operational filters.
+
+### Update request (`PATCH /companies/{companyId}/requests/{requestId}`)
+
+Draft only. Updates header fields and/or **full-replaces** lines when `lines` is provided:
+
+- line with `id` — update (preserves `lineageId`)
+- line without `id` — create
+- existing lines missing from array — delete
+
+Same line fields as create. Product matching rules apply (match only, no auto-create).
+
+### Submit request (`POST /companies/{companyId}/requests/{requestId}/submit`)
+
+Body (optional, defaults apply):
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `createProducts` | boolean (default `false`) | Create catalog products for lines still without `productId` |
+
+When `createProducts: true`:
+
+- Uses `description` as product name; SKU from `attributes.importSku` if present
+- Requires `manageRequests` (not `manageProducts`)
+- Response may include `productsCreated`
+
+Response `200`:
+
+```json
+{
+  "request": { "...": "MaterialRequest SUBMITTED with lines" },
+  "productsCreated": 2
+}
+```
+
+### Delete request (`DELETE /companies/{companyId}/requests/{requestId}`)
+
+- Allowed only for `DRAFT` requests (`400 REQUEST_NOT_DELETABLE` otherwise)
+- Cascades delete of request lines; catalog products are kept
+- Response `204`
+
+**Typical UI flow:** preview file → fill form → `POST /requests` → edit → `PATCH /requests` → `POST .../submit` with `createProducts?`
 
 ---
 
@@ -241,9 +344,52 @@ Paths below omit the `/api/v1` prefix unless noted.
 |--------|------|------|-------------|
 | `POST` | `/companies/{companyId}/imports/request-lines` | 🏢 | Upload CSV; returns import job (`202`) |
 | `POST` | `/companies/{companyId}/imports/request-lines/csv/preview` | 🏢 | Parse CSV in memory; returns import preview (`200`) |
-| `POST` | `/companies/{companyId}/imports/request-lines/htm/preview` | 🏢 | Parse 1C HTM in memory; returns import preview (`200`, preview only) |
+| `POST` | `/companies/{companyId}/imports/request-lines/htm/preview` | 🏢 | Parse 1C HTM in memory; returns import preview (`200`) |
 | `GET` | `/companies/{companyId}/imports/{jobId}` | 🏢 | Get import job status and preview |
 | `POST` | `/companies/{companyId}/imports/{jobId}/confirm` | 🏢 | Create request from valid rows |
+
+### Import preview (`.../csv/preview`, `.../htm/preview`)
+
+`multipart/form-data`:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| `file` | yes | CSV or HTM file |
+| `fieldDelimiter` | no | CSV only: `,`, `;`, `\t`, `tab` |
+| `decimalSeparator` | no | `.` or `,` |
+
+Response `200`:
+
+```json
+{
+  "preview": {
+    "rows": [
+      {
+        "rowNumber": 1,
+        "data": { "description": "...", "quantity": "...", "sku": "..." },
+        "errors": [],
+        "parsed": {
+          "description": "...",
+          "quantity": "100.000",
+          "unit": "pcs",
+          "sku": "00000001134",
+          "productId": "uuid-or-null",
+          "notes": null
+        }
+      }
+    ],
+    "validRowCount": 1,
+    "invalidRowCount": 0
+  },
+  "columnMapping": { "sku": "Код", "description": "Номенклатура" }
+}
+```
+
+**Product matching in preview:** for each valid row, `parsed.productId` is resolved by **SKU first**, then by **description** (product name). Only active catalog products are matched. Missing product is not an error — `productId` is `null`; the UI can offer `createProducts` on final submit.
+
+Preview does **not** persist data. For the create-request form flow, map `parsed` rows into `POST /companies/{companyId}/requests` body `lines`.
+
+**Async import job** (`POST .../imports/request-lines` → confirm) is a separate path; it does not support `createProducts` or mixing with manually entered lines.
 
 ---
 
@@ -297,10 +443,16 @@ Export endpoints accept JWT + company header **or** API key.
 | `limit` | List endpoints | Page size (1–100, default 20) |
 | `offset` | List endpoints | Offset pagination |
 | `cursor` | Comments, notifications | Cursor pagination |
-| `status` | Document lists | Filter by document status enum |
+| `status` | Document lists, requests | Filter by document status enum |
+| `productId` | Requests, request-lines | Filter by catalog product |
 | `direction` | Invoices, shipping | `inbound` or `outbound` |
-| `requestId` | Quotes, selections, invoices | Filter by material request |
-| `q` | Products, trace search, partners | Text search |
+| `requestId` | Quotes, selections, invoices, request-lines | Filter by material request |
+| `q` | Products, trace search, partners, request-lines | Text search |
+| `createdByUserId` | Request-lines | Filter by request author |
+| `undistributed` | Request-lines | `true` — requests with no supplier distributions |
+| `withoutQuotes` | Request-lines | `true` — lines with no quote lines |
+| `sortBy` | Request-lines | `requestCreatedAt` or `updatedAt` (default `updatedAt`) |
+| `sortOrder` | Request-lines | `asc` or `desc` (default `desc`) |
 | `unreadOnly` | Notifications | `true` / `false` |
 
 ---
@@ -319,16 +471,15 @@ Export endpoints accept JWT + company header **or** API key.
 | `404` | Resource not found |
 | `409` | Conflict (duplicate email, partner link, etc.) |
 | `413` | Upload too large |
-| `422` | Unprocessable (e.g. invite unregistered user) |
+| `429` | Rate limit (e.g. verification resend too soon) |
 | `503` | Service not ready |
 
 ---
 
 ## Related documents
 
-- [Frontend specification](./frontend-spec.md) — detailed client integration guide
-- [API integration](./api-integration.md) — auth, headers, pagination
-- [Developer guide](./developer-guide.md) — frontend architecture
-- Interactive docs — run backend and open `/docs`
+- [`DEVELOPER_GUIDE.md`](./DEVELOPER_GUIDE.md) — backend architecture and conventions
+- [`PRODUCT_OVERVIEW.md`](./PRODUCT_OVERVIEW.md) — product overview
+- Interactive docs — run server and open `/docs` (OpenAPI / Swagger UI)
 
-*OpenAPI snapshot: `openapi/api-docs.json` (108 paths). For request/response schemas, use live `/docs` or the JSON export.*
+*Generated from implemented routes. For request/response schemas, use OpenAPI at `/docs`.*
