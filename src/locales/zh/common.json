@@ -18,6 +18,7 @@
     "theme": "主题",
     "themeLight": "浅色",
     "themeDark": "深色",
-    "themeSystem": "跟随系统"
+    "themeSystem": "跟随系统",
+    "backButton": "返回"
   }
 }

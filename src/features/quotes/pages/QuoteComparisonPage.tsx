@@ -261,8 +261,6 @@ export function QuoteComparisonPage() {
       statusBadge={
         request?.status ? <StatusBadge status={request.status} /> : undefined
       }
-      backTo={`/app/requests/${requestId}`}
-      backLabel={t('comparison.backToRequest')}
       loading={comparisonQuery.isLoading}
       error={comparisonQuery.error}
       actions={

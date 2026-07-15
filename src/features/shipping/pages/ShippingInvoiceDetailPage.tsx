@@ -80,8 +80,6 @@ export function ShippingInvoiceDetailPage() {
           <ShippingInvoiceStatusBadge status={shippingInvoice.status} />
         ) : undefined
       }
-      backTo="/app/shipping-invoices"
-      backLabel={t('actions.backToList')}
       loading={shippingQuery.isLoading}
       error={shippingQuery.error}
       actions={

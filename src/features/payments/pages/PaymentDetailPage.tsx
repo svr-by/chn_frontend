@@ -56,8 +56,6 @@ export function PaymentDetailPage() {
           <PaymentStatusBadge status={payment.status} />
         ) : undefined
       }
-      backTo="/app/payments"
-      backLabel={t('actions.backToList')}
       loading={paymentQuery.isLoading}
       error={paymentQuery.error}
       actions={

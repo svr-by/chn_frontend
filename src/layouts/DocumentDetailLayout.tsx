@@ -1,22 +1,23 @@
 import type { ReactNode } from 'react';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Box,
+  Button,
   CircularProgress,
   Stack,
   Typography,
 } from '@mui/material';
 
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { BackLink } from '@/components/BackLink';
+import { useSafeAppBack } from '@/hooks/useSafeAppBack';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
+import { useTranslation } from 'react-i18next';
 
 interface DocumentDetailLayoutProps {
   title: string;
   subtitle?: string | null;
   statusBadge?: ReactNode;
-  backTo?: string;
-  backLabel?: string;
   actions?: ReactNode;
   meta?: ReactNode;
   loading?: boolean;
@@ -28,14 +29,15 @@ export function DocumentDetailLayout({
   title,
   subtitle,
   statusBadge,
-  backTo,
-  backLabel = 'Back',
   actions,
   meta,
   loading = false,
   error,
   children,
 }: DocumentDetailLayoutProps) {
+  const handleBack = useSafeAppBack();
+  const { t } = useTranslation('common');
+
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" py={6}>
@@ -46,7 +48,14 @@ export function DocumentDetailLayout({
 
   return (
     <Stack spacing={3}>
-      {backTo ? <BackLink to={backTo}>{backLabel}</BackLink> : null}
+      <Button
+        variant="text"
+        startIcon={<ArrowBackIcon fontSize="small" />}
+        onClick={handleBack}
+        sx={{ alignSelf: 'flex-start' }}
+      >
+        {t('app.backButton')}
+      </Button>
 
       <ApiErrorAlert error={error} />
 

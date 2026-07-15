@@ -18,6 +18,7 @@
     "theme": "Тема",
     "themeLight": "Светлая",
     "themeDark": "Тёмная",
-    "themeSystem": "Как в системе"
+    "themeSystem": "Как в системе",
+    "backButton": "Назад"
   }
 }

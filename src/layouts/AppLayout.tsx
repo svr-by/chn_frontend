@@ -28,6 +28,7 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemeModeToggle } from '@/components/ThemeModeToggle';
 import { useLogout } from '@/hooks/useLogout';
 import { usePermissions } from '@/hooks/usePermissions';
+import { useAppHistoryTracker } from '@/hooks/useSafeAppBack';
 import { GlobalFetchProgress } from '@/components/GlobalFetchProgress';
 import { navConfig } from '@/lib/navConfig';
 
@@ -45,6 +46,8 @@ export function AppLayout() {
   const [userMenuAnchor, setUserMenuAnchor] = useState<null | HTMLElement>(
     null,
   );
+
+  useAppHistoryTracker();
 
   const visibleNavItems = navConfig.filter((item) =>
     hasPermission(item.permission),

@@ -98,8 +98,6 @@ export function InvoiceDetailPage() {
           <InvoiceStatusBadge status={invoice.status} />
         ) : undefined
       }
-      backTo="/app/invoices"
-      backLabel={t('actions.backToList')}
       loading={invoiceQuery.isLoading}
       error={invoiceQuery.error}
       actions={

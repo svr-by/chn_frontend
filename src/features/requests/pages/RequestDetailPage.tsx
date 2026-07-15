@@ -64,8 +64,6 @@ export function RequestDetailPage() {
     <DocumentDetailLayout
       title={title}
       statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
-      backTo="/app/requests"
-      backLabel={t('actions.backToList')}
       loading={requestQuery.isLoading}
       error={requestQuery.error}
       actions={

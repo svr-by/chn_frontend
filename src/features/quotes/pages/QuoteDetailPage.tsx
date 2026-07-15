@@ -64,8 +64,6 @@ export function QuoteDetailPage() {
       statusBadge={
         quote?.status ? <QuoteStatusBadge status={quote.status} /> : undefined
       }
-      backTo="/app/quotes"
-      backLabel={t('actions.backToList')}
       loading={quoteQuery.isLoading}
       error={quoteQuery.error}
       actions={

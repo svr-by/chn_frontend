@@ -80,7 +80,7 @@
     "save": "Save",
     "saveHeader": "Save details",
     "cancel": "Cancel",
-    "backToList": "Back to requests"
+    "backToList": "Back"
   },
   "statusFilter": {
     "label": "Status",

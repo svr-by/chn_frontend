@@ -71,8 +71,6 @@ export function SelectionDetailPage() {
           <SelectionStatusBadge status={selection.status} />
         ) : undefined
       }
-      backTo="/app/selections"
-      backLabel={t('actions.backToList')}
       loading={selectionQuery.isLoading}
       error={selectionQuery.error}
       actions={

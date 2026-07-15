@@ -1,0 +1,116 @@
+import { useCallback, useEffect } from 'react';
+import { useLocation, useNavigate, type Location } from 'react-router-dom';
+
+const APP_HISTORY_KEY = 'chn.appHistory';
+const MAX_APP_HISTORY_ENTRIES = 50;
+const APP_ROOT = '/app';
+
+interface AppHistoryEntry {
+  key: string;
+  path: string;
+}
+
+function isAppPath(path: string) {
+  return path === APP_ROOT || path.startsWith(`${APP_ROOT}/`);
+}
+
+function getLocationPath(location: Location) {
+  return `${location.pathname}${location.search}${location.hash}`;
+}
+
+function readAppHistory(): AppHistoryEntry[] {
+  try {
+    const value = window.sessionStorage.getItem(APP_HISTORY_KEY);
+    if (!value) {
+      return [];
+    }
+
+    const parsed = JSON.parse(value);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+
+    return parsed.filter(
+      (entry): entry is AppHistoryEntry =>
+        typeof entry?.key === 'string' &&
+        typeof entry?.path === 'string' &&
+        isAppPath(entry.path),
+    );
+  } catch {
+    return [];
+  }
+}
+
+function writeAppHistory(entries: AppHistoryEntry[]) {
+  try {
+    window.sessionStorage.setItem(
+      APP_HISTORY_KEY,
+      JSON.stringify(entries.slice(-MAX_APP_HISTORY_ENTRIES)),
+    );
+  } catch {
+    // Ignore storage failures; callers still fall back to /app.
+  }
+}
+
+function findCurrentEntryIndex(entries: AppHistoryEntry[], location: Location) {
+  const currentPath = getLocationPath(location);
+  let keyIndex = -1;
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    if (entries[index].key === location.key) {
+      keyIndex = index;
+      break;
+    }
+  }
+
+  if (keyIndex >= 0) {
+    return keyIndex;
+  }
+
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    if (entries[index].path === currentPath) {
+      return index;
+    }
+  }
+
+  return -1;
+}
+
+export function useAppHistoryTracker() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const path = getLocationPath(location);
+    if (!isAppPath(path)) {
+      return;
+    }
+
+    const entries = readAppHistory();
+    const last = entries.at(-1);
+    if (last?.key === location.key || last?.path === path) {
+      return;
+    }
+
+    writeAppHistory([...entries, { key: location.key, path }]);
+  }, [location]);
+}
+
+export function useSafeAppBack(fallbackTo = APP_ROOT) {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  return useCallback(() => {
+    const fallbackPath = isAppPath(fallbackTo) ? fallbackTo : APP_ROOT;
+    const entries = readAppHistory();
+    const currentIndex = findCurrentEntryIndex(entries, location);
+    const previousEntry =
+      currentIndex > 0 ? entries[currentIndex - 1] : undefined;
+
+    if (previousEntry && isAppPath(previousEntry.path)) {
+      writeAppHistory(entries.slice(0, currentIndex));
+      navigate(previousEntry.path, { replace: true });
+      return;
+    }
+
+    navigate(fallbackPath, { replace: true });
+  }, [fallbackTo, location, navigate]);
+}

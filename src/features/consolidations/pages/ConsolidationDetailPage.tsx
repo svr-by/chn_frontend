@@ -73,8 +73,6 @@ export function ConsolidationDetailPage() {
           <ConsolidationStatusBadge status={consolidation.status} />
         ) : undefined
       }
-      backTo="/app/consolidations"
-      backLabel={t('actions.backToList')}
       loading={consolidationQuery.isLoading}
       error={consolidationQuery.error}
       actions={
