@@ -53,7 +53,7 @@ export function DocumentCommentsPanel({
   );
 
   const resetKey = `${companyId}-${documentType}-${documentId}`;
-  const { items, hasMore, isLoading, isLoadingMore, error, loadMore } =
+  const { items, hasMore, isLoading, isLoadingMore, error, loadMore, reload } =
     useCursorList({
       enabled: Boolean(companyId && documentId),
       fetchPage,
@@ -123,6 +123,9 @@ export function DocumentCommentsPanel({
         companyId={companyId}
         documentType={documentType}
         documentId={documentId}
+        onSuccess={() => {
+          void reload();
+        }}
       />
     </Stack>
   );

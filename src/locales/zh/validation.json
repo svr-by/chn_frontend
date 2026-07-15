@@ -4,5 +4,6 @@
   "notEmpty": "不能为空",
   "invalidQuantity": "请输入有效数量（最多 4 位小数）",
   "invalidUuid": "无效的标识符",
-  "minItems": "请至少选择 {{min}} 项"
+  "minItems": "请至少选择 {{min}} 项",
+  "minLines": "请至少添加一行"
 }

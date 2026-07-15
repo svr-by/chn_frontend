@@ -60,11 +60,6 @@ export function OutboundRequestsPanel({ companyId }: OutboundRequestsPanelProps)
       {
         accessorKey: 'title',
         header: t('columns.title'),
-        Cell: ({ row }) => row.original.title ?? row.original.reference ?? '—',
-      },
-      {
-        accessorKey: 'reference',
-        header: t('columns.reference'),
         Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
       },
       {

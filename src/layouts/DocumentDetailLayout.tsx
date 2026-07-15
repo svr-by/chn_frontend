@@ -1,15 +1,13 @@
 import type { ReactNode } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   CircularProgress,
-  Link,
   Stack,
   Typography,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { BackLink } from '@/components/BackLink';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
 
@@ -48,17 +46,7 @@ export function DocumentDetailLayout({
 
   return (
     <Stack spacing={3}>
-      {backTo ? (
-        <Link
-          component={RouterLink}
-          to={backTo}
-          underline="hover"
-          sx={{ display: 'inline-flex', alignItems: 'center', gap: 0.5 }}
-        >
-          <ArrowBackIcon fontSize="small" />
-          {backLabel}
-        </Link>
-      ) : null}
+      {backTo ? <BackLink to={backTo}>{backLabel}</BackLink> : null}
 
       <ApiErrorAlert error={error} />
 

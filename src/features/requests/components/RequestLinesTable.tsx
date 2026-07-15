@@ -5,9 +5,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   Stack,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -98,23 +102,29 @@ export function RequestLinesTable({
         header: t('columns.actions'),
         Cell: ({ row }) => (
           <PermissionGate permission="manageRequests">
-            <Stack direction="row" spacing={1}>
-              <Button
-                size="small"
-                onClick={() => {
-                  setEditingLine(row.original);
-                  setDialogOpen(true);
-                }}
-              >
-                {t('actions.editLine')}
-              </Button>
-              <Button
-                size="small"
-                color="error"
-                onClick={() => setLineToDelete(row.original)}
-              >
-                {t('actions.deleteLine')}
-              </Button>
+            <Stack direction="row" spacing={0.5}>
+              <Tooltip title={t('actions.editLine')}>
+                <IconButton
+                  size="small"
+                  aria-label={t('actions.editLine')}
+                  onClick={() => {
+                    setEditingLine(row.original);
+                    setDialogOpen(true);
+                  }}
+                >
+                  <EditOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('actions.deleteLine')}>
+                <IconButton
+                  size="small"
+                  color="error"
+                  aria-label={t('actions.deleteLine')}
+                  onClick={() => setLineToDelete(row.original)}
+                >
+                  <DeleteOutlineIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Stack>
           </PermissionGate>
         ),

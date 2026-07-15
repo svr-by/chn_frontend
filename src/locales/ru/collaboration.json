@@ -3,9 +3,9 @@
     "ariaLabel": "Разделы документов",
     "details": "Подробности",
     "comments": "Комментарии",
-    "activity": "Активность",
+    "activity": "События",
     "trace": "Трассировка",
-    "related": "Связанные"
+    "related": "Связи"
   },
   "comments": {
     "placeholder": "Напишите комментарий…",

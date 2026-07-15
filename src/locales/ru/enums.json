@@ -1,15 +1,15 @@
 {
   "materialRequestStatus": {
     "draft": "Черновик",
-    "submitted": "Отправлено",
-    "quoting": "Формирование предложения",
+    "submitted": "Утверждено",
+    "quoting": "Квотируется",
     "partially_ordered": "Частично заказано",
     "ordered": "Заказано",
     "closed": "Закрыто"
   },
   "supplierQuoteStatus": {
     "draft": "Черновик",
-    "submitted": "Отправлено",
+    "submitted": "Утверждено",
     "partially_accepted": "Частично принято",
     "accepted": "Принято",
     "rejected": "Отклонено",

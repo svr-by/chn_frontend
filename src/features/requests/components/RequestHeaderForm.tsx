@@ -12,7 +12,6 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 
 type HeaderFormValues = {
   title: string;
-  reference?: string;
   notes?: string;
 };
 
@@ -38,10 +37,9 @@ export function RequestHeaderForm({
         title: z.string().trim().min(3, {
           message: t('validation:minLength', { min: 3 }),
         }),
-        reference: z.string().trim().optional(),
         notes: z.string().trim().optional(),
       }),
-    [],
+    [t],
   );
 
   const {
@@ -53,7 +51,6 @@ export function RequestHeaderForm({
     resolver: zodResolver(headerSchema),
     defaultValues: {
       title: request.title ?? '',
-      reference: request.reference ?? '',
       notes: request.notes ?? '',
     },
   });
@@ -61,7 +58,6 @@ export function RequestHeaderForm({
   useEffect(() => {
     reset({
       title: request.title ?? '',
-      reference: request.reference ?? '',
       notes: request.notes ?? '',
     });
   }, [request, reset]);
@@ -71,7 +67,6 @@ export function RequestHeaderForm({
       companyId,
       requestId: request.id,
       title: values.title || null,
-      reference: values.reference || null,
       notes: values.notes || null,
     }).unwrap();
 
@@ -84,11 +79,6 @@ export function RequestHeaderForm({
         {request.title ? (
           <Box>
             <strong>{t('form.title')}:</strong> {request.title}
-          </Box>
-        ) : null}
-        {request.reference ? (
-          <Box>
-            <strong>{t('form.reference')}:</strong> {request.reference}
           </Box>
         ) : null}
         {request.notes ? (
@@ -110,13 +100,6 @@ export function RequestHeaderForm({
           error={Boolean(errors.title)}
           helperText={errors.title?.message}
           {...register('title')}
-        />
-        <TextField
-          label={t('form.reference')}
-          fullWidth
-          error={Boolean(errors.reference)}
-          helperText={errors.reference?.message}
-          {...register('reference')}
         />
         <TextField
           label={t('form.notes')}

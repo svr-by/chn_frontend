@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Alert,
   Box,
@@ -8,7 +8,6 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -19,6 +18,7 @@ import {
 } from '@/api/endpoints/importsApi';
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200 } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { BackLink } from '@/components/BackLink';
 import { FileUploadZone } from '@/components/FileUploadZone';
 import { PermissionGate } from '@/components/PermissionGate';
 import {
@@ -200,14 +200,7 @@ export function RequestImportPage() {
     >
       <Stack spacing={3}>
         <Stack spacing={1}>
-          <Button
-            component={RouterLink}
-            to="/app/requests"
-            startIcon={<ArrowBackIcon />}
-            sx={{ alignSelf: 'flex-start' }}
-          >
-            {t('imports:actions.back')}
-          </Button>
+          <BackLink to="/app/requests">{t('imports:actions.back')}</BackLink>
           <Typography variant="h5" component="h1">
             {t('imports:title')}
           </Typography>

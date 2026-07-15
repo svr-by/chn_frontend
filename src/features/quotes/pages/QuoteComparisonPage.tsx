@@ -253,13 +253,11 @@ export function QuoteComparisonPage() {
 
   const title =
     request?.title ??
-    request?.reference ??
     t('comparison.fallbackTitle', { id: requestId.slice(0, 8) });
 
   return (
     <DocumentDetailLayout
       title={title}
-      subtitle={request?.reference ? t('comparison.reference', { reference: request.reference }) : null}
       statusBadge={
         request?.status ? <StatusBadge status={request.status} /> : undefined
       }

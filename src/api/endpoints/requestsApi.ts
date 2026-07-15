@@ -130,6 +130,17 @@ export const requestsApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _error, { companyId, requestId }) =>
         requestDetailTags(companyId, requestId),
     }),
+    deleteRequest: builder.mutation<
+      void,
+      { companyId: string; requestId: string }
+    >({
+      query: ({ companyId, requestId }) => ({
+        url: `/companies/${companyId}/requests/${requestId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        requestListTag(companyId),
+    }),
     submitRequest: builder.mutation<
       PostCompaniesCompanyIdRequestsRequestIdSubmit200,
       { companyId: string; requestId: string }
@@ -212,6 +223,7 @@ export const {
   useAddRequestLineMutation,
   useUpdateRequestLineMutation,
   useDeleteRequestLineMutation,
+  useDeleteRequestMutation,
   useSubmitRequestMutation,
   useListInboundRequestsQuery,
   useDistributeRequestMutation,

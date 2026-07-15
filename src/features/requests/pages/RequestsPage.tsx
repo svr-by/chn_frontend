@@ -66,13 +66,6 @@ export function RequestsPage() {
           <PermissionGate permission="manageRequests">
             <Stack direction="row" spacing={1}>
               <Button
-                variant="outlined"
-                component={RouterLink}
-                to="/app/requests/import"
-              >
-                {t('actions.import')}
-              </Button>
-              <Button
                 variant="contained"
                 component={RouterLink}
                 to="/app/requests/new"

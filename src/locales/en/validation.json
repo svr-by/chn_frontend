@@ -4,5 +4,6 @@
   "notEmpty": "Must not be empty",
   "invalidQuantity": "Enter a valid quantity (up to 4 decimal places)",
   "invalidUuid": "Invalid identifier",
-  "minItems": "Select at least {{min}} item(s)"
+  "minItems": "Select at least {{min}} item(s)",
+  "minLines": "Add at least one line"
 }

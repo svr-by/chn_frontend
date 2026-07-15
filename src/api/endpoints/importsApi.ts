@@ -3,6 +3,7 @@ import type {
   PostCompaniesCompanyIdImportsJobIdConfirm200,
   PostCompaniesCompanyIdImportsRequestLines202,
   PostCompaniesCompanyIdImportsRequestLinesCsvPreview200,
+  PostCompaniesCompanyIdImportsRequestLinesHtmPreview200,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -26,6 +27,16 @@ export const importsApi = baseApi.injectEndpoints({
     >({
       query: ({ companyId, formData }) => ({
         url: `/companies/${companyId}/imports/request-lines/csv/preview`,
+        method: 'POST',
+        body: formData,
+      }),
+    }),
+    previewHtmImport: builder.mutation<
+      PostCompaniesCompanyIdImportsRequestLinesHtmPreview200,
+      CompanyScopedArgs<{ formData: FormData }>
+    >({
+      query: ({ companyId, formData }) => ({
+        url: `/companies/${companyId}/imports/request-lines/htm/preview`,
         method: 'POST',
         body: formData,
       }),
@@ -71,6 +82,7 @@ export const importsApi = baseApi.injectEndpoints({
 
 export const {
   usePreviewCsvImportMutation,
+  usePreviewHtmImportMutation,
   useUploadImportMutation,
   useGetImportJobQuery,
   useConfirmImportMutation,

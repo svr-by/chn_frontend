@@ -43,6 +43,10 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useAddRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
   useUpdateRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
   useDeleteRequestLineMutation: vi.fn(),
+  useDeleteRequestMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
   useSubmitRequestMutation: vi.fn(),
   useDistributeRequestMutation: vi.fn(() => [
     vi.fn(),

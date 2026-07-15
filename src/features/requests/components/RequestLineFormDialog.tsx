@@ -25,34 +25,43 @@ import {
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalInput } from '@/components/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
+import type {
+  DraftRequestLine,
+  RequestLineFormValues,
+} from '@/features/requests/types/draftRequestLine';
 
-type LineFormValues = {
-  productId?: string | null;
-  description: string;
-  quantity: string;
-  unit?: string;
-  notes?: string;
+type ApiModeProps = {
+  mode?: 'api';
+  requestId: string;
+  line?: RequestLine | null;
+  draftLine?: never;
+  onLocalSubmit?: never;
+  onSuccess?: () => void;
 };
 
-interface RequestLineFormDialogProps {
+type LocalModeProps = {
+  mode: 'local';
+  requestId?: never;
+  line?: never;
+  draftLine?: DraftRequestLine | null;
+  onLocalSubmit: (values: RequestLineFormValues) => void;
+  onSuccess?: never;
+};
+
+type RequestLineFormDialogProps = {
   open: boolean;
   onClose: () => void;
   companyId: string;
-  requestId: string;
-  line?: RequestLine | null;
-  onSuccess?: () => void;
-}
+} & (ApiModeProps | LocalModeProps);
 
-export function RequestLineFormDialog({
-  open,
-  onClose,
-  companyId,
-  requestId,
-  line,
-  onSuccess,
-}: RequestLineFormDialogProps) {
+export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
+  const { open, onClose, companyId } = props;
+  const isLocal = props.mode === 'local';
+  const line = !isLocal ? props.line : undefined;
+  const draftLine = isLocal ? props.draftLine : undefined;
+  const isEdit = isLocal ? Boolean(draftLine) : Boolean(line);
+
   const { t } = useTranslation(['requests', 'validation']);
-  const isEdit = Boolean(line);
 
   const [productSearch, setProductSearch] = useState('');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -98,7 +107,7 @@ export function RequestLineFormDialog({
     setValue,
     watch,
     formState: { errors },
-  } = useForm<LineFormValues>({
+  } = useForm<RequestLineFormValues>({
     resolver: zodResolver(lineSchema),
     defaultValues: {
       productId: null,
@@ -117,6 +126,19 @@ export function RequestLineFormDialog({
     }
 
     setProductSearch('');
+
+    if (isLocal) {
+      setSelectedProduct(null);
+      reset({
+        productId: draftLine?.productId ?? null,
+        description: draftLine?.description ?? '',
+        quantity: draftLine?.quantity ?? '',
+        unit: draftLine?.unit ?? '',
+        notes: draftLine?.notes ?? '',
+      });
+      return;
+    }
+
     setSelectedProduct(
       line?.product
         ? {
@@ -141,7 +163,7 @@ export function RequestLineFormDialog({
       unit: line?.unit ?? '',
       notes: line?.notes ?? '',
     });
-  }, [open, line, companyId, reset]);
+  }, [open, line, draftLine, isLocal, companyId, reset]);
 
   const pageError = addState.error ?? updateState.error;
   const isSubmitting = addState.isLoading || updateState.isLoading;
@@ -159,10 +181,16 @@ export function RequestLineFormDialog({
     }
   }
 
-  async function onSubmit(values: LineFormValues) {
+  async function onSubmit(values: RequestLineFormValues) {
+    if (isLocal) {
+      props.onLocalSubmit(values);
+      onClose();
+      return;
+    }
+
     const payload = {
       companyId,
-      requestId,
+      requestId: props.requestId,
       description: values.description,
       quantity: values.quantity,
       unit: values.unit || undefined,
@@ -182,7 +210,7 @@ export function RequestLineFormDialog({
       await addLine(payload).unwrap();
     }
 
-    onSuccess?.();
+    props.onSuccess?.();
     onClose();
   }
 
@@ -193,7 +221,7 @@ export function RequestLineFormDialog({
       </DialogTitle>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
-          <ApiErrorAlert error={pageError} />
+          {!isLocal ? <ApiErrorAlert error={pageError} /> : null}
           <Stack spacing={2}>
             <Autocomplete
               options={products}
@@ -225,15 +253,13 @@ export function RequestLineFormDialog({
               fullWidth
               required
               value={quantity}
-              onChange={(value) => setValue('quantity', value, { shouldValidate: true })}
+              onChange={(value) =>
+                setValue('quantity', value, { shouldValidate: true })
+              }
               error={Boolean(errors.quantity)}
               helperText={errors.quantity?.message}
             />
-            <TextField
-              label={t('form.unit')}
-              fullWidth
-              {...register('unit')}
-            />
+            <TextField label={t('form.unit')} fullWidth {...register('unit')} />
             <TextField
               label={t('form.notes')}
               fullWidth

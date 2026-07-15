@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
+  useDeleteRequestMutation,
   useDistributeRequestMutation,
   useSubmitRequestMutation,
 } from '@/api/endpoints/requestsApi';
@@ -34,6 +35,7 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useSubmitRequestMutation: vi.fn(),
+  useDeleteRequestMutation: vi.fn(),
   useDistributeRequestMutation: vi.fn(),
 }));
 
@@ -47,6 +49,7 @@ vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseSubmitRequestMutation = vi.mocked(useSubmitRequestMutation);
+const mockedUseDeleteRequestMutation = vi.mocked(useDeleteRequestMutation);
 const mockedUseDistributeRequestMutation = vi.mocked(useDistributeRequestMutation);
 
 describe('RequestStatusActions', () => {
@@ -57,6 +60,11 @@ describe('RequestStatusActions', () => {
       vi.fn(),
       { isLoading: false, reset: vi.fn() },
     ] as ReturnType<typeof useSubmitRequestMutation>);
+
+    mockedUseDeleteRequestMutation.mockReturnValue([
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ] as ReturnType<typeof useDeleteRequestMutation>);
 
     mockedUseDistributeRequestMutation.mockReturnValue([
       vi.fn(),
@@ -152,7 +160,7 @@ describe('RequestStatusActions', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows submit button on DRAFT status', () => {
+  it('shows submit and delete buttons on DRAFT status', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -178,5 +186,34 @@ describe('RequestStatusActions', () => {
     );
 
     expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+  });
+
+  it('hides delete button when status is not DRAFT', () => {
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['manageRequests'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(
+      <RequestStatusActions
+        companyId={COMPANY_ID}
+        requestId={REQUEST_ID}
+        status="SUBMITTED"
+      />,
+      { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
+    );
+
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 });

@@ -1,12 +1,18 @@
-import { useMemo } from 'react';
+import { useMemo, useState, type SyntheticEvent } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   Button,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs, { type Dayjs } from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -15,12 +21,20 @@ import { z } from 'zod';
 
 import { useCreateRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { BackLink } from '@/components/BackLink';
+import { RequestDraftLinesSection } from '@/features/requests/components/RequestDraftLinesSection';
+import { RequestLinesImportDialog } from '@/features/requests/components/RequestLinesImportDialog';
+import {
+  draftLinesToCreatePayload,
+  type DraftRequestLine,
+} from '@/features/requests/types/draftRequestLine';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
+type FormTab = 'lines' | 'notes';
+
 type RequestFormValues = {
   title: string;
-  reference?: string;
   notes?: string;
 };
 
@@ -31,6 +45,13 @@ export function RequestNewPage() {
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const { hasPermission } = usePermissions();
 
+  const [lines, setLines] = useState<DraftRequestLine[]>([]);
+  const [linesError, setLinesError] = useState<string | undefined>();
+  const [importOpen, setImportOpen] = useState(false);
+  const [tab, setTab] = useState<FormTab>('lines');
+  // Reserved for upcoming backend support; not sent with create yet.
+  const [requestDate, setRequestDate] = useState<Dayjs | null>(dayjs());
+
   const [createRequest, createState] = useCreateRequestMutation();
 
   const requestSchema = useMemo(
@@ -39,14 +60,6 @@ export function RequestNewPage() {
         title: z.string().trim().min(3, {
           message: t('validation:minLength', { min: 3 }),
         }),
-        reference: z
-          .string()
-          .trim()
-          .transform((value) => (value === '' ? undefined : value))
-          .optional()
-          .refine((value) => value === undefined || value.length >= 1, {
-            message: t('validation:notEmpty'),
-          }),
         notes: z
           .string()
           .trim()
@@ -67,7 +80,6 @@ export function RequestNewPage() {
     resolver: zodResolver(requestSchema),
     defaultValues: {
       title: '',
-      reference: '',
       notes: '',
     },
   });
@@ -80,16 +92,28 @@ export function RequestNewPage() {
     return <Navigate to="/app/requests" replace />;
   }
 
+  function handleTabChange(_event: SyntheticEvent, value: FormTab) {
+    setTab(value);
+  }
+
   async function onSubmit(values: RequestFormValues) {
     if (!companyId) {
       return;
     }
 
+    if (lines.length === 0) {
+      setLinesError(t('validation:minLines'));
+      setTab('lines');
+      return;
+    }
+
+    setLinesError(undefined);
+
     const result = await createRequest({
       companyId,
       title: values.title,
-      reference: values.reference,
       notes: values.notes,
+      lines: draftLinesToCreatePayload(lines),
     }).unwrap();
 
     enqueueSnackbar(t('toast.created'), { variant: 'success' });
@@ -97,44 +121,78 @@ export function RequestNewPage() {
   }
 
   return (
-    <Stack spacing={3} maxWidth={640}>
-      <Box>
+    <Stack spacing={3} maxWidth={960} sx={{ width: '100%', mx: 'auto' }}>
+      <Stack spacing={1}>
+        <BackLink to="/app/requests">{t('actions.backToList')}</BackLink>
         <Typography variant="h5" component="h1">
           {t('form.newTitle')}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {t('form.newSubtitle')}
         </Typography>
-      </Box>
+      </Stack>
 
       <ApiErrorAlert error={createState.error} />
 
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={2}>
-          <TextField
-            label={t('form.title')}
-            fullWidth
-            error={Boolean(errors.title)}
-            helperText={errors.title?.message}
-            {...register('title')}
-          />
-          <TextField
-            label={t('form.reference')}
-            fullWidth
-            error={Boolean(errors.reference)}
-            helperText={errors.reference?.message}
-            {...register('reference')}
-          />
-          <TextField
-            label={t('form.notes')}
-            fullWidth
-            multiline
-            minRows={3}
-            error={Boolean(errors.notes)}
-            helperText={errors.notes?.message}
-            {...register('notes')}
-          />
-          <Stack direction="row" spacing={1}>
+        <Stack spacing={3}>
+          <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+            <TextField
+              label={t('form.title')}
+              fullWidth
+              error={Boolean(errors.title)}
+              helperText={errors.title?.message}
+              {...register('title')}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label={t('form.date')}
+                value={requestDate}
+                onChange={setRequestDate}
+                slotProps={{
+                  textField: {
+                    fullWidth: true,
+                  },
+                }}
+              />
+            </LocalizationProvider>
+          </Stack>
+
+          <Box>
+            <Tabs value={tab} onChange={handleTabChange}>
+              <Tab label={t('tabs.lines')} value="lines" />
+              <Tab label={t('tabs.notes')} value="notes" />
+            </Tabs>
+
+            <Box sx={{ pt: 2 }}>
+              {tab === 'lines' ? (
+                <RequestDraftLinesSection
+                  companyId={companyId}
+                  lines={lines}
+                  onImportClick={() => setImportOpen(true)}
+                  onChange={(nextLines) => {
+                    setLines(nextLines);
+                    if (nextLines.length > 0) {
+                      setLinesError(undefined);
+                    }
+                  }}
+                  errorMessage={linesError}
+                />
+              ) : (
+                <TextField
+                  label={t('form.notes')}
+                  fullWidth
+                  multiline
+                  minRows={6}
+                  error={Boolean(errors.notes)}
+                  helperText={errors.notes?.message}
+                  {...register('notes')}
+                />
+              )}
+            </Box>
+          </Box>
+
+          <Stack direction="row" spacing={2} justifyContent="center">
             <Button
               type="submit"
               variant="contained"
@@ -148,6 +206,14 @@ export function RequestNewPage() {
           </Stack>
         </Stack>
       </Box>
+
+      <RequestLinesImportDialog
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        companyId={companyId}
+        hasExistingLines={lines.length > 0}
+        onApply={setLines}
+      />
     </Stack>
   );
 }

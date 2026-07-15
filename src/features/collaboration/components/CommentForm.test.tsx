@@ -42,6 +42,7 @@ describe('CommentForm', () => {
 
   it('submits trimmed comment body', async () => {
     const user = userEvent.setup();
+    const onSuccess = vi.fn();
     const createComment = vi.fn().mockReturnValue({
       unwrap: vi.fn().mockResolvedValue({}),
     });
@@ -55,6 +56,7 @@ describe('CommentForm', () => {
         companyId={COMPANY_ID}
         documentType="INVOICE"
         documentId={INVOICE_ID}
+        onSuccess={onSuccess}
       />,
     );
 
@@ -71,5 +73,6 @@ describe('CommentForm', () => {
         body: 'Delivery update',
       });
     });
+    expect(onSuccess).toHaveBeenCalledTimes(1);
   });
 });

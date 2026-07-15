@@ -25,12 +25,14 @@ interface CommentFormProps {
   companyId: string;
   documentType: CommentDocumentType;
   documentId: string;
+  onSuccess?: () => void;
 }
 
 export function CommentForm({
   companyId,
   documentType,
   documentId,
+  onSuccess,
 }: CommentFormProps) {
   const { t } = useTranslation('collaboration');
   const { enqueueSnackbar } = useSnackbar();
@@ -59,6 +61,7 @@ export function CommentForm({
         body: values.body.trim(),
       }).unwrap();
       reset({ body: '' });
+      onSuccess?.();
       enqueueSnackbar(t('comments.postSuccess'), { variant: 'success' });
     } catch {
       enqueueSnackbar(t('comments.postError'), { variant: 'error' });

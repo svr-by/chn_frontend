@@ -85,6 +85,21 @@ export function useCursorList<T>({
     }
   }, [isLoadingMore, nextCursor]);
 
+  const reload = useCallback(async () => {
+    if (!enabled) {
+      return;
+    }
+
+    setError(null);
+    try {
+      const page = await fetchPageRef.current();
+      setItems(page.items);
+      setNextCursor(page.nextCursor);
+    } catch (loadError) {
+      setError(loadError);
+    }
+  }, [enabled]);
+
   return {
     items,
     hasMore: nextCursor !== null,
@@ -92,6 +107,7 @@ export function useCursorList<T>({
     isLoadingMore,
     error,
     loadMore,
+    reload,
     reset,
   };
 }

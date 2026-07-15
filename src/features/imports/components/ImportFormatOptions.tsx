@@ -23,6 +23,8 @@ interface ImportFormatOptionsProps {
   values: ImportFormatValues;
   onChange: (values: ImportFormatValues) => void;
   disabled?: boolean;
+  showFieldDelimiter?: boolean;
+  showTitle?: boolean;
 }
 
 const DELIMITER_OPTIONS: CsvFieldDelimiter[] = [',', ';', '\t', 'tab'];
@@ -32,33 +34,39 @@ export function ImportFormatOptions({
   values,
   onChange,
   disabled = false,
+  showFieldDelimiter = true,
+  showTitle = true,
 }: ImportFormatOptionsProps) {
   const { t } = useTranslation('imports');
 
   return (
     <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-      <FormControl size="small" sx={{ minWidth: 160 }} disabled={disabled}>
-        <InputLabel id="import-field-delimiter">
-          {t('format.fieldDelimiter')}
-        </InputLabel>
-        <Select
-          labelId="import-field-delimiter"
-          label={t('format.fieldDelimiter')}
-          value={values.fieldDelimiter}
-          onChange={(event) =>
-            onChange({
-              ...values,
-              fieldDelimiter: event.target.value as CsvFieldDelimiter,
-            })
-          }
-        >
-          {DELIMITER_OPTIONS.map((delimiter) => (
-            <MenuItem key={delimiter} value={delimiter}>
-              {t(`format.delimiters.${delimiter === '\t' ? 'tab' : delimiter}`)}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      {showFieldDelimiter ? (
+        <FormControl size="small" sx={{ minWidth: 160 }} disabled={disabled}>
+          <InputLabel id="import-field-delimiter">
+            {t('format.fieldDelimiter')}
+          </InputLabel>
+          <Select
+            labelId="import-field-delimiter"
+            label={t('format.fieldDelimiter')}
+            value={values.fieldDelimiter}
+            onChange={(event) =>
+              onChange({
+                ...values,
+                fieldDelimiter: event.target.value as CsvFieldDelimiter,
+              })
+            }
+          >
+            {DELIMITER_OPTIONS.map((delimiter) => (
+              <MenuItem key={delimiter} value={delimiter}>
+                {t(
+                  `format.delimiters.${delimiter === '\t' ? 'tab' : delimiter}`,
+                )}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      ) : null}
 
       <FormControl size="small" sx={{ minWidth: 160 }} disabled={disabled}>
         <InputLabel id="import-decimal-separator">
@@ -83,17 +91,19 @@ export function ImportFormatOptions({
         </Select>
       </FormControl>
 
-      <TextField
-        size="small"
-        label={t('format.title')}
-        placeholder={t('format.titlePlaceholder')}
-        value={values.title}
-        onChange={(event) =>
-          onChange({ ...values, title: event.target.value })
-        }
-        disabled={disabled}
-        sx={{ flex: 1, minWidth: 200 }}
-      />
+      {showTitle ? (
+        <TextField
+          size="small"
+          label={t('format.title')}
+          placeholder={t('format.titlePlaceholder')}
+          value={values.title}
+          onChange={(event) =>
+            onChange({ ...values, title: event.target.value })
+          }
+          disabled={disabled}
+          sx={{ flex: 1, minWidth: 200 }}
+        />
+      ) : null}
     </Stack>
   );
 }

@@ -3,12 +3,13 @@
   "subtitle": "用于采购的出站物料申请。",
   "tabs": {
     "outbound": "出站",
-    "inbound": "入站"
+    "inbound": "入站",
+    "lines": "行",
+    "notes": "备注"
   },
   "linesTitle": "行",
   "columns": {
     "title": "标题",
-    "reference": "参考号",
     "status": "状态",
     "submittedAt": "已提交",
     "createdAt": "已创建",
@@ -24,12 +25,15 @@
   "actions": {
     "new": "新申请",
     "import": "导入 CSV",
+    "importFromFile": "从文件导入",
+    "applyImport": "应用到表单",
     "inbound": "入站申请",
     "distribute": "分发",
     "compare": "比较报价",
     "manageSelection": "管理选择",
     "create": "创建申请",
     "submit": "提交",
+    "delete": "删除",
     "addLine": "添加行",
     "editLine": "编辑",
     "deleteLine": "删除",
@@ -50,13 +54,13 @@
   },
   "empty": {
     "list": "未找到申请。",
-    "lines": "暂无行。请添加一行以继续。"
+    "lines": "暂无行。请添加一行或从文件导入。"
   },
   "form": {
     "newTitle": "新申请",
-    "newSubtitle": "创建草稿申请并在下一页添加行项目。",
+    "newSubtitle": "填写申请详情和行项目，然后创建草稿。",
     "title": "标题",
-    "reference": "参考号",
+    "date": "日期",
     "notes": "备注",
     "product": "产品（可选）",
     "productPlaceholder": "搜索目录",
@@ -66,15 +70,28 @@
     "addLineTitle": "添加行",
     "editLineTitle": "编辑行"
   },
+  "import": {
+    "dropIdle": "将 CSV 或 HTM 文件拖放到此处",
+    "dropActive": "将文件放在此处",
+    "uploadHint": "支持格式：.csv、.htm、.html",
+    "browse": "浏览文件",
+    "selected": "已选择：{{name}}",
+    "clear": "清除",
+    "noValidRows": "没有可应用的有效行。请修正文件或格式选项后重新预览。",
+    "readyToApply": "可将 {{count}} 行应用到表单。"
+  },
   "confirm": {
     "submitTitle": "提交申请",
     "submitMessage": "提交此申请？行项目将不可编辑。",
+    "deleteTitle": "删除申请",
+    "deleteMessage": "删除此草稿申请？此操作无法撤销。",
     "deleteLineTitle": "删除行",
-    "deleteLineMessage": "从申请中移除此行？"
+    "deleteLineMessage": "从申请中移除此行？",
+    "replaceLinesTitle": "替换现有行？",
+    "replaceLinesMessage": "应用导入将替换表单中已添加的行。"
   },
   "detail": {
     "fallbackTitle": "申请 {{id}}",
-    "reference": "参考号：{{reference}}",
     "createdAt": "创建于 {{date}}",
     "submittedAt": "已提交 {{date}}",
     "selection": "选择"
@@ -83,6 +100,8 @@
     "created": "申请已创建",
     "updated": "申请已更新",
     "submitted": "申请已提交",
+    "deleted": "申请已删除",
+    "importApplied": "行已导入到表单",
     "lineAdded": "行已添加",
     "lineUpdated": "行已更新",
     "lineDeleted": "行已删除",

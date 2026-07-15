@@ -59,17 +59,11 @@ export function RequestDetailPage() {
 
   const title =
     request?.title ??
-    request?.reference ??
     t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
-
-  const subtitle = request?.reference
-    ? t('detail.reference', { reference: request.reference })
-    : null;
 
   return (
     <DocumentDetailLayout
       title={title}
-      subtitle={subtitle}
       statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
       backTo="/app/requests"
       backLabel={t('actions.backToList')}
@@ -123,19 +117,12 @@ export function RequestDetailPage() {
           requestId={request.id}
           lineageEntries={request.lines.map(mapRequestLineToLineageEntry)}
           details={
-            <Stack spacing={4}>
-              <RequestHeaderForm
-                companyId={companyId}
-                request={request}
-                editable={canEdit}
-              />
-              <RequestLinesTable
-                companyId={companyId}
-                requestId={request.id}
-                lines={request.lines}
-                editable={canEdit}
-              />
-            </Stack>
+            <RequestLinesTable
+              companyId={companyId}
+              requestId={request.id}
+              lines={request.lines}
+              editable={canEdit}
+            />
           }
         />
       ) : null}

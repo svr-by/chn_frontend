@@ -3,12 +3,13 @@
   "subtitle": "Outbound material requests for procurement.",
   "tabs": {
     "outbound": "Outbound",
-    "inbound": "Inbound"
+    "inbound": "Inbound",
+    "lines": "Lines",
+    "notes": "Notes"
   },
   "linesTitle": "Lines",
   "columns": {
     "title": "Title",
-    "reference": "Reference",
     "status": "Status",
     "submittedAt": "Submitted",
     "createdAt": "Created",
@@ -24,12 +25,15 @@
   "actions": {
     "new": "New request",
     "import": "Import CSV",
+    "importFromFile": "Import from file",
+    "applyImport": "Apply to form",
     "inbound": "Inbound requests",
     "distribute": "Distribute",
     "compare": "Compare quotes",
     "manageSelection": "Manage selection",
     "create": "Create request",
     "submit": "Submit",
+    "delete": "Delete",
     "addLine": "Add line",
     "editLine": "Edit",
     "deleteLine": "Delete",
@@ -50,13 +54,13 @@
   },
   "empty": {
     "list": "No requests found.",
-    "lines": "No lines yet. Add a line to continue."
+    "lines": "No lines yet. Add a line or import from a file."
   },
   "form": {
     "newTitle": "New request",
-    "newSubtitle": "Create a draft request and add line items on the next screen.",
+    "newSubtitle": "Fill in request details and line items, then create the draft.",
     "title": "Title",
-    "reference": "Reference",
+    "date": "Date",
     "notes": "Notes",
     "product": "Product (optional)",
     "productPlaceholder": "Search catalog",
@@ -66,15 +70,28 @@
     "addLineTitle": "Add line",
     "editLineTitle": "Edit line"
   },
+  "import": {
+    "dropIdle": "Drag and drop a CSV or HTM file here",
+    "dropActive": "Drop the file here",
+    "uploadHint": "Accepted formats: .csv, .htm, .html",
+    "browse": "Browse files",
+    "selected": "Selected: {{name}}",
+    "clear": "Clear",
+    "noValidRows": "No valid rows to apply. Fix the file or format options and preview again.",
+    "readyToApply": "{{count}} line(s) ready to apply to the form."
+  },
   "confirm": {
     "submitTitle": "Submit request",
     "submitMessage": "Submit this request? Lines will no longer be editable.",
+    "deleteTitle": "Delete request",
+    "deleteMessage": "Delete this draft request? This cannot be undone.",
     "deleteLineTitle": "Delete line",
-    "deleteLineMessage": "Remove this line from the request?"
+    "deleteLineMessage": "Remove this line from the request?",
+    "replaceLinesTitle": "Replace existing lines?",
+    "replaceLinesMessage": "Applying the import will replace the lines already added to the form."
   },
   "detail": {
     "fallbackTitle": "Request {{id}}",
-    "reference": "Reference: {{reference}}",
     "createdAt": "Created {{date}}",
     "submittedAt": "Submitted {{date}}",
     "selection": "Selection"
@@ -83,6 +100,8 @@
     "created": "Request created",
     "updated": "Request updated",
     "submitted": "Request submitted",
+    "deleted": "Request deleted",
+    "importApplied": "Lines imported into the form",
     "lineAdded": "Line added",
     "lineUpdated": "Line updated",
     "lineDeleted": "Line deleted",
