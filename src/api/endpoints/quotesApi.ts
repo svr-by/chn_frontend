@@ -1,3 +1,13 @@
+import {
+  getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
+  getGetCompaniesCompanyIdQuotesQuoteIdUrl,
+  getGetCompaniesCompanyIdQuotesUrl,
+  getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
+  getPatchCompaniesCompanyIdQuotesQuoteIdUrl,
+  getPostCompaniesCompanyIdQuotesQuoteIdLinesUrl,
+  getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl,
+  getPostCompaniesCompanyIdQuotesUrl,
+} from '@/api/generated/endpoints';
 import type {
   DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
   GetCompaniesCompanyIdQuotes200,
@@ -44,7 +54,7 @@ export const quotesApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdQuotesParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/quotes`,
+        url: getGetCompaniesCompanyIdQuotesUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => quoteListTag(companyId),
@@ -54,7 +64,7 @@ export const quotesApi = baseApi.injectEndpoints({
       { companyId: string; quoteId: string }
     >({
       query: ({ companyId, quoteId }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}`,
+        url: getGetCompaniesCompanyIdQuotesQuoteIdUrl(companyId, quoteId),
       }),
       providesTags: (_result, _error, { quoteId }) => [
         { type: 'Quotes', id: quoteId },
@@ -65,7 +75,7 @@ export const quotesApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdQuotesBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/quotes`,
+        url: getPostCompaniesCompanyIdQuotesUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -83,7 +93,7 @@ export const quotesApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdQuotesQuoteIdBody
     >({
       query: ({ companyId, quoteId, materialRequestId: _requestId, ...body }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}`,
+        url: getPatchCompaniesCompanyIdQuotesQuoteIdUrl(companyId, quoteId),
         method: 'PATCH',
         body,
       }),
@@ -99,7 +109,7 @@ export const quotesApi = baseApi.injectEndpoints({
       } & PostCompaniesCompanyIdQuotesQuoteIdLinesBody
     >({
       query: ({ companyId, quoteId, materialRequestId: _requestId, ...body }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}/lines`,
+        url: getPostCompaniesCompanyIdQuotesQuoteIdLinesUrl(companyId, quoteId),
         method: 'POST',
         body,
       }),
@@ -122,7 +132,7 @@ export const quotesApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}/lines/${lineId}`,
+        url: getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(companyId, quoteId, lineId),
         method: 'PATCH',
         body,
       }),
@@ -139,7 +149,7 @@ export const quotesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, quoteId, lineId }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}/lines/${lineId}`,
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(companyId, quoteId, lineId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
@@ -154,7 +164,7 @@ export const quotesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, quoteId }) => ({
-        url: `/companies/${companyId}/quotes/${quoteId}/submit`,
+        url: getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl(companyId, quoteId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>

@@ -1,19 +1,22 @@
 import { Chip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import type { MaterialRequestStatus } from '@/types/api';
+import {
+  MaterialRequestStatusValues,
+  type MaterialRequestStatus,
+} from '@/types/api';
 
-const STATUS_COLORS: Record<
+const STATUS_COLORS = {
+  [MaterialRequestStatusValues.DRAFT]: 'default',
+  [MaterialRequestStatusValues.SUBMITTED]: 'info',
+  [MaterialRequestStatusValues.QUOTING]: 'warning',
+  [MaterialRequestStatusValues.PARTIALLY_ORDERED]: 'warning',
+  [MaterialRequestStatusValues.ORDERED]: 'success',
+  [MaterialRequestStatusValues.CLOSED]: 'default',
+} as const satisfies Record<
   MaterialRequestStatus,
   'default' | 'info' | 'warning' | 'success'
-> = {
-  DRAFT: 'default',
-  SUBMITTED: 'info',
-  QUOTING: 'warning',
-  PARTIALLY_ORDERED: 'warning',
-  ORDERED: 'success',
-  CLOSED: 'default',
-};
+>;
 
 interface StatusBadgeProps {
   status: MaterialRequestStatus;

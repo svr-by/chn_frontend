@@ -1,3 +1,9 @@
+import {
+  getGetCompaniesCompanyIdNotificationsUnreadCountUrl,
+  getGetCompaniesCompanyIdNotificationsUrl,
+  getPostCompaniesCompanyIdNotificationsNotificationIdReadUrl,
+  getPostCompaniesCompanyIdNotificationsReadAllUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdNotifications200,
   GetCompaniesCompanyIdNotificationsParams,
@@ -31,7 +37,7 @@ export const notificationsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdNotificationsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/notifications`,
+        url: getGetCompaniesCompanyIdNotificationsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => notificationListTag(companyId),
@@ -41,7 +47,7 @@ export const notificationsApi = baseApi.injectEndpoints({
       { companyId: string }
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/notifications/unread-count`,
+        url: getGetCompaniesCompanyIdNotificationsUnreadCountUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) =>
         notificationUnreadCountTag(companyId),
@@ -51,7 +57,7 @@ export const notificationsApi = baseApi.injectEndpoints({
       { companyId: string; notificationId: string }
     >({
       query: ({ companyId, notificationId }) => ({
-        url: `/companies/${companyId}/notifications/${notificationId}/read`,
+        url: getPostCompaniesCompanyIdNotificationsNotificationIdReadUrl(companyId, notificationId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) => notificationTags(companyId),
@@ -61,7 +67,7 @@ export const notificationsApi = baseApi.injectEndpoints({
       { companyId: string }
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/notifications/read-all`,
+        url: getPostCompaniesCompanyIdNotificationsReadAllUrl(companyId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) => notificationTags(companyId),

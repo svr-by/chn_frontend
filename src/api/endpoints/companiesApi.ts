@@ -1,3 +1,9 @@
+import {
+  getGetCompaniesCompanyIdUrl,
+  getGetCompaniesUrl,
+  getPostCompaniesCompanyIdMembersAcceptUrl,
+  getPostCompaniesUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompanies200,
   GetCompaniesCompanyId200,
@@ -11,19 +17,19 @@ export const companiesApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: (builder) => ({
     listCompanies: builder.query<GetCompanies200, void>({
-      query: () => '/companies',
+      query: () => ({ url: getGetCompaniesUrl() }),
       providesTags: ['Companies'],
     }),
     createCompany: builder.mutation<PostCompanies201, PostCompaniesBody>({
       query: (body) => ({
-        url: '/companies',
+        url: getPostCompaniesUrl(),
         method: 'POST',
         body,
       }),
       invalidatesTags: ['Companies', 'Me'],
     }),
     getCompany: builder.query<GetCompaniesCompanyId200, string>({
-      query: (companyId) => `/companies/${companyId}`,
+      query: (companyId) => ({ url: getGetCompaniesCompanyIdUrl(companyId) }),
       providesTags: (_result, _error, companyId) => [
         { type: 'Company', id: companyId },
       ],
@@ -33,7 +39,7 @@ export const companiesApi = baseApi.injectEndpoints({
       string
     >({
       query: (companyId) => ({
-        url: `/companies/${companyId}/members/accept`,
+        url: getPostCompaniesCompanyIdMembersAcceptUrl(companyId),
         method: 'POST',
       }),
       invalidatesTags: ['Me', 'Companies'],

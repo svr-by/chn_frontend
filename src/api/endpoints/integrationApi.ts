@@ -1,3 +1,18 @@
+import {
+  getDeleteCompaniesCompanyIdIntegrationApiKeysKeyIdUrl,
+  getDeleteCompaniesCompanyIdIntegrationMappingsMappingIdUrl,
+  getDeleteCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl,
+  getGetCompaniesCompanyIdIntegrationApiKeysUrl,
+  getGetCompaniesCompanyIdIntegrationExportsJobIdUrl,
+  getGetCompaniesCompanyIdIntegrationMappingsUrl,
+  getGetCompaniesCompanyIdIntegrationWebhooksUrl,
+  getPatchCompaniesCompanyIdIntegrationMappingsMappingIdUrl,
+  getPatchCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl,
+  getPostCompaniesCompanyIdIntegrationApiKeysUrl,
+  getPostCompaniesCompanyIdIntegrationExportsUrl,
+  getPostCompaniesCompanyIdIntegrationMappingsUrl,
+  getPostCompaniesCompanyIdIntegrationWebhooksUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdIntegrationApiKeys200,
   GetCompaniesCompanyIdIntegrationExportsJobId200,
@@ -49,7 +64,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/integration/api-keys`,
+        url: getGetCompaniesCompanyIdIntegrationApiKeysUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => apiKeysTag(companyId),
     }),
@@ -58,7 +73,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdIntegrationApiKeysBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/integration/api-keys`,
+        url: getPostCompaniesCompanyIdIntegrationApiKeysUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -66,7 +81,7 @@ export const integrationApi = baseApi.injectEndpoints({
     }),
     revokeApiKey: builder.mutation<void, { companyId: string; keyId: string }>({
       query: ({ companyId, keyId }) => ({
-        url: `/companies/${companyId}/integration/api-keys/${keyId}`,
+        url: getDeleteCompaniesCompanyIdIntegrationApiKeysKeyIdUrl(companyId, keyId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => apiKeysTag(companyId),
@@ -76,7 +91,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/integration/mappings`,
+        url: getGetCompaniesCompanyIdIntegrationMappingsUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => mappingsTag(companyId),
     }),
@@ -85,7 +100,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdIntegrationMappingsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/integration/mappings`,
+        url: getPostCompaniesCompanyIdIntegrationMappingsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -100,7 +115,7 @@ export const integrationApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, mappingId, body }) => ({
-        url: `/companies/${companyId}/integration/mappings/${mappingId}`,
+        url: getPatchCompaniesCompanyIdIntegrationMappingsMappingIdUrl(companyId, mappingId),
         method: 'PATCH',
         body,
       }),
@@ -111,7 +126,7 @@ export const integrationApi = baseApi.injectEndpoints({
       { companyId: string; mappingId: string }
     >({
       query: ({ companyId, mappingId }) => ({
-        url: `/companies/${companyId}/integration/mappings/${mappingId}`,
+        url: getDeleteCompaniesCompanyIdIntegrationMappingsMappingIdUrl(companyId, mappingId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => mappingsTag(companyId),
@@ -121,7 +136,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/integration/webhooks`,
+        url: getGetCompaniesCompanyIdIntegrationWebhooksUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => webhooksTag(companyId),
     }),
@@ -130,7 +145,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdIntegrationWebhooksBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/integration/webhooks`,
+        url: getPostCompaniesCompanyIdIntegrationWebhooksUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -145,7 +160,7 @@ export const integrationApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, webhookId, body }) => ({
-        url: `/companies/${companyId}/integration/webhooks/${webhookId}`,
+        url: getPatchCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(companyId, webhookId),
         method: 'PATCH',
         body,
       }),
@@ -156,7 +171,7 @@ export const integrationApi = baseApi.injectEndpoints({
       { companyId: string; webhookId: string }
     >({
       query: ({ companyId, webhookId }) => ({
-        url: `/companies/${companyId}/integration/webhooks/${webhookId}`,
+        url: getDeleteCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(companyId, webhookId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => webhooksTag(companyId),
@@ -166,7 +181,7 @@ export const integrationApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdIntegrationExportsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/integration/exports`,
+        url: getPostCompaniesCompanyIdIntegrationExportsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -179,7 +194,7 @@ export const integrationApi = baseApi.injectEndpoints({
       { companyId: string; jobId: string }
     >({
       query: ({ companyId, jobId }) => ({
-        url: `/companies/${companyId}/integration/exports/${jobId}`,
+        url: getGetCompaniesCompanyIdIntegrationExportsJobIdUrl(companyId, jobId),
       }),
       providesTags: (_result, _error, { companyId, jobId }) =>
         exportJobTag(companyId, jobId),

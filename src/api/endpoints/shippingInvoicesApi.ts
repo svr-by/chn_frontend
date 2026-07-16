@@ -1,3 +1,15 @@
+import {
+  getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl,
+  getGetCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl,
+  getGetCompaniesCompanyIdShippingInvoicesUrl,
+  getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl,
+  getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl,
+  getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssueUrl,
+  getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesUrl,
+  getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDeliveredUrl,
+  getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransitUrl,
+  getPostCompaniesCompanyIdShippingInvoicesUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdShippingInvoices200,
   GetCompaniesCompanyIdShippingInvoicesParams,
@@ -50,7 +62,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdShippingInvoicesParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/shipping-invoices`,
+        url: getGetCompaniesCompanyIdShippingInvoicesUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) =>
@@ -61,7 +73,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       { companyId: string; shippingInvoiceId: string }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}`,
+        url: getGetCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(companyId, shippingInvoiceId),
       }),
       providesTags: (_result, _error, { shippingInvoiceId }) => [
         { type: 'ShippingInvoices', id: shippingInvoiceId },
@@ -72,7 +84,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdShippingInvoicesBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/shipping-invoices`,
+        url: getPostCompaniesCompanyIdShippingInvoicesUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -95,7 +107,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}`,
+        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(companyId, shippingInvoiceId),
         method: 'PATCH',
         body,
       }),
@@ -120,7 +132,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/lines`,
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesUrl(companyId, shippingInvoiceId),
         method: 'POST',
         body,
       }),
@@ -147,7 +159,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/lines/${lineId}`,
+        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(companyId, shippingInvoiceId, lineId),
         method: 'PATCH',
         body,
       }),
@@ -168,7 +180,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId, lineId }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/lines/${lineId}`,
+        url: getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(companyId, shippingInvoiceId, lineId),
         method: 'DELETE',
       }),
       invalidatesTags: (
@@ -187,7 +199,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/issue`,
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssueUrl(companyId, shippingInvoiceId),
         method: 'POST',
       }),
       invalidatesTags: (
@@ -206,7 +218,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/mark-in-transit`,
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransitUrl(companyId, shippingInvoiceId),
         method: 'POST',
       }),
       invalidatesTags: (
@@ -225,7 +237,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: `/companies/${companyId}/shipping-invoices/${shippingInvoiceId}/mark-delivered`,
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDeliveredUrl(companyId, shippingInvoiceId),
         method: 'POST',
       }),
       invalidatesTags: (

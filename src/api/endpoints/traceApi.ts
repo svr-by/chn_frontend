@@ -1,3 +1,9 @@
+import {
+  getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdRelationshipsUrl,
+  getGetCompaniesCompanyIdTraceLineageIdEventsUrl,
+  getGetCompaniesCompanyIdTraceLineageIdUrl,
+  getGetCompaniesCompanyIdTraceSearchUrl,
+} from '@/api/generated/endpoints';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import type {
   DocumentRelationships,
@@ -43,7 +49,7 @@ export const traceApi = baseApi.injectEndpoints({
       { companyId: string } & GetCompaniesCompanyIdTraceSearchParams
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/trace/search`,
+        url: getGetCompaniesCompanyIdTraceSearchUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => [
@@ -55,7 +61,7 @@ export const traceApi = baseApi.injectEndpoints({
       { companyId: string; lineageId: string }
     >({
       query: ({ companyId, lineageId }) => ({
-        url: `/companies/${companyId}/trace/${lineageId}`,
+        url: getGetCompaniesCompanyIdTraceLineageIdUrl(companyId, lineageId),
       }),
       providesTags: (_result, _error, { lineageId }) => lineageTraceTag(lineageId),
     }),
@@ -67,7 +73,7 @@ export const traceApi = baseApi.injectEndpoints({
       } & GetCompaniesCompanyIdTraceLineageIdEventsParams
     >({
       query: ({ companyId, lineageId, ...params }) => ({
-        url: `/companies/${companyId}/trace/${lineageId}/events`,
+        url: getGetCompaniesCompanyIdTraceLineageIdEventsUrl(companyId, lineageId),
         params,
       }),
       providesTags: (_result, _error, { lineageId }) => lineageEventsTag(lineageId),
@@ -77,7 +83,7 @@ export const traceApi = baseApi.injectEndpoints({
       DocumentScopedArgs
     >({
       query: ({ companyId, documentType, documentId }) => ({
-        url: `/companies/${companyId}/documents/${documentType}/${documentId}/relationships`,
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdRelationshipsUrl(companyId, documentType, documentId),
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>
         documentRelationshipsTag(documentType, documentId),

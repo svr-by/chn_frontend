@@ -11,9 +11,26 @@ import {
   resolveActiveCompanyId,
   resolveAuthenticatedRedirect,
 } from '@/lib/permissions';
+import { navConfig } from '@/lib/navConfig';
 import { createMembership, createTestUser, COMPANY_ID } from '@/test/fixtures';
+import { PermissionValues } from '@/types/api';
+
+const ALL_PERMISSIONS = Object.values(PermissionValues);
 
 describe('permissions', () => {
+  describe('generated Permission contract', () => {
+    it('navConfig permissions are all backend-generated values', () => {
+      for (const item of navConfig) {
+        expect(ALL_PERMISSIONS).toContain(item.permission);
+      }
+    });
+
+    it('exposes the full generated permission set', () => {
+      expect(ALL_PERMISSIONS).toContain('manageIntegrations');
+      expect(ALL_PERMISSIONS).toContain('viewRequests');
+      expect(ALL_PERMISSIONS.length).toBeGreaterThanOrEqual(20);
+    });
+  });
   describe('hasPermission', () => {
     it('returns true when permission is present', () => {
       expect(hasPermission(['viewMembers', 'manageMembers'], 'viewMembers')).toBe(

@@ -100,7 +100,7 @@ chn_frontend/
 │   ├── routes/                # Guards, AuthBootstrap
 │   ├── store/slices/          # authSlice, etc.
 │   ├── styles/
-│   └── types/api.ts           # Baseline types + enums
+│   └── types/api.ts           # Aliases to generated + frontend helpers
 ├── orval.config.ts
 ├── vite.config.ts
 └── docs/                      # This documentation
@@ -115,7 +115,7 @@ Path alias `@/` maps to `src/` (configured in `tsconfig` and `vite.config.ts`).
 ```text
 Route (features/*)
     ↓
-RTK Query endpoint (api/endpoints/*)
+RTK Query endpoint (api/endpoints/*)  ← tags/hooks; urls via generated getXxxUrl
     ↓
 baseApi (fetchBaseQuery + reauth)
     ↓
@@ -164,11 +164,11 @@ Never gate actions from `MemberRole` alone — roles are presets; owners can ove
 # 1. Copy latest spec from backend
 #    chn_backend/.cursor/api-docs.json → openapi/api-docs.json
 
-# 2. Regenerate
+# 2. Regenerate models + URL helpers
 npm run codegen
 ```
 
-Generated files live in `src/api/generated/`. Add RTK Query endpoints manually in `src/api/endpoints/` using `baseApi.injectEndpoints()`.
+Generated files live in `src/api/generated/` (`models/` + `endpoints.ts` with `getXxxUrl` helpers). Add RTK Query endpoints manually in `src/api/endpoints/` via `baseApi.injectEndpoints()`, wiring `url` through those helpers (do not hardcode path strings). Keep query params on the RTK `params` field. The manual layer is for cache tags, hooks, and auth side-effects. `src/api/contract.smoke.test.ts` fails if RTK helpers drift from `openapi/api-docs.json`.
 
 ---
 
@@ -223,13 +223,13 @@ Reuse across request, quote, selection, invoice, payment, shipping, consolidatio
 | `npm run dev` | Vite dev server with API proxy |
 | `npm run build` | `tsc -b` + production bundle |
 | `npm run preview` | Serve production build locally |
-| `npm run codegen` | Regenerate Orval types |
+| `npm run codegen` | Regenerate Orval models + URL helpers |
 
 ---
 
 ## Adding a new feature module
 
-1. Add RTK Query endpoints in `src/api/endpoints/<domain>Api.ts`
+1. Add RTK Query endpoints in `src/api/endpoints/<domain>Api.ts` using generated `getXxxUrl` helpers for paths
 2. Register `tagTypes` in `baseApi` for cache invalidation
 3. Create pages under `src/features/<domain>/`
 4. Add routes in `src/app/router.tsx`
@@ -248,7 +248,8 @@ Reuse across request, quote, selection, invoice, payment, shipping, consolidatio
 | Company switcher | `src/components/CompanySwitcher.tsx` |
 | Route guards | `src/routes/ProtectedRoute.tsx`, `src/routes/AuthBootstrap.tsx` |
 | API endpoints | `src/api/endpoints/authApi.ts`, `companiesApi.ts` |
-| Baseline types | `src/types/api.ts` |
+| API type aliases | `src/types/api.ts` |
+| Contract smoke test | `src/api/contract.smoke.test.ts` |
 
 ---
 

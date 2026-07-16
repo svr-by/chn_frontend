@@ -1,3 +1,16 @@
+import {
+  getDeleteCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesShippingInvoiceIdUrl,
+  getGetCompaniesCompanyIdConsolidatableShippingInvoicesUrl,
+  getGetCompaniesCompanyIdConsolidationsConsolidationIdUrl,
+  getGetCompaniesCompanyIdConsolidationsUrl,
+  getPatchCompaniesCompanyIdConsolidationsConsolidationIdUrl,
+  getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkCustomsUrl,
+  getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkDeliveredUrl,
+  getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkInTransitUrl,
+  getPostCompaniesCompanyIdConsolidationsConsolidationIdPlanUrl,
+  getPostCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesUrl,
+  getPostCompaniesCompanyIdConsolidationsUrl,
+} from '@/api/generated/endpoints';
 import type {
   DeleteCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesShippingInvoiceId200,
   GetCompaniesCompanyIdConsolidatableShippingInvoices200,
@@ -56,7 +69,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdConsolidationsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/consolidations`,
+        url: getGetCompaniesCompanyIdConsolidationsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) =>
@@ -67,7 +80,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string; consolidationId: string }
     >({
       query: ({ companyId, consolidationId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}`,
+        url: getGetCompaniesCompanyIdConsolidationsConsolidationIdUrl(companyId, consolidationId),
       }),
       providesTags: (_result, _error, { consolidationId }) => [
         { type: 'Consolidations', id: consolidationId },
@@ -78,7 +91,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string }
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/consolidatable-shipping-invoices`,
+        url: getGetCompaniesCompanyIdConsolidatableShippingInvoicesUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) =>
         consolidatableTag(companyId),
@@ -88,7 +101,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdConsolidationsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/consolidations`,
+        url: getPostCompaniesCompanyIdConsolidationsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -105,7 +118,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdConsolidationsConsolidationIdBody
     >({
       query: ({ companyId, consolidationId, ...body }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}`,
+        url: getPatchCompaniesCompanyIdConsolidationsConsolidationIdUrl(companyId, consolidationId),
         method: 'PATCH',
         body,
       }),
@@ -126,7 +139,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
         shippingInvoiceId: _shippingInvoiceId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/shipping-invoices`,
+        url: getPostCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesUrl(companyId, consolidationId),
         method: 'POST',
         body,
       }),
@@ -146,7 +159,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, consolidationId, shippingInvoiceId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/shipping-invoices/${shippingInvoiceId}`,
+        url: getDeleteCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesShippingInvoiceIdUrl(companyId, consolidationId, shippingInvoiceId),
         method: 'DELETE',
       }),
       invalidatesTags: (
@@ -161,7 +174,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string; consolidationId: string }
     >({
       query: ({ companyId, consolidationId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/plan`,
+        url: getPostCompaniesCompanyIdConsolidationsConsolidationIdPlanUrl(companyId, consolidationId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, consolidationId }) =>
@@ -172,7 +185,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string; consolidationId: string }
     >({
       query: ({ companyId, consolidationId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/mark-in-transit`,
+        url: getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkInTransitUrl(companyId, consolidationId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, consolidationId }) =>
@@ -183,7 +196,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string; consolidationId: string }
     >({
       query: ({ companyId, consolidationId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/mark-customs`,
+        url: getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkCustomsUrl(companyId, consolidationId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, consolidationId }) =>
@@ -194,7 +207,7 @@ export const consolidationsApi = baseApi.injectEndpoints({
       { companyId: string; consolidationId: string }
     >({
       query: ({ companyId, consolidationId }) => ({
-        url: `/companies/${companyId}/consolidations/${consolidationId}/mark-delivered`,
+        url: getPostCompaniesCompanyIdConsolidationsConsolidationIdMarkDeliveredUrl(companyId, consolidationId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, consolidationId }) =>

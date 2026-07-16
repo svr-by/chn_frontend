@@ -1,3 +1,12 @@
+import {
+  getGetCompaniesCompanyIdPartnersDirectoryUrl,
+  getGetCompaniesCompanyIdPartnersInboundUrl,
+  getGetCompaniesCompanyIdPartnersOutboundUrl,
+  getGetCompaniesCompanyIdPartnersUrl,
+  getPostCompaniesCompanyIdPartnersInviteUrl,
+  getPostCompaniesCompanyIdPartnersLinkIdAcceptUrl,
+  getPostCompaniesCompanyIdPartnersLinkIdRejectUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdPartners200,
   GetCompaniesCompanyIdPartnersDirectory200,
@@ -31,7 +40,7 @@ export const partnersApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/partners`,
+        url: getGetCompaniesCompanyIdPartnersUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => [
         { type: 'Partners', id: companyId },
@@ -42,7 +51,7 @@ export const partnersApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/partners/inbound`,
+        url: getGetCompaniesCompanyIdPartnersInboundUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => [
         { type: 'Partners', id: `${companyId}-inbound` },
@@ -53,7 +62,7 @@ export const partnersApi = baseApi.injectEndpoints({
       CompanyScopedArgs
     >({
       query: ({ companyId }) => ({
-        url: `/companies/${companyId}/partners/outbound`,
+        url: getGetCompaniesCompanyIdPartnersOutboundUrl(companyId),
       }),
       providesTags: (_result, _error, { companyId }) => [
         { type: 'Partners', id: `${companyId}-outbound` },
@@ -64,7 +73,7 @@ export const partnersApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdPartnersDirectoryParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/partners/directory`,
+        url: getGetCompaniesCompanyIdPartnersDirectoryUrl(companyId),
         params,
       }),
     }),
@@ -73,7 +82,7 @@ export const partnersApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdPartnersInviteBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/partners/invite`,
+        url: getPostCompaniesCompanyIdPartnersInviteUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -85,7 +94,7 @@ export const partnersApi = baseApi.injectEndpoints({
       { companyId: string; linkId: string }
     >({
       query: ({ companyId, linkId }) => ({
-        url: `/companies/${companyId}/partners/${linkId}/accept`,
+        url: getPostCompaniesCompanyIdPartnersLinkIdAcceptUrl(companyId, linkId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>
@@ -96,7 +105,7 @@ export const partnersApi = baseApi.injectEndpoints({
       { companyId: string; linkId: string }
     >({
       query: ({ companyId, linkId }) => ({
-        url: `/companies/${companyId}/partners/${linkId}/reject`,
+        url: getPostCompaniesCompanyIdPartnersLinkIdRejectUrl(companyId, linkId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>

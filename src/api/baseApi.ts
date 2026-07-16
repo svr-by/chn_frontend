@@ -9,6 +9,7 @@ import {
 import { authStorage } from '@/lib/authStorage';
 import { getUiLocale } from '@/lib/locale';
 import { clearSession, setTokens } from '@/store/slices/authSlice';
+import { getPostAuthRefreshUrl } from '@/api/generated/endpoints';
 import type { ApiError } from '@/types/api';
 
 let refreshPromise: Promise<boolean> | null = null;
@@ -25,7 +26,7 @@ async function refreshTokens(
 
   const refreshResult = await rawBaseQuery(
     {
-      url: '/auth/refresh',
+      url: getPostAuthRefreshUrl(),
       method: 'POST',
       body: { refreshToken },
     },

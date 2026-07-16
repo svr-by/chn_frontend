@@ -1,3 +1,10 @@
+import {
+  getGetCompaniesCompanyIdImportsJobIdUrl,
+  getPostCompaniesCompanyIdImportsJobIdConfirmUrl,
+  getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl,
+  getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl,
+  getPostCompaniesCompanyIdImportsRequestLinesUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdImportsJobId200,
   PostCompaniesCompanyIdImportsJobIdConfirm200,
@@ -26,7 +33,7 @@ export const importsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<{ formData: FormData }>
     >({
       query: ({ companyId, formData }) => ({
-        url: `/companies/${companyId}/imports/request-lines/csv/preview`,
+        url: getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl(companyId),
         method: 'POST',
         body: formData,
       }),
@@ -36,7 +43,7 @@ export const importsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<{ formData: FormData }>
     >({
       query: ({ companyId, formData }) => ({
-        url: `/companies/${companyId}/imports/request-lines/htm/preview`,
+        url: getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl(companyId),
         method: 'POST',
         body: formData,
       }),
@@ -46,7 +53,7 @@ export const importsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<{ formData: FormData }>
     >({
       query: ({ companyId, formData }) => ({
-        url: `/companies/${companyId}/imports/request-lines`,
+        url: getPostCompaniesCompanyIdImportsRequestLinesUrl(companyId),
         method: 'POST',
         body: formData,
       }),
@@ -59,7 +66,7 @@ export const importsApi = baseApi.injectEndpoints({
       { companyId: string; jobId: string }
     >({
       query: ({ companyId, jobId }) => ({
-        url: `/companies/${companyId}/imports/${jobId}`,
+        url: getGetCompaniesCompanyIdImportsJobIdUrl(companyId, jobId),
       }),
       providesTags: (_result, _error, { companyId, jobId }) =>
         importJobTag(companyId, jobId),
@@ -69,7 +76,7 @@ export const importsApi = baseApi.injectEndpoints({
       { companyId: string; jobId: string }
     >({
       query: ({ companyId, jobId }) => ({
-        url: `/companies/${companyId}/imports/${jobId}/confirm`,
+        url: getPostCompaniesCompanyIdImportsJobIdConfirmUrl(companyId, jobId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, jobId }) => [

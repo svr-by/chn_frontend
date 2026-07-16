@@ -1,3 +1,14 @@
+import {
+  getGetAuthMeUrl,
+  getPostAuthForgotPasswordUrl,
+  getPostAuthLoginUrl,
+  getPostAuthLogoutUrl,
+  getPostAuthRefreshUrl,
+  getPostAuthRegisterUrl,
+  getPostAuthResendVerificationUrl,
+  getPostAuthResetPasswordUrl,
+  getPostAuthVerifyEmailUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetAuthMe200,
   PostAuthForgotPassword200,
@@ -27,14 +38,14 @@ export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<PostAuthRegister201, PostAuthRegisterBody>({
       query: (body) => ({
-        url: '/auth/register',
+        url: getPostAuthRegisterUrl(),
         method: 'POST',
         body,
       }),
     }),
     login: builder.mutation<PostAuthLogin200, PostAuthLoginBody>({
       query: (body) => ({
-        url: '/auth/login',
+        url: getPostAuthLoginUrl(),
         method: 'POST',
         body,
       }),
@@ -58,7 +69,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     logout: builder.mutation<void, PostAuthLogoutBody>({
       query: (body) => ({
-        url: '/auth/logout',
+        url: getPostAuthLogoutUrl(),
         method: 'POST',
         body,
       }),
@@ -72,7 +83,7 @@ export const authApi = baseApi.injectEndpoints({
       },
     }),
     getMe: builder.query<GetAuthMe200, void>({
-      query: () => '/auth/me',
+      query: () => ({ url: getGetAuthMeUrl() }),
       providesTags: ['Me'],
     }),
     refresh: builder.mutation<
@@ -80,7 +91,7 @@ export const authApi = baseApi.injectEndpoints({
       PostAuthRefreshBody
     >({
       query: (body) => ({
-        url: '/auth/refresh',
+        url: getPostAuthRefreshUrl(),
         method: 'POST',
         body,
       }),
@@ -96,7 +107,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     verifyEmail: builder.mutation<PostAuthVerifyEmail200, PostAuthVerifyEmailBody>({
       query: (body) => ({
-        url: '/auth/verify-email',
+        url: getPostAuthVerifyEmailUrl(),
         method: 'POST',
         body,
       }),
@@ -107,7 +118,7 @@ export const authApi = baseApi.injectEndpoints({
       PostAuthResendVerificationBody | void
     >({
       query: (body) => ({
-        url: '/auth/resend-verification',
+        url: getPostAuthResendVerificationUrl(),
         method: 'POST',
         body: body ?? {},
       }),
@@ -117,7 +128,7 @@ export const authApi = baseApi.injectEndpoints({
       PostAuthForgotPasswordBody
     >({
       query: (body) => ({
-        url: '/auth/forgot-password',
+        url: getPostAuthForgotPasswordUrl(),
         method: 'POST',
         body,
       }),
@@ -127,7 +138,7 @@ export const authApi = baseApi.injectEndpoints({
       PostAuthResetPasswordBody
     >({
       query: (body) => ({
-        url: '/auth/reset-password',
+        url: getPostAuthResetPasswordUrl(),
         method: 'POST',
         body,
       }),

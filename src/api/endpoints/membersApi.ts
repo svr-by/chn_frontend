@@ -1,3 +1,12 @@
+import {
+  getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl,
+  getDeleteCompaniesCompanyIdMembersMemberIdUrl,
+  getGetCompaniesCompanyIdMembersInvitationsUrl,
+  getGetCompaniesCompanyIdMembersUrl,
+  getPatchCompaniesCompanyIdMembersMemberIdPermissionsUrl,
+  getPatchCompaniesCompanyIdMembersMemberIdRoleUrl,
+  getPostCompaniesCompanyIdMembersInviteUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdMembers200,
   GetCompaniesCompanyIdMembersInvitations200,
@@ -24,7 +33,7 @@ export const membersApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdMembersParams | void>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/members`,
+        url: getGetCompaniesCompanyIdMembersUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => [
@@ -36,7 +45,7 @@ export const membersApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdMembersInviteBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/members/invite`,
+        url: getPostCompaniesCompanyIdMembersInviteUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -50,7 +59,7 @@ export const membersApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdMembersInvitationsParams | void>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/members/invitations`,
+        url: getGetCompaniesCompanyIdMembersInvitationsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => [
@@ -62,7 +71,7 @@ export const membersApi = baseApi.injectEndpoints({
       { companyId: string; invitationId: string }
     >({
       query: ({ companyId, invitationId }) => ({
-        url: `/companies/${companyId}/members/invitations/${invitationId}`,
+        url: getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl(companyId, invitationId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => [
@@ -71,7 +80,7 @@ export const membersApi = baseApi.injectEndpoints({
     }),
     removeMember: builder.mutation<void, { companyId: string; memberId: string }>({
       query: ({ companyId, memberId }) => ({
-        url: `/companies/${companyId}/members/${memberId}`,
+        url: getDeleteCompaniesCompanyIdMembersMemberIdUrl(companyId, memberId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => [
@@ -84,7 +93,7 @@ export const membersApi = baseApi.injectEndpoints({
       { companyId: string; memberId: string; body: PatchCompaniesCompanyIdMembersMemberIdRoleBody }
     >({
       query: ({ companyId, memberId, body }) => ({
-        url: `/companies/${companyId}/members/${memberId}/role`,
+        url: getPatchCompaniesCompanyIdMembersMemberIdRoleUrl(companyId, memberId),
         method: 'PATCH',
         body,
       }),
@@ -102,7 +111,7 @@ export const membersApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, memberId, body }) => ({
-        url: `/companies/${companyId}/members/${memberId}/permissions`,
+        url: getPatchCompaniesCompanyIdMembersMemberIdPermissionsUrl(companyId, memberId),
         method: 'PATCH',
         body,
       }),

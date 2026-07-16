@@ -1,3 +1,8 @@
+import {
+  getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityUrl,
+  getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl,
+  getPostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl,
+} from '@/api/generated/endpoints';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import type {
   GetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivity200,
@@ -38,7 +43,7 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<GetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsParams>
     >({
       query: ({ companyId, documentType, documentId, ...params }) => ({
-        url: `/companies/${companyId}/documents/${documentType}/${documentId}/comments`,
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(companyId, documentType, documentId),
         params,
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>
@@ -49,7 +54,7 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<PostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsBody>
     >({
       query: ({ companyId, documentType, documentId, ...body }) => ({
-        url: `/companies/${companyId}/documents/${documentType}/${documentId}/comments`,
+        url: getPostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(companyId, documentType, documentId),
         method: 'POST',
         body,
       }),
@@ -64,7 +69,7 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<GetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityParams>
     >({
       query: ({ companyId, documentType, documentId, ...params }) => ({
-        url: `/companies/${companyId}/documents/${documentType}/${documentId}/activity`,
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityUrl(companyId, documentType, documentId),
         params,
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>

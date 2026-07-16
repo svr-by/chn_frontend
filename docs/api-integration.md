@@ -221,17 +221,18 @@ Use separate tabs or filters in invoice and shipping list UIs.
 ## OpenAPI codegen workflow
 
 1. **Sync spec** — copy `chn_backend/.cursor/api-docs.json` to `openapi/api-docs.json`
-2. **Generate** — `npm run codegen`
-3. **Add endpoints** — create `src/api/endpoints/<domain>Api.ts`:
+2. **Generate** — `npm run codegen` (models + fetch URL helpers in `src/api/generated/`)
+3. **Add endpoints** — create `src/api/endpoints/<domain>Api.ts`. Use generated **path helpers** for `url` (call without query params — keep `params` on the RTK args so the query string is not doubled). Manual layer owns cache tags, hooks, and side-effects only:
 
 ```typescript
+import { getGetCompaniesCompanyIdRequestsUrl } from '@/api/generated/endpoints';
 import { baseApi } from '@/api/baseApi';
 
 export const requestsApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     listRequests: build.query({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/requests`,
+        url: getGetCompaniesCompanyIdRequestsUrl(companyId),
         params,
       }),
       providesTags: ['Requests'],
@@ -243,7 +244,7 @@ export const requestsApi = baseApi.injectEndpoints({
 4. **Export hooks** — `useListRequestsQuery`, etc.
 5. **Invalidate** — use `invalidatesTags` on mutations
 
-Generated models live in `src/api/generated/models/`. Hand-written baseline types in `src/types/api.ts` supplement enums and shared shapes.
+Generated models live in `src/api/generated/models/`. `src/types/api.ts` only re-exports backend-owned aliases (e.g. `Permission`) plus frontend-only helpers like `DecimalString`. Contract drift is guarded by `src/api/contract.smoke.test.ts`.
 
 ---
 

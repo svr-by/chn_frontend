@@ -1,3 +1,11 @@
+import {
+  getGetCompaniesCompanyIdPaymentsPaymentIdUrl,
+  getGetCompaniesCompanyIdPaymentsUrl,
+  getPostCompaniesCompanyIdPaymentsPaymentIdConfirmUrl,
+  getPostCompaniesCompanyIdPaymentsPaymentIdRejectUrl,
+  getPostCompaniesCompanyIdPaymentsPaymentIdUploadUrl,
+  getPostCompaniesCompanyIdPaymentsUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdPayments200,
   GetCompaniesCompanyIdPaymentsParams,
@@ -40,7 +48,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdPaymentsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/payments`,
+        url: getGetCompaniesCompanyIdPaymentsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => paymentListTag(companyId),
@@ -50,7 +58,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       { companyId: string; paymentId: string }
     >({
       query: ({ companyId, paymentId }) => ({
-        url: `/companies/${companyId}/payments/${paymentId}`,
+        url: getGetCompaniesCompanyIdPaymentsPaymentIdUrl(companyId, paymentId),
       }),
       providesTags: (_result, _error, { paymentId }) => [
         { type: 'Payments', id: paymentId },
@@ -61,7 +69,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdPaymentsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/payments`,
+        url: getPostCompaniesCompanyIdPaymentsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -78,7 +86,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, paymentId, formData }) => ({
-        url: `/companies/${companyId}/payments/${paymentId}/upload`,
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdUploadUrl(companyId, paymentId),
         method: 'POST',
         body: formData,
       }),
@@ -90,7 +98,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       { companyId: string; paymentId: string; invoiceId?: string }
     >({
       query: ({ companyId, paymentId }) => ({
-        url: `/companies/${companyId}/payments/${paymentId}/confirm`,
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdConfirmUrl(companyId, paymentId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, paymentId, invoiceId }) =>
@@ -110,7 +118,7 @@ export const paymentsApi = baseApi.injectEndpoints({
         invoiceId: _invoiceId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/payments/${paymentId}/reject`,
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdRejectUrl(companyId, paymentId),
         method: 'POST',
         body,
       }),

@@ -1,3 +1,9 @@
+import {
+  getGetCompaniesCompanyIdProductsProductIdUrl,
+  getGetCompaniesCompanyIdProductsUrl,
+  getPatchCompaniesCompanyIdProductsProductIdUrl,
+  getPostCompaniesCompanyIdProductsUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdProducts200,
   GetCompaniesCompanyIdProductsParams,
@@ -29,7 +35,7 @@ export const productsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdProductsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/products`,
+        url: getGetCompaniesCompanyIdProductsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => [
@@ -41,7 +47,7 @@ export const productsApi = baseApi.injectEndpoints({
       { companyId: string; productId: string }
     >({
       query: ({ companyId, productId }) => ({
-        url: `/companies/${companyId}/products/${productId}`,
+        url: getGetCompaniesCompanyIdProductsProductIdUrl(companyId, productId),
       }),
       providesTags: (_result, _error, { companyId, productId }) => [
         { type: 'Products', id: `${companyId}-${productId}` },
@@ -52,7 +58,7 @@ export const productsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdProductsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/products`,
+        url: getPostCompaniesCompanyIdProductsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -67,7 +73,7 @@ export const productsApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdProductsProductIdBody
     >({
       query: ({ companyId, productId, ...body }) => ({
-        url: `/companies/${companyId}/products/${productId}`,
+        url: getPatchCompaniesCompanyIdProductsProductIdUrl(companyId, productId),
         method: 'PATCH',
         body,
       }),

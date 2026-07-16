@@ -1,3 +1,14 @@
+import {
+  getDeleteCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl,
+  getGetCompaniesCompanyIdSelectionsSelectionIdUrl,
+  getGetCompaniesCompanyIdSelectionsUrl,
+  getPatchCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl,
+  getPatchCompaniesCompanyIdSelectionsSelectionIdUrl,
+  getPostCompaniesCompanyIdSelectionsSelectionIdCancelUrl,
+  getPostCompaniesCompanyIdSelectionsSelectionIdConfirmUrl,
+  getPostCompaniesCompanyIdSelectionsSelectionIdLinesUrl,
+  getPostCompaniesCompanyIdSelectionsUrl,
+} from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdSelections200,
   GetCompaniesCompanyIdSelectionsParams,
@@ -60,7 +71,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<GetCompaniesCompanyIdSelectionsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: `/companies/${companyId}/selections`,
+        url: getGetCompaniesCompanyIdSelectionsUrl(companyId),
         params,
       }),
       providesTags: (_result, _error, { companyId }) => selectionListTag(companyId),
@@ -70,7 +81,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       { companyId: string; selectionId: string }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}`,
+        url: getGetCompaniesCompanyIdSelectionsSelectionIdUrl(companyId, selectionId),
       }),
       providesTags: (_result, _error, { selectionId }) => [
         { type: 'Selections', id: selectionId },
@@ -81,7 +92,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<PostCompaniesCompanyIdSelectionsBody>
     >({
       query: ({ companyId, ...body }) => ({
-        url: `/companies/${companyId}/selections`,
+        url: getPostCompaniesCompanyIdSelectionsUrl(companyId),
         method: 'POST',
         body,
       }),
@@ -105,7 +116,7 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}`,
+        url: getPatchCompaniesCompanyIdSelectionsSelectionIdUrl(companyId, selectionId),
         method: 'PATCH',
         body,
       }),
@@ -126,7 +137,7 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}/lines`,
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdLinesUrl(companyId, selectionId),
         method: 'POST',
         body,
       }),
@@ -149,7 +160,7 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}/lines/${lineId}`,
+        url: getPatchCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(companyId, selectionId, lineId),
         method: 'PATCH',
         body,
       }),
@@ -166,7 +177,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId, lineId }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}/lines/${lineId}`,
+        url: getDeleteCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(companyId, selectionId, lineId),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
@@ -181,7 +192,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}/confirm`,
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdConfirmUrl(companyId, selectionId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
@@ -196,7 +207,7 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: `/companies/${companyId}/selections/${selectionId}/cancel`,
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdCancelUrl(companyId, selectionId),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>

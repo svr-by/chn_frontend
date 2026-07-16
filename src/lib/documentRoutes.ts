@@ -1,19 +1,23 @@
-import type { DocumentType } from '@/types/api';
+import {
+  DocumentTypeValues,
+  type DocumentType,
+} from '@/types/api';
 
 export type DocumentDetailTab = 'comments' | 'activity' | 'trace' | 'related';
 
-const DOCUMENT_PATH_BUILDERS: Record<
-  DocumentType,
-  (documentId: string) => string
-> = {
-  MATERIAL_REQUEST: (id) => `/app/requests/${id}`,
-  SUPPLIER_QUOTE: (id) => `/app/quotes/${id}`,
-  PURCHASE_SELECTION: (id) => `/app/selections/${id}`,
-  INVOICE: (id) => `/app/invoices/${id}`,
-  PAYMENT: (id) => `/app/payments/${id}`,
-  SHIPPING_INVOICE: (id) => `/app/shipping-invoices/${id}`,
-  CONSOLIDATION: (id) => `/app/consolidations/${id}`,
-};
+/** Must cover every backend document type — fails tsc if OpenAPI adds a value. */
+const DOCUMENT_PATH_BUILDERS = {
+  [DocumentTypeValues.MATERIAL_REQUEST]: (id: string) => `/app/requests/${id}`,
+  [DocumentTypeValues.SUPPLIER_QUOTE]: (id: string) => `/app/quotes/${id}`,
+  [DocumentTypeValues.PURCHASE_SELECTION]: (id: string) =>
+    `/app/selections/${id}`,
+  [DocumentTypeValues.INVOICE]: (id: string) => `/app/invoices/${id}`,
+  [DocumentTypeValues.PAYMENT]: (id: string) => `/app/payments/${id}`,
+  [DocumentTypeValues.SHIPPING_INVOICE]: (id: string) =>
+    `/app/shipping-invoices/${id}`,
+  [DocumentTypeValues.CONSOLIDATION]: (id: string) =>
+    `/app/consolidations/${id}`,
+} as const satisfies Record<DocumentType, (documentId: string) => string>;
 
 export function resolveDocumentPath(
   documentType: DocumentType | null | undefined,
