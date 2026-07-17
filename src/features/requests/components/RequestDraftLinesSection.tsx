@@ -87,7 +87,7 @@ export function RequestDraftLinesSection({
             </TableRow>
           </TableHead>
           <TableBody>
-            {numberedLines.map(({ line, lineNumber }) => (
+            {numberedLines.length > 0 ? numberedLines.map(({ line, lineNumber }) => (
               <TableRow key={line.clientId}>
                 <TableCell>{lineNumber}</TableCell>
                 <TableCell>{line.description}</TableCell>
@@ -128,8 +128,14 @@ export function RequestDraftLinesSection({
                     </Tooltip>
                   </Stack>
                 </TableCell>
-              </TableRow>
-            ))}
+                </TableRow>
+              )) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">
+                    {t('noLines')}
+                  </TableCell>
+                </TableRow>
+              )}
           </TableBody>
         </Table>
       }

@@ -24,7 +24,6 @@ import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
 
@@ -55,43 +54,40 @@ export function RequestLinesTable({
       {
         accessorKey: 'lineNumber',
         header: t('columns.lineNumber'),
-        size: 60,
+        size: 10,
+        maxSize: 10,
+        enableResizing: true,
       },
       {
         accessorKey: 'description',
         header: t('columns.description'),
       },
       {
-        id: 'product',
-        header: t('columns.product'),
-        Cell: ({ row }) => {
-          const product = row.original.product;
-          if (!product) {
-            return '—';
-          }
-          return product.sku
-            ? `${product.name} (${product.sku})`
-            : product.name;
-        },
-      },
-      {
         accessorKey: 'quantity',
         header: t('columns.quantity'),
+        size: 20,
+        maxSize: 20,
+        enableResizing: true,
+        muiTableHeadCellProps: {
+          align: 'center',
+        },
+        muiTableBodyCellProps: {
+          align: 'center',
+        },
         Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
       },
       {
         accessorKey: 'unit',
         header: t('columns.unit'),
-        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
-      },
-      {
-        id: 'lineage',
-        header: t('columns.lineage'),
-        Cell: ({ row }) => <LineageLink lineageId={row.original.lineageId} />,
-      },
-      {
-        accessorKey: 'notes',
-        header: t('columns.notes'),
+        size: 20,
+        maxSize: 20,
+        enableResizing: true,
+        muiTableHeadCellProps: {
+          align: 'center',
+        },
+        muiTableBodyCellProps: {
+          align: 'center',
+        },
         Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
       },
     ];
@@ -100,6 +96,15 @@ export function RequestLinesTable({
       baseColumns.push({
         id: 'actions',
         header: t('columns.actions'),
+        size: 30,
+        maxSize: 30,
+        enableResizing: true,
+        muiTableHeadCellProps: {
+          align: 'right',
+        },
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
         Cell: ({ row }) => (
           <PermissionGate permission="manageRequests">
             <Stack direction="row" spacing={0.5}>
@@ -137,6 +142,7 @@ export function RequestLinesTable({
   const table = useMaterialReactTable({
     columns,
     data: lines,
+    layoutMode: 'grid',
     enableColumnActions: false,
     enableColumnFilters: false,
     enableSorting: false,
@@ -166,22 +172,7 @@ export function RequestLinesTable({
 
   return (
     <Stack spacing={2}>
-      <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">{t('linesTitle')}</Typography>
-        {editable ? (
-          <PermissionGate permission="manageRequests">
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setEditingLine(null);
-                setDialogOpen(true);
-              }}
-            >
-              {t('actions.addLine')}
-            </Button>
-          </PermissionGate>
-        ) : null}
-      </Stack>
+      <Typography variant="h6">{t('linesTitle')}</Typography>
 
       <ApiErrorAlert error={deleteState.error} />
 
@@ -207,6 +198,23 @@ export function RequestLinesTable({
           )
         }
       />
+      
+
+      {editable ? (
+        <Stack direction="row" justifyContent="end" alignItems="center">
+          <PermissionGate permission="manageRequests">
+            <Button
+              variant="outlined"
+              onClick={() => {
+                setEditingLine(null);
+                setDialogOpen(true);
+              }}
+            >
+              {t('actions.addLine')}
+            </Button>
+          </PermissionGate>
+        </Stack>
+      ) : null}
 
       <Dialog open={Boolean(lineToDelete)} onClose={() => setLineToDelete(null)}>
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>

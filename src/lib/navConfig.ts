@@ -31,13 +31,13 @@ export const navConfig: NavItem[] = [
     phase: 3,
     icon: FormatListBulletedIcon,
   },
-  {
-    labelKey: 'products',
-    path: '/app/products',
-    permission: 'viewProducts',
-    phase: 3,
-    icon: CategoryIcon,
-  },
+  // {
+  //   labelKey: 'products',
+  //   path: '/app/products',
+  //   permission: 'viewProducts',
+  //   phase: 3,
+  //   icon: CategoryIcon,
+  // },
   {
     labelKey: 'quotes',
     path: '/app/quotes',

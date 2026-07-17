@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Button,
@@ -31,9 +31,15 @@ import {
 } from '@/features/requests/types/draftRequestLine';
 import { buildImportFormData } from '@/lib/buildImportFormData';
 
-const DEFAULT_FORMAT: ImportFormatValues = {
+const DEFAULT_FORMAT_CSV: ImportFormatValues = {
   fieldDelimiter: ',',
   decimalSeparator: '.',
+  title: '',
+};
+
+const DEFAULT_FORMAT_HTML: ImportFormatValues = {
+  fieldDelimiter: ';',
+  decimalSeparator: ',',
   title: '',
 };
 
@@ -68,7 +74,7 @@ export function RequestLinesImportDialog({
 
   const [file, setFile] = useState<File | null>(null);
   const [formatValues, setFormatValues] =
-    useState<ImportFormatValues>(DEFAULT_FORMAT);
+    useState<ImportFormatValues>(DEFAULT_FORMAT_HTML);
   const [preview, setPreview] = useState<PreviewResult | null>(null);
   const [replaceConfirmOpen, setReplaceConfirmOpen] = useState(false);
 
@@ -79,6 +85,12 @@ export function RequestLinesImportDialog({
   const isPreviewing = csvPreviewState.isLoading || htmPreviewState.isLoading;
   const previewError = csvPreviewState.error ?? htmPreviewState.error;
 
+  useEffect(() => {
+    if (file && isCsvImportFile(file)) {
+      setFormatValues(DEFAULT_FORMAT_CSV);
+    }
+  }, [file]);
+
   const draftLines = useMemo(
     () => (preview ? mapPreviewRowsToDraftLines(preview.preview.rows) : []),
     [preview],
@@ -86,7 +98,7 @@ export function RequestLinesImportDialog({
 
   function resetState() {
     setFile(null);
-    setFormatValues(DEFAULT_FORMAT);
+    setFormatValues(DEFAULT_FORMAT_HTML);
     setPreview(null);
     setReplaceConfirmOpen(false);
   }

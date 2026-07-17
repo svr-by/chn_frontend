@@ -223,7 +223,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
         <DialogContent>
           {!isLocal ? <ApiErrorAlert error={pageError} /> : null}
           <Stack spacing={2}>
-            <Autocomplete
+            {/* <Autocomplete
               options={products}
               value={selectedProduct}
               onChange={(_event, value) => handleProductChange(value)}
@@ -239,7 +239,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
                   placeholder={t('form.productPlaceholder')}
                 />
               )}
-            />
+            /> */}
             <TextField
               label={t('form.description')}
               fullWidth

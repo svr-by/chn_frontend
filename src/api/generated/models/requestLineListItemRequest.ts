@@ -5,6 +5,7 @@ import type { RequestLineListItemRequestTitle } from './requestLineListItemReque
 import type { RequestLineListItemRequestReference } from './requestLineListItemRequestReference';
 import type { RequestLineListItemRequestStatus } from './requestLineListItemRequestStatus';
 import type { RequestLineListItemRequestCreatedByUserId } from './requestLineListItemRequestCreatedByUserId';
+import type { RequestLineListItemRequestCreatedByUserName } from './requestLineListItemRequestCreatedByUserName';
 
 export interface RequestLineListItemRequest {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
@@ -13,4 +14,5 @@ export interface RequestLineListItemRequest {
   reference: RequestLineListItemRequestReference;
   status: RequestLineListItemRequestStatus;
   createdByUserId: RequestLineListItemRequestCreatedByUserId;
+  createdByUserName: RequestLineListItemRequestCreatedByUserName;
 }
