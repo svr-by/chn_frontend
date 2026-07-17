@@ -51,6 +51,7 @@ describe('RequestLinesPage', () => {
     expect(screen.getByRole('heading', { name: 'Request lines' })).toBeInTheDocument();
     expect(screen.getByText('Office paper')).toBeInTheDocument();
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
     expect(screen.getByText('A4 Paper')).toBeInTheDocument();
 
     expect(mockedUseListRequestLinesQuery).toHaveBeenCalledWith(

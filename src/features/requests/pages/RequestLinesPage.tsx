@@ -171,12 +171,12 @@ export function RequestLinesPage() {
 
   const columns = useMemo<MRT_ColumnDef<RequestLineListItem>[]>(
     () => [
-      {
-        accessorKey: 'lineNumber',
-        header: t('requestLines.columns.lineNumber'),
-        size: 80,
-        Cell: ({ cell }) => `#${cell.getValue<number>()}`,
-      },
+      // {
+      //   accessorKey: 'lineNumber',
+      //   header: t('requestLines.columns.lineNumber'),
+      //   size: 80,
+      //   Cell: ({ cell }) => `#${cell.getValue<number>()}`,
+      // },
       {
         accessorKey: 'description',
         header: t('requestLines.columns.description'),
@@ -191,11 +191,11 @@ export function RequestLinesPage() {
           </Stack>
         ),
       },
-      {
-        id: 'product',
-        header: t('requestLines.columns.product'),
-        Cell: ({ row }) => row.original.product?.name ?? '—',
-      },
+      // {
+      //   id: 'product',
+      //   header: t('requestLines.columns.product'),
+      //   Cell: ({ row }) => row.original.product?.name ?? '—',
+      // },
       {
         id: 'quantity',
         header: t('requestLines.columns.quantity'),
@@ -229,6 +229,11 @@ export function RequestLinesPage() {
             </Stack>
           </Stack>
         ),
+      },
+      {
+        id: 'createdBy',
+        header: t('requestLines.columns.createdBy'),
+        Cell: ({ row }) => row.original.request.createdByUserName ?? '—',
       },
       {
         id: 'pipeline',

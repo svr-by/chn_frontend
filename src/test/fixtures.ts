@@ -184,6 +184,7 @@ export function createMaterialRequest(
     id: REQUEST_ID,
     companyId: COMPANY_ID,
     createdByUserId: USER_ID,
+    createdByUserName: 'Jane Doe',
     title: 'Office supplies',
     reference: 'REQ-001',
     status: 'DRAFT',
@@ -202,6 +203,8 @@ export function createMaterialRequestSummary(
   return {
     id: REQUEST_ID,
     companyId: COMPANY_ID,
+    createdByUserId: USER_ID,
+    createdByUserName: 'Jane Doe',
     title: 'Office supplies',
     reference: 'REQ-001',
     status: 'DRAFT',
@@ -238,6 +241,7 @@ export function createRequestLineListItem(
       reference: 'REQ-001',
       status: 'SUBMITTED',
       createdByUserId: USER_ID,
+      createdByUserName: 'Jane Doe',
     },
     links: {
       distributed: true,

@@ -19,6 +19,7 @@
       "product": "产品",
       "quantity": "数量",
       "request": "申请",
+      "createdBy": "创建人",
       "pipeline": "流程",
       "createdAt": "行已创建",
       "updatedAt": "已更新"
@@ -53,6 +54,7 @@
     "status": "状态",
     "submittedAt": "已提交",
     "createdAt": "已创建",
+    "createdBy": "创建人",
     "lineNumber": "#",
     "description": "描述",
     "product": "产品",
@@ -132,6 +134,7 @@
   },
   "detail": {
     "fallbackTitle": "申请 {{id}}",
+    "createdBy": "创建人：{{name}}",
     "createdAt": "创建于 {{date}}",
     "submittedAt": "已提交 {{date}}",
     "selection": "选择"

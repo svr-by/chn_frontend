@@ -19,6 +19,7 @@
       "product": "Товар",
       "quantity": "Количество",
       "request": "Заявка",
+      "createdBy": "Сотрудник",
       "pipeline": "Процесс",
       "createdAt": "Строка создана",
       "updatedAt": "Обновлено"
@@ -53,6 +54,7 @@
     "status": "Статус",
     "submittedAt": "Утверждено",
     "createdAt": "Создано",
+    "createdBy": "Сотрудник",
     "lineNumber": "#",
     "description": "Описание",
     "product": "Товар",
@@ -132,6 +134,7 @@
   },
   "detail": {
     "fallbackTitle": "Заявка {{id}}",
+    "createdBy": "Сотрудник: {{name}}",
     "createdAt": "Создано {{date}}",
     "submittedAt": "Утверждено {{date}}",
     "selection": "Выбор"

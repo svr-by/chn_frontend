@@ -63,6 +63,11 @@ export function OutboundRequestsPanel({ companyId }: OutboundRequestsPanelProps)
         Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
       },
       {
+        id: 'createdBy',
+        header: t('columns.createdBy'),
+        Cell: ({ row }) => row.original.createdByUserName ?? '—',
+      },
+      {
         accessorKey: 'status',
         header: t('columns.status'),
         Cell: ({ cell }) => (

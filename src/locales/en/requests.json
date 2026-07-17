@@ -19,6 +19,7 @@
       "product": "Product",
       "quantity": "Quantity",
       "request": "Request",
+      "createdBy": "Created by",
       "pipeline": "Pipeline",
       "createdAt": "Line created",
       "updatedAt": "Updated"
@@ -53,6 +54,7 @@
     "status": "Status",
     "submittedAt": "Submitted",
     "createdAt": "Created",
+    "createdBy": "Created by",
     "lineNumber": "#",
     "description": "Description",
     "product": "Product",
@@ -132,6 +134,7 @@
   },
   "detail": {
     "fallbackTitle": "Request {{id}}",
+    "createdBy": "Created by {{name}}",
     "createdAt": "Created {{date}}",
     "submittedAt": "Submitted {{date}}",
     "selection": "Selection"

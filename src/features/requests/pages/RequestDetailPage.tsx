@@ -78,6 +78,11 @@ export function RequestDetailPage() {
       meta={
         request ? (
           <Stack spacing={0.5}>
+            {request.createdByUserName ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.createdBy', { name: request.createdByUserName })}
+              </Typography>
+            ) : null}
             <Typography variant="body2" color="text.secondary">
               {t('detail.createdAt', {
                 date: new Date(request.createdAt).toLocaleString(),

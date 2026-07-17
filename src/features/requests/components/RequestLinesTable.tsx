@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Dialog,
@@ -12,11 +12,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -24,8 +20,11 @@ import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
+
+const PAGE_SIZE = 20;
 
 interface RequestLinesTableProps {
   companyId: string;
@@ -46,8 +45,31 @@ export function RequestLinesTable({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingLine, setEditingLine] = useState<RequestLine | null>(null);
   const [lineToDelete, setLineToDelete] = useState<RequestLine | null>(null);
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+  });
 
   const [deleteLine, deleteState] = useDeleteRequestLineMutation();
+
+  useEffect(() => {
+    const maxPageIndex = Math.max(
+      0,
+      Math.ceil(lines.length / pagination.pageSize) - 1,
+    );
+    if (pagination.pageIndex > maxPageIndex) {
+      setPagination((current) => ({ ...current, pageIndex: maxPageIndex }));
+    }
+  }, [lines.length, pagination.pageIndex, pagination.pageSize]);
+
+  const pagedLines = useMemo(
+    () =>
+      lines.slice(
+        pagination.pageIndex * pagination.pageSize,
+        pagination.pageIndex * pagination.pageSize + pagination.pageSize,
+      ),
+    [lines, pagination.pageIndex, pagination.pageSize],
+  );
 
   const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(() => {
     const baseColumns: MRT_ColumnDef<RequestLine>[] = [
@@ -139,22 +161,6 @@ export function RequestLinesTable({
     return baseColumns;
   }, [editable, t]);
 
-  const table = useMaterialReactTable({
-    columns,
-    data: lines,
-    layoutMode: 'grid',
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    getRowId: (row) => row.id,
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: { border: 1, borderColor: 'divider' },
-    },
-  });
-
   async function handleDeleteConfirm() {
     if (!lineToDelete) {
       return;
@@ -179,7 +185,14 @@ export function RequestLinesTable({
       {lines.length === 0 ? (
         <Typography color="text.secondary">{t('empty.lines')}</Typography>
       ) : (
-        <MaterialReactTable table={table} />
+        <PaginatedTable
+          columns={columns}
+          data={pagedLines}
+          rowCount={lines.length}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          getRowId={(row) => row.id}
+        />
       )}
 
       <RequestLineFormDialog
@@ -198,7 +211,6 @@ export function RequestLinesTable({
           )
         }
       />
-      
 
       {editable ? (
         <Stack direction="row" justifyContent="end" alignItems="center">
