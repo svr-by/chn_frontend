@@ -22,6 +22,7 @@ interface DocumentDetailLayoutProps {
   meta?: ReactNode;
   loading?: boolean;
   error?: FetchBaseQueryError | SerializedError;
+  backFallbackTo?: string;
   children: ReactNode;
 }
 
@@ -33,9 +34,10 @@ export function DocumentDetailLayout({
   meta,
   loading = false,
   error,
+  backFallbackTo,
   children,
 }: DocumentDetailLayoutProps) {
-  const handleBack = useSafeAppBack();
+  const handleBack = useSafeAppBack(backFallbackTo ?? '/app');
   const { t } = useTranslation('common');
 
   if (loading) {

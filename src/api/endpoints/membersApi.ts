@@ -18,12 +18,19 @@ import type {
   PatchCompaniesCompanyIdMembersMemberIdRoleBody,
   PostCompaniesCompanyIdMembersInvite201,
   PostCompaniesCompanyIdMembersInviteBody,
+  CompanyMember,
+  CompanyMemberStatus,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
 type CompanyScopedArgs<T = void> = T extends void
   ? { companyId: string }
   : { companyId: string } & T;
+
+/** Not yet in OpenAPI codegen; mirrors /role and /permissions sub-resources. */
+function getPatchMemberStatusUrl(companyId: string, memberId: string) {
+  return `/companies/${companyId}/members/${memberId}/status`;
+}
 
 export const membersApi = baseApi.injectEndpoints({
   overrideExisting: false,
@@ -120,6 +127,24 @@ export const membersApi = baseApi.injectEndpoints({
         'Me',
       ],
     }),
+    updateMemberStatus: builder.mutation<
+      { member: CompanyMember },
+      {
+        companyId: string;
+        memberId: string;
+        body: { status: CompanyMemberStatus };
+      }
+    >({
+      query: ({ companyId, memberId, body }) => ({
+        url: getPatchMemberStatusUrl(companyId, memberId),
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        { type: 'Members', id: companyId },
+        'Me',
+      ],
+    }),
   }),
 });
 
@@ -131,4 +156,5 @@ export const {
   useRemoveMemberMutation,
   useUpdateMemberRoleMutation,
   useUpdateMemberPermissionsMutation,
+  useUpdateMemberStatusMutation,
 } = membersApi;

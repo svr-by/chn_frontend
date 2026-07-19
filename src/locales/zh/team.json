@@ -1,5 +1,10 @@
 {
   "title": "团队设置",
+  "subtitle": "查看成员、管理邀请，并为同事配置角色与权限。",
+  "tabs": {
+    "members": "成员 ({{count}})",
+    "invitations": "邀请 ({{count}})"
+  },
   "activeMembers": "活跃成员",
   "pendingInvitations": "待处理邀请",
   "inviteMember": "邀请成员",
@@ -8,6 +13,7 @@
   "invitationRevoked": "邀请已撤销",
   "memberRemoved": "成员已移除",
   "roleUpdated": "角色已更新",
+  "accessUpdated": "访问权限已更新",
   "member": "成员",
   "role": "角色",
   "status": "状态",
@@ -17,6 +23,37 @@
   "revoke": "撤销",
   "remove": "移除",
   "cancel": "取消",
+  "save": "保存",
+  "manageAccess": "管理角色与权限",
+  "accessTitle": "成员访问权限",
+  "permissions": "权限",
+  "effectivePermissions": "有效权限",
+  "noEffectivePermissions": "暂无有效权限。",
+  "permissionOverrides": "权限覆盖",
+  "permissionOverridesHint": "切换每项权限的访问。与角色默认值不同的项会高亮显示。",
+  "permissionGroup": "分组",
+  "permission": "权限",
+  "permissionEnabled": "访问",
+  "effective": "结果",
+  "allowed": "允许",
+  "blocked": "拒绝",
+  "grants": "授予",
+  "denies": "拒绝",
+  "clearOverrides": "重置为角色默认",
+  "roleAndStatus": "角色与状态",
+  "memberActive": "活跃",
+  "memberInactive": "未激活",
+  "roleChangeResetsOverrides": "更改角色会在服务器上重置自定义权限覆盖。",
+  "ownerAccessReadonly": "所有者角色与权限无法在此编辑。",
+  "permissionsOwnerOnly": "只有具备管理成员权限的用户才能编辑权限覆盖。",
+  "noPermission": "您没有权限管理成员访问。",
+  "memberNotFound": "未找到成员。",
+  "emptyMembers": "暂无成员。",
+  "emptyInvitations": "暂无待处理邀请。",
   "removeMemberTitle": "移除成员",
-  "removeMemberConfirm": "此成员将失去公司访问权限。是否继续？"
+  "removeMemberConfirm": "此成员将失去公司访问权限。是否继续？",
+  "memberStatus": {
+    "active": "活跃",
+    "suspended": "已停用"
+  }
 }

@@ -1,5 +1,10 @@
 {
   "title": "Настройки команды",
+  "subtitle": "Просматривайте участников, управляйте приглашениями и настраивайте доступ сотрудников.",
+  "tabs": {
+    "members": "Участники ({{count}})",
+    "invitations": "Приглашения ({{count}})"
+  },
   "activeMembers": "Активные участники",
   "pendingInvitations": "Ожидающие приглашения",
   "inviteMember": "Пригласить участника",
@@ -8,6 +13,7 @@
   "invitationRevoked": "Приглашение отозвано",
   "memberRemoved": "Участник удалён",
   "roleUpdated": "Роль обновлена",
+  "accessUpdated": "Доступ обновлён",
   "member": "Участник",
   "role": "Роль",
   "status": "Статус",
@@ -17,6 +23,37 @@
   "revoke": "Отозвать",
   "remove": "Удалить",
   "cancel": "Отмена",
+  "save": "Сохранить",
+  "manageAccess": "Управление ролью и правами",
+  "accessTitle": "Доступ участника",
+  "permissions": "Права доступа",
+  "effectivePermissions": "Итоговые права",
+  "noEffectivePermissions": "Нет итоговых прав.",
+  "permissionOverrides": "Переопределения прав",
+  "permissionOverridesHint": "Включайте или отключайте каждое право. Отличия от роли подсвечиваются.",
+  "permissionGroup": "Группа",
+  "permission": "Право",
+  "permissionEnabled": "Доступ",
+  "effective": "Итог",
+  "allowed": "Разрешено",
+  "blocked": "Запрещено",
+  "grants": "Выдать",
+  "denies": "Запретить",
+  "clearOverrides": "Сбросить к роли",
+  "roleAndStatus": "Роль и статус",
+  "memberActive": "Активен",
+  "memberInactive": "Неактивен",
+  "roleChangeResetsOverrides": "Смена роли сбрасывает кастомные переопределения прав на сервере.",
+  "ownerAccessReadonly": "Роль и права владельца здесь изменить нельзя.",
+  "permissionsOwnerOnly": "Переопределения прав может менять только пользователь с соответствующим разрешением.",
+  "noPermission": "У вас нет прав на управление доступом участников.",
+  "memberNotFound": "Участник не найден.",
+  "emptyMembers": "Пока нет участников.",
+  "emptyInvitations": "Нет ожидающих приглашений.",
   "removeMemberTitle": "Удалить участника",
-  "removeMemberConfirm": "Этот участник потеряет доступ к компании. Продолжить?"
+  "removeMemberConfirm": "Этот участник потеряет доступ к компании. Продолжить?",
+  "memberStatus": {
+    "active": "Активен",
+    "suspended": "Приостановлен"
+  }
 }

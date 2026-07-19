@@ -8,9 +8,8 @@ import {
   useListMembersQuery,
   useRemoveMemberMutation,
   useRevokeInvitationMutation,
-  useUpdateMemberRoleMutation,
 } from '@/api/endpoints/membersApi';
-import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
+import { TeamSettingsPage } from '@/features/settings/pages/TeamSettingsPage';
 import { COMPANY_ID, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
@@ -28,7 +27,6 @@ vi.mock('@/api/endpoints/membersApi', () => ({
   useInviteMemberMutation: vi.fn(),
   useRevokeInvitationMutation: vi.fn(),
   useRemoveMemberMutation: vi.fn(),
-  useUpdateMemberRoleMutation: vi.fn(),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
@@ -37,7 +35,6 @@ const mockedUseListInvitationsQuery = vi.mocked(useListInvitationsQuery);
 const mockedUseInviteMemberMutation = vi.mocked(useInviteMemberMutation);
 const mockedUseRevokeInvitationMutation = vi.mocked(useRevokeInvitationMutation);
 const mockedUseRemoveMemberMutation = vi.mocked(useRemoveMemberMutation);
-const mockedUseUpdateMemberRoleMutation = vi.mocked(useUpdateMemberRoleMutation);
 
 function mockMutationHook(mock: ReturnType<typeof vi.fn>) {
   return [mock, { isLoading: false, reset: vi.fn() }] as const;
@@ -61,6 +58,10 @@ describe('TeamSettingsPage', () => {
             id: '00000000-0000-0000-0000-000000000040',
             role: 'OWNER',
             status: 'ACTIVE',
+            permissions: null,
+            effectivePermissions: ['manageMembers', 'viewMembers'],
+            invitedAt: null,
+            joinedAt: '2026-01-01T00:00:00.000Z',
             user: {
               id: '00000000-0000-0000-0000-000000000001',
               email: 'owner@example.com',
@@ -68,8 +69,23 @@ describe('TeamSettingsPage', () => {
               lastName: 'User',
             },
           },
+          {
+            id: '00000000-0000-0000-0000-000000000041',
+            role: 'VIEWER',
+            status: 'ACTIVE',
+            permissions: null,
+            effectivePermissions: ['viewMembers'],
+            invitedAt: null,
+            joinedAt: '2026-01-02T00:00:00.000Z',
+            user: {
+              id: '00000000-0000-0000-0000-000000000002',
+              email: 'viewer@example.com',
+              firstName: 'Viewer',
+              lastName: 'User',
+            },
+          },
         ],
-        pagination: { total: 1, limit: 50, offset: 0 },
+        pagination: { total: 2, limit: 50, offset: 0 },
       },
       isLoading: false,
       isFetching: false,
@@ -95,9 +111,6 @@ describe('TeamSettingsPage', () => {
     mockedUseRemoveMemberMutation.mockReturnValue(
       mockMutationHook(vi.fn()) as ReturnType<typeof useRemoveMemberMutation>,
     );
-    mockedUseUpdateMemberRoleMutation.mockReturnValue(
-      mockMutationHook(vi.fn()) as ReturnType<typeof useUpdateMemberRoleMutation>,
-    );
   });
 
   it('renders nothing without active company', () => {
@@ -118,10 +131,20 @@ describe('TeamSettingsPage', () => {
     });
 
     expect(screen.getByText('Team settings')).toBeInTheDocument();
-    expect(screen.getByText('Active members')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Members (2)' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'Invitations (0)' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Owner User')).toBeInTheDocument();
+    expect(screen.getByText('Viewer User')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Invite member' }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Manage role and permissions' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Owner')).toBeInTheDocument();
+    expect(screen.getByText('Viewer')).toBeInTheDocument();
   });
 });
+

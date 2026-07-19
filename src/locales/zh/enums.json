@@ -56,7 +56,8 @@
     "owner": "所有者",
     "admin": "管理员",
     "procurement": "采购",
-    "supplier": "供应商",
+    "logistics": "物流",
+    "warehouse": "仓库",
     "accountant": "会计",
     "viewer": "查看者"
   },

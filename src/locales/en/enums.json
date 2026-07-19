@@ -56,7 +56,8 @@
     "owner": "Owner",
     "admin": "Admin",
     "procurement": "Procurement",
-    "supplier": "Supplier",
+    "logistics": "Logistics",
+    "warehouse": "Warehouse",
     "accountant": "Accountant",
     "viewer": "Viewer"
   },

@@ -34,9 +34,10 @@ import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
 import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/RequestsPage';
-import { TeamSettingsPage } from '@/features/settings/TeamSettingsPage';
+import { MemberAccessPage } from '@/features/settings/pages/MemberAccessPage';
+import { TeamSettingsPage } from '@/features/settings/pages/TeamSettingsPage';
 import { IntegrationsSettingsPage } from '@/features/integrations/pages/IntegrationsSettingsPage';
-import { ProfilePage } from '@/features/settings/ProfilePage';
+import { ProfilePage } from '@/features/settings/pages/ProfilePage';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import { AppLayout } from '@/layouts/AppLayout';
 import { AuthLayout } from '@/layouts/AuthLayout';
@@ -177,6 +178,7 @@ export const router = createBrowserRouter([
               { path: 'trace', element: <TraceSearchPage /> },
               { path: 'trace/:lineageId', element: <TraceDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
+              { path: 'settings/team/:memberId', element: <MemberAccessPage /> },
               { path: 'settings/integrations', element: <IntegrationsSettingsPage /> },
               { path: 'settings/profile', element: <ProfilePage /> },
               ...stubRoutes,

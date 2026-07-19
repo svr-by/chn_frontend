@@ -1,5 +1,10 @@
 {
   "title": "Team settings",
+  "subtitle": "View company members, manage invitations, and open access settings for a teammate.",
+  "tabs": {
+    "members": "Members ({{count}})",
+    "invitations": "Invitations ({{count}})"
+  },
   "activeMembers": "Active members",
   "pendingInvitations": "Pending invitations",
   "inviteMember": "Invite member",
@@ -8,6 +13,7 @@
   "invitationRevoked": "Invitation revoked",
   "memberRemoved": "Member removed",
   "roleUpdated": "Role updated",
+  "accessUpdated": "Access updated",
   "member": "Member",
   "role": "Role",
   "status": "Status",
@@ -17,6 +23,37 @@
   "revoke": "Revoke",
   "remove": "Remove",
   "cancel": "Cancel",
+  "save": "Save",
+  "manageAccess": "Manage role and permissions",
+  "accessTitle": "Member access",
+  "permissions": "Permissions",
+  "effectivePermissions": "Effective permissions",
+  "noEffectivePermissions": "No effective permissions.",
+  "permissionOverrides": "Permission overrides",
+  "permissionOverridesHint": "Toggle access for each permission. Changes beyond the role defaults are highlighted.",
+  "permissionGroup": "Group",
+  "permission": "Permission",
+  "permissionEnabled": "Access",
+  "effective": "Effective",
+  "allowed": "Allowed",
+  "blocked": "Blocked",
+  "grants": "Grant",
+  "denies": "Deny",
+  "clearOverrides": "Reset to role defaults",
+  "roleAndStatus": "Role and status",
+  "memberActive": "Active",
+  "memberInactive": "Inactive",
+  "roleChangeResetsOverrides": "Changing the role resets custom permission overrides on the server.",
+  "ownerAccessReadonly": "The owner role and permissions cannot be edited here.",
+  "permissionsOwnerOnly": "Only users with permission to manage member permissions can edit overrides.",
+  "noPermission": "You do not have permission to manage member access.",
+  "memberNotFound": "Member not found.",
+  "emptyMembers": "No members yet.",
+  "emptyInvitations": "No pending invitations.",
   "removeMemberTitle": "Remove member",
-  "removeMemberConfirm": "This member will lose access to the company. Continue?"
+  "removeMemberConfirm": "This member will lose access to the company. Continue?",
+  "memberStatus": {
+    "active": "Active",
+    "suspended": "Suspended"
+  }
 }
