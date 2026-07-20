@@ -78,7 +78,9 @@ export function RequestLinesTable({
         header: t('columns.lineNumber'),
         size: 10,
         maxSize: 10,
-        enableResizing: true,
+        // enableResizing: true,
+        muiTableHeadCellProps: { sx: { width: 20 } },
+        muiTableBodyCellProps: { sx: { width: 20 } },
       },
       {
         accessorKey: 'description',
@@ -118,8 +120,8 @@ export function RequestLinesTable({
       baseColumns.push({
         id: 'actions',
         header: t('columns.actions'),
-        size: 30,
-        maxSize: 30,
+        size: 20,
+        maxSize: 20,
         enableResizing: true,
         muiTableHeadCellProps: {
           align: 'right',
@@ -129,7 +131,7 @@ export function RequestLinesTable({
         },
         Cell: ({ row }) => (
           <PermissionGate permission="manageRequests">
-            <Stack direction="row" spacing={0.5}>
+            <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
               <Tooltip title={t('actions.editLine')}>
                 <IconButton
                   size="small"
