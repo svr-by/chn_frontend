@@ -10,8 +10,6 @@ import {
   Typography,
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { type Dayjs } from 'dayjs';
 import { useForm } from 'react-hook-form';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
@@ -144,18 +142,16 @@ export function RequestNewPage() {
               helperText={errors.title?.message}
               {...register('title')}
             />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label={t('form.date')}
-                value={requestDate}
-                onChange={setRequestDate}
-                slotProps={{
-                  textField: {
-                    fullWidth: true,
-                  },
-                }}
-              />
-            </LocalizationProvider>
+            <DatePicker
+              label={t('form.date')}
+              value={requestDate}
+              onChange={setRequestDate}
+              slotProps={{
+                textField: {
+                  fullWidth: true,
+                },
+              }}
+            />
           </Stack>
 
           <Box>

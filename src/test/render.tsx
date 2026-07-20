@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { SnackbarProvider } from 'notistack';
 import { I18nextProvider } from 'react-i18next';
 
+import { AppDateLocalizationProvider } from '@/app/AppDateLocalizationProvider';
 import { AppThemeProvider } from '@/app/AppThemeProvider';
 import i18n from '@/app/i18n';
 import type { RootState } from '@/app/store';
@@ -53,9 +54,11 @@ export function renderWithProviders(
       <Provider store={store}>
         <I18nextProvider i18n={i18n}>
           <AppThemeProvider>
-            <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
-              <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
-            </SnackbarProvider>
+            <AppDateLocalizationProvider>
+              <SnackbarProvider maxSnack={3} autoHideDuration={4000}>
+                <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+              </SnackbarProvider>
+            </AppDateLocalizationProvider>
           </AppThemeProvider>
         </I18nextProvider>
       </Provider>
