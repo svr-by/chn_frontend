@@ -1,23 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Checkbox,
-  Chip,
-  Divider,
-  Drawer,
-  FormControl,
-  FormControlLabel,
-  IconButton,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
@@ -31,34 +14,18 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { StatusBadge } from '@/components/StatusBadge';
+import {
+  EMPTY_REQUEST_LINES_FILTERS,
+  RequestLinesFiltersDrawer,
+  type RequestLinesFilterState,
+  type RequestLinesStatusFilter,
+} from '@/features/requests/components/RequestLinesFiltersDrawer';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import type { MaterialRequestStatus } from '@/types/api';
 
 const PAGE_SIZE = 20;
 
-type StatusFilter = RequestLineStatusFilter | 'ALL';
-
-interface FilterState {
-  q: string;
-  status: StatusFilter;
-  requestId: string;
-  productId: string;
-  createdByUserId: string;
-  undistributed: boolean;
-  withoutQuotes: boolean;
-}
-
-const EMPTY_FILTERS: FilterState = {
-  q: '',
-  status: 'ALL',
-  requestId: '',
-  productId: '',
-  createdByUserId: '',
-  undistributed: false,
-  withoutQuotes: false,
-};
-
-function parseStatus(value: string | null): StatusFilter {
+function parseStatus(value: string | null): RequestLinesStatusFilter {
   if (
     value &&
     Object.values(GetCompaniesCompanyIdRequestLinesStatus).includes(
@@ -71,19 +38,17 @@ function parseStatus(value: string | null): StatusFilter {
   return 'ALL';
 }
 
-function filtersFromSearchParams(searchParams: URLSearchParams): FilterState {
+function filtersFromSearchParams(searchParams: URLSearchParams): RequestLinesFilterState {
   return {
     q: searchParams.get('q') ?? '',
     status: parseStatus(searchParams.get('status')),
-    requestId: searchParams.get('requestId') ?? '',
-    productId: searchParams.get('productId') ?? '',
     createdByUserId: searchParams.get('createdByUserId') ?? '',
     undistributed: searchParams.get('undistributed') === 'true',
     withoutQuotes: searchParams.get('withoutQuotes') === 'true',
   };
 }
 
-function filtersToSearchParams(filters: FilterState) {
+function filtersToSearchParams(filters: RequestLinesFilterState) {
   const params = new URLSearchParams();
 
   if (filters.q.trim()) {
@@ -91,12 +56,6 @@ function filtersToSearchParams(filters: FilterState) {
   }
   if (filters.status !== 'ALL') {
     params.set('status', filters.status);
-  }
-  if (filters.requestId.trim()) {
-    params.set('requestId', filters.requestId.trim());
-  }
-  if (filters.productId.trim()) {
-    params.set('productId', filters.productId.trim());
   }
   if (filters.createdByUserId.trim()) {
     params.set('createdByUserId', filters.createdByUserId.trim());
@@ -126,7 +85,8 @@ export function RequestLinesPage() {
     () => filtersFromSearchParams(searchParams),
     [searchParams],
   );
-  const [draftFilters, setDraftFilters] = useState<FilterState>(activeFilters);
+  const [draftFilters, setDraftFilters] =
+    useState<RequestLinesFilterState>(activeFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -146,12 +106,6 @@ export function RequestLinesPage() {
       sortOrder: 'desc',
       ...(activeFilters.q.trim() ? { q: activeFilters.q.trim() } : {}),
       ...(activeFilters.status !== 'ALL' ? { status: activeFilters.status } : {}),
-      ...(activeFilters.requestId.trim()
-        ? { requestId: activeFilters.requestId.trim() }
-        : {}),
-      ...(activeFilters.productId.trim()
-        ? { productId: activeFilters.productId.trim() }
-        : {}),
       ...(activeFilters.createdByUserId.trim()
         ? { createdByUserId: activeFilters.createdByUserId.trim() }
         : {}),
@@ -291,7 +245,7 @@ export function RequestLinesPage() {
   }
 
   function resetFilters() {
-    setDraftFilters(EMPTY_FILTERS);
+    setDraftFilters(EMPTY_REQUEST_LINES_FILTERS);
     setSearchParams({});
     setFiltersOpen(false);
   }
@@ -343,140 +297,15 @@ export function RequestLinesPage() {
         />
       )}
 
-      <Drawer
-        anchor="right"
+      <RequestLinesFiltersDrawer
         open={filtersOpen}
         onClose={() => setFiltersOpen(false)}
-        PaperProps={{
-          sx: { width: { xs: '100%', sm: 420 }, maxWidth: '100%' },
-        }}
-      >
-        <Stack spacing={2} sx={{ p: 3, height: '100%' }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
-            <Typography variant="h6">{t('requestLines.filters.title')}</Typography>
-            <IconButton
-              aria-label={t('requestLines.filters.close')}
-              onClick={() => setFiltersOpen(false)}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Stack>
-          <Divider />
-
-          <TextField
-            label={t('requestLines.filters.q')}
-            value={draftFilters.q}
-            onChange={(event) =>
-              setDraftFilters((current) => ({ ...current, q: event.target.value }))
-            }
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                applyFilters();
-              }
-            }}
-            fullWidth
-          />
-
-          <FormControl fullWidth>
-            <InputLabel id="request-lines-status-filter">
-              {t('requestLines.filters.status')}
-            </InputLabel>
-            <Select
-              labelId="request-lines-status-filter"
-              label={t('requestLines.filters.status')}
-              value={draftFilters.status}
-              onChange={(event) =>
-                setDraftFilters((current) => ({
-                  ...current,
-                  status: event.target.value as StatusFilter,
-                }))
-              }
-            >
-              <MenuItem value="ALL">{t('statusFilter.all')}</MenuItem>
-              {Object.values(GetCompaniesCompanyIdRequestLinesStatus).map((status) => (
-                <MenuItem key={status} value={status}>
-                  {t(`statusFilter.${status.toLowerCase()}`, {
-                    defaultValue: status,
-                  })}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <TextField
-            label={t('requestLines.filters.requestId')}
-            value={draftFilters.requestId}
-            onChange={(event) =>
-              setDraftFilters((current) => ({
-                ...current,
-                requestId: event.target.value,
-              }))
-            }
-            fullWidth
-          />
-          <TextField
-            label={t('requestLines.filters.productId')}
-            value={draftFilters.productId}
-            onChange={(event) =>
-              setDraftFilters((current) => ({
-                ...current,
-                productId: event.target.value,
-              }))
-            }
-            fullWidth
-          />
-          <TextField
-            label={t('requestLines.filters.createdByUserId')}
-            value={draftFilters.createdByUserId}
-            onChange={(event) =>
-              setDraftFilters((current) => ({
-                ...current,
-                createdByUserId: event.target.value,
-              }))
-            }
-            fullWidth
-          />
-
-          <Stack>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={draftFilters.undistributed}
-                  onChange={(event) =>
-                    setDraftFilters((current) => ({
-                      ...current,
-                      undistributed: event.target.checked,
-                    }))
-                  }
-                />
-              }
-              label={t('requestLines.filters.undistributed')}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={draftFilters.withoutQuotes}
-                  onChange={(event) =>
-                    setDraftFilters((current) => ({
-                      ...current,
-                      withoutQuotes: event.target.checked,
-                    }))
-                  }
-                />
-              }
-              label={t('requestLines.filters.withoutQuotes')}
-            />
-          </Stack>
-
-          <Box sx={{ flex: 1 }} />
-          <Stack direction="row" spacing={1} justifyContent="flex-end">
-            <Button onClick={resetFilters}>{t('requestLines.filters.reset')}</Button>
-            <Button variant="contained" onClick={applyFilters}>
-              {t('requestLines.filters.apply')}
-            </Button>
-          </Stack>
-        </Stack>
-      </Drawer>
+        companyId={companyId}
+        value={draftFilters}
+        onChange={setDraftFilters}
+        onApply={applyFilters}
+        onReset={resetFilters}
+      />
     </Stack>
   );
 }

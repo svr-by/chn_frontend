@@ -40,7 +40,7 @@ export function AuthenticatedTopBar() {
           position: 'fixed',
           top: 8,
           right: 8,
-          zIndex: (theme) => theme.zIndex.appBar + 1,
+          zIndex: (theme) => theme.zIndex.appBar,
         }}
       >
         <LocaleThemeControls />

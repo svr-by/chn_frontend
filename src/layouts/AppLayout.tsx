@@ -128,7 +128,7 @@ export function AppLayout() {
       <AppBar
         position="fixed"
         sx={{
-          zIndex: (muiTheme) => muiTheme.zIndex.drawer + 1,
+          zIndex: (theme) => theme.zIndex.appBar,
           width: '100%',
         }}
       >
@@ -199,7 +199,7 @@ export function AppLayout() {
         onClose={closeNav}
         ModalProps={{ keepMounted: true }}
         sx={{
-          zIndex: (muiTheme) => muiTheme.zIndex.drawer,
+          zIndex: (theme) => theme.zIndex.drawer,
           '& .MuiDrawer-paper': {
             width: isCompact ? 'min(100vw, 320px)' : DRAWER_WIDTH,
             boxSizing: 'border-box',
