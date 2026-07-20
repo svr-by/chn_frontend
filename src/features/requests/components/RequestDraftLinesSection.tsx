@@ -80,8 +80,8 @@ export function RequestDraftLinesSection({
             <TableRow>
               <TableCell width={48}>{t('columns.lineNumber')}</TableCell>
               <TableCell>{t('columns.description')}</TableCell>
-              <TableCell>{t('columns.quantity')}</TableCell>
-              <TableCell>{t('columns.unit')}</TableCell>
+              <TableCell align="right">{t('columns.quantity')}</TableCell>
+              <TableCell align="center">{t('columns.unit')}</TableCell>
               <TableCell>{t('columns.notes')}</TableCell>
               <TableCell align="right">{t('columns.actions')}</TableCell>
             </TableRow>
@@ -91,10 +91,10 @@ export function RequestDraftLinesSection({
               <TableRow key={line.clientId}>
                 <TableCell>{lineNumber}</TableCell>
                 <TableCell>{line.description}</TableCell>
-                <TableCell>
+                <TableCell align="right">
                   <DecimalDisplay value={line.quantity} />
                 </TableCell>
-                <TableCell>{line.unit ?? '—'}</TableCell>
+                <TableCell align="center">{line.unit ?? '—'}</TableCell>
                 <TableCell>{line.notes ?? '—'}</TableCell>
                 <TableCell align="right">
                   <Stack direction="row" spacing={0.5} justifyContent="flex-end">
@@ -132,7 +132,7 @@ export function RequestDraftLinesSection({
               )) : (
                 <TableRow>
                   <TableCell colSpan={6} align="center">
-                    {t('noLines')}
+                    {t('empty.lines')}
                   </TableCell>
                 </TableRow>
               )}
@@ -141,10 +141,10 @@ export function RequestDraftLinesSection({
       }
 
       <Stack direction="row" spacing={1}>
-        <Button variant="outlined" onClick={openAddDialog}>
+        <Button type="button" variant="outlined" onClick={openAddDialog}>
           {t('actions.addLine')}
         </Button>
-        <Button variant="outlined" onClick={onImportClick}>
+        <Button type="button" variant="outlined" onClick={onImportClick}>
           {t('actions.importFromFile')}
         </Button>
       </Stack>

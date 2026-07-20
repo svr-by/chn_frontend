@@ -15,9 +15,9 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import type { Product } from '@/api/generated/models/product';
+// import type { Product } from '@/api/generated/models/product';
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { useListProductsQuery } from '@/api/endpoints/productsApi';
+// import { useListProductsQuery } from '@/api/endpoints/productsApi';
 import {
   useAddRequestLineMutation,
   useUpdateRequestLineMutation,
@@ -54,6 +54,16 @@ type RequestLineFormDialogProps = {
   companyId: string;
 } & (ApiModeProps | LocalModeProps);
 
+const REQUEST_LINE_FORM_ID = 'request-line-form';
+
+const EMPTY_FORM_VALUES: RequestLineFormValues = {
+  productId: null,
+  description: '',
+  quantity: '',
+  unit: '',
+  notes: '',
+};
+
 export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
   const { open, onClose, companyId } = props;
   const isLocal = props.mode === 'local';
@@ -63,19 +73,19 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
 
   const { t } = useTranslation(['requests', 'validation']);
 
-  const [productSearch, setProductSearch] = useState('');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  // const [productSearch, setProductSearch] = useState('');
+  // const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
-  const productsQuery = useListProductsQuery(
-    {
-      companyId,
-      q: productSearch || undefined,
-      isActive: 'true',
-      limit: 20,
-      offset: 0,
-    },
-    { skip: !open || !companyId },
-  );
+  // const productsQuery = useListProductsQuery(
+  //   {
+  //     companyId,
+  //     q: productSearch || undefined,
+  //     isActive: 'true',
+  //     limit: 20,
+  //     offset: 0,
+  //   },
+  //   { skip: !open || !companyId },
+  // );
 
   const [addLine, addState] = useAddRequestLineMutation();
   const [updateLine, updateState] = useUpdateRequestLineMutation();
@@ -109,26 +119,20 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
     formState: { errors },
   } = useForm<RequestLineFormValues>({
     resolver: zodResolver(lineSchema),
-    defaultValues: {
-      productId: null,
-      description: '',
-      quantity: '',
-      unit: '',
-      notes: '',
-    },
+    defaultValues: EMPTY_FORM_VALUES,
   });
 
   const quantity = watch('quantity');
 
   useEffect(() => {
     if (!open) {
+      reset(EMPTY_FORM_VALUES);
       return;
     }
 
-    setProductSearch('');
-
+  //   setProductSearch('');
     if (isLocal) {
-      setSelectedProduct(null);
+      // setSelectedProduct(null);
       reset({
         productId: draftLine?.productId ?? null,
         description: draftLine?.description ?? '',
@@ -139,22 +143,22 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       return;
     }
 
-    setSelectedProduct(
-      line?.product
-        ? {
-            id: line.product.id,
-            companyId,
-            name: line.product.name,
-            sku: line.product.sku,
-            unit: line.product.unit,
-            description: null,
-            attributes: null,
-            isActive: true,
-            createdAt: '',
-            updatedAt: '',
-          }
-        : null,
-    );
+    //   setSelectedProduct(
+    //     line?.product
+    //       ? {
+    //           id: line.product.id,
+    //           companyId,
+    //           name: line.product.name,
+    //           sku: line.product.sku,
+    //           unit: line.product.unit,
+    //           description: null,
+    //           attributes: null,
+    //           isActive: true,
+    //           createdAt: '',
+    //           updatedAt: '',
+    //         }
+    //       : null,
+    //   );
 
     reset({
       productId: line?.product?.id ?? null,
@@ -163,27 +167,28 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       unit: line?.unit ?? '',
       notes: line?.notes ?? '',
     });
-  }, [open, line, draftLine, isLocal, companyId, reset]);
+  }, [open, line, draftLine, isLocal, reset]);
 
   const pageError = addState.error ?? updateState.error;
   const isSubmitting = addState.isLoading || updateState.isLoading;
-  const products = productsQuery.data?.products ?? [];
+  // const products = productsQuery.data?.products ?? [];
 
-  function handleProductChange(product: Product | null) {
-    setSelectedProduct(product);
-    setValue('productId', product?.id ?? null);
+  // function handleProductChange(product: Product | null) {
+  //   setSelectedProduct(product);
+  //   setValue('productId', product?.id ?? null);
 
-    if (product) {
-      setValue('description', product.name);
-      if (product.unit) {
-        setValue('unit', product.unit);
-      }
-    }
-  }
+  //   if (product) {
+  //     setValue('description', product.name);
+  //     if (product.unit) {
+  //       setValue('unit', product.unit);
+  //     }
+  //   }
+  // }
 
   async function onSubmit(values: RequestLineFormValues) {
     if (isLocal) {
       props.onLocalSubmit(values);
+      reset(EMPTY_FORM_VALUES);
       onClose();
       return;
     }
@@ -211,6 +216,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
     }
 
     props.onSuccess?.();
+    reset(EMPTY_FORM_VALUES);
     onClose();
   }
 
@@ -219,10 +225,18 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       <DialogTitle>
         {isEdit ? t('form.editLineTitle') : t('form.addLineTitle')}
       </DialogTitle>
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
-          {!isLocal ? <ApiErrorAlert error={pageError} /> : null}
-          <Stack spacing={2}>
+      <DialogContent>
+        {!isLocal ? <ApiErrorAlert error={pageError} /> : null}
+        <Box
+          component="form"
+          id={REQUEST_LINE_FORM_ID}
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void handleSubmit(onSubmit)(event);
+          }}
+        >
+          <Stack spacing={2} sx={{ pt: 1 }}>
             {/* <Autocomplete
               options={products}
               value={selectedProduct}
@@ -268,16 +282,21 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
               {...register('notes')}
             />
           </Stack>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} disabled={isSubmitting}>
-            {t('actions.cancel')}
-          </Button>
-          <Button type="submit" variant="contained" disabled={isSubmitting}>
-            {isEdit ? t('actions.save') : t('actions.addLine')}
-          </Button>
-        </DialogActions>
-      </Box>
+        </Box>
+      </DialogContent>
+      <DialogActions>
+        <Button type="button" onClick={onClose} disabled={isSubmitting}>
+          {t('actions.cancel')}
+        </Button>
+        <Button
+          type="button"
+          variant="contained"
+          disabled={isSubmitting}
+          onClick={() => void handleSubmit(onSubmit)()}
+        >
+          {isEdit ? t('actions.save') : t('actions.addLine')}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 }
