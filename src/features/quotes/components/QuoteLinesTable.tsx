@@ -8,11 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import type { MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -23,6 +19,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
+import { SimpleTable } from '@/components/SimpleTable';
 import { QuoteLineFormDialog } from '@/features/quotes/components/QuoteLineFormDialog';
 
 interface QuoteLinesTableProps {
@@ -127,21 +124,6 @@ export function QuoteLinesTable({
     return baseColumns;
   }, [editable, t]);
 
-  const table = useMaterialReactTable({
-    columns,
-    data: lines,
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    getRowId: (row) => row.id,
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: { border: 1, borderColor: 'divider' },
-    },
-  });
-
   async function handleDeleteConfirm() {
     if (!lineToDelete) {
       return;
@@ -182,7 +164,11 @@ export function QuoteLinesTable({
       {lines.length === 0 ? (
         <Typography color="text.secondary">{t('empty.lines')}</Typography>
       ) : (
-        <MaterialReactTable table={table} />
+        <SimpleTable
+          columns={columns}
+          data={lines}
+          options={{ getRowId: (row) => row.id }}
+        />
       )}
 
       <QuoteLineFormDialog

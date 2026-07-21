@@ -6,9 +6,8 @@ import { Route, Routes } from 'react-router-dom';
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
   useListMembersQuery,
+  useUpdateMemberMutation,
   useUpdateMemberPermissionsMutation,
-  useUpdateMemberRoleMutation,
-  useUpdateMemberStatusMutation,
 } from '@/api/endpoints/membersApi';
 import { MemberAccessPage } from '@/features/settings/pages/MemberAccessPage';
 import { COMPANY_ID, createMembership, createTestUser } from '@/test/fixtures';
@@ -24,19 +23,15 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/membersApi', () => ({
   useListMembersQuery: vi.fn(),
-  useUpdateMemberRoleMutation: vi.fn(),
+  useUpdateMemberMutation: vi.fn(),
   useUpdateMemberPermissionsMutation: vi.fn(),
-  useUpdateMemberStatusMutation: vi.fn(),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseListMembersQuery = vi.mocked(useListMembersQuery);
-const mockedUseUpdateMemberRoleMutation = vi.mocked(useUpdateMemberRoleMutation);
+const mockedUseUpdateMemberMutation = vi.mocked(useUpdateMemberMutation);
 const mockedUseUpdateMemberPermissionsMutation = vi.mocked(
   useUpdateMemberPermissionsMutation,
-);
-const mockedUseUpdateMemberStatusMutation = vi.mocked(
-  useUpdateMemberStatusMutation,
 );
 
 const MEMBER_ID = '00000000-0000-0000-0000-000000000041';
@@ -108,19 +103,14 @@ describe('MemberAccessPage', () => {
       refetch: vi.fn(),
     } as ReturnType<typeof useListMembersQuery>);
 
-    mockedUseUpdateMemberRoleMutation.mockReturnValue(
+    mockedUseUpdateMemberMutation.mockReturnValue(
       mockMutationHook(vi.fn().mockResolvedValue({})) as ReturnType<
-        typeof useUpdateMemberRoleMutation
+        typeof useUpdateMemberMutation
       >,
     );
     mockedUseUpdateMemberPermissionsMutation.mockReturnValue(
       mockMutationHook(vi.fn().mockResolvedValue({})) as ReturnType<
         typeof useUpdateMemberPermissionsMutation
-      >,
-    );
-    mockedUseUpdateMemberStatusMutation.mockReturnValue(
-      mockMutationHook(vi.fn().mockResolvedValue({})) as ReturnType<
-        typeof useUpdateMemberStatusMutation
       >,
     );
   });
@@ -137,11 +127,11 @@ describe('MemberAccessPage', () => {
 
   it('saves role change', async () => {
     const user = userEvent.setup();
-    const updateRole = vi.fn().mockReturnValue({
+    const updateMember = vi.fn().mockReturnValue({
       unwrap: () => Promise.resolve({}),
     });
-    mockedUseUpdateMemberRoleMutation.mockReturnValue(
-      mockMutationHook(updateRole) as ReturnType<typeof useUpdateMemberRoleMutation>,
+    mockedUseUpdateMemberMutation.mockReturnValue(
+      mockMutationHook(updateMember) as ReturnType<typeof useUpdateMemberMutation>,
     );
 
     renderAccessPage();
@@ -150,7 +140,7 @@ describe('MemberAccessPage', () => {
     await user.click(await screen.findByRole('option', { name: 'Admin' }));
     await user.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(updateRole).toHaveBeenCalledWith({
+    expect(updateMember).toHaveBeenCalledWith({
       companyId: COMPANY_ID,
       memberId: MEMBER_ID,
       body: { role: 'ADMIN' },

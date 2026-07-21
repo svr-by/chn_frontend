@@ -5,17 +5,16 @@ import {
   Stack,
   Switch,
   Typography,
-  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import {
   MaterialReactTable,
-  useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
+import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 import {
   PERMISSION_ROWS,
   applyPermissionToggle,
@@ -50,7 +49,6 @@ export function MemberPermissionsEditor({
 }: MemberPermissionsEditorProps) {
   const { t } = useTranslation(['team', 'integrations']);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const roleDefaults = useMemo(
     () =>
@@ -126,26 +124,17 @@ export function MemberPermissionsEditor({
     [denies, disabled, grants, roleDefaults, t],
   );
 
-  const table = useMaterialReactTable({
+  const table = useAppMaterialReactTable({
     columns,
     data: PERMISSION_ROWS,
     getRowId: (row) => row.id,
-    enableColumnActions: false,
-    enableColumnFilters: false,
     enableDensityToggle: false,
     enableFullScreenToggle: false,
     enableHiding: false,
     enablePagination: false,
-    enableSorting: false,
     enableBottomToolbar: false,
-    enableTopToolbar: false,
-    layoutMode: isMobile ? 'grid-no-grow' : 'semantic',
     muiTableContainerProps: {
-      sx: { overflowX: 'auto', maxHeight: 520 },
-    },
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: { border: 1, borderColor: 'divider' },
+      sx: { maxHeight: 520 },
     },
     muiTableBodyRowProps: ({ row }) => {
       const permission = row.original.permission;

@@ -10,11 +10,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import type { MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -24,6 +20,7 @@ import { useRemoveConsolidationShippingInvoiceMutation } from '@/api/endpoints/c
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
+import { SimpleTable } from '@/components/SimpleTable';
 import { ConsolidationShippingInvoiceAddDialog } from '@/features/consolidations/components/ConsolidationShippingInvoiceAddDialog';
 
 interface ConsolidationShippingInvoicesTableProps {
@@ -132,15 +129,6 @@ export function ConsolidationShippingInvoicesTable({
     [editable, t],
   );
 
-  const table = useMaterialReactTable({
-    columns,
-    data: entries,
-    enablePagination: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-    getRowId: (row) => row.id,
-  });
-
   async function handleRemove() {
     if (!entryToRemove) {
       return;
@@ -176,7 +164,11 @@ export function ConsolidationShippingInvoicesTable({
       {entries.length === 0 ? (
         <Typography color="text.secondary">{t('empty.shippingInvoices')}</Typography>
       ) : (
-        <MaterialReactTable table={table} />
+        <SimpleTable
+          columns={columns}
+          data={entries}
+          options={{ getRowId: (row) => row.id }}
+        />
       )}
 
       <ConsolidationShippingInvoiceAddDialog

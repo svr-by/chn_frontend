@@ -13,9 +13,9 @@ import {
 } from '@mui/material';
 import {
   MaterialReactTable,
-  useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
+import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 import { useTranslation } from 'react-i18next';
 
 import type { QuoteComparisonLine } from '@/api/generated/models/quoteComparisonLine';
@@ -232,18 +232,12 @@ export function QuoteComparisonPage() {
     return [...baseColumns, ...supplierColumns];
   }, [suppliers, t]);
 
-  const table = useMaterialReactTable({
+  const table = useAppMaterialReactTable({
     columns,
     data: tableData,
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
     getRowId: (row) => row.id,
     muiTablePaperProps: {
-      elevation: 0,
-      sx: { border: 1, borderColor: 'divider', overflowX: 'auto' },
+      sx: { overflowX: 'auto' },
     },
   });
 

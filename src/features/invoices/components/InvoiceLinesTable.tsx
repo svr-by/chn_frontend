@@ -8,11 +8,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import type { MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -23,6 +19,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
+import { SimpleTable } from '@/components/SimpleTable';
 import { InvoiceLineFormDialog } from '@/features/invoices/components/InvoiceLineFormDialog';
 
 interface InvoiceLinesTableProps {
@@ -135,16 +132,6 @@ export function InvoiceLinesTable({
     return baseColumns;
   }, [currency, editable, t]);
 
-  const table = useMaterialReactTable({
-    columns,
-    data: lines,
-    enablePagination: false,
-    enableColumnActions: false,
-    enableSorting: false,
-    enableTopToolbar: false,
-    enableBottomToolbar: false,
-  });
-
   async function handleDelete() {
     if (!lineToDelete) {
       return;
@@ -185,7 +172,7 @@ export function InvoiceLinesTable({
       {lines.length === 0 ? (
         <Typography color="text.secondary">{t('empty.lines')}</Typography>
       ) : (
-        <MaterialReactTable table={table} />
+        <SimpleTable columns={columns} data={lines} />
       )}
 
       <InvoiceLineFormDialog

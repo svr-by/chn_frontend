@@ -11,11 +11,11 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   MaterialReactTable,
-  useMaterialReactTable,
   type MRT_ColumnDef,
 } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
+import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200 } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200';
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200PreviewRowsItem } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200PreviewRowsItem';
 
@@ -88,13 +88,9 @@ export function ImportPreviewTable({ preview }: ImportPreviewTableProps) {
     [t],
   );
 
-  const table = useMaterialReactTable({
+  const table = useAppMaterialReactTable({
     columns,
     data: rows,
-    enableColumnActions: false,
-    enableColumnFilters: false,
-    enableSorting: false,
-    enableTopToolbar: false,
     enableBottomToolbar: rows.length > 10,
     getRowId: (row) => String(row.rowNumber),
     muiTableBodyRowProps: ({ row }) => ({
@@ -107,10 +103,6 @@ export function ImportPreviewTable({ preview }: ImportPreviewTableProps) {
             : 'inherit',
       }),
     }),
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: { border: 1, borderColor: 'divider' },
-    },
   });
 
   const mappingEntries = Object.entries(preview.columnMapping);

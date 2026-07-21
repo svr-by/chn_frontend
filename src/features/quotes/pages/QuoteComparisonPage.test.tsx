@@ -31,7 +31,6 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useAddRequestLineMutation: vi.fn(),
   useUpdateRequestLineMutation: vi.fn(),
   useDeleteRequestLineMutation: vi.fn(),
-  useSubmitRequestMutation: vi.fn(),
   useListInboundRequestsQuery: vi.fn(),
   useDistributeRequestMutation: vi.fn(),
 }));

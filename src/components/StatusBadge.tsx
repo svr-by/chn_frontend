@@ -8,7 +8,6 @@ import {
 
 const STATUS_COLORS = {
   [MaterialRequestStatusValues.DRAFT]: 'default',
-  [MaterialRequestStatusValues.SUBMITTED]: 'info',
   [MaterialRequestStatusValues.QUOTING]: 'warning',
   [MaterialRequestStatusValues.PARTIALLY_ORDERED]: 'warning',
   [MaterialRequestStatusValues.ORDERED]: 'success',

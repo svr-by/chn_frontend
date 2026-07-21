@@ -20,9 +20,8 @@ import { useSnackbar } from 'notistack';
 import type { CompanyMemberStatus } from '@/api/generated/models/companyMemberStatus';
 import {
   useListMembersQuery,
+  useUpdateMemberMutation,
   useUpdateMemberPermissionsMutation,
-  useUpdateMemberRoleMutation,
-  useUpdateMemberStatusMutation,
 } from '@/api/endpoints/membersApi';
 import { MemberPermissionsEditor } from '@/features/settings/components/MemberPermissionsEditor';
 import { ASSIGNABLE_ROLES } from '@/features/settings/lib/assignableRoles';
@@ -75,10 +74,9 @@ export function MemberAccessPage() {
   const [grants, setGrants] = useState<Permission[]>([]);
   const [denies, setDenies] = useState<Permission[]>([]);
 
-  const [updateMemberRole, roleState] = useUpdateMemberRoleMutation();
+  const [updateMember, memberState] = useUpdateMemberMutation();
   const [updateMemberPermissions, permissionsState] =
     useUpdateMemberPermissionsMutation();
-  const [updateMemberStatus, statusState] = useUpdateMemberStatusMutation();
 
   useEffect(() => {
     if (!member) {
@@ -140,14 +138,9 @@ export function MemberAccessPage() {
     JSON.stringify(denies) !== JSON.stringify(initialOverrides.denies);
 
   const isSaving =
-    roleState.isLoading ||
-    permissionsState.isLoading ||
-    statusState.isLoading;
+    memberState.isLoading || permissionsState.isLoading;
   const pageError =
-    membersQuery.error ??
-    roleState.error ??
-    permissionsState.error ??
-    statusState.error;
+    membersQuery.error ?? memberState.error ?? permissionsState.error;
 
   async function handleSave() {
     if (!member || !companyId) {
@@ -155,19 +148,18 @@ export function MemberAccessPage() {
     }
 
     try {
-      if (canManageRole && statusChanged && !isOwner) {
-        await updateMemberStatus({
+      if (canManageRole && !isOwner && (roleChanged || statusChanged)) {
+        const body: { role?: typeof role; status?: typeof status } = {};
+        if (roleChanged) {
+          body.role = role;
+        }
+        if (statusChanged) {
+          body.status = status;
+        }
+        await updateMember({
           companyId,
           memberId: member.id,
-          body: { status },
-        }).unwrap();
-      }
-
-      if (canManageRole && roleChanged && !isOwner) {
-        await updateMemberRole({
-          companyId,
-          memberId: member.id,
-          body: { role },
+          body,
         }).unwrap();
       }
 
