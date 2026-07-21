@@ -12,6 +12,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -184,18 +185,32 @@ export function RequestLinesTable({
 
       <ApiErrorAlert error={deleteState.error} />
 
-      {lines.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.lines')}</Typography>
-      ) : (
-        <PaginatedTable
-          columns={columns}
-          data={pagedLines}
-          rowCount={lines.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          getRowId={(row) => row.id}
-        />
-      )}
+      <PaginatedTable
+        columns={columns}
+        data={pagedLines}
+        rowCount={lines.length}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        getRowId={(row) => row.id}
+        renderBottomToolbarCustomActions={
+          editable
+            ? () => (
+                <PermissionGate permission="manageRequests">
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    onClick={() => {
+                      setEditingLine(null);
+                      setDialogOpen(true);
+                    }}
+                  >
+                    {t('actions.addLine')}
+                  </Button>
+                </PermissionGate>
+              )
+            : undefined
+        }
+      />
 
       <RequestLineFormDialog
         open={dialogOpen}
@@ -213,22 +228,6 @@ export function RequestLinesTable({
           )
         }
       />
-
-      {editable ? (
-        <Stack direction="row" justifyContent="end" alignItems="center">
-          <PermissionGate permission="manageRequests">
-            <Button
-              variant="outlined"
-              onClick={() => {
-                setEditingLine(null);
-                setDialogOpen(true);
-              }}
-            >
-              {t('actions.addLine')}
-            </Button>
-          </PermissionGate>
-        </Stack>
-      ) : null}
 
       <Dialog open={Boolean(lineToDelete)} onClose={() => setLineToDelete(null)}>
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>

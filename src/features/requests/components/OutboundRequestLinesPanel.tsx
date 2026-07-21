@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chip, Stack, Typography } from '@mui/material';
+import { Stack, Typography } from '@mui/material';
 import type {
   MRT_ColumnDef,
   MRT_ColumnFiltersState,
@@ -8,60 +8,74 @@ import type {
 } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import type { InboundRequestLineListItem } from '@/api/generated/models/inboundRequestLineListItem';
-import { GetCompaniesCompanyIdRequestLinesInboundStatus } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesInboundStatus';
-import type { GetCompaniesCompanyIdRequestLinesInboundParams } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesInboundParams';
-import type { GetCompaniesCompanyIdRequestLinesInboundStatus as InboundRequestLineStatusFilter } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesInboundStatus';
-import { useListInboundRequestLinesQuery } from '@/api/endpoints/requestsApi';
+import type { RequestLineListItem } from '@/api/generated/models/requestLineListItem';
+import { GetCompaniesCompanyIdRequestLinesStatus } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesStatus';
+import type { GetCompaniesCompanyIdRequestLinesParams } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesParams';
+import type { GetCompaniesCompanyIdRequestLinesStatus as RequestLineStatusFilter } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesStatus';
+import { useListMembersQuery } from '@/api/endpoints/membersApi';
+import { useListRequestLinesQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
+import { RequestLinePipelineIcons } from '@/features/requests/components/RequestLinePipelineIcons';
 import { StatusBadge } from '@/components/StatusBadge';
 import type { MaterialRequestStatus } from '@/types/api';
 
 const PAGE_SIZE = 20;
 
-type InboundRequestLinesStatusFilter = InboundRequestLineStatusFilter | '';
+type RequestLinesStatusFilter = RequestLineStatusFilter | '';
 
-type HasQuoteFilterValue = 'withoutQuotes';
+type PipelineFilterValue = 'undistributed' | 'withoutQuotes';
 
-const STATUS_OPTIONS: InboundRequestLinesStatusFilter[] = [
+const STATUS_OPTIONS: RequestLinesStatusFilter[] = [
   '',
-  ...Object.values(GetCompaniesCompanyIdRequestLinesInboundStatus),
+  ...Object.values(GetCompaniesCompanyIdRequestLinesStatus),
 ];
 
-function getImportSku(line: InboundRequestLineListItem) {
+function getImportSku(line: RequestLineListItem) {
   const value = line.attributes?.importSku;
   return typeof value === 'string' && value.trim() ? value : null;
 }
 
 function getRequestStatusFilter(
   columnFilters: MRT_ColumnFiltersState,
-): InboundRequestLinesStatusFilter {
+): RequestLinesStatusFilter {
   const value = columnFilters.find((filter) => filter.id === 'request')?.value;
 
   if (value === undefined || value === '' || value === 'ALL') {
     return '';
   }
 
-  return value as InboundRequestLineStatusFilter;
+  return value as RequestLineStatusFilter;
 }
 
-function getWithoutQuotesFilter(columnFilters: MRT_ColumnFiltersState): boolean {
-  const value = columnFilters.find((filter) => filter.id === 'hasQuote')?.value;
-  const values = Array.isArray(value) ? value : value ? [value] : [];
-
-  return values.includes('withoutQuotes');
+function getCreatedByFilter(columnFilters: MRT_ColumnFiltersState): string {
+  const value = columnFilters.find((filter) => filter.id === 'createdBy')?.value;
+  return typeof value === 'string' ? value.trim() : '';
 }
 
-interface InboundRequestLinesPanelProps {
+function getPipelineFilters(columnFilters: MRT_ColumnFiltersState) {
+  const value = columnFilters.find((filter) => filter.id === 'pipeline')?.value;
+  const values = Array.isArray(value)
+    ? value
+    : value
+      ? [value]
+      : [];
+
+  return {
+    undistributed: values.includes('undistributed'),
+    withoutQuotes: values.includes('withoutQuotes'),
+  };
+}
+
+interface OutboundRequestLinesPanelProps {
   companyId: string;
 }
 
-export function InboundRequestLinesPanel({
+export function OutboundRequestLinesPanel({
   companyId,
-}: InboundRequestLinesPanelProps) {
-  const { t } = useTranslation('requests');
+}: OutboundRequestLinesPanelProps) {
+  const { t } = useTranslation(['requests', 'trace']);
   const navigate = useNavigate();
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -70,15 +84,19 @@ export function InboundRequestLinesPanel({
   });
   const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([
     { id: 'request', value: '' },
-    { id: 'hasQuote', value: [] },
+    { id: 'createdBy', value: '' },
+    { id: 'pipeline', value: [] },
   ]);
   const [globalFilter, setGlobalFilter] = useState('');
 
   const searchQuery = (globalFilter ?? '').trim();
   const statusFilter = getRequestStatusFilter(columnFilters);
-  const withoutQuotes = getWithoutQuotesFilter(columnFilters);
+  const createdByUserId = getCreatedByFilter(columnFilters);
+  const { undistributed, withoutQuotes } = getPipelineFilters(columnFilters);
 
-  const listParams = useMemo<GetCompaniesCompanyIdRequestLinesInboundParams>(
+  const membersQuery = useListMembersQuery({ companyId }, { skip: !companyId });
+
+  const listParams = useMemo<GetCompaniesCompanyIdRequestLinesParams>(
     () => ({
       limit: pagination.pageSize,
       offset: pagination.pageIndex * pagination.pageSize,
@@ -86,18 +104,22 @@ export function InboundRequestLinesPanel({
       sortOrder: 'desc',
       ...(searchQuery ? { q: searchQuery } : {}),
       ...(statusFilter ? { status: statusFilter } : {}),
+      ...(createdByUserId ? { createdByUserId } : {}),
+      ...(undistributed ? { undistributed: 'true' } : {}),
       ...(withoutQuotes ? { withoutQuotes: 'true' } : {}),
     }),
     [
+      createdByUserId,
       pagination.pageIndex,
       pagination.pageSize,
       searchQuery,
       statusFilter,
+      undistributed,
       withoutQuotes,
     ],
   );
 
-  const listQuery = useListInboundRequestLinesQuery(
+  const listQuery = useListRequestLinesQuery(
     {
       companyId,
       ...listParams,
@@ -119,17 +141,43 @@ export function InboundRequestLinesPanel({
     [t],
   );
 
-  const hasQuoteFilterOptions = useMemo(
+  const createdByFilterOptions = useMemo(() => {
+    const members = (membersQuery.data?.members ?? []).filter(
+      (member) => member.user,
+    );
+
+    return [
+      { label: t('statusFilter.all'), value: '' },
+      ...members.map((member) => {
+        const user = member.user!;
+        const name = [user.firstName, user.lastName]
+          .filter(Boolean)
+          .join(' ')
+          .trim();
+
+        return {
+          label: name || user.email,
+          value: user.id,
+        };
+      }),
+    ];
+  }, [membersQuery.data?.members, t]);
+
+  const pipelineFilterOptions = useMemo(
     () => [
       {
-        label: t('requestLines.inbound.filters.withoutQuotes'),
-        value: 'withoutQuotes' satisfies HasQuoteFilterValue,
+        label: t('requestLines.filters.undistributed'),
+        value: 'undistributed' satisfies PipelineFilterValue,
+      },
+      {
+        label: t('requestLines.filters.withoutQuotes'),
+        value: 'withoutQuotes' satisfies PipelineFilterValue,
       },
     ],
     [t],
   );
 
-  const columns = useMemo<MRT_ColumnDef<InboundRequestLineListItem>[]>(
+  const columns = useMemo<MRT_ColumnDef<RequestLineListItem>[]>(
     () => [
       {
         accessorKey: 'description',
@@ -171,7 +219,7 @@ export function InboundRequestLinesPanel({
         muiTableHeadCellProps: {
           sx: { maxWidth: 200 },
         },
-        muiTableBodyCellProps: {
+        muiTableCellProps: {
           sx: { maxWidth: 200 },
         },
         muiFilterTextFieldProps: {
@@ -192,43 +240,23 @@ export function InboundRequestLinesPanel({
         ),
       },
       {
-        id: 'buyer',
-        accessorFn: (row) => row.buyerCompany.name,
-        header: t('inbound.columns.buyer'),
-        enableColumnFilter: false,
-        Cell: ({ row }) => row.original.buyerCompany.name,
+        id: 'createdBy',
+        accessorFn: (row) => row.request.createdByUserId ?? '',
+        header: t('requestLines.columns.createdBy'),
+        enableColumnFilter: true,
+        filterVariant: 'select',
+        filterSelectOptions: createdByFilterOptions,
+        Cell: ({ row }) => row.original.request.createdByUserName ?? '—',
       },
       {
-        id: 'hasQuote',
-        accessorFn: (row) => row.links.hasQuote,
-        header: t('requestLines.inbound.columns.hasQuote'),
+        id: 'pipeline',
+        header: t('requestLines.columns.pipeline'),
         enableColumnFilter: true,
         filterVariant: 'multi-select',
-        filterSelectOptions: hasQuoteFilterOptions,
-        Cell: ({ row }) =>
-          row.original.links.hasQuote ? (
-            <Chip
-              label={t('requestLines.inbound.hasQuote')}
-              size="small"
-              color="success"
-              variant="outlined"
-            />
-          ) : (
-            <Chip
-              label={t('requestLines.inbound.noQuote')}
-              size="small"
-              variant="outlined"
-            />
-          ),
-      },
-      {
-        accessorKey: 'distributedAt',
-        header: t('inbound.columns.distributedAt'),
-        enableColumnFilter: false,
-        Cell: ({ cell }) => {
-          const value = cell.getValue<string | null>();
-          return value ? new Date(value).toLocaleString() : '—';
-        },
+        filterSelectOptions: pipelineFilterOptions,
+        Cell: ({ row }) => (
+          <RequestLinePipelineIcons links={row.original.links} />
+        ),
       },
       {
         accessorKey: 'createdAt',
@@ -243,7 +271,7 @@ export function InboundRequestLinesPanel({
         Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleString(),
       },
     ],
-    [hasQuoteFilterOptions, statusFilterOptions, t],
+    [createdByFilterOptions, pipelineFilterOptions, statusFilterOptions, t],
   );
 
   const items = listQuery.data?.items ?? [];
@@ -261,9 +289,7 @@ export function InboundRequestLinesPanel({
         onPaginationChange={setPagination}
         isLoading={listQuery.isLoading}
         isFetching={listQuery.isFetching}
-        onRowClick={(row) =>
-          navigate(`/app/requests/inbound/${row.request.id}`)
-        }
+        onRowClick={(row) => navigate(`/app/requests/${row.request.id}`)}
         getRowId={(row) => row.id}
         enableColumnFilters
         manualFiltering
@@ -287,6 +313,7 @@ export function InboundRequestLinesPanel({
           placeholder: t('requestLines.filters.q'),
           sx: { minWidth: 240 },
         }}
+        // positionGlobalFilter="left"
       />
     </>
   );

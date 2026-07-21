@@ -100,7 +100,7 @@
   },
   "statusFilter": {
     "label": "Статус",
-    "all": "Все статусы",
+    "all": "Все",
     "draft": "Черновик",
     "quoting": "Квотируется",
     "partially_ordered": "Частично заказано",

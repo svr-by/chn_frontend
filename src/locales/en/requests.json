@@ -100,7 +100,7 @@
   },
   "statusFilter": {
     "label": "Status",
-    "all": "All statuses",
+    "all": "All",
     "draft": "Draft",
     "quoting": "Quoting",
     "partially_ordered": "Partially ordered",

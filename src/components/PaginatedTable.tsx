@@ -1,7 +1,9 @@
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
+  type MRT_ColumnFiltersState,
   type MRT_PaginationState,
+  type MRT_TableOptions,
 } from 'material-react-table';
 
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
@@ -20,6 +22,19 @@ interface PaginatedTableProps<T extends object> {
   isFetching?: boolean;
   onRowClick?: (row: T) => void;
   getRowId?: (row: T) => string;
+  enableColumnFilters?: boolean;
+  manualFiltering?: boolean;
+  columnFilters?: MRT_ColumnFiltersState;
+  onColumnFiltersChange?: MRT_TableOptions<T>['onColumnFiltersChange'];
+  columnFilterDisplayMode?: MRT_TableOptions<T>['columnFilterDisplayMode'];
+  enableFullScreenToggle?: boolean;
+  enableGlobalFilter?: boolean;
+  globalFilter?: string;
+  onGlobalFilterChange?: MRT_TableOptions<T>['onGlobalFilterChange'];
+  muiSearchTextFieldProps?: MRT_TableOptions<T>['muiSearchTextFieldProps'];
+  positionGlobalFilter?: MRT_TableOptions<T>['positionGlobalFilter'];
+  renderBottomToolbarCustomActions?: MRT_TableOptions<T>['renderBottomToolbarCustomActions'];
+  renderTopToolbarCustomActions?: MRT_TableOptions<T>['renderTopToolbarCustomActions'];
 }
 
 export function PaginatedTable<T extends object>({
@@ -32,11 +47,40 @@ export function PaginatedTable<T extends object>({
   isFetching = false,
   onRowClick,
   getRowId,
+  enableColumnFilters,
+  manualFiltering,
+  columnFilters,
+  onColumnFiltersChange,
+  columnFilterDisplayMode,
+  enableFullScreenToggle = false,
+  enableGlobalFilter = false,
+  globalFilter,
+  onGlobalFilterChange,
+  muiSearchTextFieldProps,
+  positionGlobalFilter,
+  renderBottomToolbarCustomActions,
+  renderTopToolbarCustomActions,
 }: PaginatedTableProps<T>) {
   const table = useAppMaterialReactTable({
     columns,
     data,
     enableBottomToolbar: true,
+    enableTopToolbar:
+      enableFullScreenToggle ||
+      enableGlobalFilter ||
+      Boolean(renderTopToolbarCustomActions),
+    enableFullScreenToggle,
+    enableGlobalFilter,
+    enableGlobalFilterModes: false,
+    positionGlobalFilter,
+    muiSearchTextFieldProps,
+    onGlobalFilterChange,
+    enableDensityToggle: false,
+    enableHiding: false,
+    enableColumnFilters,
+    manualFiltering,
+    onColumnFiltersChange,
+    columnFilterDisplayMode,
     manualPagination: true,
     rowCount,
     onPaginationChange,
@@ -44,6 +88,8 @@ export function PaginatedTable<T extends object>({
       pagination,
       isLoading,
       showProgressBars: isFetching,
+      ...(columnFilters !== undefined ? { columnFilters } : {}),
+      ...(globalFilter !== undefined ? { globalFilter } : {}),
     },
     muiTableBodyRowProps: onRowClick
       ? ({ row }) => ({
@@ -52,9 +98,11 @@ export function PaginatedTable<T extends object>({
         })
       : undefined,
     getRowId: getRowId ? (row) => getRowId(row) : undefined,
+    renderBottomToolbarCustomActions,
+    renderTopToolbarCustomActions,
   });
 
   return <MaterialReactTable table={table} />;
 }
 
-export type { MRT_ColumnDef, MRT_PaginationState };
+export type { MRT_ColumnDef, MRT_ColumnFiltersState, MRT_PaginationState };

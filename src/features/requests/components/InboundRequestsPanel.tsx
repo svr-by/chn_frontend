@@ -1,31 +1,41 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from '@mui/material';
-import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
+import type {
+  MRT_ColumnDef,
+  MRT_ColumnFiltersState,
+  MRT_PaginationState,
+} from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { InboundMaterialRequestSummary } from '@/api/generated/models/inboundMaterialRequestSummary';
-import type { MaterialRequestStatus } from '@/types/api';
 import { useListInboundRequestsQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { StatusBadge } from '@/components/StatusBadge';
+import type { MaterialRequestStatus } from '@/types/api';
 
 const PAGE_SIZE = 20;
 
-const STATUS_OPTIONS: Array<MaterialRequestStatus | 'ALL'> = [
-  'ALL',
+const STATUS_OPTIONS: Array<MaterialRequestStatus | ''> = [
+  '',
   'QUOTING',
   'PARTIALLY_ORDERED',
   'ORDERED',
   'CLOSED',
 ];
+
+function getStatusFilterValue(
+  columnFilters: MRT_ColumnFiltersState,
+): MaterialRequestStatus | '' {
+  const statusFilter = columnFilters.find((filter) => filter.id === 'status');
+  const value = statusFilter?.value;
+
+  if (value === undefined || value === '' || value === 'ALL') {
+    return '';
+  }
+
+  return value as MaterialRequestStatus;
+}
 
 interface InboundRequestsPanelProps {
   companyId: string;
@@ -39,25 +49,34 @@ export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
-  const [statusFilter, setStatusFilter] = useState<MaterialRequestStatus | 'ALL'>(
-    'ALL',
-  );
+  const [columnFilters, setColumnFilters] = useState<MRT_ColumnFiltersState>([
+    { id: 'status', value: '' },
+  ]);
+
+  const statusFilter = getStatusFilterValue(columnFilters);
 
   const listQuery = useListInboundRequestsQuery(
     {
       companyId,
       limit: pagination.pageSize,
       offset: pagination.pageIndex * pagination.pageSize,
-      ...(statusFilter !== 'ALL' ? { status: statusFilter } : {}),
+      ...(statusFilter ? { status: statusFilter } : {}),
     },
     { skip: !companyId },
   );
 
-  const handleRowClick = useCallback(
-    (request: InboundMaterialRequestSummary) => {
-      navigate(`/app/requests/inbound/${request.id}`);
-    },
-    [navigate],
+  const statusFilterOptions = useMemo(
+    () =>
+      STATUS_OPTIONS.map((status) => ({
+        label:
+          status === ''
+            ? t('statusFilter.all')
+            : t(`statusFilter.${status.toLowerCase()}`, {
+                defaultValue: status,
+              }),
+        value: status,
+      })),
+    [t],
   );
 
   const columns = useMemo<MRT_ColumnDef<InboundMaterialRequestSummary>[]>(
@@ -65,16 +84,30 @@ export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
       {
         id: 'buyer',
         header: t('inbound.columns.buyer'),
+        enableColumnFilter: false,
         Cell: ({ row }) => row.original.buyerCompany.name,
       },
       {
         accessorKey: 'title',
         header: t('columns.title'),
+        enableColumnFilter: false,
         Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
       },
       {
         accessorKey: 'status',
         header: t('columns.status'),
+        muiTableHeadCellProps: {
+          sx: { maxWidth: 200 },
+        },
+        muiTableCellProps: {
+          sx: { maxWidth: 200 },
+        },
+        muiFilterTextFieldProps: {
+          sx: { maxWidth: 240 },
+        },
+        enableColumnFilter: true,
+        filterVariant: 'select',
+        filterSelectOptions: statusFilterOptions,
         Cell: ({ cell }) => (
           <StatusBadge status={cell.getValue<MaterialRequestStatus>()} />
         ),
@@ -82,17 +115,19 @@ export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
       {
         accessorKey: 'lineCount',
         header: t('inbound.columns.lineCount'),
+        enableColumnFilter: false,
       },
       {
         accessorKey: 'distributedAt',
         header: t('inbound.columns.distributedAt'),
+        enableColumnFilter: false,
         Cell: ({ cell }) => {
           const value = cell.getValue<string | null>();
           return value ? new Date(value).toLocaleString() : '—';
         },
       },
     ],
-    [t],
+    [statusFilterOptions, t],
   );
 
   const requests = listQuery.data?.requests ?? [];
@@ -102,44 +137,26 @@ export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
     <>
       <ApiErrorAlert error={listQuery.error} />
 
-      <FormControl size="small" sx={{ minWidth: 200, mb: 3 }}>
-        <InputLabel id="inbound-status-filter">{t('statusFilter.label')}</InputLabel>
-        <Select
-          labelId="inbound-status-filter"
-          label={t('statusFilter.label')}
-          value={statusFilter}
-          onChange={(event) => {
-            setStatusFilter(event.target.value as MaterialRequestStatus | 'ALL');
-            setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-          }}
-        >
-          {STATUS_OPTIONS.map((status) => (
-            <MenuItem key={status} value={status}>
-              {status === 'ALL'
-                ? t('statusFilter.all')
-                : t(`statusFilter.${status.toLowerCase()}`, {
-                    defaultValue: status,
-                  })}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      {!listQuery.isLoading && requests.length === 0 ? (
-        <Typography color="text.secondary">{t('inbound.empty.list')}</Typography>
-      ) : (
-        <PaginatedTable
-          columns={columns}
-          data={requests}
-          rowCount={total}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          getRowId={(row) => row.id}
-          onRowClick={handleRowClick}
-        />
-      )}
+      <PaginatedTable
+        columns={columns}
+        data={requests}
+        rowCount={total}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        isLoading={listQuery.isLoading}
+        isFetching={listQuery.isFetching}
+        onRowClick={(row) => navigate(`/app/requests/inbound/${row.id}`)}
+        getRowId={(row) => row.id}
+        enableColumnFilters
+        manualFiltering
+        columnFilters={columnFilters}
+        onColumnFiltersChange={(updater) => {
+          setColumnFilters(updater);
+          setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+        }}
+        columnFilterDisplayMode="subheader"
+        enableFullScreenToggle
+      />
     </>
   );
 }

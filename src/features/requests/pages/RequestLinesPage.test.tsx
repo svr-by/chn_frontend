@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
@@ -92,55 +92,6 @@ describe('RequestLinesPage', () => {
       expect.objectContaining({ skip: false }),
     );
   });
-
-  it('uses filter params from the URL', () => {
-    renderPage(
-      '/app/request-lines?q=paper&status=QUOTING&undistributed=true&withoutQuotes=true',
-    );
-
-    expect(mockedUseListRequestLinesQuery).toHaveBeenCalledWith(
-      expect.objectContaining({
-        q: 'paper',
-        status: 'QUOTING',
-        undistributed: 'true',
-        withoutQuotes: 'true',
-      }),
-      expect.objectContaining({ skip: false }),
-    );
-  });
-
-  it('applies and resets drawer filters', async () => {
-    const user = userEvent.setup();
-    renderPage();
-
-    await user.click(screen.getByRole('button', { name: 'Filters' }));
-    await user.type(screen.getByLabelText('Search'), 'bolt');
-    await user.click(screen.getByLabelText('Only undistributed lines'));
-    await user.click(screen.getByRole('button', { name: 'Apply' }));
-
-    await waitFor(() => {
-      expect(mockedUseListRequestLinesQuery).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          q: 'bolt',
-          undistributed: 'true',
-        }),
-        expect.objectContaining({ skip: false }),
-      );
-    });
-
-    await user.click(screen.getByRole('button', { name: 'Filters (2)' }));
-    await user.click(screen.getByRole('button', { name: 'Reset' }));
-
-    await waitFor(() => {
-      expect(mockedUseListRequestLinesQuery).toHaveBeenLastCalledWith(
-        expect.not.objectContaining({
-          q: expect.anything(),
-          undistributed: expect.anything(),
-        }),
-        expect.objectContaining({ skip: false }),
-      );
-    });
-  }, 10_000);
 
   it('opens the parent request when a row is clicked', async () => {
     const user = userEvent.setup();
