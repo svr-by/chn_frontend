@@ -1,30 +1,37 @@
 import {
   getDeleteCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl,
   getDeleteCompaniesCompanyIdRequestsRequestIdUrl,
+  getGetCompaniesCompanyIdRequestLinesInboundUrl,
   getGetCompaniesCompanyIdRequestLinesUrl,
+  getGetCompaniesCompanyIdRequestsInboundRequestIdUrl,
   getGetCompaniesCompanyIdRequestsInboundUrl,
   getGetCompaniesCompanyIdRequestsRequestIdBillableLinesUrl,
+  getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl,
   getGetCompaniesCompanyIdRequestsRequestIdQuotesComparisonUrl,
   getGetCompaniesCompanyIdRequestsRequestIdSelectionUrl,
   getGetCompaniesCompanyIdRequestsRequestIdUrl,
   getGetCompaniesCompanyIdRequestsUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdUrl,
+  getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl,
   getPostCompaniesCompanyIdRequestsRequestIdDistributeUrl,
   getPostCompaniesCompanyIdRequestsRequestIdLinesUrl,
-  getPostCompaniesCompanyIdRequestsRequestIdSubmitUrl,
   getPostCompaniesCompanyIdRequestsUrl,
 } from '@/api/generated/endpoints';
 import type {
   DeleteCompaniesCompanyIdRequestsRequestIdLinesLineId200,
   GetCompaniesCompanyIdRequestLines200,
+  GetCompaniesCompanyIdRequestLinesInbound200,
+  GetCompaniesCompanyIdRequestLinesInboundParams,
   GetCompaniesCompanyIdRequestLinesParams,
   GetCompaniesCompanyIdRequests200,
   GetCompaniesCompanyIdRequestsInbound200,
   GetCompaniesCompanyIdRequestsInboundParams,
+  GetCompaniesCompanyIdRequestsInboundRequestId200,
   GetCompaniesCompanyIdRequestsParams,
   GetCompaniesCompanyIdRequestsRequestId200,
   GetCompaniesCompanyIdRequestsRequestIdBillableLines200,
+  GetCompaniesCompanyIdRequestsRequestIdDistributions200,
   GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
   GetCompaniesCompanyIdRequestsRequestIdSelection200,
   PatchCompaniesCompanyIdRequestsRequestId200,
@@ -33,11 +40,12 @@ import type {
   PatchCompaniesCompanyIdRequestsRequestIdLinesLineIdBody,
   PostCompaniesCompanyIdRequests201,
   PostCompaniesCompanyIdRequestsBody,
+  PostCompaniesCompanyIdRequestsInboundRequestIdReject200,
+  PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody,
   PostCompaniesCompanyIdRequestsRequestIdDistribute200,
   PostCompaniesCompanyIdRequestsRequestIdDistributeBody,
   PostCompaniesCompanyIdRequestsRequestIdLines201,
   PostCompaniesCompanyIdRequestsRequestIdLinesBody,
-  PostCompaniesCompanyIdRequestsRequestIdSubmit200,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -53,6 +61,13 @@ function requestDetailTags(companyId: string, requestId: string) {
   return [
     { type: 'Requests' as const, id: companyId },
     { type: 'Requests' as const, id: requestId },
+  ];
+}
+
+function inboundTags(companyId: string) {
+  return [
+    { type: 'Requests' as const, id: `${companyId}-inbound` },
+    { type: 'Requests' as const, id: `${companyId}-inbound-lines` },
   ];
 }
 
@@ -79,6 +94,18 @@ export const requestsApi = baseApi.injectEndpoints({
       }),
       providesTags: (_result, _error, { companyId }) => requestListTag(companyId),
     }),
+    listInboundRequestLines: builder.query<
+      GetCompaniesCompanyIdRequestLinesInbound200,
+      CompanyScopedArgs<GetCompaniesCompanyIdRequestLinesInboundParams>
+    >({
+      query: ({ companyId, ...params }) => ({
+        url: getGetCompaniesCompanyIdRequestLinesInboundUrl(companyId),
+        params,
+      }),
+      providesTags: (_result, _error, { companyId }) => [
+        { type: 'Requests', id: `${companyId}-inbound-lines` },
+      ],
+    }),
     getRequest: builder.query<
       GetCompaniesCompanyIdRequestsRequestId200,
       { companyId: string; requestId: string }
@@ -88,6 +115,18 @@ export const requestsApi = baseApi.injectEndpoints({
       }),
       providesTags: (_result, _error, { requestId }) => [
         { type: 'Requests', id: requestId },
+      ],
+    }),
+    getInboundRequest: builder.query<
+      GetCompaniesCompanyIdRequestsInboundRequestId200,
+      { companyId: string; requestId: string }
+    >({
+      query: ({ companyId, requestId }) => ({
+        url: getGetCompaniesCompanyIdRequestsInboundRequestIdUrl(companyId, requestId),
+      }),
+      providesTags: (_result, _error, { companyId, requestId }) => [
+        ...inboundTags(companyId),
+        { type: 'Requests', id: `${requestId}-inbound` },
       ],
     }),
     createRequest: builder.mutation<
@@ -170,17 +209,6 @@ export const requestsApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _error, { companyId }) =>
         requestListTag(companyId),
     }),
-    submitRequest: builder.mutation<
-      PostCompaniesCompanyIdRequestsRequestIdSubmit200,
-      { companyId: string; requestId: string }
-    >({
-      query: ({ companyId, requestId }) => ({
-        url: getPostCompaniesCompanyIdRequestsRequestIdSubmitUrl(companyId, requestId),
-        method: 'POST',
-      }),
-      invalidatesTags: (_result, _error, { companyId, requestId }) =>
-        requestDetailTags(companyId, requestId),
-    }),
     listInboundRequests: builder.query<
       GetCompaniesCompanyIdRequestsInbound200,
       CompanyScopedArgs<GetCompaniesCompanyIdRequestsInboundParams>
@@ -205,8 +233,39 @@ export const requestsApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, requestId }) =>
-        requestDetailTags(companyId, requestId),
+      invalidatesTags: (_result, _error, { companyId, requestId }) => [
+        ...requestDetailTags(companyId, requestId),
+        ...inboundTags(companyId),
+        { type: 'Requests', id: `${requestId}-distributions` },
+      ],
+    }),
+    rejectInboundRequest: builder.mutation<
+      PostCompaniesCompanyIdRequestsInboundRequestIdReject200,
+      {
+        companyId: string;
+        requestId: string;
+      } & PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody
+    >({
+      query: ({ companyId, requestId, ...body }) => ({
+        url: getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl(companyId, requestId),
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId, requestId }) => [
+        ...inboundTags(companyId),
+        { type: 'Requests', id: `${requestId}-inbound` },
+      ],
+    }),
+    getRequestDistributions: builder.query<
+      GetCompaniesCompanyIdRequestsRequestIdDistributions200,
+      { companyId: string; requestId: string }
+    >({
+      query: ({ companyId, requestId }) => ({
+        url: getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl(companyId, requestId),
+      }),
+      providesTags: (_result, _error, { requestId }) => [
+        { type: 'Requests', id: `${requestId}-distributions` },
+      ],
     }),
     getQuoteComparison: builder.query<
       GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
@@ -247,16 +306,19 @@ export const requestsApi = baseApi.injectEndpoints({
 export const {
   useListRequestsQuery,
   useListRequestLinesQuery,
+  useListInboundRequestLinesQuery,
   useGetRequestQuery,
+  useGetInboundRequestQuery,
   useCreateRequestMutation,
   useUpdateRequestMutation,
   useAddRequestLineMutation,
   useUpdateRequestLineMutation,
   useDeleteRequestLineMutation,
   useDeleteRequestMutation,
-  useSubmitRequestMutation,
   useListInboundRequestsQuery,
   useDistributeRequestMutation,
+  useRejectInboundRequestMutation,
+  useGetRequestDistributionsQuery,
   useGetQuoteComparisonQuery,
   useGetRequestSelectionQuery,
   useLazyGetRequestSelectionQuery,

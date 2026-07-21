@@ -8,7 +8,6 @@ export type LineageTraceRequestStatus = typeof LineageTraceRequestStatus[keyof t
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const LineageTraceRequestStatus = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
   QUOTING: 'QUOTING',
   PARTIALLY_ORDERED: 'PARTIALLY_ORDERED',
   ORDERED: 'ORDERED',

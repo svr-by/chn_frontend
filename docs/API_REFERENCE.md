@@ -73,7 +73,7 @@ Exception: `POST /companies/{companyId}/members/accept` requires only Bearer JWT
 | `DELETE` | `/companies/{companyId}/members/invitations/{invitationId}` | 🏢 | Revoke pending invitation |
 | `POST` | `/companies/{companyId}/members/accept` | 🔑 | Accept pending invitation |
 | `DELETE` | `/companies/{companyId}/members/{memberId}` | 🏢 | Remove active member (hard delete; not OWNER) |
-| `PATCH` | `/companies/{companyId}/members/{memberId}/role` | 🏢 | Change member role |
+| `PATCH` | `/companies/{companyId}/members/{memberId}` | 🏢 | Update member role and/or status |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/permissions` | 🏢 | Set permission grants/denies |
 
 ---
@@ -119,9 +119,12 @@ Hard delete removes the catalog row. Linked `RequestLine.productId` values becom
 | `POST` | `/companies/{companyId}/requests/{requestId}/lines` | 🏢 | Add request line |
 | `PATCH` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Update request line |
 | `DELETE` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Remove request line |
-| `POST` | `/companies/{companyId}/requests/{requestId}/submit` | 🏢 | Submit request (`createProducts?`) |
 | `POST` | `/companies/{companyId}/requests/{requestId}/distribute` | 🏢 | Send request to suppliers |
-| `GET` | `/companies/{companyId}/requests/inbound` | 🏢 | Inbound requests (supplier view) |
+| `GET` | `/companies/{companyId}/requests/{requestId}/distributions` | 🏢 | List all supplier distributions for a request (buyer view) |
+| `GET` | `/companies/{companyId}/requests/inbound` | 🏢 | Inbound request summaries (supplier view) |
+| `GET` | `/companies/{companyId}/requests/inbound/{requestId}` | 🏢 | Inbound request detail with assigned lines (supplier view) |
+| `POST` | `/companies/{companyId}/requests/inbound/{requestId}/reject` | 🏢 | Supplier rejects inbound request distribution |
+| `GET` | `/companies/{companyId}/request-lines/inbound` | 🏢 | Flat inbound request lines work-queue (supplier view) |
 | `GET` | `/companies/{companyId}/requests/{requestId}/billable-lines` | 🏢 | Lines available for invoicing |
 | `GET` | `/companies/{companyId}/requests/{requestId}/selection` | 🏢 | Selection for request |
 | `GET` | `/companies/{companyId}/requests/{requestId}/quotes/comparison` | 🏢 | Quote comparison matrix |
@@ -129,7 +132,7 @@ Hard delete removes the catalog row. Linked `RequestLine.productId` values becom
 
 ### Create request (`POST /companies/{companyId}/requests`)
 
-Creates a **draft** (`DRAFT`). Submit is a separate call: `POST .../requests/{requestId}/submit`.
+Creates a **draft** (`DRAFT`). Quoting starts with `POST .../requests/{requestId}/distribute` from `DRAFT` (see Distribute request below).
 
 **Without `lines`** — empty draft (backward compatible): only header fields (`title`, `reference`, `notes`).
 
@@ -168,7 +171,7 @@ Response `201`: `{ "request": { ... } }`
 
 Flat work-queue of request lines across the company. Requires `viewRequests`.
 
-Query params: `limit`, `offset`, `status` (request status), `createdByUserId`, `requestId`, `productId`, `q` (description / product sku|name / request title / `attributes.importSku`), `undistributed=true` (request has no distributions), `withoutQuotes=true` (line has no quote lines), `sortBy=requestCreatedAt|updatedAt` (default `updatedAt`), `sortOrder=asc|desc` (default `desc`).
+Query params: `limit`, `offset`, `status` (request status), `createdByUserId`, `requestId`, `productId`, `q` (description / product sku|name / request title / `attributes.importSku`), `undistributed=true` (request line has no supplier distributions), `withoutQuotes=true` (line has no quote lines), `sortBy=requestCreatedAt|updatedAt` (default `updatedAt`), `sortOrder=asc|desc` (default `desc`).
 
 Each item includes the line, a short `request` summary, and `links` flags for UI icons: `distributed`, `hasQuote`, `hasSelection`, `hasInvoice`, `hasShipping`, `hasConsolidation`, plus derived `stage` (`quoted`…`consolidated` or `null`). Unlike `GET .../trace/search`, this endpoint paginates in the database and targets buyer operational filters.
 
@@ -182,28 +185,108 @@ Draft only. Updates header fields and/or **full-replaces** lines when `lines` is
 
 Same line fields as create. Product matching rules apply (match only, no auto-create).
 
-### Submit request (`POST /companies/{companyId}/requests/{requestId}/submit`)
+### Distribute request (`POST /companies/{companyId}/requests/{requestId}/distribute`)
 
-Body (optional, defaults apply):
+Starts quoting by sending selected request lines to one or more suppliers. Allowed when request status is `DRAFT` or `QUOTING`. On first distribute from `DRAFT`, status becomes `QUOTING` and `submittedAt` is set.
+
+Request body:
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `createProducts` | boolean (default `false`) | Create catalog products for lines still without `productId` |
+| `createProducts` | boolean (default `false`) | Create catalog products for distributed lines still without `productId` |
+| `distributions` | array (min 1) | Supplier assignments |
 
-When `createProducts: true`:
+Each item in `distributions`:
 
-- Uses `description` as product name; SKU from `attributes.importSku` if present
-- Requires `manageRequests` (not `manageProducts`)
-- Response may include `productsCreated`
+| Field | Type | Description |
+|-------|------|-------------|
+| `supplierCompanyId` | uuid | Active partner supplier company |
+| `requestLineIds` | uuid[] (min 1) | Request lines visible and quotable for this supplier |
+
+Example:
+
+```json
+{
+  "createProducts": false,
+  "distributions": [
+    { "supplierCompanyId": "uuid-A", "requestLineIds": ["line-1", "line-3"] },
+    { "supplierCompanyId": "uuid-B", "requestLineIds": ["line-2"] }
+  ]
+}
+```
+
+Response `200`: `{ "request": { ... }, "productsCreated?": number }`
+
+Re-sending to a supplier who **rejected** the request (distribution status `REJECTED`) is allowed: the existing distribution is reset to `PENDING` with new `requestLineIds`. Returns `409 REQUEST_ALREADY_DISTRIBUTED` if that supplier already has a **pending** distribution. Returns `409 QUOTE_EXISTS_CANNOT_REDISTRIBUTE` if a submitted quote exists for that supplier on this request.
+
+### List request distributions (`GET /companies/{companyId}/requests/{requestId}/distributions`)
+
+Buyer visibility into all supplier assignments for a request. Requires `viewRequests`.
 
 Response `200`:
 
 ```json
 {
-  "request": { "...": "MaterialRequest SUBMITTED with lines" },
-  "productsCreated": 2
+  "distributions": [
+    {
+      "id": "uuid",
+      "requestId": "uuid",
+      "status": "PENDING | REJECTED",
+      "distributedAt": "2026-07-21T09:00:00.000Z",
+      "rejectedAt": null,
+      "rejectionReason": null,
+      "supplierCompany": { "id": "uuid", "name": "Supplier LLC", "taxId": null },
+      "rejectedBy": null,
+      "lines": [ /* full request line objects assigned to this supplier */ ]
+    }
+  ]
 }
 ```
+
+Includes all statuses (`PENDING` and `REJECTED`). Sorted by `distributedAt` descending.
+
+Suppliers see only assigned lines in inbound detail and flat inbound request-lines endpoints. Attempting to quote a non-assigned `requestLineId` returns `403 REQUEST_LINE_NOT_DISTRIBUTED`.
+
+### Inbound requests (supplier view)
+
+Requires `viewQuotes` on the **supplier** company context. Only distributions with status **`PENDING`** appear in inbound list, detail, and flat request-lines.
+
+**List summaries** — `GET /companies/{companyId}/requests/inbound`
+
+Query: `limit`, `offset`, `status?`
+
+Response items: request summary fields + `buyerCompany`, `distributedAt`, `lineCount` (no `lines`).
+
+**Detail** — `GET /companies/{companyId}/requests/inbound/{requestId}`
+
+Response `200`: `{ "request": { ...full request with assigned lines only..., "buyerCompany", "distributedAt" } }`
+
+Returns `403 REQUEST_NOT_DISTRIBUTED` if the request was not distributed to this supplier or the distribution was rejected.
+
+**Reject** — `POST /companies/{companyId}/requests/inbound/{requestId}/reject`
+
+Requires `manageQuotes`. Optional body: `{ "reason": "..." }`.
+
+Response `200`: `{ "distribution": { "status": "REJECTED", "rejectionReason", "lines", ... } }`
+
+After reject, the request disappears from inbound views. A draft quote for this request (if any) is deleted. Returns `409 QUOTE_EXISTS_CANNOT_REJECT` if a submitted quote exists. Returns `409 REQUEST_DISTRIBUTION_NOT_REJECTABLE` on repeat reject.
+
+**Flat work-queue** — `GET /companies/{companyId}/request-lines/inbound`
+
+Query: `limit`, `offset`, `status?`, `requestId?`, `productId?`, `q?`, `withoutQuotes=true` (lines this supplier has not quoted yet), `sortBy=requestCreatedAt|updatedAt`, `sortOrder=asc|desc`.
+
+Each item: request line + short `request` summary + `buyerCompany` + `distributedAt` + `links.hasQuote` (supplier-scoped).
+
+**Typical supplier UI flow:**
+
+```text
+GET /requests/inbound → open request → GET /requests/inbound/{requestId} → POST /quotes
+OR
+GET /request-lines/inbound → POST /quotes
+Reject: POST /requests/inbound/{requestId}/reject
+```
+
+Buyer re-send after reject: same `POST .../distribute` to the same supplier (distribution resets to `PENDING`).
 
 ### Delete request (`DELETE /companies/{companyId}/requests/{requestId}`)
 
@@ -211,7 +294,7 @@ Response `200`:
 - Cascades delete of request lines; catalog products are kept
 - Response `204`
 
-**Typical UI flow:** preview file → fill form → `POST /requests` → edit → `PATCH /requests` → `POST .../submit` with `createProducts?`
+**Typical UI flow:** preview file → fill form → `POST /requests` → edit → `PATCH /requests` → `POST .../distribute` with selected `requestLineIds` per supplier and optional `createProducts`
 
 ---
 
@@ -370,7 +453,7 @@ Response `200`:
         "errors": [],
         "parsed": {
           "description": "...",
-          "quantity": "100.000",
+          "quantity": "100",
           "unit": "pcs",
           "sku": "00000001134",
           "productId": "uuid-or-null",
@@ -449,8 +532,8 @@ Export endpoints accept JWT + company header **or** API key.
 | `requestId` | Quotes, selections, invoices, request-lines | Filter by material request |
 | `q` | Products, trace search, partners, request-lines | Text search |
 | `createdByUserId` | Request-lines | Filter by request author |
-| `undistributed` | Request-lines | `true` — requests with no supplier distributions |
-| `withoutQuotes` | Request-lines | `true` — lines with no quote lines |
+| `undistributed` | Request-lines | `true` — request lines with no supplier distributions |
+| `withoutQuotes` | Request-lines, inbound request-lines | `true` — lines with no quote lines (inbound: no quote from this supplier) |
 | `sortBy` | Request-lines | `requestCreatedAt` or `updatedAt` (default `updatedAt`) |
 | `sortOrder` | Request-lines | `asc` or `desc` (default `desc`) |
 | `unreadOnly` | Notifications | `true` / `false` |

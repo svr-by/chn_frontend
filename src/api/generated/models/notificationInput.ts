@@ -6,6 +6,7 @@ import type { NotificationInputDocumentType } from './notificationInputDocumentT
 import type { NotificationInputDocumentId } from './notificationInputDocumentId';
 import type { NotificationInputCommentId } from './notificationInputCommentId';
 import type { NotificationInputDocumentEventId } from './notificationInputDocumentEventId';
+import type { NotificationInputPartnerLinkId } from './notificationInputPartnerLinkId';
 import type { NotificationInputBody } from './notificationInputBody';
 import type { NotificationInputReadAt } from './notificationInputReadAt';
 
@@ -17,6 +18,7 @@ export interface NotificationInput {
   documentId: NotificationInputDocumentId;
   commentId: NotificationInputCommentId;
   documentEventId: NotificationInputDocumentEventId;
+  partnerLinkId: NotificationInputPartnerLinkId;
   title: string;
   body: NotificationInputBody;
   readAt: NotificationInputReadAt;

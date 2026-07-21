@@ -9,4 +9,5 @@ export type NotificationType = typeof NotificationType[keyof typeof Notification
 export const NotificationType = {
   DOCUMENT_STATUS_CHANGED: 'DOCUMENT_STATUS_CHANGED',
   COMMENT_ADDED: 'COMMENT_ADDED',
+  PARTNER_INVITATION_RECEIVED: 'PARTNER_INVITATION_RECEIVED',
 } as const;

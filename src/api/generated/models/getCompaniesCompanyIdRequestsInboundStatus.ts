@@ -8,7 +8,6 @@ export type GetCompaniesCompanyIdRequestsInboundStatus = typeof GetCompaniesComp
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const GetCompaniesCompanyIdRequestsInboundStatus = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
   QUOTING: 'QUOTING',
   PARTIALLY_ORDERED: 'PARTIALLY_ORDERED',
   ORDERED: 'ORDERED',

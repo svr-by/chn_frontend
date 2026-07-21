@@ -8,7 +8,6 @@ export type MaterialRequestInputStatus = typeof MaterialRequestInputStatus[keyof
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const MaterialRequestInputStatus = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
   QUOTING: 'QUOTING',
   PARTIALLY_ORDERED: 'PARTIALLY_ORDERED',
   ORDERED: 'ORDERED',

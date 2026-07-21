@@ -55,13 +55,17 @@ import type {
   GetCompaniesCompanyIdQuotesParams,
   GetCompaniesCompanyIdQuotesQuoteId200,
   GetCompaniesCompanyIdRequestLines200,
+  GetCompaniesCompanyIdRequestLinesInbound200,
+  GetCompaniesCompanyIdRequestLinesInboundParams,
   GetCompaniesCompanyIdRequestLinesParams,
   GetCompaniesCompanyIdRequests200,
   GetCompaniesCompanyIdRequestsInbound200,
   GetCompaniesCompanyIdRequestsInboundParams,
+  GetCompaniesCompanyIdRequestsInboundRequestId200,
   GetCompaniesCompanyIdRequestsParams,
   GetCompaniesCompanyIdRequestsRequestId200,
   GetCompaniesCompanyIdRequestsRequestIdBillableLines200,
+  GetCompaniesCompanyIdRequestsRequestIdDistributions200,
   GetCompaniesCompanyIdRequestsRequestIdExportParams,
   GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
   GetCompaniesCompanyIdRequestsRequestIdSelection200,
@@ -88,10 +92,10 @@ import type {
   PatchCompaniesCompanyIdInvoicesInvoiceIdBody,
   PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineId200,
   PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdBody,
+  PatchCompaniesCompanyIdMembersMemberId200,
+  PatchCompaniesCompanyIdMembersMemberIdBody,
   PatchCompaniesCompanyIdMembersMemberIdPermissions200,
   PatchCompaniesCompanyIdMembersMemberIdPermissionsBody,
-  PatchCompaniesCompanyIdMembersMemberIdRole200,
-  PatchCompaniesCompanyIdMembersMemberIdRoleBody,
   PatchCompaniesCompanyIdProductsProductId200,
   PatchCompaniesCompanyIdProductsProductIdBody,
   PatchCompaniesCompanyIdQuotesQuoteId200,
@@ -178,12 +182,12 @@ import type {
   PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
   PostCompaniesCompanyIdRequests201,
   PostCompaniesCompanyIdRequestsBody,
+  PostCompaniesCompanyIdRequestsInboundRequestIdReject200,
+  PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody,
   PostCompaniesCompanyIdRequestsRequestIdDistribute200,
   PostCompaniesCompanyIdRequestsRequestIdDistributeBody,
   PostCompaniesCompanyIdRequestsRequestIdLines201,
   PostCompaniesCompanyIdRequestsRequestIdLinesBody,
-  PostCompaniesCompanyIdRequestsRequestIdSubmit200,
-  PostCompaniesCompanyIdRequestsRequestIdSubmitBody,
   PostCompaniesCompanyIdSelections201,
   PostCompaniesCompanyIdSelectionsBody,
   PostCompaniesCompanyIdSelectionsSelectionIdCancel200,
@@ -1341,67 +1345,67 @@ export const deleteCompaniesCompanyIdMembersMemberId = async (companyId: string,
 
 
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse200 = {
-  data: PatchCompaniesCompanyIdMembersMemberIdRole200
+export type patchCompaniesCompanyIdMembersMemberIdResponse200 = {
+  data: PatchCompaniesCompanyIdMembersMemberId200
   status: 200
 }
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse400 = {
+export type patchCompaniesCompanyIdMembersMemberIdResponse400 = {
   data: ErrorResponse
   status: 400
 }
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse401 = {
+export type patchCompaniesCompanyIdMembersMemberIdResponse401 = {
   data: ErrorResponse
   status: 401
 }
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse403 = {
+export type patchCompaniesCompanyIdMembersMemberIdResponse403 = {
   data: ErrorResponse
   status: 403
 }
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse404 = {
+export type patchCompaniesCompanyIdMembersMemberIdResponse404 = {
   data: ErrorResponse
   status: 404
 }
     
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponseSuccess = (patchCompaniesCompanyIdMembersMemberIdRoleResponse200) & {
+export type patchCompaniesCompanyIdMembersMemberIdResponseSuccess = (patchCompaniesCompanyIdMembersMemberIdResponse200) & {
   headers: Headers;
 };
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponseError = (patchCompaniesCompanyIdMembersMemberIdRoleResponse400 | patchCompaniesCompanyIdMembersMemberIdRoleResponse401 | patchCompaniesCompanyIdMembersMemberIdRoleResponse403 | patchCompaniesCompanyIdMembersMemberIdRoleResponse404) & {
+export type patchCompaniesCompanyIdMembersMemberIdResponseError = (patchCompaniesCompanyIdMembersMemberIdResponse400 | patchCompaniesCompanyIdMembersMemberIdResponse401 | patchCompaniesCompanyIdMembersMemberIdResponse403 | patchCompaniesCompanyIdMembersMemberIdResponse404) & {
   headers: Headers;
 };
 
-export type patchCompaniesCompanyIdMembersMemberIdRoleResponse = (patchCompaniesCompanyIdMembersMemberIdRoleResponseSuccess | patchCompaniesCompanyIdMembersMemberIdRoleResponseError)
+export type patchCompaniesCompanyIdMembersMemberIdResponse = (patchCompaniesCompanyIdMembersMemberIdResponseSuccess | patchCompaniesCompanyIdMembersMemberIdResponseError)
 
-export const getPatchCompaniesCompanyIdMembersMemberIdRoleUrl = (companyId: string,
+export const getPatchCompaniesCompanyIdMembersMemberIdUrl = (companyId: string,
     memberId: string,) => {
 
 
   
 
-  return `/companies/${companyId}/members/${memberId}/role`
+  return `/companies/${companyId}/members/${memberId}`
 }
 
-export const patchCompaniesCompanyIdMembersMemberIdRole = async (companyId: string,
+export const patchCompaniesCompanyIdMembersMemberId = async (companyId: string,
     memberId: string,
-    patchCompaniesCompanyIdMembersMemberIdRoleBody: PatchCompaniesCompanyIdMembersMemberIdRoleBody, options?: RequestInit): Promise<patchCompaniesCompanyIdMembersMemberIdRoleResponse> => {
+    patchCompaniesCompanyIdMembersMemberIdBody: PatchCompaniesCompanyIdMembersMemberIdBody, options?: RequestInit): Promise<patchCompaniesCompanyIdMembersMemberIdResponse> => {
   
-  const res = await fetch(getPatchCompaniesCompanyIdMembersMemberIdRoleUrl(companyId,memberId),
+  const res = await fetch(getPatchCompaniesCompanyIdMembersMemberIdUrl(companyId,memberId),
   {      
     ...options,
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json', ...options?.headers },
     body: JSON.stringify(
-      patchCompaniesCompanyIdMembersMemberIdRoleBody,)
+      patchCompaniesCompanyIdMembersMemberIdBody,)
   }
 )
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: patchCompaniesCompanyIdMembersMemberIdRoleResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as patchCompaniesCompanyIdMembersMemberIdRoleResponse
+  const data: patchCompaniesCompanyIdMembersMemberIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as patchCompaniesCompanyIdMembersMemberIdResponse
 }
 
 
@@ -1979,6 +1983,204 @@ export const getCompaniesCompanyIdRequestsInbound = async (companyId: string,
   
   const data: getCompaniesCompanyIdRequestsInboundResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdRequestsInboundResponse
+}
+
+
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse200 = {
+  data: GetCompaniesCompanyIdRequestsInboundRequestId200
+  status: 200
+}
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponseSuccess = (getCompaniesCompanyIdRequestsInboundRequestIdResponse200) & {
+  headers: Headers;
+};
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponseError = (getCompaniesCompanyIdRequestsInboundRequestIdResponse400 | getCompaniesCompanyIdRequestsInboundRequestIdResponse401 | getCompaniesCompanyIdRequestsInboundRequestIdResponse403 | getCompaniesCompanyIdRequestsInboundRequestIdResponse404) & {
+  headers: Headers;
+};
+
+export type getCompaniesCompanyIdRequestsInboundRequestIdResponse = (getCompaniesCompanyIdRequestsInboundRequestIdResponseSuccess | getCompaniesCompanyIdRequestsInboundRequestIdResponseError)
+
+export const getGetCompaniesCompanyIdRequestsInboundRequestIdUrl = (companyId: string,
+    requestId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/requests/inbound/${requestId}`
+}
+
+export const getCompaniesCompanyIdRequestsInboundRequestId = async (companyId: string,
+    requestId: string, options?: RequestInit): Promise<getCompaniesCompanyIdRequestsInboundRequestIdResponse> => {
+  
+  const res = await fetch(getGetCompaniesCompanyIdRequestsInboundRequestIdUrl(companyId,requestId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getCompaniesCompanyIdRequestsInboundRequestIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdRequestsInboundRequestIdResponse
+}
+
+
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse200 = {
+  data: PostCompaniesCompanyIdRequestsInboundRequestIdReject200
+  status: 200
+}
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponseSuccess = (postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponseError = (postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse400 | postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse401 | postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse403 | postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse = (postCompaniesCompanyIdRequestsInboundRequestIdRejectResponseSuccess | postCompaniesCompanyIdRequestsInboundRequestIdRejectResponseError)
+
+export const getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl = (companyId: string,
+    requestId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/requests/inbound/${requestId}/reject`
+}
+
+export const postCompaniesCompanyIdRequestsInboundRequestIdReject = async (companyId: string,
+    requestId: string,
+    postCompaniesCompanyIdRequestsInboundRequestIdRejectBody: PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody, options?: RequestInit): Promise<postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl(companyId,requestId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postCompaniesCompanyIdRequestsInboundRequestIdRejectBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdRequestsInboundRequestIdRejectResponse
+}
+
+
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse200 = {
+  data: GetCompaniesCompanyIdRequestLinesInbound200
+  status: 200
+}
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCompaniesCompanyIdRequestLinesInboundResponseSuccess = (getCompaniesCompanyIdRequestLinesInboundResponse200) & {
+  headers: Headers;
+};
+export type getCompaniesCompanyIdRequestLinesInboundResponseError = (getCompaniesCompanyIdRequestLinesInboundResponse400 | getCompaniesCompanyIdRequestLinesInboundResponse401 | getCompaniesCompanyIdRequestLinesInboundResponse403 | getCompaniesCompanyIdRequestLinesInboundResponse404) & {
+  headers: Headers;
+};
+
+export type getCompaniesCompanyIdRequestLinesInboundResponse = (getCompaniesCompanyIdRequestLinesInboundResponseSuccess | getCompaniesCompanyIdRequestLinesInboundResponseError)
+
+export const getGetCompaniesCompanyIdRequestLinesInboundUrl = (companyId: string,
+    params?: GetCompaniesCompanyIdRequestLinesInboundParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/companies/${companyId}/request-lines/inbound?${stringifiedParams}` : `/companies/${companyId}/request-lines/inbound`
+}
+
+export const getCompaniesCompanyIdRequestLinesInbound = async (companyId: string,
+    params?: GetCompaniesCompanyIdRequestLinesInboundParams, options?: RequestInit): Promise<getCompaniesCompanyIdRequestLinesInboundResponse> => {
+  
+  const res = await fetch(getGetCompaniesCompanyIdRequestLinesInboundUrl(companyId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getCompaniesCompanyIdRequestLinesInboundResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdRequestLinesInboundResponse
 }
 
 
@@ -7120,6 +7322,69 @@ export const deleteCompaniesCompanyIdRequestsRequestId = async (companyId: strin
 
 
 
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse200 = {
+  data: GetCompaniesCompanyIdRequestsRequestIdDistributions200
+  status: 200
+}
+
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponseSuccess = (getCompaniesCompanyIdRequestsRequestIdDistributionsResponse200) & {
+  headers: Headers;
+};
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponseError = (getCompaniesCompanyIdRequestsRequestIdDistributionsResponse400 | getCompaniesCompanyIdRequestsRequestIdDistributionsResponse401 | getCompaniesCompanyIdRequestsRequestIdDistributionsResponse403 | getCompaniesCompanyIdRequestsRequestIdDistributionsResponse404) & {
+  headers: Headers;
+};
+
+export type getCompaniesCompanyIdRequestsRequestIdDistributionsResponse = (getCompaniesCompanyIdRequestsRequestIdDistributionsResponseSuccess | getCompaniesCompanyIdRequestsRequestIdDistributionsResponseError)
+
+export const getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl = (companyId: string,
+    requestId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/requests/${requestId}/distributions`
+}
+
+export const getCompaniesCompanyIdRequestsRequestIdDistributions = async (companyId: string,
+    requestId: string, options?: RequestInit): Promise<getCompaniesCompanyIdRequestsRequestIdDistributionsResponse> => {
+  
+  const res = await fetch(getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl(companyId,requestId),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getCompaniesCompanyIdRequestsRequestIdDistributionsResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdRequestsRequestIdDistributionsResponse
+}
+
+
+
 export type postCompaniesCompanyIdRequestsRequestIdLinesResponse201 = {
   data: PostCompaniesCompanyIdRequestsRequestIdLines201
   status: 201
@@ -7313,71 +7578,6 @@ export const deleteCompaniesCompanyIdRequestsRequestIdLinesLineId = async (compa
   
   const data: deleteCompaniesCompanyIdRequestsRequestIdLinesLineIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdRequestsRequestIdLinesLineIdResponse
-}
-
-
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse200 = {
-  data: PostCompaniesCompanyIdRequestsRequestIdSubmit200
-  status: 200
-}
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse400 = {
-  data: ErrorResponse
-  status: 400
-}
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse401 = {
-  data: ErrorResponse
-  status: 401
-}
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse403 = {
-  data: ErrorResponse
-  status: 403
-}
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse404 = {
-  data: ErrorResponse
-  status: 404
-}
-    
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponseSuccess = (postCompaniesCompanyIdRequestsRequestIdSubmitResponse200) & {
-  headers: Headers;
-};
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponseError = (postCompaniesCompanyIdRequestsRequestIdSubmitResponse400 | postCompaniesCompanyIdRequestsRequestIdSubmitResponse401 | postCompaniesCompanyIdRequestsRequestIdSubmitResponse403 | postCompaniesCompanyIdRequestsRequestIdSubmitResponse404) & {
-  headers: Headers;
-};
-
-export type postCompaniesCompanyIdRequestsRequestIdSubmitResponse = (postCompaniesCompanyIdRequestsRequestIdSubmitResponseSuccess | postCompaniesCompanyIdRequestsRequestIdSubmitResponseError)
-
-export const getPostCompaniesCompanyIdRequestsRequestIdSubmitUrl = (companyId: string,
-    requestId: string,) => {
-
-
-  
-
-  return `/companies/${companyId}/requests/${requestId}/submit`
-}
-
-export const postCompaniesCompanyIdRequestsRequestIdSubmit = async (companyId: string,
-    requestId: string,
-    postCompaniesCompanyIdRequestsRequestIdSubmitBody: PostCompaniesCompanyIdRequestsRequestIdSubmitBody, options?: RequestInit): Promise<postCompaniesCompanyIdRequestsRequestIdSubmitResponse> => {
-  
-  const res = await fetch(getPostCompaniesCompanyIdRequestsRequestIdSubmitUrl(companyId,requestId),
-  {      
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
-    body: JSON.stringify(
-      postCompaniesCompanyIdRequestsRequestIdSubmitBody,)
-  }
-)
-
-  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
-  
-  const data: postCompaniesCompanyIdRequestsRequestIdSubmitResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdRequestsRequestIdSubmitResponse
 }
 
 

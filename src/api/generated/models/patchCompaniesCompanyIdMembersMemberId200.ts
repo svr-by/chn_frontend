@@ -3,6 +3,6 @@
  */
 import type { CompanyMember } from './companyMember';
 
-export type PatchCompaniesCompanyIdMembersMemberIdRole200 = {
+export type PatchCompaniesCompanyIdMembersMemberId200 = {
   member: CompanyMember;
 };

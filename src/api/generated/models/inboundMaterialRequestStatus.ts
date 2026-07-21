@@ -8,7 +8,6 @@ export type InboundMaterialRequestStatus = typeof InboundMaterialRequestStatus[k
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const InboundMaterialRequestStatus = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
   QUOTING: 'QUOTING',
   PARTIALLY_ORDERED: 'PARTIALLY_ORDERED',
   ORDERED: 'ORDERED',

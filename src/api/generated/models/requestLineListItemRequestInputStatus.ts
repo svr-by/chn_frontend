@@ -8,7 +8,6 @@ export type RequestLineListItemRequestInputStatus = typeof RequestLineListItemRe
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const RequestLineListItemRequestInputStatus = {
   DRAFT: 'DRAFT',
-  SUBMITTED: 'SUBMITTED',
   QUOTING: 'QUOTING',
   PARTIALLY_ORDERED: 'PARTIALLY_ORDERED',
   ORDERED: 'ORDERED',
