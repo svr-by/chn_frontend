@@ -19,6 +19,8 @@
     "themeLight": "浅色",
     "themeDark": "深色",
     "themeSystem": "跟随系统",
-    "backButton": "返回"
+    "backButton": "返回",
+    "sessionLoadFailed": "无法连接服务器。请检查网络后重试。",
+    "retry": "重试"
   }
 }

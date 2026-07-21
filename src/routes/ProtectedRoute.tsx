@@ -20,7 +20,7 @@ export function ProtectedRoute({
   const location = useLocation();
   const isBootstrapped = useAppSelector((state) => state.auth.isBootstrapped);
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
-  const { data, isLoading, isFetching } = useGetMeQuery(undefined, {
+  const { data, isLoading, isError } = useGetMeQuery(undefined, {
     skip: !hasRefreshToken,
   });
 
@@ -32,13 +32,19 @@ export function ProtectedRoute({
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  if (isLoading || isFetching) {
+  // Only block on the initial load. Using isFetching here unmounts children on
+  // every refetch and re-subscribes to getMe, which loops when the API is down.
+  if (isLoading) {
     return null;
   }
 
-  const activeMemberships = getActiveMemberships(data?.user);
+  if (isError || !data?.user) {
+    return null;
+  }
+
+  const activeMemberships = getActiveMemberships(data.user);
   const suspendedOnly =
-    activeMemberships.length === 0 && hasSuspendedMemberships(data?.user);
+    activeMemberships.length === 0 && hasSuspendedMemberships(data.user);
 
   if (suspendedOnly && !allowSuspended) {
     return <Navigate to="/access-suspended" replace />;

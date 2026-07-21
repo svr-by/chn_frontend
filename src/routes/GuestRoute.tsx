@@ -8,7 +8,7 @@ import { resolveAuthenticatedRedirect } from '@/lib/permissions';
 export function GuestRoute() {
   const isBootstrapped = useAppSelector((state) => state.auth.isBootstrapped);
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
-  const { data, isLoading, isFetching } = useGetMeQuery(undefined, {
+  const { data, isLoading, isError } = useGetMeQuery(undefined, {
     skip: !hasRefreshToken,
   });
 
@@ -17,11 +17,11 @@ export function GuestRoute() {
   }
 
   if (hasRefreshToken) {
-    if (isLoading || isFetching) {
+    if (isLoading || isError || !data?.user) {
       return null;
     }
 
-    return <Navigate to={resolveAuthenticatedRedirect(data?.user)} replace />;
+    return <Navigate to={resolveAuthenticatedRedirect(data.user)} replace />;
   }
 
   return <Outlet />;

@@ -20,6 +20,8 @@
     "themeLight": "Light",
     "themeDark": "Dark",
     "themeSystem": "System",
-    "backButton": "Back"
+    "backButton": "Back",
+    "sessionLoadFailed": "Unable to reach the server. Check your connection and try again.",
+    "retry": "Retry"
   }
 }
