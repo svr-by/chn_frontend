@@ -21,6 +21,7 @@ interface PartnerLinksTableProps {
   onAccept?: (linkId: string) => void;
   onReject?: (linkId: string) => void;
   actionsDisabled?: boolean;
+  highlightLinkId?: string | null;
 }
 
 function formatDate(iso: string): string {
@@ -34,6 +35,7 @@ export function PartnerLinksTable({
   onAccept,
   onReject,
   actionsDisabled = false,
+  highlightLinkId = null,
 }: PartnerLinksTableProps) {
   const { t } = useTranslation('partners');
 
@@ -63,7 +65,15 @@ export function PartnerLinksTable({
       </TableHead>
       <TableBody>
         {partners.map((partner) => (
-          <TableRow key={partner.id}>
+          <TableRow
+            key={partner.id}
+            selected={highlightLinkId === partner.id}
+            sx={
+              highlightLinkId === partner.id
+                ? { backgroundColor: 'action.selected' }
+                : undefined
+            }
+          >
             <TableCell>{partner.company.name}</TableCell>
             <TableCell>{partner.company.taxId ?? '—'}</TableCell>
             <TableCell>{partner.company.country ?? '—'}</TableCell>

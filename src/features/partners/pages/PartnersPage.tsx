@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -48,7 +49,14 @@ export function PartnersPage() {
   const { t } = useTranslation('partners');
   const { enqueueSnackbar } = useSnackbar();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const [tab, setTab] = useState(0);
+  const [searchParams] = useSearchParams();
+  const [tab, setTab] = useState(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'outbound') return 1;
+    if (tabParam === 'directory') return 2;
+    return 0;
+  });
+  const highlightLinkId = searchParams.get('linkId');
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
   const [directorySearchParams, setDirectorySearchParams] = useState<
     { q?: string; taxId?: string } | null
@@ -86,6 +94,17 @@ export function PartnersPage() {
   });
 
   const searchMode = watch('mode');
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'outbound') {
+      setTab(1);
+    } else if (tabParam === 'directory') {
+      setTab(2);
+    } else if (tabParam === 'inbound') {
+      setTab(0);
+    }
+  }, [searchParams]);
 
   if (!companyId) {
     return null;
@@ -182,6 +201,7 @@ export function PartnersPage() {
           onAccept={(linkId) => void handleAccept(linkId)}
           onReject={(linkId) => void handleReject(linkId)}
           actionsDisabled={actionsDisabled}
+          highlightLinkId={highlightLinkId}
         />
       )}
 

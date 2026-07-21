@@ -37,6 +37,20 @@
       "apply": "应用",
       "reset": "重置"
     },
+    "inbound": {
+      "subtitle": "分配给您公司的供应商需求行队列。",
+      "empty": "未找到入站申请行。",
+      "hasQuote": "已报价",
+      "noQuote": "未报价",
+      "columns": {
+        "hasQuote": "报价"
+      },
+      "filters": {
+        "title": "入站行筛选",
+        "requestId": "申请 ID",
+        "withoutQuotes": "仅无报价行"
+      }
+    },
     "pipeline": {
       "none": "无流程关联",
       "distributed": "已分发",
@@ -69,6 +83,8 @@
     "applyImport": "应用到表单",
     "inbound": "入站申请",
     "distribute": "分发",
+    "sendToSuppliers": "发送给供应商",
+    "addSuppliers": "添加供应商",
     "compare": "比较报价",
     "manageSelection": "管理选择",
     "create": "创建申请",
@@ -86,7 +102,6 @@
     "label": "状态",
     "all": "全部状态",
     "draft": "草稿",
-    "submitted": "已提交",
     "quoting": "报价中",
     "partially_ordered": "部分下单",
     "ordered": "已下单",
@@ -150,12 +165,32 @@
   },
   "distribute": {
     "title": "分发给供应商",
-    "message": "选择接收此申请的合作伙伴公司。",
+    "message": "选择合作伙伴公司，并为每个供应商分配申请行。",
     "loading": "正在加载合作伙伴…",
     "empty": "未找到活跃合作伙伴。分发前请先建立合作伙伴关联。",
     "goToPartners": "前往合作伙伴",
+    "lineAssignment": "行分配",
+    "createProducts": "为没有产品的行创建目录产品",
+    "unassignedWarning": "{{count}} 行未分配给任何供应商。",
+    "validation": {
+      "supplierRequired": "请选择至少一个供应商。",
+      "linesRequired": "请为 {{supplier}} 分配至少一行。"
+    },
     "toast": {
       "success": "申请已分发给供应商"
+    }
+  },
+  "distributions": {
+    "title": "供应商分发",
+    "loading": "正在加载分发…",
+    "empty": "暂无供应商分发。",
+    "rejectedCount": "{{count}} 个已拒绝",
+    "resend": "重新发送",
+    "columns": {
+      "supplier": "供应商",
+      "status": "状态",
+      "lines": "行",
+      "rejection": "拒绝"
     }
   },
   "inbound": {
@@ -163,17 +198,26 @@
     "subtitle": "买方分发给您公司的物料申请。",
     "columns": {
       "buyer": "买方",
+      "lineCount": "行",
       "distributedAt": "已分发"
     },
     "actions": {
       "createQuote": "创建报价",
-      "openQuote": "打开报价"
+      "openQuote": "打开报价",
+      "reject": "拒绝"
+    },
+    "reject": {
+      "title": "拒绝申请",
+      "message": "拒绝此入站申请？买方稍后可以重新发送。",
+      "reason": "原因（可选）"
     },
     "empty": {
       "list": "未找到入站申请。"
     },
     "toast": {
-      "quoteCreated": "报价已创建"
+      "quoteCreated": "报价已创建",
+      "rejected": "申请已拒绝",
+      "notFound": "未找到入站申请"
     }
   }
 }

@@ -37,6 +37,20 @@
       "apply": "Apply",
       "reset": "Reset"
     },
+    "inbound": {
+      "subtitle": "Supplier work queue with lines assigned to your company.",
+      "empty": "No inbound request lines found.",
+      "hasQuote": "Quoted",
+      "noQuote": "No quote",
+      "columns": {
+        "hasQuote": "Quote"
+      },
+      "filters": {
+        "title": "Inbound line filters",
+        "requestId": "Request ID",
+        "withoutQuotes": "Only lines without quotes"
+      }
+    },
     "pipeline": {
       "none": "No pipeline links",
       "distributed": "Distributed",
@@ -69,6 +83,8 @@
     "applyImport": "Apply to form",
     "inbound": "Inbound requests",
     "distribute": "Distribute",
+    "sendToSuppliers": "Send to suppliers",
+    "addSuppliers": "Add suppliers",
     "compare": "Compare quotes",
     "manageSelection": "Manage selection",
     "create": "Create request",
@@ -86,7 +102,6 @@
     "label": "Status",
     "all": "All statuses",
     "draft": "Draft",
-    "submitted": "Submitted",
     "quoting": "Quoting",
     "partially_ordered": "Partially ordered",
     "ordered": "Ordered",
@@ -150,12 +165,32 @@
   },
   "distribute": {
     "title": "Distribute to suppliers",
-    "message": "Select partner companies to receive this request.",
+    "message": "Select partner companies and assign request lines to each supplier.",
     "loading": "Loading partners…",
     "empty": "No active partners found. Connect partners before distributing.",
     "goToPartners": "Go to partners",
+    "lineAssignment": "Line assignment",
+    "createProducts": "Create catalog products for lines without a product",
+    "unassignedWarning": "{{count}} line(s) are not assigned to any supplier.",
+    "validation": {
+      "supplierRequired": "Select at least one supplier.",
+      "linesRequired": "Assign at least one line to {{supplier}}."
+    },
     "toast": {
       "success": "Request distributed to suppliers"
+    }
+  },
+  "distributions": {
+    "title": "Supplier distributions",
+    "loading": "Loading distributions…",
+    "empty": "No supplier distributions yet.",
+    "rejectedCount": "{{count}} rejected",
+    "resend": "Send again",
+    "columns": {
+      "supplier": "Supplier",
+      "status": "Status",
+      "lines": "Lines",
+      "rejection": "Rejection"
     }
   },
   "inbound": {
@@ -163,17 +198,26 @@
     "subtitle": "Material requests distributed to your company by buyers.",
     "columns": {
       "buyer": "Buyer",
+      "lineCount": "Lines",
       "distributedAt": "Distributed"
     },
     "actions": {
       "createQuote": "Create quote",
-      "openQuote": "Open quote"
+      "openQuote": "Open quote",
+      "reject": "Reject"
+    },
+    "reject": {
+      "title": "Reject request",
+      "message": "Reject this inbound request? The buyer can send it again later.",
+      "reason": "Reason (optional)"
     },
     "empty": {
       "list": "No inbound requests found."
     },
     "toast": {
-      "quoteCreated": "Quote created"
+      "quoteCreated": "Quote created",
+      "rejected": "Request rejected",
+      "notFound": "Inbound request not found"
     }
   }
 }

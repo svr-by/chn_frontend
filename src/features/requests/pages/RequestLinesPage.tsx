@@ -1,6 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, Button, Chip, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Stack, Tab, Tabs, Typography } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { StatusBadge } from '@/components/StatusBadge';
+import { InboundRequestLinesPanel } from '@/features/requests/components/InboundRequestLinesPanel';
 import {
   EMPTY_REQUEST_LINES_FILTERS,
   RequestLinesFiltersDrawer,
@@ -24,6 +25,12 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import type { MaterialRequestStatus } from '@/types/api';
 
 const PAGE_SIZE = 20;
+
+type RequestLinesTab = 'outbound' | 'inbound';
+
+function parseTab(value: string | null): RequestLinesTab {
+  return value === 'inbound' ? 'inbound' : 'outbound';
+}
 
 function parseStatus(value: string | null): RequestLinesStatusFilter {
   if (
@@ -75,11 +82,10 @@ function getImportSku(line: RequestLineListItem) {
   return typeof value === 'string' && value.trim() ? value : null;
 }
 
-export function RequestLinesPage() {
+function OutboundRequestLinesPanel({ companyId }: { companyId: string }) {
   const { t } = useTranslation(['requests', 'trace']);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const companyId = useAppSelector((state) => state.auth.activeCompanyId);
 
   const activeFilters = useMemo(
     () => filtersFromSearchParams(searchParams),
@@ -117,7 +123,7 @@ export function RequestLinesPage() {
 
   const listQuery = useListRequestLinesQuery(
     {
-      companyId: companyId ?? '',
+      companyId,
       ...listParams,
     },
     { skip: !companyId },
@@ -231,10 +237,6 @@ export function RequestLinesPage() {
     [t],
   );
 
-  if (!companyId) {
-    return null;
-  }
-
   const items = listQuery.data?.items ?? [];
   const total = listQuery.data?.pagination.total ?? 0;
   const activeFilterCount = Array.from(filtersToSearchParams(activeFilters)).length;
@@ -251,21 +253,14 @@ export function RequestLinesPage() {
   }
 
   return (
-    <Stack spacing={3}>
+    <>
       <Stack
         direction={{ xs: 'column', sm: 'row' }}
-        justifyContent="space-between"
+        justifyContent="flex-end"
         alignItems={{ xs: 'stretch', sm: 'center' }}
         spacing={2}
+        sx={{ mb: 2 }}
       >
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('requestLines.title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('requestLines.subtitle')}
-          </Typography>
-        </Box>
         <Button
           variant="outlined"
           startIcon={<FilterListIcon />}
@@ -306,6 +301,58 @@ export function RequestLinesPage() {
         onApply={applyFilters}
         onReset={resetFilters}
       />
+    </>
+  );
+}
+
+export function RequestLinesPage() {
+  const { t } = useTranslation('requests');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const [tab, setTab] = useState<RequestLinesTab>(() =>
+    parseTab(searchParams.get('tab')),
+  );
+
+  useEffect(() => {
+    setTab(parseTab(searchParams.get('tab')));
+  }, [searchParams]);
+
+  if (!companyId) {
+    return null;
+  }
+
+  function handleTabChange(_event: SyntheticEvent, value: RequestLinesTab) {
+    setTab(value);
+    if (value === 'outbound') {
+      setSearchParams({});
+    } else {
+      setSearchParams({ tab: value });
+    }
+  }
+
+  return (
+    <Stack spacing={3}>
+      <Box>
+        <Typography variant="h5" component="h1">
+          {t('requestLines.title')}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {tab === 'outbound'
+            ? t('requestLines.subtitle')
+            : t('requestLines.inbound.subtitle')}
+        </Typography>
+      </Box>
+
+      <Tabs value={tab} onChange={handleTabChange}>
+        <Tab label={t('tabs.outbound')} value="outbound" />
+        <Tab label={t('tabs.inbound')} value="inbound" />
+      </Tabs>
+
+      {tab === 'outbound' ? (
+        <OutboundRequestLinesPanel companyId={companyId} />
+      ) : (
+        <InboundRequestLinesPanel companyId={companyId} />
+      )}
     </Stack>
   );
 }

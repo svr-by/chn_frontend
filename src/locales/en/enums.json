@@ -1,11 +1,14 @@
 {
   "materialRequestStatus": {
     "draft": "Draft",
-    "submitted": "Submitted",
     "quoting": "Quoting",
     "partially_ordered": "Partially ordered",
     "ordered": "Ordered",
     "closed": "Closed"
+  },
+  "requestDistributionStatus": {
+    "pending": "Pending",
+    "rejected": "Rejected"
   },
   "supplierQuoteStatus": {
     "draft": "Draft",

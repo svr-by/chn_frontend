@@ -5,7 +5,6 @@ import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
   useDeleteRequestMutation,
   useDistributeRequestMutation,
-  useSubmitRequestMutation,
 } from '@/api/endpoints/requestsApi';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import {
@@ -34,7 +33,6 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
 }));
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
-  useSubmitRequestMutation: vi.fn(),
   useDeleteRequestMutation: vi.fn(),
   useDistributeRequestMutation: vi.fn(),
 }));
@@ -48,18 +46,12 @@ vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
-const mockedUseSubmitRequestMutation = vi.mocked(useSubmitRequestMutation);
 const mockedUseDeleteRequestMutation = vi.mocked(useDeleteRequestMutation);
 const mockedUseDistributeRequestMutation = vi.mocked(useDistributeRequestMutation);
 
 describe('RequestStatusActions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-
-    mockedUseSubmitRequestMutation.mockReturnValue([
-      vi.fn(),
-      { isLoading: false, reset: vi.fn() },
-    ] as ReturnType<typeof useSubmitRequestMutation>);
 
     mockedUseDeleteRequestMutation.mockReturnValue([
       vi.fn(),
@@ -72,7 +64,7 @@ describe('RequestStatusActions', () => {
     ] as ReturnType<typeof useDistributeRequestMutation>);
   });
 
-  it('shows distribute button only on SUBMITTED status', () => {
+  it('shows send-to-suppliers button on DRAFT status', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -92,12 +84,14 @@ describe('RequestStatusActions', () => {
       <RequestStatusActions
         companyId={COMPANY_ID}
         requestId={REQUEST_ID}
-        status="SUBMITTED"
+        status="DRAFT"
       />,
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
-    expect(screen.getByRole('button', { name: 'Distribute' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Send to suppliers' }),
+    ).toBeInTheDocument();
   });
 
   it('shows compare link on QUOTING status', () => {
@@ -160,7 +154,7 @@ describe('RequestStatusActions', () => {
     ).toBeInTheDocument();
   });
 
-  it('shows submit and delete buttons on DRAFT status', () => {
+  it('shows add-suppliers action on QUOTING with manageRequests', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -180,13 +174,12 @@ describe('RequestStatusActions', () => {
       <RequestStatusActions
         companyId={COMPANY_ID}
         requestId={REQUEST_ID}
-        status="DRAFT"
+        status="QUOTING"
       />,
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Add suppliers' })).toBeInTheDocument();
   });
 
   it('hides delete button when status is not DRAFT', () => {
@@ -209,7 +202,7 @@ describe('RequestStatusActions', () => {
       <RequestStatusActions
         companyId={COMPANY_ID}
         requestId={REQUEST_ID}
-        status="SUBMITTED"
+        status="QUOTING"
       />,
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );

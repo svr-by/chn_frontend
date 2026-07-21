@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   Dialog,
@@ -10,36 +11,68 @@ import {
   FormHelperText,
   Link,
   Stack,
+  Switch,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
   Typography,
 } from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { z } from 'zod';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import type { RequestLine } from '@/api/generated/models/requestLine';
+
+export interface DistributePrefill {
+  supplierCompanyId: string;
+  requestLineIds: string[];
+}
 
 interface RequestDistributeDialogProps {
   open: boolean;
   companyId: string;
   requestId: string;
+  requestLines: RequestLine[];
+  initialDistributions?: DistributePrefill[];
   onClose: () => void;
   onDistributed?: () => void;
+}
+
+type LineAssignments = Record<string, Set<string>>;
+
+function buildAssignmentsFromPrefill(
+  prefill: DistributePrefill[] | undefined,
+): LineAssignments {
+  if (!prefill?.length) {
+    return {};
+  }
+
+  return prefill.reduce<LineAssignments>((acc, item) => {
+    acc[item.supplierCompanyId] = new Set(item.requestLineIds);
+    return acc;
+  }, {});
 }
 
 export function RequestDistributeDialog({
   open,
   companyId,
   requestId,
+  requestLines,
+  initialDistributions,
   onClose,
   onDistributed,
 }: RequestDistributeDialogProps) {
-  const { t } = useTranslation(['requests', 'validation']);
+  const { t } = useTranslation('requests');
   const { enqueueSnackbar } = useSnackbar();
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [selectedSupplierIds, setSelectedSupplierIds] = useState<string[]>([]);
+  const [lineAssignments, setLineAssignments] = useState<LineAssignments>({});
+  const [createProducts, setCreateProducts] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const partnersQuery = useListPartnersQuery(
@@ -49,18 +82,6 @@ export function RequestDistributeDialog({
 
   const [distributeRequest, distributeState] = useDistributeRequestMutation();
 
-  const distributeSchema = useMemo(
-    () =>
-      z.object({
-        supplierCompanyIds: z
-          .array(
-            z.string().uuid({ message: t('validation:invalidUuid') }),
-          )
-          .min(1, { message: t('validation:minItems', { min: 1 }) }),
-      }),
-    [t],
-  );
-
   const activePartners = useMemo(
     () =>
       (partnersQuery.data?.partners ?? []).filter(
@@ -69,22 +90,81 @@ export function RequestDistributeDialog({
     [partnersQuery.data?.partners],
   );
 
-  function togglePartner(companyIdToToggle: string) {
+  const partnerNameById = useMemo(
+    () =>
+      new Map(
+        activePartners.map((partner) => [partner.company.id, partner.company.name]),
+      ),
+    [activePartners],
+  );
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const prefill = initialDistributions ?? [];
+    const supplierIds = prefill.map((item) => item.supplierCompanyId);
+    setSelectedSupplierIds(supplierIds);
+    setLineAssignments(buildAssignmentsFromPrefill(prefill));
+    setCreateProducts(false);
     setValidationError(null);
-    setSelectedIds((current) =>
-      current.includes(companyIdToToggle)
-        ? current.filter((id) => id !== companyIdToToggle)
-        : [...current, companyIdToToggle],
-    );
+  }, [open, initialDistributions]);
+
+  function toggleSupplier(supplierCompanyId: string) {
+    setValidationError(null);
+    setSelectedSupplierIds((current) => {
+      const isSelected = current.includes(supplierCompanyId);
+      if (isSelected) {
+        setLineAssignments((assignments) => {
+          const next = { ...assignments };
+          delete next[supplierCompanyId];
+          return next;
+        });
+        return current.filter((id) => id !== supplierCompanyId);
+      }
+
+      setLineAssignments((assignments) => ({
+        ...assignments,
+        [supplierCompanyId]: new Set(requestLines.map((line) => line.id)),
+      }));
+      return [...current, supplierCompanyId];
+    });
+  }
+
+  function toggleLineForSupplier(supplierCompanyId: string, lineId: string) {
+    setValidationError(null);
+    setLineAssignments((assignments) => {
+      const current = new Set(assignments[supplierCompanyId] ?? []);
+      if (current.has(lineId)) {
+        current.delete(lineId);
+      } else {
+        current.add(lineId);
+      }
+      return { ...assignments, [supplierCompanyId]: current };
+    });
   }
 
   async function handleDistribute() {
-    const parsed = distributeSchema.safeParse({
-      supplierCompanyIds: selectedIds,
-    });
-    if (!parsed.success) {
+    if (selectedSupplierIds.length === 0) {
+      setValidationError(t('distribute.validation.supplierRequired'));
+      return;
+    }
+
+    const distributions = selectedSupplierIds.map((supplierCompanyId) => ({
+      supplierCompanyId,
+      requestLineIds: Array.from(lineAssignments[supplierCompanyId] ?? []),
+    }));
+
+    const emptySupplier = distributions.find(
+      (item) => item.requestLineIds.length === 0,
+    );
+    if (emptySupplier) {
+      const name =
+        partnerNameById.get(emptySupplier.supplierCompanyId) ??
+        emptySupplier.supplierCompanyId;
       setValidationError(
-        parsed.error.issues[0]?.message ?? t('validation:minItems', { min: 1 }),
+        t('distribute.validation.linesRequired', { supplier: name }),
       );
       return;
     }
@@ -92,24 +172,35 @@ export function RequestDistributeDialog({
     await distributeRequest({
       companyId,
       requestId,
-      supplierCompanyIds: parsed.data.supplierCompanyIds,
+      createProducts,
+      distributions,
     }).unwrap();
 
     enqueueSnackbar(t('distribute.toast.success'), { variant: 'success' });
-    setSelectedIds([]);
+    setSelectedSupplierIds([]);
+    setLineAssignments({});
+    setCreateProducts(false);
     setValidationError(null);
     onDistributed?.();
     onClose();
   }
 
   function handleClose() {
-    setSelectedIds([]);
+    setSelectedSupplierIds([]);
+    setLineAssignments({});
+    setCreateProducts(false);
     setValidationError(null);
     onClose();
   }
 
+  const unassignedLineCount = requestLines.filter((line) =>
+    selectedSupplierIds.every(
+      (supplierId) => !lineAssignments[supplierId]?.has(line.id),
+    ),
+  ).length;
+
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
       <DialogTitle>{t('distribute.title')}</DialogTitle>
       <DialogContent>
         <ApiErrorAlert error={distributeState.error} />
@@ -127,14 +218,14 @@ export function RequestDistributeDialog({
             </Link>
           </Stack>
         ) : (
-          <FormGroup>
+          <FormGroup sx={{ mb: 3 }}>
             {activePartners.map((partner) => (
               <FormControlLabel
                 key={partner.id}
                 control={
                   <Checkbox
-                    checked={selectedIds.includes(partner.company.id)}
-                    onChange={() => togglePartner(partner.company.id)}
+                    checked={selectedSupplierIds.includes(partner.company.id)}
+                    onChange={() => toggleSupplier(partner.company.id)}
                   />
                 }
                 label={partner.company.name}
@@ -142,6 +233,64 @@ export function RequestDistributeDialog({
             ))}
           </FormGroup>
         )}
+
+        {selectedSupplierIds.length > 0 && requestLines.length > 0 ? (
+          <Box sx={{ overflowX: 'auto', mb: 2 }}>
+            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+              {t('distribute.lineAssignment')}
+            </Typography>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  <TableCell>{t('columns.lineNumber')}</TableCell>
+                  <TableCell>{t('columns.description')}</TableCell>
+                  {selectedSupplierIds.map((supplierId) => (
+                    <TableCell key={supplierId} align="center">
+                      {partnerNameById.get(supplierId) ?? supplierId}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {requestLines.map((line) => (
+                  <TableRow key={line.id}>
+                    <TableCell>{line.lineNumber}</TableCell>
+                    <TableCell>{line.description}</TableCell>
+                    {selectedSupplierIds.map((supplierId) => (
+                      <TableCell key={supplierId} align="center">
+                        <Checkbox
+                          size="small"
+                          checked={lineAssignments[supplierId]?.has(line.id) ?? false}
+                          onChange={() =>
+                            toggleLineForSupplier(supplierId, line.id)
+                          }
+                        />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+            {unassignedLineCount > 0 ? (
+              <Typography variant="body2" color="warning.main">
+                {t('distribute.unassignedWarning', {
+                  count: unassignedLineCount,
+                })}
+              </Typography>
+            ) : null}
+          </Box>
+        ) : null}
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={createProducts}
+              onChange={(event) => setCreateProducts(event.target.checked)}
+            />
+          }
+          label={t('distribute.createProducts')}
+        />
+
         {validationError ? (
           <FormHelperText error sx={{ mt: 1 }}>
             {validationError}
@@ -155,7 +304,8 @@ export function RequestDistributeDialog({
           onClick={() => void handleDistribute()}
           disabled={
             distributeState.isLoading ||
-            selectedIds.length === 0 ||
+            selectedSupplierIds.length === 0 ||
+            requestLines.length === 0 ||
             activePartners.length === 0
           }
         >

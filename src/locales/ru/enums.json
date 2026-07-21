@@ -1,11 +1,14 @@
 {
   "materialRequestStatus": {
     "draft": "Черновик",
-    "submitted": "Утверждено",
     "quoting": "Квотируется",
     "partially_ordered": "Частично заказано",
     "ordered": "Заказано",
     "closed": "Закрыто"
+  },
+  "requestDistributionStatus": {
+    "pending": "Ожидает",
+    "rejected": "Отклонено"
   },
   "supplierQuoteStatus": {
     "draft": "Черновик",

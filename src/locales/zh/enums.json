@@ -1,11 +1,14 @@
 {
   "materialRequestStatus": {
     "draft": "草稿",
-    "submitted": "已提交",
     "quoting": "报价中",
     "partially_ordered": "部分下单",
     "ordered": "已下单",
     "closed": "已关闭"
+  },
+  "requestDistributionStatus": {
+    "pending": "待处理",
+    "rejected": "已拒绝"
   },
   "supplierQuoteStatus": {
     "draft": "草稿",

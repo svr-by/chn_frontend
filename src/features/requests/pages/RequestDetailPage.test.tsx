@@ -7,7 +7,6 @@ import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
   useDeleteRequestLineMutation,
   useGetRequestQuery,
-  useSubmitRequestMutation,
   useUpdateRequestMutation,
 } from '@/api/endpoints/requestsApi';
 import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
@@ -47,11 +46,16 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
-  useSubmitRequestMutation: vi.fn(),
   useDistributeRequestMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
+  useGetRequestDistributionsQuery: vi.fn(() => ({
+    data: { distributions: [] },
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
   useListRequestsQuery: vi.fn(),
   useCreateRequestMutation: vi.fn(),
   useListInboundRequestsQuery: vi.fn(),
@@ -83,7 +87,6 @@ vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetRequestQuery = vi.mocked(useGetRequestQuery);
-const mockedUseSubmitRequestMutation = vi.mocked(useSubmitRequestMutation);
 const mockedUseUpdateRequestMutation = vi.mocked(useUpdateRequestMutation);
 const mockedUseDeleteRequestLineMutation = vi.mocked(
   useDeleteRequestLineMutation,
@@ -119,9 +122,7 @@ describe('RequestDetailPage', () => {
     );
   });
 
-  it('shows submit action for draft requests with manageRequests', () => {
-    const submitMock = vi.fn();
-
+  it('shows send-to-suppliers action for draft requests with manageRequests', () => {
     mockedUseGetRequestQuery.mockReturnValue({
       data: { request: createMaterialRequest({ status: 'DRAFT' }) },
       isLoading: false,
@@ -129,12 +130,6 @@ describe('RequestDetailPage', () => {
       refetch: vi.fn(),
     } as ReturnType<typeof useGetRequestQuery>);
 
-    mockedUseSubmitRequestMutation.mockReturnValue(
-      mockMutationHook(submitMock) as ReturnType<
-        typeof useSubmitRequestMutation
-      >,
-    );
-
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -152,24 +147,20 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    expect(screen.getByRole('button', { name: 'Submit' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Send to suppliers' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add line' })).toBeInTheDocument();
   });
 
-  it('hides line actions for submitted requests', () => {
+  it('hides line actions and shows add suppliers for quoting requests', () => {
     mockedUseGetRequestQuery.mockReturnValue({
-      data: { request: createMaterialRequest({ status: 'SUBMITTED' }) },
+      data: { request: createMaterialRequest({ status: 'QUOTING' }) },
       isLoading: false,
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useGetRequestQuery>);
 
-    mockedUseSubmitRequestMutation.mockReturnValue(
-      mockMutationHook(vi.fn()) as ReturnType<
-        typeof useSubmitRequestMutation
-      >,
-    );
-
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -188,21 +179,18 @@ describe('RequestDetailPage', () => {
     renderDetailPage();
 
     expect(
-      screen.queryByRole('button', { name: 'Submit' }),
+      screen.queryByRole('button', { name: 'Send to suppliers' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Distribute' }),
+      screen.getByRole('button', { name: 'Add suppliers' }),
     ).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Add line' }),
     ).not.toBeInTheDocument();
   });
 
-  it('calls submit mutation after confirmation', async () => {
+  it('opens distribute dialog from draft requests', async () => {
     const user = userEvent.setup();
-    const submitMock = vi.fn().mockReturnValue({
-      unwrap: () => Promise.resolve({ request: createMaterialRequest({ status: 'SUBMITTED' }) }),
-    });
 
     mockedUseGetRequestQuery.mockReturnValue({
       data: { request: createMaterialRequest({ status: 'DRAFT' }) },
@@ -210,12 +198,6 @@ describe('RequestDetailPage', () => {
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useGetRequestQuery>);
-
-    mockedUseSubmitRequestMutation.mockReturnValue(
-      mockMutationHook(submitMock) as ReturnType<
-        typeof useSubmitRequestMutation
-      >,
-    );
 
     mockedUseGetMeQuery.mockReturnValue({
       data: {
@@ -234,14 +216,9 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    await user.click(screen.getByRole('button', { name: 'Submit' }));
-    await user.click(
-      screen.getAllByRole('button', { name: 'Submit' }).at(-1)!,
-    );
+    await user.click(screen.getByRole('button', { name: 'Send to suppliers' }));
 
-    expect(submitMock).toHaveBeenCalledWith({
-      companyId: COMPANY_ID,
-      requestId: REQUEST_ID,
-    });
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText('Distribute to suppliers')).toBeInTheDocument();
   });
 });

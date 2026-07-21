@@ -13,6 +13,7 @@ import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
+import { RequestDistributionsPanel } from '@/features/requests/components/RequestDistributionsPanel';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -72,6 +73,7 @@ export function RequestDetailPage() {
             companyId={companyId}
             requestId={request.id}
             status={request.status}
+            requestLines={request.lines}
           />
         ) : null
       }
@@ -112,21 +114,29 @@ export function RequestDetailPage() {
       }
     >
       {request ? (
-        <DocumentDetailTabs
-          companyId={companyId}
-          documentType="MATERIAL_REQUEST"
-          documentId={request.id}
-          requestId={request.id}
-          lineageEntries={request.lines.map(mapRequestLineToLineageEntry)}
-          details={
-            <RequestLinesTable
-              companyId={companyId}
-              requestId={request.id}
-              lines={request.lines}
-              editable={canEdit}
-            />
-          }
-        />
+        <>
+          <RequestDistributionsPanel
+            companyId={companyId}
+            requestId={request.id}
+            requestLines={request.lines}
+            requestStatus={request.status}
+          />
+          <DocumentDetailTabs
+            companyId={companyId}
+            documentType="MATERIAL_REQUEST"
+            documentId={request.id}
+            requestId={request.id}
+            lineageEntries={request.lines.map(mapRequestLineToLineageEntry)}
+            details={
+              <RequestLinesTable
+                companyId={companyId}
+                requestId={request.id}
+                lines={request.lines}
+                editable={canEdit}
+              />
+            }
+          />
+        </>
       ) : null}
     </DocumentDetailLayout>
   );

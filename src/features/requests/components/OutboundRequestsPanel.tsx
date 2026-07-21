@@ -22,7 +22,6 @@ const PAGE_SIZE = 20;
 const STATUS_OPTIONS: Array<MaterialRequestStatus | 'ALL'> = [
   'ALL',
   'DRAFT',
-  'SUBMITTED',
   'QUOTING',
   'PARTIALLY_ORDERED',
   'ORDERED',

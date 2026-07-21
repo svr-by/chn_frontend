@@ -13,6 +13,7 @@ import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
+import { InboundRequestDetailPage } from '@/features/requests/pages/InboundRequestDetailPage';
 import { InboundRequestsPage } from '@/features/requests/pages/InboundRequestsPage';
 import { QuoteComparisonPage } from '@/features/quotes/pages/QuoteComparisonPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/QuoteDetailPage';
@@ -151,6 +152,10 @@ export const router = createBrowserRouter([
               { path: 'requests/import', element: <RequestImportPage /> },
               { path: 'requests/new', element: <RequestNewPage /> },
               { path: 'requests/inbound', element: <InboundRequestsPage /> },
+              {
+                path: 'requests/inbound/:requestId',
+                element: <InboundRequestDetailPage />,
+              },
               {
                 path: 'requests/:requestId/compare',
                 element: <QuoteComparisonPage />,

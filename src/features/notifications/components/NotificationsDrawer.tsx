@@ -15,14 +15,13 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import type { Notification } from '@/api/generated/models/notification';
-import { NotificationType } from '@/api/generated/models/notificationType';
 import {
   useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation,
 } from '@/api/endpoints/notificationsApi';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { resolveDocumentPath } from '@/lib/documentRoutes';
+import { resolveNotificationPath } from '@/lib/notificationRoutes';
 
 interface NotificationsDrawerProps {
   open: boolean;
@@ -68,16 +67,7 @@ export function NotificationsDrawer({ open, onClose }: NotificationsDrawerProps)
       }
     }
 
-    const path = resolveDocumentPath(
-      notification.documentType,
-      notification.documentId,
-      {
-        tab:
-          notification.type === NotificationType.COMMENT_ADDED
-            ? 'comments'
-            : undefined,
-      },
-    );
+    const path = resolveNotificationPath(notification);
 
     onClose();
 

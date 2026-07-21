@@ -1,6 +1,5 @@
 import type { SvgIconComponent } from '@mui/icons-material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import CategoryIcon from '@mui/icons-material/Category';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HandshakeIcon from '@mui/icons-material/Handshake';

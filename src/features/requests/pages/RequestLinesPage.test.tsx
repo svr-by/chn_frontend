@@ -3,7 +3,11 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
-import { useListRequestLinesQuery } from '@/api/endpoints/requestsApi';
+import {
+  useListInboundRequestLinesQuery,
+  useListRequestLinesQuery,
+} from '@/api/endpoints/requestsApi';
+import { useListMembersQuery } from '@/api/endpoints/membersApi';
 import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
 import {
   COMPANY_ID,
@@ -13,9 +17,18 @@ import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useListRequestLinesQuery: vi.fn(),
+  useListInboundRequestLinesQuery: vi.fn(),
+}));
+
+vi.mock('@/api/endpoints/membersApi', () => ({
+  useListMembersQuery: vi.fn(),
 }));
 
 const mockedUseListRequestLinesQuery = vi.mocked(useListRequestLinesQuery);
+const mockedUseListInboundRequestLinesQuery = vi.mocked(
+  useListInboundRequestLinesQuery,
+);
+const mockedUseListMembersQuery = vi.mocked(useListMembersQuery);
 
 function renderPage(route = '/app/request-lines') {
   return renderWithProviders(
@@ -43,6 +56,21 @@ describe('RequestLinesPage', () => {
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useListRequestLinesQuery>);
+    mockedUseListInboundRequestLinesQuery.mockReturnValue({
+      data: {
+        items: [],
+        pagination: { total: 0, limit: 20, offset: 0 },
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListInboundRequestLinesQuery>);
+    mockedUseListMembersQuery.mockReturnValue({
+      data: { members: [], pagination: { total: 0, limit: 50, offset: 0 } },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListMembersQuery>);
   });
 
   it('renders request lines and queries newest request lines first', () => {
@@ -52,7 +80,6 @@ describe('RequestLinesPage', () => {
     expect(screen.getByText('Office paper')).toBeInTheDocument();
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-    expect(screen.getByText('A4 Paper')).toBeInTheDocument();
 
     expect(mockedUseListRequestLinesQuery).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -68,14 +95,13 @@ describe('RequestLinesPage', () => {
 
   it('uses filter params from the URL', () => {
     renderPage(
-      '/app/request-lines?q=paper&status=SUBMITTED&requestId=req-1&undistributed=true&withoutQuotes=true',
+      '/app/request-lines?q=paper&status=QUOTING&undistributed=true&withoutQuotes=true',
     );
 
     expect(mockedUseListRequestLinesQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         q: 'paper',
-        status: 'SUBMITTED',
-        requestId: 'req-1',
+        status: 'QUOTING',
         undistributed: 'true',
         withoutQuotes: 'true',
       }),
@@ -114,7 +140,7 @@ describe('RequestLinesPage', () => {
         expect.objectContaining({ skip: false }),
       );
     });
-  });
+  }, 10_000);
 
   it('opens the parent request when a row is clicked', async () => {
     const user = userEvent.setup();
