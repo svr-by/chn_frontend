@@ -27,7 +27,7 @@ import { isValidDecimal } from '@/lib/decimal';
 import type {
   DraftRequestLine,
   RequestLineFormValues,
-} from '@/features/requests/types/draftRequestLine';
+} from '@/features/requests/lib/draftRequestLine';
 
 type ApiModeProps = {
   mode?: 'api';

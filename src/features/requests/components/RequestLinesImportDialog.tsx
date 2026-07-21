@@ -28,7 +28,7 @@ import {
   isCsvImportFile,
   mapPreviewRowsToDraftLines,
   type DraftRequestLine,
-} from '@/features/requests/types/draftRequestLine';
+} from '@/features/requests/lib/draftRequestLine';
 import { buildImportFormData } from '@/lib/buildImportFormData';
 
 const DEFAULT_FORMAT_CSV: ImportFormatValues = {

@@ -5,7 +5,7 @@ import {
   isCsvImportFile,
   mapPreviewRowsToDraftLines,
   type DraftRequestLine,
-} from '@/features/requests/types/draftRequestLine';
+} from '@/features/requests/lib/draftRequestLine';
 
 describe('draftRequestLine helpers', () => {
   it('detects CSV files by extension and mime type', () => {

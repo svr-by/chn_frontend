@@ -22,7 +22,7 @@ import {
   updateDraftLine,
   type DraftRequestLine,
   type RequestLineFormValues,
-} from '@/features/requests/types/draftRequestLine';
+} from '@/features/requests/lib/draftRequestLine';
 
 interface RequestDraftLinesSectionProps {
   companyId: string;

@@ -25,7 +25,7 @@ import { RequestLinesImportDialog } from '@/features/requests/components/Request
 import {
   draftLinesToCreatePayload,
   type DraftRequestLine,
-} from '@/features/requests/types/draftRequestLine';
+} from '@/features/requests/lib/draftRequestLine';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
