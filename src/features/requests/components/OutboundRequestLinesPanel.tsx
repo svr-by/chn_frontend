@@ -313,7 +313,6 @@ export function OutboundRequestLinesPanel({
           placeholder: t('requestLines.filters.q'),
           sx: { minWidth: 240 },
         }}
-        // positionGlobalFilter="left"
       />
     </>
   );

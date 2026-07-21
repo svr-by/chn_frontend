@@ -5,7 +5,9 @@
     "outbound": "Outbound",
     "inbound": "Inbound",
     "lines": "Lines",
-    "notes": "Notes"
+    "notes": "Notes",
+    "details": "Details",
+    "quotes": "Quotes"
   },
   "linesTitle": "Lines",
   "requestLines": {
@@ -172,9 +174,13 @@
     "lineAssignment": "Line assignment",
     "createProducts": "Create catalog products for lines without a product",
     "unassignedWarning": "{{count}} line(s) are not assigned to any supplier.",
+    "selectedLines": "{{count}} position(s) selected",
+    "supplier": "Supplier",
+    "supplierPlaceholder": "Select a supplier",
     "validation": {
-      "supplierRequired": "Select at least one supplier.",
-      "linesRequired": "Assign at least one line to {{supplier}}."
+      "supplierRequired": "Select a supplier.",
+      "linesRequired": "Assign at least one line to {{supplier}}.",
+      "linesSelectedRequired": "Select at least one position."
     },
     "toast": {
       "success": "Request distributed to suppliers"
@@ -192,6 +198,11 @@
       "lines": "Lines",
       "rejection": "Rejection"
     }
+  },
+  "quotesMatrix": {
+    "loading": "Loading supplier distributions…",
+    "sent": "Sent to supplier",
+    "notSent": "Not sent to this supplier"
   },
   "inbound": {
     "title": "Inbound requests",

@@ -5,7 +5,9 @@
     "outbound": "出站",
     "inbound": "入站",
     "lines": "行",
-    "notes": "备注"
+    "notes": "备注",
+    "details": "详情",
+    "quotes": "报价"
   },
   "linesTitle": "行",
   "requestLines": {
@@ -172,9 +174,13 @@
     "lineAssignment": "行分配",
     "createProducts": "为没有产品的行创建目录产品",
     "unassignedWarning": "{{count}} 行未分配给任何供应商。",
+    "selectedLines": "已选择 {{count}} 个行项目",
+    "supplier": "供应商",
+    "supplierPlaceholder": "选择供应商",
     "validation": {
-      "supplierRequired": "请选择至少一个供应商。",
-      "linesRequired": "请为 {{supplier}} 分配至少一行。"
+      "supplierRequired": "请选择供应商。",
+      "linesRequired": "请为 {{supplier}} 分配至少一行。",
+      "linesSelectedRequired": "请至少选择一个行项目。"
     },
     "toast": {
       "success": "申请已分发给供应商"
@@ -192,6 +198,11 @@
       "lines": "行",
       "rejection": "拒绝"
     }
+  },
+  "quotesMatrix": {
+    "loading": "正在加载供应商分发…",
+    "sent": "已发送给供应商",
+    "notSent": "未发送给此供应商"
   },
   "inbound": {
     "title": "入站申请",

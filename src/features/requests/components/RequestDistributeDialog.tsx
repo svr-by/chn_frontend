@@ -40,6 +40,8 @@ interface RequestDistributeDialogProps {
   requestId: string;
   requestLines: RequestLine[];
   initialDistributions?: DistributePrefill[];
+  /** When set (and no initialDistributions), newly selected suppliers get these lines. */
+  initialRequestLineIds?: string[];
   onClose: () => void;
   onDistributed?: () => void;
 }
@@ -65,6 +67,7 @@ export function RequestDistributeDialog({
   requestId,
   requestLines,
   initialDistributions,
+  initialRequestLineIds,
   onClose,
   onDistributed,
 }: RequestDistributeDialogProps) {
@@ -74,6 +77,14 @@ export function RequestDistributeDialog({
   const [lineAssignments, setLineAssignments] = useState<LineAssignments>({});
   const [createProducts, setCreateProducts] = useState(false);
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  const defaultLineIds = useMemo(() => {
+    if (initialRequestLineIds?.length) {
+      const allowed = new Set(requestLines.map((line) => line.id));
+      return initialRequestLineIds.filter((id) => allowed.has(id));
+    }
+    return requestLines.map((line) => line.id);
+  }, [initialRequestLineIds, requestLines]);
 
   const partnersQuery = useListPartnersQuery(
     { companyId },
@@ -126,7 +137,7 @@ export function RequestDistributeDialog({
 
       setLineAssignments((assignments) => ({
         ...assignments,
-        [supplierCompanyId]: new Set(requestLines.map((line) => line.id)),
+        [supplierCompanyId]: new Set(defaultLineIds),
       }));
       return [...current, supplierCompanyId];
     });

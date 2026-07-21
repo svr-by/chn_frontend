@@ -5,7 +5,9 @@
     "outbound": "Исходящие",
     "inbound": "Входящие",
     "lines": "Позиции",
-    "notes": "Примечания"
+    "notes": "Примечания",
+    "details": "Детали",
+    "quotes": "Предложения"
   },
   "linesTitle": "Позиции",
   "requestLines": {
@@ -172,9 +174,13 @@
     "lineAssignment": "Назначение позиций",
     "createProducts": "Создать товары каталога для позиций без товара",
     "unassignedWarning": "{{count}} поз. не назначено ни одному поставщику.",
+    "selectedLines": "Выбрано позиций: {{count}}",
+    "supplier": "Поставщик",
+    "supplierPlaceholder": "Выберите поставщика",
     "validation": {
-      "supplierRequired": "Выберите хотя бы одного поставщика.",
-      "linesRequired": "Назначьте хотя бы одну позицию поставщику {{supplier}}."
+      "supplierRequired": "Выберите поставщика.",
+      "linesRequired": "Назначьте хотя бы одну позицию поставщику {{supplier}}.",
+      "linesSelectedRequired": "Выберите хотя бы одну позицию."
     },
     "toast": {
       "success": "Заявка распределена поставщикам"
@@ -192,6 +198,11 @@
       "lines": "Позиции",
       "rejection": "Отклонение"
     }
+  },
+  "quotesMatrix": {
+    "loading": "Загрузка распределений по поставщикам…",
+    "sent": "Отправлено поставщику",
+    "notSent": "Не отправлено этому поставщику"
   },
   "inbound": {
     "title": "Входящие заявки",

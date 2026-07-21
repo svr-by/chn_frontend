@@ -8,16 +8,15 @@ import {
   useGetRequestQuery,
   useGetRequestSelectionQuery,
 } from '@/api/endpoints/requestsApi';
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
-import { RequestDistributionsPanel } from '@/features/requests/components/RequestDistributionsPanel';
+import { RequestQuotesMatrix } from '@/features/requests/components/requestQuotesMatrix/RequestQuotesMatrix';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { mapRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function RequestDetailPage() {
   const { t } = useTranslation('requests');
@@ -32,13 +31,13 @@ export function RequestDetailPage() {
     { skip: !companyId || !requestId },
   );
 
-  const selectionQuery = useGetRequestSelectionQuery(
-    { companyId: companyId ?? '', requestId: requestId ?? '' },
-    { skip: !companyId || !requestId },
-  );
+  // const selectionQuery = useGetRequestSelectionQuery(
+  //   { companyId: companyId ?? '', requestId: requestId ?? '' },
+  //   { skip: !companyId || !requestId },
+  // );
 
   const request = requestQuery.data?.request;
-  const selection = selectionQuery.data?.selection;
+  // const selection = selectionQuery.data?.selection;
   const isDraft = request?.status === 'DRAFT';
   const canEdit = isDraft && hasPermission('manageRequests');
 
@@ -97,7 +96,7 @@ export function RequestDetailPage() {
                 })}
               </Typography>
             ) : null}
-            {selection ? (
+            {/* {selection ? (
               <Typography variant="body2" color="text.secondary">
                 {t('detail.selection')}:{' '}
                 <Link
@@ -108,35 +107,43 @@ export function RequestDetailPage() {
                   <SelectionStatusBadge status={selection.status} />
                 </Link>
               </Typography>
-            ) : null}
+            ) : null} */}
           </Stack>
         ) : null
       }
     >
       {request ? (
-        <>
-          <RequestDistributionsPanel
-            companyId={companyId}
-            requestId={request.id}
-            requestLines={request.lines}
-            requestStatus={request.status}
-          />
-          <DocumentDetailTabs
-            companyId={companyId}
-            documentType="MATERIAL_REQUEST"
-            documentId={request.id}
-            requestId={request.id}
-            lineageEntries={request.lines.map(mapRequestLineToLineageEntry)}
-            details={
-              <RequestLinesTable
-                companyId={companyId}
-                requestId={request.id}
-                lines={request.lines}
-                editable={canEdit}
-              />
-            }
-          />
-        </>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="MATERIAL_REQUEST"
+          documentId={request.id}
+          extraTabs={[
+            {
+              value: 'details',
+              label: t('tabs.details'),
+              panel: (
+                <RequestLinesTable
+                  companyId={companyId}
+                  requestId={request.id}
+                  lines={request.lines}
+                  editable={canEdit}
+                />
+              ),
+            },
+            {
+              value: 'quotes',
+              label: t('tabs.quotes'),
+              panel: (
+                <RequestQuotesMatrix
+                  companyId={companyId}
+                  requestId={request.id}
+                  requestLines={request.lines}
+                  requestStatus={request.status}
+                />
+              ),
+            },
+          ]}
+        />
       ) : null}
     </DocumentDetailLayout>
   );

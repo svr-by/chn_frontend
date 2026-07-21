@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import type { RequestDistributionStatus } from '@/api/generated/models/requestDistributionStatus';
 
 const STATUS_COLORS = {
-  PENDING: 'warning',
+  PENDING: 'default',
   REJECTED: 'error',
 } as const satisfies Record<
   RequestDistributionStatus,
-  'warning' | 'error'
+  'warning' | 'error' | 'default'
 >;
 
 interface DistributionStatusBadgeProps {
@@ -22,6 +22,9 @@ export function DistributionStatusBadge({ status }: DistributionStatusBadgeProps
     <Chip
       label={t(`requestDistributionStatus.${status.toLowerCase()}`)}
       size="small"
+      sx={{
+        fontWeight: 'normal',
+      }}
       color={STATUS_COLORS[status]}
     />
   );
