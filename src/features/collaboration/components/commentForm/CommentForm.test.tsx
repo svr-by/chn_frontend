@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useCreateDocumentCommentMutation } from '@/api/endpoints/commentsApi';
-import { CommentForm } from '@/features/collaboration/components/CommentForm';
+import { CommentForm } from '@/features/collaboration/components/commentForm/CommentForm';
 import { COMPANY_ID, INVOICE_ID } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 

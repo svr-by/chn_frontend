@@ -4,31 +4,28 @@ import { useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
-import { DocumentActivityPanel } from '@/features/collaboration/components/DocumentActivityPanel';
-import { DocumentCommentsPanel } from '@/features/collaboration/components/DocumentCommentsPanel';
+import { DocumentActivityPanel } from '@/features/collaboration/components/documentActivityPanel/DocumentActivityPanel';
+import { DocumentCommentsPanel } from '@/features/collaboration/components/documentCommentsPanel/DocumentCommentsPanel';
 import {
   DocumentRelatedPanel,
 } from '@/features/trace/components/DocumentRelatedPanel';
-import {
-  DocumentTracePanel,
-  type LineageEntry,
-} from '@/features/trace/components/DocumentTracePanel';
 import { usePermissions } from '@/hooks/usePermissions';
 import {
   parseDocumentDetailTab,
   type DocumentDetailTab,
 } from '@/lib/documentRoutes';
 
-type TabValue = 'details' | DocumentDetailTab;
+type TabValue = 'details' | DocumentDetailTab | string;
 
 interface DocumentDetailTabsProps {
   companyId: string;
   documentType: CommentDocumentType;
   documentId: string;
-  details: ReactNode;
-  lineageEntries?: LineageEntry[];
-  paymentInvoiceId?: string;
-  requestId?: string;
+  extraTabs?: Array<{
+    value: string;
+    label: string;
+    panel: ReactNode;
+  }>;
 }
 
 interface TabPanelProps {
@@ -49,21 +46,21 @@ export function DocumentDetailTabs({
   companyId,
   documentType,
   documentId,
-  details,
-  lineageEntries,
-  paymentInvoiceId,
-  requestId,
+  extraTabs,
 }: DocumentDetailTabsProps) {
   const { t } = useTranslation('collaboration');
   const { hasPermission } = usePermissions();
   const canViewTrace = hasPermission('viewTrace');
   const [searchParams, setSearchParams] = useSearchParams();
-  const tabFromUrl = parseDocumentDetailTab(searchParams.get('tab'));
+  const rawTab = searchParams.get('tab');
+  const tabFromUrl = parseDocumentDetailTab(rawTab) ?? rawTab;
   const [activeTab, setActiveTab] = useState<TabValue>(tabFromUrl ?? 'details');
 
   useEffect(() => {
     if (tabFromUrl) {
       setActiveTab(tabFromUrl);
+    } else {
+      setActiveTab('details');
     }
   }, [tabFromUrl]);
 
@@ -87,20 +84,21 @@ export function DocumentDetailTabs({
         scrollButtons="auto"
         aria-label={t('tabs.ariaLabel')}
       >
-        <Tab value="details" label={t('tabs.details')} />
+        {extraTabs?.map((tab) => (
+          <Tab key={tab.value} value={tab.value} label={tab.label} />
+        ))}
         <Tab value="comments" label={t('tabs.comments')} />
         <Tab value="activity" label={t('tabs.activity')} />
-        {canViewTrace ? (
-          <Tab value="trace" label={t('tabs.trace')} />
-        ) : null}
         {canViewTrace ? (
           <Tab value="related" label={t('tabs.related')} />
         ) : null}
       </Tabs>
 
-      <TabPanel value="details" activeTab={activeTab}>
-        {details}
-      </TabPanel>
+      {extraTabs?.map((tab) => (
+        <TabPanel key={tab.value} value={tab.value} activeTab={activeTab}>
+          {tab.panel}
+        </TabPanel>
+      ))}
       <TabPanel value="comments" activeTab={activeTab}>
         <DocumentCommentsPanel
           companyId={companyId}
@@ -115,15 +113,6 @@ export function DocumentDetailTabs({
           documentId={documentId}
         />
       </TabPanel>
-      {canViewTrace ? (
-        <TabPanel value="trace" activeTab={activeTab}>
-          <DocumentTracePanel
-            lineageEntries={lineageEntries}
-            paymentInvoiceId={paymentInvoiceId}
-            requestId={requestId}
-          />
-        </TabPanel>
-      ) : null}
       {canViewTrace ? (
         <TabPanel value="related" activeTab={activeTab}>
           <DocumentRelatedPanel

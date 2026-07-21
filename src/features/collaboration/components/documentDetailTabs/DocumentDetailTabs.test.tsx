@@ -2,18 +2,10 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { usePermissions } from '@/hooks/usePermissions';
-import {
-  COMPANY_ID,
-  INVOICE_ID,
-  LINEAGE_ID,
-} from '@/test/fixtures';
+import { COMPANY_ID, INVOICE_ID } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
-
-vi.mock('@/hooks/usePermissions', () => ({
-  usePermissions: vi.fn(),
-}));
 
 vi.mock('@/hooks/usePermissions', () => ({
   usePermissions: vi.fn(),
@@ -66,7 +58,7 @@ describe('DocumentDetailTabs', () => {
     });
   });
 
-  it('shows trace and related tabs when user has viewTrace', async () => {
+  it('shows related tab when user has viewTrace', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(
@@ -74,28 +66,28 @@ describe('DocumentDetailTabs', () => {
         companyId={COMPANY_ID}
         documentType="INVOICE"
         documentId={INVOICE_ID}
-        details={<div>Invoice details</div>}
-        lineageEntries={[
+        extraTabs={[
           {
-            lineageId: LINEAGE_ID,
-            description: 'Office paper',
-            quantity: '10.0000',
-            unit: 'pack',
+            value: 'details',
+            label: 'Details',
+            panel: <div>Invoice details</div>,
           },
         ]}
       />,
       { route: '/app/invoices/1' },
     );
 
-    expect(screen.getByRole('tab', { name: 'Trace' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Details' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Comments' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Activity' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Related' })).toBeInTheDocument();
+    expect(screen.getByText('Invoice details')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('tab', { name: 'Trace' }));
-    expect(screen.getByText('Office paper')).toBeInTheDocument();
-    expect(screen.getByText('View full trace')).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Related' }));
+    expect(screen.getByText('No related documents.')).toBeInTheDocument();
   });
 
-  it('hides trace tabs without viewTrace permission', () => {
+  it('hides related tab without viewTrace permission', () => {
     vi.mocked(usePermissions).mockReturnValue({
       user: undefined,
       membership: undefined,
@@ -110,11 +102,16 @@ describe('DocumentDetailTabs', () => {
         companyId={COMPANY_ID}
         documentType="INVOICE"
         documentId={INVOICE_ID}
-        details={<div>Invoice details</div>}
+        extraTabs={[
+          {
+            value: 'details',
+            label: 'Details',
+            panel: <div>Invoice details</div>,
+          },
+        ]}
       />,
     );
 
-    expect(screen.queryByRole('tab', { name: 'Trace' })).not.toBeInTheDocument();
     expect(screen.queryByRole('tab', { name: 'Related' })).not.toBeInTheDocument();
   });
 });

@@ -8,7 +8,7 @@ import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
 import { PermissionGate } from '@/components/PermissionGate';
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
 import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderForm';
@@ -219,32 +219,32 @@ export function InvoiceDetailPage() {
           companyId={companyId}
           documentType="INVOICE"
           documentId={invoice.id}
-          lineageEntries={invoice.lines.map(mapNestedRequestLineToLineageEntry)}
-          details={
-            <Stack spacing={3}>
-              <InvoiceHeaderForm
-                companyId={companyId}
-                invoice={invoice}
-                editable={canEdit}
-              />
-              <InvoiceLinesTable
-                companyId={companyId}
-                invoiceId={invoice.id}
-                materialRequestId={invoice.materialRequestId}
-                purchaseSelectionId={invoice.purchaseSelectionId}
-                currency={invoice.currency}
-                lines={invoice.lines}
-                billableLines={billableQuery.data?.lines ?? []}
-                editable={canEdit}
-              />
-              {showPayments ? (
-                <InvoicePaymentsTable
-                  payments={invoice.payments ?? []}
-                  currency={invoice.currency}
-                />
-              ) : null}
-            </Stack>
-          }
+          // lineageEntries={invoice.lines.map(mapNestedRequestLineToLineageEntry)}
+          // details={
+          //   <Stack spacing={3}>
+          //     <InvoiceHeaderForm
+          //       companyId={companyId}
+          //       invoice={invoice}
+          //       editable={canEdit}
+          //     />
+          //     <InvoiceLinesTable
+          //       companyId={companyId}
+          //       invoiceId={invoice.id}
+          //       materialRequestId={invoice.materialRequestId}
+          //       purchaseSelectionId={invoice.purchaseSelectionId}
+          //       currency={invoice.currency}
+          //       lines={invoice.lines}
+          //       billableLines={billableQuery.data?.lines ?? []}
+          //       editable={canEdit}
+          //     />
+          //     {showPayments ? (
+          //       <InvoicePaymentsTable
+          //         payments={invoice.payments ?? []}
+          //         currency={invoice.currency}
+          //       />
+          //     ) : null}
+          //   </Stack>
+          // }
         />
       ) : null}
 

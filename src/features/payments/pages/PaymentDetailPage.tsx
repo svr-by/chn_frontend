@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetPaymentQuery } from '@/api/endpoints/paymentsApi';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';
 import { PaymentUploadSection } from '@/features/payments/components/PaymentUploadSection';
@@ -133,16 +133,16 @@ export function PaymentDetailPage() {
           companyId={companyId}
           documentType="PAYMENT"
           documentId={payment.id}
-          paymentInvoiceId={payment.invoiceId}
-          details={
-            canUpload ? (
-              <PaymentUploadSection
-                companyId={companyId}
-                paymentId={payment.id}
-                invoiceId={payment.invoiceId}
-              />
-            ) : null
-          }
+          // paymentInvoiceId={payment.invoiceId}
+          // details={
+          //   canUpload ? (
+          //     <PaymentUploadSection
+          //       companyId={companyId}
+          //       paymentId={payment.id}
+          //       invoiceId={payment.invoiceId}
+          //     />
+          //   ) : null
+          // }
         />
       ) : null}
     </DocumentDetailLayout>

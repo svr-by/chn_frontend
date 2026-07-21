@@ -9,7 +9,7 @@ import {
   useGetConsolidationQuery,
 } from '@/api/endpoints/consolidationsApi';
 import { ConsolidationStatusBadge } from '@/components/ConsolidationStatusBadge';
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { ConsolidationHeaderForm } from '@/features/consolidations/components/ConsolidationHeaderForm';
 import { ConsolidationShippingInvoicesTable } from '@/features/consolidations/components/ConsolidationShippingInvoicesTable';
@@ -162,25 +162,29 @@ export function ConsolidationDetailPage() {
           companyId={companyId}
           documentType="CONSOLIDATION"
           documentId={consolidation.id}
-          lineageEntries={[]}
-          details={
-            <Stack spacing={3}>
-              <ConsolidationHeaderForm
-                companyId={companyId}
-                consolidation={consolidation}
-                editable={canEdit}
-              />
-              <ConsolidationShippingInvoicesTable
-                companyId={companyId}
-                consolidationId={consolidation.id}
-                entries={consolidation.shippingInvoices}
-                consolidatableInvoices={
-                  consolidatableQuery.data?.shippingInvoices ?? []
-                }
-                editable={canEdit}
-              />
-            </Stack>
-          }
+          // extraTabs={[
+          //   {
+          //     value: 'details',
+          //     label: t('detail.details'),
+          //     panel:           
+          //       <Stack spacing={3}>
+          //         <ConsolidationHeaderForm
+          //           companyId={companyId}
+          //           consolidation={consolidation}
+          //           editable={canEdit}
+          //         />
+          //         <ConsolidationShippingInvoicesTable
+          //           companyId={companyId}
+          //           consolidationId={consolidation.id}
+          //           entries={consolidation.shippingInvoices}
+          //           consolidatableInvoices={
+          //             consolidatableQuery.data?.shippingInvoices ?? []
+          //           }
+          //           editable={canEdit}
+          //         />
+          //       </Stack>,
+          //   },
+          // ]}
         />
       ) : null}
     </DocumentDetailLayout>

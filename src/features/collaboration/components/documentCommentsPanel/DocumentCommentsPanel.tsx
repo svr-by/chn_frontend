@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import { useLazyListDocumentCommentsQuery } from '@/api/endpoints/commentsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { CommentForm } from '@/features/collaboration/components/CommentForm';
+import { CommentForm } from '@/features/collaboration/components/commentForm/CommentForm';
 import { useCursorList } from '@/hooks/useCursorList';
 
 dayjs.extend(relativeTime);

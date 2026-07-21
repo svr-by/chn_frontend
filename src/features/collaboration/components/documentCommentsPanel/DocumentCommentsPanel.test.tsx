@@ -2,7 +2,7 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 
 import { useLazyListDocumentCommentsQuery } from '@/api/endpoints/commentsApi';
-import { DocumentCommentsPanel } from '@/features/collaboration/components/DocumentCommentsPanel';
+import { DocumentCommentsPanel } from '@/features/collaboration/components/documentCommentsPanel/DocumentCommentsPanel';
 import { COMPANY_ID, createComment, INVOICE_ID } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 

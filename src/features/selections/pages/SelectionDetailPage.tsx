@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { useGetSelectionQuery } from '@/api/endpoints/selectionsApi';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
-import { DocumentDetailTabs } from '@/features/collaboration/components/DocumentDetailTabs';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { SelectionHeaderForm } from '@/features/selections/components/SelectionHeaderForm';
 import { SelectionLinesTable } from '@/features/selections/components/SelectionLinesTable';
@@ -133,24 +133,24 @@ export function SelectionDetailPage() {
           companyId={companyId}
           documentType="PURCHASE_SELECTION"
           documentId={selection.id}
-          lineageEntries={selection.lines.map(mapNestedRequestLineToLineageEntry)}
-          details={
-            <Stack spacing={3}>
-              <SelectionHeaderForm
-                companyId={companyId}
-                selection={selection}
-                editable={canEdit}
-              />
-              <SelectionLinesTable
-                companyId={companyId}
-                selectionId={selection.id}
-                materialRequestId={selection.materialRequestId}
-                lines={selection.lines}
-                comparisonLines={comparisonQuery.data?.lines ?? []}
-                editable={canEdit}
-              />
-            </Stack>
-          }
+          // lineageEntries={selection.lines.map(mapNestedRequestLineToLineageEntry)}
+          // details={
+          //   <Stack spacing={3}>
+          //     <SelectionHeaderForm
+          //       companyId={companyId}
+          //       selection={selection}
+          //       editable={canEdit}
+          //     />
+          //     <SelectionLinesTable
+          //       companyId={companyId}
+          //       selectionId={selection.id}
+          //       materialRequestId={selection.materialRequestId}
+          //       lines={selection.lines}
+          //       comparisonLines={comparisonQuery.data?.lines ?? []}
+          //       editable={canEdit}
+          //     />
+          //   </Stack>
+          // }
         />
       ) : null}
     </DocumentDetailLayout>
