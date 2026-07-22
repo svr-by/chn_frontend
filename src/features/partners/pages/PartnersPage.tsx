@@ -1,109 +1,65 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  Tab,
-  Tabs,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-} from '@mui/material';
-import { useForm } from 'react-hook-form';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
+import PersonAddAlt1OutlinedIcon from '@mui/icons-material/PersonAddAlt1Outlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
-import { z } from 'zod';
 
 import {
   useAcceptPartnerMutation,
-  useInvitePartnerMutation,
-  useListInboundPartnersQuery,
-  useListOutboundPartnersQuery,
+  useCancelPartnerInvitationMutation,
+  useListPartnerInvitationsQuery,
+  useListPartnersQuery,
   useRejectPartnerMutation,
-  useSearchPartnerDirectoryQuery,
+  useUnlinkPartnerMutation,
 } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
+import { ActivePartnersTable } from '@/features/partners/components/ActivePartnersTable';
 import { PartnerInviteDialog } from '@/features/partners/components/PartnerInviteDialog';
-import { PartnerLinksTable } from '@/features/partners/components/PartnerLinksTable';
+import { PartnerInvitationsTable } from '@/features/partners/components/PartnerInvitationsTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
-const searchSchema = z.object({
-  mode: z.enum(['name', 'taxId']),
-  query: z.string().trim().min(1),
-});
+type PartnersTab = 'partners' | 'invitations';
 
-type SearchFormValues = z.infer<typeof searchSchema>;
+function resolveTab(tabParam: string | null): PartnersTab {
+  if (
+    tabParam === 'invitations' ||
+    tabParam === 'inbound' ||
+    tabParam === 'outbound'
+  ) {
+    return 'invitations';
+  }
+  return 'partners';
+}
 
 export function PartnersPage() {
   const { t } = useTranslation('partners');
   const { enqueueSnackbar } = useSnackbar();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const [searchParams] = useSearchParams();
-  const [tab, setTab] = useState(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'outbound') return 1;
-    if (tabParam === 'directory') return 2;
-    return 0;
-  });
+  const [tab, setTab] = useState<PartnersTab>(() =>
+    resolveTab(searchParams.get('tab')),
+  );
   const highlightLinkId = searchParams.get('linkId');
   const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
-  const [directorySearchParams, setDirectorySearchParams] = useState<
-    { q?: string; taxId?: string } | null
-  >(null);
 
-  const inboundQuery = useListInboundPartnersQuery(
+  const partnersQuery = useListPartnersQuery(
     { companyId: companyId ?? '' },
     { skip: !companyId },
   );
-  const outboundQuery = useListOutboundPartnersQuery(
+  const invitationsQuery = useListPartnerInvitationsQuery(
     { companyId: companyId ?? '' },
     { skip: !companyId },
-  );
-  const directoryQuery = useSearchPartnerDirectoryQuery(
-    {
-      companyId: companyId ?? '',
-      ...(directorySearchParams ?? {}),
-    },
-    { skip: !companyId || !directorySearchParams },
   );
 
   const [acceptPartner, acceptState] = useAcceptPartnerMutation();
   const [rejectPartner, rejectState] = useRejectPartnerMutation();
-  const [invitePartner, inviteState] = useInvitePartnerMutation();
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm<SearchFormValues>({
-    resolver: zodResolver(searchSchema),
-    defaultValues: { mode: 'name', query: '' },
-  });
-
-  const searchMode = watch('mode');
+  const [cancelInvitation, cancelState] = useCancelPartnerInvitationMutation();
+  const [unlinkPartner, unlinkState] = useUnlinkPartnerMutation();
 
   useEffect(() => {
-    const tabParam = searchParams.get('tab');
-    if (tabParam === 'outbound') {
-      setTab(1);
-    } else if (tabParam === 'directory') {
-      setTab(2);
-    } else if (tabParam === 'inbound') {
-      setTab(0);
-    }
+    setTab(resolveTab(searchParams.get('tab')));
   }, [searchParams]);
 
   if (!companyId) {
@@ -130,39 +86,37 @@ export function PartnersPage() {
     }
   }
 
-  function onDirectorySearch(values: SearchFormValues) {
-    setDirectorySearchParams(
-      values.mode === 'name'
-        ? { q: values.query }
-        : { taxId: values.query },
-    );
+  async function handleCancel(linkId: string) {
+    try {
+      await cancelInvitation({ companyId: activeCompanyId, linkId }).unwrap();
+      enqueueSnackbar(t('toast.cancelled'), { variant: 'success' });
+    } catch {
+      // ApiErrorAlert
+    }
   }
 
-  async function handleDirectoryInvite(partnerCompanyId: string) {
+  async function handleUnlink(linkId: string) {
     try {
-      await invitePartner({
-        companyId: activeCompanyId,
-        partnerCompanyId,
-      }).unwrap();
-      enqueueSnackbar(t('toast.invited'), { variant: 'success' });
-      setTab(1);
+      await unlinkPartner({ companyId: activeCompanyId, linkId }).unwrap();
+      enqueueSnackbar(t('toast.unlinked'), { variant: 'success' });
     } catch {
       // ApiErrorAlert
     }
   }
 
   const pageError =
-    inboundQuery.error ??
-    outboundQuery.error ??
-    directoryQuery.error ??
+    partnersQuery.error ??
+    invitationsQuery.error ??
     acceptState.error ??
     rejectState.error ??
-    inviteState.error;
+    cancelState.error ??
+    unlinkState.error;
 
   const actionsDisabled =
-    acceptState.isLoading || rejectState.isLoading || inviteState.isLoading;
-
-  const directoryCompanies = directoryQuery.data?.companies ?? [];
+    acceptState.isLoading ||
+    rejectState.isLoading ||
+    cancelState.isLoading ||
+    unlinkState.isLoading;
 
   return (
     <Box>
@@ -179,7 +133,10 @@ export function PartnersPage() {
           </Typography>
         </Box>
         <PermissionGate permission="managePartners">
-          <Button variant="contained" onClick={() => setInviteDialogOpen(true)}>
+          <Button
+            variant="contained"
+            startIcon={<PersonAddAlt1OutlinedIcon />}
+            onClick={() => setInviteDialogOpen(true)}>
             {t('actions.invite')}
           </Button>
         </PermissionGate>
@@ -187,133 +144,43 @@ export function PartnersPage() {
 
       <ApiErrorAlert error={pageError} />
 
-      <Tabs value={tab} onChange={(_event, value: number) => setTab(value)} sx={{ mb: 3 }}>
-        <Tab label={t('tabs.inbound')} />
-        <Tab label={t('tabs.outbound')} />
-        <Tab label={t('tabs.directory')} />
+      <Tabs
+        value={tab}
+        onChange={(_event, value: PartnersTab) => setTab(value)}
+        sx={{ mb: 3 }}
+      >
+        <Tab label={t('tabs.partners')} value="partners" />
+        <Tab label={t('tabs.invitations')} value="invitations" />
       </Tabs>
 
-      {tab === 0 && (
-        <PartnerLinksTable
-          partners={inboundQuery.data?.partners ?? []}
-          variant="inbound"
-          emptyMessage={t('empty.inbound')}
+      {tab === 'partners' && (
+        <ActivePartnersTable
+          partners={partnersQuery.data?.partners ?? []}
+          isLoading={partnersQuery.isLoading}
+          isFetching={partnersQuery.isFetching}
+          onUnlink={(linkId) => void handleUnlink(linkId)}
+          actionsDisabled={actionsDisabled}
+        />
+      )}
+
+      {tab === 'invitations' && (
+        <PartnerInvitationsTable
+          partners={invitationsQuery.data?.partners ?? []}
+          isLoading={invitationsQuery.isLoading}
+          isFetching={invitationsQuery.isFetching}
           onAccept={(linkId) => void handleAccept(linkId)}
           onReject={(linkId) => void handleReject(linkId)}
+          onCancel={(linkId) => void handleCancel(linkId)}
           actionsDisabled={actionsDisabled}
           highlightLinkId={highlightLinkId}
         />
-      )}
-
-      {tab === 1 && (
-        <PartnerLinksTable
-          partners={outboundQuery.data?.partners ?? []}
-          variant="outbound"
-          emptyMessage={t('empty.outbound')}
-        />
-      )}
-
-      {tab === 2 && (
-        <Box>
-          <Box
-            component="form"
-            onSubmit={(event) => void handleSubmit(onDirectorySearch)(event)}
-            sx={{ mb: 3 }}
-          >
-            <FormControl sx={{ mb: 2 }}>
-              <RadioGroup
-                row
-                value={searchMode}
-                onChange={(event) =>
-                  setValue('mode', event.target.value as SearchFormValues['mode'])
-                }
-              >
-                <FormControlLabel
-                  value="name"
-                  control={<Radio />}
-                  label={t('search.byName')}
-                />
-                <FormControlLabel
-                  value="taxId"
-                  control={<Radio />}
-                  label={t('search.byTaxId')}
-                />
-              </RadioGroup>
-            </FormControl>
-
-            <Stack direction="row" spacing={2} alignItems="flex-start">
-              <TextField
-                {...register('query')}
-                label={
-                  searchMode === 'name'
-                    ? t('search.placeholderName')
-                    : t('search.placeholderTaxId')
-                }
-                fullWidth
-                error={Boolean(errors.query)}
-                helperText={errors.query?.message}
-              />
-              <Button type="submit" variant="contained" sx={{ mt: 1 }}>
-                {t('actions.search')}
-              </Button>
-            </Stack>
-          </Box>
-
-          {!directorySearchParams && (
-            <Typography variant="body2" color="text.secondary">
-              {t('empty.directory')}
-            </Typography>
-          )}
-
-          {directorySearchParams &&
-            !directoryQuery.isLoading &&
-            directoryCompanies.length === 0 && (
-              <Typography variant="body2" color="text.secondary">
-                {t('empty.noResults')}
-              </Typography>
-            )}
-
-          {directoryCompanies.length > 0 && (
-            <Table size="small">
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t('columns.name')}</TableCell>
-                  <TableCell>{t('columns.taxId')}</TableCell>
-                  <TableCell>{t('columns.country')}</TableCell>
-                  <TableCell align="right">{t('columns.actions')}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {directoryCompanies.map((company) => (
-                  <TableRow key={company.id}>
-                    <TableCell>{company.name}</TableCell>
-                    <TableCell>{company.taxId ?? '—'}</TableCell>
-                    <TableCell>{company.country ?? '—'}</TableCell>
-                    <TableCell align="right">
-                      <PermissionGate permission="managePartners">
-                        <Button
-                          size="small"
-                          variant="contained"
-                          disabled={actionsDisabled}
-                          onClick={() => void handleDirectoryInvite(company.id)}
-                        >
-                          {t('actions.invite')}
-                        </Button>
-                      </PermissionGate>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </Box>
       )}
 
       <PartnerInviteDialog
         open={inviteDialogOpen}
         companyId={activeCompanyId}
         onClose={() => setInviteDialogOpen(false)}
-        onInvited={() => setTab(1)}
+        onInvited={() => setTab('invitations')}
       />
     </Box>
   );

@@ -1,15 +1,16 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
   useAcceptPartnerMutation,
+  useCancelPartnerInvitationMutation,
   useInvitePartnerMutation,
-  useListInboundPartnersQuery,
-  useListOutboundPartnersQuery,
+  useListPartnerInvitationsQuery,
+  useListPartnersQuery,
   useRejectPartnerMutation,
-  useSearchPartnerDirectoryQuery,
+  useUnlinkPartnerMutation,
 } from '@/api/endpoints/partnersApi';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import {
@@ -30,41 +31,59 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 });
 
 vi.mock('@/api/endpoints/partnersApi', () => ({
-  useListInboundPartnersQuery: vi.fn(),
-  useListOutboundPartnersQuery: vi.fn(),
-  useSearchPartnerDirectoryQuery: vi.fn(),
+  useListPartnerInvitationsQuery: vi.fn(),
   useInvitePartnerMutation: vi.fn(),
+  useCancelPartnerInvitationMutation: vi.fn(),
+  useUnlinkPartnerMutation: vi.fn(),
   useAcceptPartnerMutation: vi.fn(),
   useRejectPartnerMutation: vi.fn(),
   useListPartnersQuery: vi.fn(),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
-const mockedUseListInboundPartnersQuery = vi.mocked(useListInboundPartnersQuery);
-const mockedUseListOutboundPartnersQuery = vi.mocked(useListOutboundPartnersQuery);
-const mockedUseSearchPartnerDirectoryQuery = vi.mocked(
-  useSearchPartnerDirectoryQuery,
+const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
+const mockedUseListPartnerInvitationsQuery = vi.mocked(
+  useListPartnerInvitationsQuery,
 );
 const mockedUseInvitePartnerMutation = vi.mocked(useInvitePartnerMutation);
 const mockedUseAcceptPartnerMutation = vi.mocked(useAcceptPartnerMutation);
 const mockedUseRejectPartnerMutation = vi.mocked(useRejectPartnerMutation);
+const mockedUseCancelPartnerInvitationMutation = vi.mocked(
+  useCancelPartnerInvitationMutation,
+);
+const mockedUseUnlinkPartnerMutation = vi.mocked(useUnlinkPartnerMutation);
 
 function mockMutationHook(mock: ReturnType<typeof vi.fn>) {
   return [mock, { isLoading: false, reset: vi.fn() }] as const;
 }
 
 function mockPartnerQueries() {
-  mockedUseListInboundPartnersQuery.mockReturnValue({
-    data: { partners: [createTradingPartner()] },
-    isLoading: false,
-    isFetching: false,
-    refetch: vi.fn(),
-  } as ReturnType<typeof useListInboundPartnersQuery>);
-
-  mockedUseListOutboundPartnersQuery.mockReturnValue({
+  mockedUseListPartnersQuery.mockReturnValue({
     data: {
       partners: [
         createTradingPartner({
+          status: 'ACTIVE',
+          direction: 'outbound',
+          acceptedAt: '2026-01-02T00:00:00.000Z',
+          company: createPartnerCompany({ name: 'Active Corp' }),
+        }),
+      ],
+    },
+    isLoading: false,
+    isFetching: false,
+    error: undefined,
+    refetch: vi.fn(),
+  } as ReturnType<typeof useListPartnersQuery>);
+
+  mockedUseListPartnerInvitationsQuery.mockReturnValue({
+    data: {
+      partners: [
+        createTradingPartner({
+          direction: 'inbound',
+          company: createPartnerCompany({ name: 'Inbound Corp' }),
+        }),
+        createTradingPartner({
+          id: '00000000-0000-0000-0000-000000000032',
           direction: 'outbound',
           company: createPartnerCompany({ name: 'Outbound Corp' }),
         }),
@@ -72,15 +91,9 @@ function mockPartnerQueries() {
     },
     isLoading: false,
     isFetching: false,
+    error: undefined,
     refetch: vi.fn(),
-  } as ReturnType<typeof useListOutboundPartnersQuery>);
-
-  mockedUseSearchPartnerDirectoryQuery.mockReturnValue({
-    data: { companies: [] },
-    isLoading: false,
-    isFetching: false,
-    refetch: vi.fn(),
-  } as ReturnType<typeof useSearchPartnerDirectoryQuery>);
+  } as ReturnType<typeof useListPartnerInvitationsQuery>);
 }
 
 describe('PartnersPage', () => {
@@ -118,6 +131,14 @@ describe('PartnersPage', () => {
     mockedUseRejectPartnerMutation.mockReturnValue(
       mockMutationHook(vi.fn()) as ReturnType<typeof useRejectPartnerMutation>,
     );
+    mockedUseCancelPartnerInvitationMutation.mockReturnValue(
+      mockMutationHook(
+        vi.fn(),
+      ) as ReturnType<typeof useCancelPartnerInvitationMutation>,
+    );
+    mockedUseUnlinkPartnerMutation.mockReturnValue(
+      mockMutationHook(vi.fn()) as ReturnType<typeof useUnlinkPartnerMutation>,
+    );
   });
 
   it('renders nothing without active company', () => {
@@ -130,20 +151,22 @@ describe('PartnersPage', () => {
     expect(container).toBeEmptyDOMElement();
   });
 
-  it('renders inbound partners with accept and reject actions', () => {
+  it('renders active partners on the partners tab', () => {
     renderWithProviders(<PartnersPage />, {
       preloadedState: {
         auth: { activeCompanyId: COMPANY_ID, isBootstrapped: true },
       },
     });
 
-    expect(screen.getByText('Partners')).toBeInTheDocument();
-    expect(screen.getByText('Partner Corp')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Accept' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Reject' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Partners' })).toBeInTheDocument();
+    expect(screen.getByText('Active Corp')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'End partnership' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Inbound Corp')).not.toBeInTheDocument();
   });
 
-  it('hides accept and reject without managePartners permission', () => {
+  it('hides unlink without managePartners permission', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -165,12 +188,60 @@ describe('PartnersPage', () => {
       },
     });
 
-    expect(screen.getByText('Partner Corp')).toBeInTheDocument();
+    expect(screen.getByText('Active Corp')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'End partnership' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders invitations with accept and reject actions', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(<PartnersPage />, {
+      preloadedState: {
+        auth: { activeCompanyId: COMPANY_ID, isBootstrapped: true },
+      },
+    });
+
+    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
+
+    expect(screen.getByText('Inbound Corp')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Accept' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reject' })).toBeInTheDocument();
+  });
+
+  it('hides accept and reject without managePartners permission', async () => {
+    const user = userEvent.setup();
+
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['viewPartners'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(<PartnersPage />, {
+      preloadedState: {
+        auth: { activeCompanyId: COMPANY_ID, isBootstrapped: true },
+      },
+    });
+
+    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
+
+    expect(screen.getByText('Inbound Corp')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Accept' })).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Reject' })).not.toBeInTheDocument();
   });
 
-  it('shows outbound partners on outbound tab', async () => {
+  it('shows outbound invitations with cancel action', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(<PartnersPage />, {
@@ -179,36 +250,11 @@ describe('PartnersPage', () => {
       },
     });
 
-    await user.click(screen.getByRole('tab', { name: 'Outbound' }));
+    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
 
     expect(screen.getByText('Outbound Corp')).toBeInTheDocument();
-  });
-
-  it('does not search directory until form submit', async () => {
-    const user = userEvent.setup();
-
-    renderWithProviders(<PartnersPage />, {
-      preloadedState: {
-        auth: { activeCompanyId: COMPANY_ID, isBootstrapped: true },
-      },
-    });
-
-    await user.click(screen.getByRole('tab', { name: 'Directory' }));
-
-    expect(mockedUseSearchPartnerDirectoryQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ companyId: COMPANY_ID }),
-      expect.objectContaining({ skip: true }),
-    );
-
-    const searchInput = screen.getByLabelText('Company name');
-    await user.type(searchInput, 'Acme');
-    await user.click(screen.getByRole('button', { name: 'Search' }));
-
-    await waitFor(() => {
-      expect(mockedUseSearchPartnerDirectoryQuery).toHaveBeenCalledWith(
-        expect.objectContaining({ companyId: COMPANY_ID, q: 'Acme' }),
-        expect.objectContaining({ skip: false }),
-      );
-    });
+    expect(
+      screen.getByRole('button', { name: 'Cancel invitation' }),
+    ).toBeInTheDocument();
   });
 });

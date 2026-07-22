@@ -2,36 +2,43 @@
   "title": "Partners",
   "subtitle": "Manage partner company links for procurement and logistics.",
   "tabs": {
+    "partners": "Partners",
+    "invitations": "Invitations"
+  },
+  "groups": {
     "inbound": "Inbound",
-    "outbound": "Outbound",
-    "directory": "Directory"
+    "outbound": "Outbound"
   },
   "columns": {
     "name": "Company",
     "taxId": "Tax ID",
     "country": "Country",
     "status": "Status",
+    "direction": "Direction",
     "invitedAt": "Invited",
+    "acceptedAt": "Accepted",
     "actions": "Actions"
   },
   "actions": {
     "invite": "Invite partner",
     "accept": "Accept",
     "reject": "Reject",
-    "search": "Search",
-    "cancel": "Cancel"
+    "cancelInvite": "Cancel invitation",
+    "unlink": "End partnership",
+    "close": "Close"
   },
-  "search": {
-    "byName": "Search by name",
-    "byTaxId": "Search by tax ID",
-    "placeholderName": "Company name",
-    "placeholderTaxId": "Tax ID"
+  "unlink": {
+    "title": "End partnership?",
+    "confirm": "Remove the partner link with {{name}}? You can invite them again later."
+  },
+  "invite": {
+    "email": "Contact email",
+    "company": "Company",
+    "ambiguousHint": "This contact belongs to multiple companies. Choose which company to invite."
   },
   "empty": {
-    "inbound": "No inbound partner invitations yet.",
-    "outbound": "No outbound partner invitations yet.",
-    "directory": "Search for a company to invite as a partner.",
-    "noResults": "No companies found."
+    "partners": "No active partners yet.",
+    "invitations": "No pending partner invitations."
   },
   "status": {
     "invited": "Invited",
@@ -41,6 +48,9 @@
   "toast": {
     "invited": "Partner invitation sent",
     "accepted": "Partner invitation accepted",
-    "rejected": "Partner invitation rejected"
+    "rejected": "Partner invitation rejected",
+    "cancelled": "Partner invitation cancelled",
+    "unlinked": "Partnership ended",
+    "contactNotFound": "Contact not found or cannot be invited."
   }
 }

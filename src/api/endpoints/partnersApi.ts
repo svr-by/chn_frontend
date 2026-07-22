@@ -1,7 +1,6 @@
 import {
-  getGetCompaniesCompanyIdPartnersDirectoryUrl,
-  getGetCompaniesCompanyIdPartnersInboundUrl,
-  getGetCompaniesCompanyIdPartnersOutboundUrl,
+  getDeleteCompaniesCompanyIdPartnersLinkIdUrl,
+  getGetCompaniesCompanyIdPartnersInvitationsUrl,
   getGetCompaniesCompanyIdPartnersUrl,
   getPostCompaniesCompanyIdPartnersInviteUrl,
   getPostCompaniesCompanyIdPartnersLinkIdAcceptUrl,
@@ -9,10 +8,8 @@ import {
 } from '@/api/generated/endpoints';
 import type {
   GetCompaniesCompanyIdPartners200,
-  GetCompaniesCompanyIdPartnersDirectory200,
-  GetCompaniesCompanyIdPartnersDirectoryParams,
-  GetCompaniesCompanyIdPartnersInbound200,
-  GetCompaniesCompanyIdPartnersOutbound200,
+  GetCompaniesCompanyIdPartnersInvitations200,
+  GetCompaniesCompanyIdPartnersInvitationsParams,
   PostCompaniesCompanyIdPartnersInvite201,
   PostCompaniesCompanyIdPartnersInviteBody,
   PostCompaniesCompanyIdPartnersLinkIdAccept200,
@@ -27,8 +24,7 @@ type CompanyScopedArgs<T = void> = T extends void
 function partnerTags(companyId: string) {
   return [
     { type: 'Partners' as const, id: companyId },
-    { type: 'Partners' as const, id: `${companyId}-inbound` },
-    { type: 'Partners' as const, id: `${companyId}-outbound` },
+    { type: 'Partners' as const, id: `${companyId}-invitations` },
   ];
 }
 
@@ -46,45 +42,61 @@ export const partnersApi = baseApi.injectEndpoints({
         { type: 'Partners', id: companyId },
       ],
     }),
-    listInboundPartners: builder.query<
-      GetCompaniesCompanyIdPartnersInbound200,
-      CompanyScopedArgs
-    >({
-      query: ({ companyId }) => ({
-        url: getGetCompaniesCompanyIdPartnersInboundUrl(companyId),
-      }),
-      providesTags: (_result, _error, { companyId }) => [
-        { type: 'Partners', id: `${companyId}-inbound` },
-      ],
-    }),
-    listOutboundPartners: builder.query<
-      GetCompaniesCompanyIdPartnersOutbound200,
-      CompanyScopedArgs
-    >({
-      query: ({ companyId }) => ({
-        url: getGetCompaniesCompanyIdPartnersOutboundUrl(companyId),
-      }),
-      providesTags: (_result, _error, { companyId }) => [
-        { type: 'Partners', id: `${companyId}-outbound` },
-      ],
-    }),
-    searchPartnerDirectory: builder.query<
-      GetCompaniesCompanyIdPartnersDirectory200,
-      CompanyScopedArgs<GetCompaniesCompanyIdPartnersDirectoryParams>
+    listPartnerInvitations: builder.query<
+      GetCompaniesCompanyIdPartnersInvitations200,
+      CompanyScopedArgs<GetCompaniesCompanyIdPartnersInvitationsParams>
     >({
       query: ({ companyId, ...params }) => ({
-        url: getGetCompaniesCompanyIdPartnersDirectoryUrl(companyId),
+        url: getGetCompaniesCompanyIdPartnersInvitationsUrl(companyId, params),
         params,
       }),
+      providesTags: (_result, _error, { companyId }) => [
+        { type: 'Partners', id: `${companyId}-invitations` },
+      ],
     }),
     invitePartner: builder.mutation<
       PostCompaniesCompanyIdPartnersInvite201,
-      CompanyScopedArgs<PostCompaniesCompanyIdPartnersInviteBody>
+      {
+        /** Initiator company (path param). */
+        companyId: string;
+        email: string;
+        /** Target partner company when contact is ambiguous (body.companyId). */
+        targetCompanyId?: string;
+      }
     >({
-      query: ({ companyId, ...body }) => ({
-        url: getPostCompaniesCompanyIdPartnersInviteUrl(companyId),
-        method: 'POST',
-        body,
+      query: ({ companyId, email, targetCompanyId }) => {
+        const body: PostCompaniesCompanyIdPartnersInviteBody = {
+          email,
+          ...(targetCompanyId ? { companyId: targetCompanyId } : {}),
+        };
+        return {
+          url: getPostCompaniesCompanyIdPartnersInviteUrl(companyId),
+          method: 'POST',
+          body,
+        };
+      },
+      invalidatesTags: (_result, _error, { companyId }) =>
+        partnerTags(companyId),
+    }),
+    cancelPartnerInvitation: builder.mutation<
+      void,
+      { companyId: string; linkId: string }
+    >({
+      query: ({ companyId, linkId }) => ({
+        url: getDeleteCompaniesCompanyIdPartnersLinkIdUrl(companyId, linkId),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        partnerTags(companyId),
+    }),
+    /** Remove an active partner link (same DELETE as cancel invitation). */
+    unlinkPartner: builder.mutation<
+      void,
+      { companyId: string; linkId: string }
+    >({
+      query: ({ companyId, linkId }) => ({
+        url: getDeleteCompaniesCompanyIdPartnersLinkIdUrl(companyId, linkId),
+        method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>
         partnerTags(companyId),
@@ -116,10 +128,10 @@ export const partnersApi = baseApi.injectEndpoints({
 
 export const {
   useListPartnersQuery,
-  useListInboundPartnersQuery,
-  useListOutboundPartnersQuery,
-  useSearchPartnerDirectoryQuery,
+  useListPartnerInvitationsQuery,
   useInvitePartnerMutation,
+  useCancelPartnerInvitationMutation,
+  useUnlinkPartnerMutation,
   useAcceptPartnerMutation,
   useRejectPartnerMutation,
 } = partnersApi;

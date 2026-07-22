@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import type { SerializedError } from '@reduxjs/toolkit';
 import {
   Box,
   Button,
@@ -8,15 +10,9 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
+  InputLabel,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from '@mui/material';
@@ -25,29 +21,47 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
-import {
-  useInvitePartnerMutation,
-  useSearchPartnerDirectoryQuery,
-} from '@/api/endpoints/partnersApi';
+import { isApiError } from '@/api/baseApi';
+import { useInvitePartnerMutation } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
 
-const searchSchema = z
-  .object({
-    mode: z.enum(['name', 'taxId']),
-    query: z.string().trim().min(1),
-  })
-  .superRefine((values, ctx) => {
-    if (values.mode === 'taxId' && values.query.length < 1) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: 'Required',
-        path: ['query'],
-      });
-    }
-  });
+const inviteSchema = z.object({
+  email: z.string().trim().email(),
+});
 
-type SearchFormValues = z.infer<typeof searchSchema>;
+type InviteFormValues = z.infer<typeof inviteSchema>;
+
+interface AmbiguousCompany {
+  id: string;
+  name: string;
+}
+
+function extractAmbiguousCompanies(
+  error: FetchBaseQueryError | SerializedError | undefined,
+): AmbiguousCompany[] | null {
+  if (!error || !('data' in error) || !isApiError(error.data)) {
+    return null;
+  }
+
+  if (error.data.error.code !== 'PARTNER_CONTACT_AMBIGUOUS') {
+    return null;
+  }
+
+  const details = error.data.error.details;
+  if (
+    !details ||
+    typeof details !== 'object' ||
+    !('companies' in details) ||
+    !Array.isArray((details as { companies: unknown }).companies)
+  ) {
+    return null;
+  }
+
+  return (details as { companies: AmbiguousCompany[] }).companies.filter(
+    (company): company is AmbiguousCompany =>
+      typeof company?.id === 'string' && typeof company?.name === 'string',
+  );
+}
 
 interface PartnerInviteDialogProps {
   open: boolean;
@@ -64,151 +78,150 @@ export function PartnerInviteDialog({
 }: PartnerInviteDialogProps) {
   const { t } = useTranslation('partners');
   const { enqueueSnackbar } = useSnackbar();
-  const [submittedParams, setSubmittedParams] = useState<
-    { q?: string; taxId?: string } | null
-  >(null);
-
   const [invitePartner, inviteState] = useInvitePartnerMutation();
-
-  const directoryQuery = useSearchPartnerDirectoryQuery(
-    {
-      companyId,
-      ...(submittedParams ?? {}),
-    },
-    { skip: !open || !submittedParams },
-  );
+  const [ambiguousCompanies, setAmbiguousCompanies] = useState<
+    AmbiguousCompany[] | null
+  >(null);
+  const [selectedCompanyId, setSelectedCompanyId] = useState('');
 
   const {
     register,
     handleSubmit,
     reset,
-    watch,
-    setValue,
+    getValues,
     formState: { errors },
-  } = useForm<SearchFormValues>({
-    resolver: zodResolver(searchSchema),
-    defaultValues: { mode: 'name', query: '' },
+  } = useForm<InviteFormValues>({
+    resolver: zodResolver(inviteSchema),
+    defaultValues: { email: '' },
   });
-
-  const searchMode = watch('mode');
 
   function handleClose() {
     reset();
-    setSubmittedParams(null);
+    setAmbiguousCompanies(null);
+    setSelectedCompanyId('');
+    inviteState.reset();
     onClose();
   }
 
-  function onSearch(values: SearchFormValues) {
-    setSubmittedParams(
-      values.mode === 'name'
-        ? { q: values.query }
-        : { taxId: values.query },
-    );
-  }
-
-  async function handleInvite(partnerCompanyId: string) {
+  async function submitInvite(email: string, targetCompanyId?: string) {
     try {
-      await invitePartner({ companyId, partnerCompanyId }).unwrap();
+      await invitePartner({
+        companyId,
+        email,
+        ...(targetCompanyId ? { targetCompanyId } : {}),
+      }).unwrap();
       enqueueSnackbar(t('toast.invited'), { variant: 'success' });
       onInvited?.();
       handleClose();
-    } catch {
-      // ApiErrorAlert shows error
+    } catch (error) {
+      const companies = extractAmbiguousCompanies(
+        error as FetchBaseQueryError | SerializedError,
+      );
+      if (companies && companies.length > 0) {
+        setAmbiguousCompanies(companies);
+        setSelectedCompanyId(companies[0]?.id ?? '');
+        return;
+      }
+
+      setAmbiguousCompanies(null);
+      setSelectedCompanyId('');
+
+      if (
+        error &&
+        typeof error === 'object' &&
+        'data' in error &&
+        isApiError(error.data) &&
+        error.data.error.code === 'PARTNER_CONTACT_NOT_FOUND'
+      ) {
+        enqueueSnackbar(t('toast.contactNotFound'), { variant: 'error' });
+      }
     }
   }
 
-  const companies = directoryQuery.data?.companies ?? [];
+  async function onInvite(values: InviteFormValues) {
+    setAmbiguousCompanies(null);
+    setSelectedCompanyId('');
+    await submitInvite(values.email);
+  }
+
+  async function onResolveAmbiguous() {
+    if (!selectedCompanyId) {
+      return;
+    }
+    await submitInvite(getValues('email'), selectedCompanyId);
+  }
+
+  const showAmbiguousPicker =
+    ambiguousCompanies !== null && ambiguousCompanies.length > 0;
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>{t('actions.invite')}</DialogTitle>
       <Box
         component="form"
-        onSubmit={(event) => void handleSubmit(onSearch)(event)}
+        onSubmit={(event) => void handleSubmit(onInvite)(event)}
       >
         <DialogContent>
-          <ApiErrorAlert error={inviteState.error ?? directoryQuery.error} />
-
-          <FormControl sx={{ mb: 2 }}>
-            <RadioGroup
-              row
-              value={searchMode}
-              onChange={(event) =>
-                setValue('mode', event.target.value as SearchFormValues['mode'])
-              }
-            >
-              <FormControlLabel
-                value="name"
-                control={<Radio />}
-                label={t('search.byName')}
-              />
-              <FormControlLabel
-                value="taxId"
-                control={<Radio />}
-                label={t('search.byTaxId')}
-              />
-            </RadioGroup>
-          </FormControl>
-
-          <Stack direction="row" spacing={2} alignItems="flex-start">
-            <TextField
-              {...register('query')}
-              label={
-                searchMode === 'name'
-                  ? t('search.placeholderName')
-                  : t('search.placeholderTaxId')
-              }
-              fullWidth
-              error={Boolean(errors.query)}
-              helperText={errors.query?.message}
-            />
-            <Button type="submit" variant="contained" sx={{ mt: 1 }}>
-              {t('actions.search')}
-            </Button>
-          </Stack>
-
-          {submittedParams && !directoryQuery.isLoading && companies.length === 0 && (
-            <Typography variant="body2" color="text.secondary" sx={{ mt: 3 }}>
-              {t('empty.noResults')}
-            </Typography>
+          {!showAmbiguousPicker && (
+            <ApiErrorAlert error={inviteState.error} />
           )}
 
-          {companies.length > 0 && (
-            <Table size="small" sx={{ mt: 3 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t('columns.name')}</TableCell>
-                  <TableCell>{t('columns.taxId')}</TableCell>
-                  <TableCell>{t('columns.country')}</TableCell>
-                  <TableCell align="right">{t('columns.actions')}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {companies.map((company) => (
-                  <TableRow key={company.id}>
-                    <TableCell>{company.name}</TableCell>
-                    <TableCell>{company.taxId ?? '—'}</TableCell>
-                    <TableCell>{company.country ?? '—'}</TableCell>
-                    <TableCell align="right">
-                      <PermissionGate permission="managePartners">
-                        <Button
-                          size="small"
-                          variant="contained"
-                          disabled={inviteState.isLoading}
-                          onClick={() => void handleInvite(company.id)}
-                        >
-                          {t('actions.invite')}
-                        </Button>
-                      </PermissionGate>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+          <TextField
+            {...register('email')}
+            label={t('invite.email')}
+            type="email"
+            fullWidth
+            margin="normal"
+            autoFocus
+            disabled={showAmbiguousPicker}
+            error={Boolean(errors.email)}
+            helperText={errors.email?.message}
+          />
+
+          {showAmbiguousPicker && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('invite.ambiguousHint')}
+              </Typography>
+              <FormControl fullWidth>
+                <InputLabel id="partner-invite-company-label">
+                  {t('invite.company')}
+                </InputLabel>
+                <Select
+                  labelId="partner-invite-company-label"
+                  label={t('invite.company')}
+                  value={selectedCompanyId}
+                  onChange={(event) => setSelectedCompanyId(event.target.value)}
+                >
+                  {ambiguousCompanies.map((company) => (
+                    <MenuItem key={company.id} value={company.id}>
+                      {company.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>{t('actions.cancel')}</Button>
+          <Button onClick={handleClose}>{t('actions.close')}</Button>
+          {showAmbiguousPicker ? (
+            <Button
+              variant="contained"
+              disabled={inviteState.isLoading || !selectedCompanyId}
+              onClick={() => void onResolveAmbiguous()}
+            >
+              {t('actions.invite')}
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={inviteState.isLoading}
+            >
+              {t('actions.invite')}
+            </Button>
+          )}
         </DialogActions>
       </Box>
     </Dialog>

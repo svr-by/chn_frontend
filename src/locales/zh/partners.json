@@ -2,36 +2,43 @@
   "title": "合作伙伴",
   "subtitle": "管理用于采购与物流的合作伙伴公司关联。",
   "tabs": {
+    "partners": "合作伙伴",
+    "invitations": "邀请"
+  },
+  "groups": {
     "inbound": "入站",
-    "outbound": "出站",
-    "directory": "目录"
+    "outbound": "出站"
   },
   "columns": {
     "name": "公司",
     "taxId": "税号",
     "country": "国家",
     "status": "状态",
+    "direction": "方向",
     "invitedAt": "已邀请",
+    "acceptedAt": "已接受",
     "actions": "操作"
   },
   "actions": {
     "invite": "邀请合作伙伴",
     "accept": "接受",
     "reject": "拒绝",
-    "search": "搜索",
-    "cancel": "取消"
+    "cancelInvite": "取消邀请",
+    "unlink": "解除合作关系",
+    "close": "关闭"
   },
-  "search": {
-    "byName": "按名称搜索",
-    "byTaxId": "按税号搜索",
-    "placeholderName": "公司名称",
-    "placeholderTaxId": "税号"
+  "unlink": {
+    "title": "解除合作关系？",
+    "confirm": "要删除与 {{name}} 的合作伙伴关联吗？之后可以再次邀请。"
+  },
+  "invite": {
+    "email": "联系人邮箱",
+    "company": "公司",
+    "ambiguousHint": "该联系人属于多家公司。请选择要邀请的公司。"
   },
   "empty": {
-    "inbound": "暂无入站合作伙伴邀请。",
-    "outbound": "暂无出站合作伙伴邀请。",
-    "directory": "搜索要邀请为合作伙伴的公司。",
-    "noResults": "未找到公司。"
+    "partners": "暂无活跃合作伙伴。",
+    "invitations": "暂无待处理的合作伙伴邀请。"
   },
   "status": {
     "invited": "已邀请",
@@ -41,6 +48,9 @@
   "toast": {
     "invited": "合作伙伴邀请已发送",
     "accepted": "合作伙伴邀请已接受",
-    "rejected": "合作伙伴邀请已拒绝"
+    "rejected": "合作伙伴邀请已拒绝",
+    "cancelled": "合作伙伴邀请已取消",
+    "unlinked": "合作关系已解除",
+    "contactNotFound": "未找到联系人或无法邀请。"
   }
 }
