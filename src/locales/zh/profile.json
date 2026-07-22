@@ -1,8 +1,40 @@
 {
   "title": "个人资料",
-  "subtitle": "您的账户详情。",
-  "name": "名称：{{name}}",
-  "email": "邮箱：{{email}}",
-  "emailVerified": "邮箱已验证",
-  "emailNotVerified": "邮箱未验证"
+  "subtitle": "您的账户与当前公司信息。",
+  "sections": {
+    "account": "账户",
+    "accountHint": "当前登录用户的个人信息。",
+    "company": "当前公司",
+    "companyHint": "切换器中选中的公司以及您在其中的成员身份。"
+  },
+  "fields": {
+    "name": "姓名",
+    "email": "邮箱",
+    "emailStatus": "邮箱验证",
+    "companyName": "公司",
+    "country": "国家",
+    "taxId": "税号",
+    "role": "角色",
+    "companyStatus": "公司状态",
+    "joinedAt": "加入时间"
+  },
+  "emailVerified": "已验证",
+  "emailNotVerified": "未验证",
+  "companyActive": "活跃",
+  "companyInactive": "已停用",
+  "noActiveCompany": "未选择当前公司。",
+  "companyStatus": {
+    "title": "公司状态",
+    "activeHint": "该公司处于活跃状态。停用后，大部分操作将被阻止，直至重新激活。",
+    "inactiveHint": "该公司已停用。重新激活后可恢复成员与 API 访问。",
+    "deactivate": "停用公司",
+    "reactivate": "重新激活公司",
+    "confirmDeactivateTitle": "停用公司？",
+    "confirmDeactivateMessage": "在所有者重新激活之前，成员将无法进行公司操作。数据会保留。",
+    "cancel": "取消",
+    "toast": {
+      "deactivated": "公司已停用",
+      "reactivated": "公司已重新激活"
+    }
+  }
 }

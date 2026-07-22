@@ -1,7 +1,9 @@
 import {
   getGetCompaniesCompanyIdUrl,
   getGetCompaniesUrl,
+  getPostCompaniesCompanyIdDeactivateUrl,
   getPostCompaniesCompanyIdMembersAcceptUrl,
+  getPostCompaniesCompanyIdReactivateUrl,
   getPostCompaniesUrl,
 } from '@/api/generated/endpoints';
 import type {
@@ -9,7 +11,9 @@ import type {
   GetCompaniesCompanyId200,
   PostCompanies201,
   PostCompaniesBody,
+  PostCompaniesCompanyIdDeactivate200,
   PostCompaniesCompanyIdMembersAccept200,
+  PostCompaniesCompanyIdReactivate200,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -44,6 +48,34 @@ export const companiesApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Me', 'Companies'],
     }),
+    deactivateCompany: builder.mutation<
+      PostCompaniesCompanyIdDeactivate200,
+      string
+    >({
+      query: (companyId) => ({
+        url: getPostCompaniesCompanyIdDeactivateUrl(companyId),
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, companyId) => [
+        'Companies',
+        'Me',
+        { type: 'Company', id: companyId },
+      ],
+    }),
+    reactivateCompany: builder.mutation<
+      PostCompaniesCompanyIdReactivate200,
+      string
+    >({
+      query: (companyId) => ({
+        url: getPostCompaniesCompanyIdReactivateUrl(companyId),
+        method: 'POST',
+      }),
+      invalidatesTags: (_result, _error, companyId) => [
+        'Companies',
+        'Me',
+        { type: 'Company', id: companyId },
+      ],
+    }),
   }),
 });
 
@@ -52,4 +84,6 @@ export const {
   useCreateCompanyMutation,
   useGetCompanyQuery,
   useAcceptInviteMutation,
+  useDeactivateCompanyMutation,
+  useReactivateCompanyMutation,
 } = companiesApi;

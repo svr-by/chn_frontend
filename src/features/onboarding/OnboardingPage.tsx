@@ -27,9 +27,12 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { authStorage } from '@/lib/authStorage';
 import {
+  countOwnedCompanies,
   getActiveMemberships,
   getPendingInvitations,
+  MAX_OWNED_COMPANIES,
 } from '@/lib/permissions';
+import { isApiError } from '@/api/baseApi';
 import { setActiveCompanyId } from '@/store/slices/authSlice';
 
 const companySchema = z.object({
@@ -49,6 +52,8 @@ export function OnboardingPage() {
 
   const pendingInvitations = getPendingInvitations(data?.user);
   const activeMemberships = getActiveMemberships(data?.user);
+  const ownedCompanyCount = countOwnedCompanies(data?.user);
+  const atOwnershipLimit = ownedCompanyCount >= MAX_OWNED_COMPANIES;
   const hasPendingInvites = pendingInvitations.length > 0;
   const [tab, setTab] = useState(0);
 
@@ -88,6 +93,11 @@ export function OnboardingPage() {
   }
 
   async function onCreateCompany(values: CompanyFormValues) {
+    if (atOwnershipLimit) {
+      enqueueSnackbar(t('ownershipLimitReached'), { variant: 'error' });
+      return;
+    }
+
     try {
       const result = await createCompany({
         name: values.name,
@@ -96,7 +106,16 @@ export function OnboardingPage() {
       dispatch(setActiveCompanyId(result.company.id));
       enqueueSnackbar(t('companyCreated'), { variant: 'success' });
       navigate('/app');
-    } catch {
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'data' in error &&
+        isApiError(error.data) &&
+        error.data.error.code === 'COMPANY_OWNERSHIP_LIMIT_REACHED'
+      ) {
+        enqueueSnackbar(t('ownershipLimitReached'), { variant: 'error' });
+      }
       // ApiErrorAlert below
     }
   }
@@ -178,6 +197,16 @@ export function OnboardingPage() {
                   {t('createCompany')}
                 </Typography>
               )}
+              {atOwnershipLimit && (
+                <Typography
+                  variant="body2"
+                  color="error"
+                  sx={{ mb: 2 }}
+                  textAlign="center"
+                >
+                  {t('ownershipLimitReached')}
+                </Typography>
+              )}
               <TextField
                 {...register('name')}
                 label={t('companyName')}
@@ -185,19 +214,21 @@ export function OnboardingPage() {
                 margin="normal"
                 error={Boolean(errors.name)}
                 helperText={errors.name?.message}
+                disabled={atOwnershipLimit}
               />
               <TextField
                 {...register('taxId')}
                 label={t('taxId')}
                 fullWidth
                 margin="normal"
+                disabled={atOwnershipLimit}
               />
               <Button
                 type="submit"
                 variant="contained"
                 fullWidth
                 sx={{ mt: 2 }}
-                disabled={createState.isLoading}
+                disabled={createState.isLoading || atOwnershipLimit}
               >
                 {t('createCompanyButton')}
               </Button>

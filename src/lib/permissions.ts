@@ -37,7 +37,7 @@ export type AuthenticatedRedirect = '/app' | '/onboarding' | '/access-suspended'
 export function resolveAuthenticatedRedirect(
   user: GetAuthMe200User | undefined,
 ): AuthenticatedRedirect {
-  if (getActiveMemberships(user).length > 0) {
+  if (getSwitcherMemberships(user).length > 0) {
     return '/app';
   }
 
@@ -46,6 +46,12 @@ export function resolveAuthenticatedRedirect(
   }
 
   return '/onboarding';
+}
+
+export function isCompanyOperational(
+  company: { isActive?: boolean } | null | undefined,
+): boolean {
+  return company?.isActive !== false;
 }
 
 export function getActiveMembership(
@@ -75,6 +81,31 @@ export function getActiveMemberships(
   );
 }
 
+/** Memberships shown in the company switcher: operational companies, plus inactive ones for OWNER. */
+export function getSwitcherMemberships(
+  user: GetAuthMe200User | undefined,
+): MembershipSummary[] {
+  return getActiveMemberships(user).filter(
+    (membership) =>
+      isCompanyOperational(membership.company) || membership.role === 'OWNER',
+  );
+}
+
+export function countOwnedCompanies(
+  user: GetAuthMe200User | undefined,
+): number {
+  if (!user) {
+    return 0;
+  }
+
+  return user.memberships.filter(
+    (membership) =>
+      membership.role === 'OWNER' && membership.company?.id != null,
+  ).length;
+}
+
+export const MAX_OWNED_COMPANIES = 3;
+
 export function getPendingInvitations(
   user: GetAuthMe200User | undefined,
 ): PendingInvitation[] {
@@ -87,13 +118,13 @@ export function getPendingInvitations(
 
 export function resolveActiveCompanyId(
   currentId: string | null,
-  activeMemberships: MembershipSummary[],
+  switcherMemberships: MembershipSummary[],
 ): string | null {
-  if (activeMemberships.length === 0) {
+  if (switcherMemberships.length === 0) {
     return null;
   }
 
-  const isCurrentValid = activeMemberships.some(
+  const isCurrentValid = switcherMemberships.some(
     (membership) => membership.company?.id === currentId,
   );
 
@@ -101,5 +132,13 @@ export function resolveActiveCompanyId(
     return currentId;
   }
 
-  return activeMemberships[0]?.company?.id ?? null;
+  const operational = switcherMemberships.find((membership) =>
+    isCompanyOperational(membership.company),
+  );
+
+  return (
+    operational?.company?.id ??
+    switcherMemberships[0]?.company?.id ??
+    null
+  );
 }

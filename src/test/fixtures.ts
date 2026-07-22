@@ -165,6 +165,7 @@ export function createRequestLine(
     unit: 'pcs',
     attributes: null,
     notes: null,
+    cancelledAt: null,
     product: {
       id: PRODUCT_ID,
       name: 'Test Product',
@@ -299,6 +300,7 @@ export function createMembership(
       name: 'Acme Corp',
       country: null,
       taxId: null,
+      isActive: true,
     },
     ...overrides,
   };

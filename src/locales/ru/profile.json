@@ -1,8 +1,40 @@
 {
   "title": "Профиль",
-  "subtitle": "Данные вашего аккаунта.",
-  "name": "Название: {{name}}",
-  "email": "Email: {{email}}",
-  "emailVerified": "Email подтверждён",
-  "emailNotVerified": "Email не подтверждён"
+  "subtitle": "Данные аккаунта и активной компании.",
+  "sections": {
+    "account": "Аккаунт",
+    "accountHint": "Личные данные текущего пользователя.",
+    "company": "Активная компания",
+    "companyHint": "Компания из переключателя и ваше членство в ней."
+  },
+  "fields": {
+    "name": "Имя",
+    "email": "Email",
+    "emailStatus": "Подтверждение email",
+    "companyName": "Компания",
+    "country": "Страна",
+    "taxId": "ИНН",
+    "role": "Роль",
+    "companyStatus": "Статус компании",
+    "joinedAt": "В компании с"
+  },
+  "emailVerified": "Подтверждён",
+  "emailNotVerified": "Не подтверждён",
+  "companyActive": "Активна",
+  "companyInactive": "Неактивна",
+  "noActiveCompany": "Активная компания не выбрана.",
+  "companyStatus": {
+    "title": "Статус компании",
+    "activeHint": "Компания активна. Деактивация блокирует большинство операций до повторной активации.",
+    "inactiveHint": "Компания деактивирована. Активируйте её, чтобы восстановить доступ участников и API.",
+    "deactivate": "Деактивировать компанию",
+    "reactivate": "Активировать компанию",
+    "confirmDeactivateTitle": "Деактивировать компанию?",
+    "confirmDeactivateMessage": "Участники потеряют доступ к операциям компании, пока владелец не активирует её снова. Данные сохраняются.",
+    "cancel": "Отмена",
+    "toast": {
+      "deactivated": "Компания деактивирована",
+      "reactivated": "Компания активирована"
+    }
+  }
 }

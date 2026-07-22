@@ -4,6 +4,7 @@ import {
   getActiveMembership,
   getActiveMemberships,
   getPendingInvitations,
+  getSwitcherMemberships,
   hasAnyPermission,
   hasPermission,
   hasSuspendedMemberships,
@@ -101,7 +102,13 @@ describe('permissions', () => {
           createMembership({
             id: '00000000-0000-0000-0000-000000000021',
             status: 'SUSPENDED',
-            company: { id: 'other', name: 'Other', country: null, taxId: null },
+            company: {
+              id: 'other',
+              name: 'Other',
+              country: null,
+              taxId: null,
+              isActive: true,
+            },
           }),
           createMembership({
             id: '00000000-0000-0000-0000-000000000022',
@@ -118,6 +125,46 @@ describe('permissions', () => {
     });
   });
 
+  describe('getSwitcherMemberships', () => {
+    it('hides inactive companies for non-owners', () => {
+      const user = createTestUser({
+        memberships: [
+          createMembership({
+            role: 'VIEWER',
+            company: {
+              id: COMPANY_ID,
+              name: 'Acme Corp',
+              country: null,
+              taxId: null,
+              isActive: false,
+            },
+          }),
+        ],
+      });
+
+      expect(getSwitcherMemberships(user)).toHaveLength(0);
+    });
+
+    it('keeps inactive companies for owners', () => {
+      const user = createTestUser({
+        memberships: [
+          createMembership({
+            role: 'OWNER',
+            company: {
+              id: COMPANY_ID,
+              name: 'Acme Corp',
+              country: null,
+              taxId: null,
+              isActive: false,
+            },
+          }),
+        ],
+      });
+
+      expect(getSwitcherMemberships(user)).toHaveLength(1);
+    });
+  });
+
   describe('getPendingInvitations', () => {
     it('excludes expired invitations', () => {
       const user = createTestUser({
@@ -129,7 +176,13 @@ describe('permissions', () => {
             expired: false,
             invitedAt: '2026-01-01T00:00:00.000Z',
             expiresAt: '2026-12-31T00:00:00.000Z',
-            company: { id: COMPANY_ID, name: 'Acme Corp', country: null, taxId: null },
+            company: {
+              id: COMPANY_ID,
+              name: 'Acme Corp',
+              country: null,
+              taxId: null,
+              isActive: true,
+            },
           },
           {
             id: '00000000-0000-0000-0000-000000000031',
@@ -138,7 +191,13 @@ describe('permissions', () => {
             expired: true,
             invitedAt: '2025-01-01T00:00:00.000Z',
             expiresAt: '2025-01-01T00:00:00.000Z',
-            company: { id: COMPANY_ID, name: 'Acme Corp', country: null, taxId: null },
+            company: {
+              id: COMPANY_ID,
+              name: 'Acme Corp',
+              country: null,
+              taxId: null,
+              isActive: true,
+            },
           },
         ],
       });
@@ -192,6 +251,7 @@ describe('permissions', () => {
           name: 'Beta',
           country: null,
           taxId: null,
+          isActive: true,
         },
       }),
     ];

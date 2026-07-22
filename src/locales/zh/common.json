@@ -21,6 +21,8 @@
     "themeSystem": "跟随系统",
     "backButton": "返回",
     "sessionLoadFailed": "无法连接服务器。请检查网络后重试。",
-    "retry": "重试"
+    "retry": "重试",
+    "inactiveCompanies": "已停用",
+    "companyDeactivated": "该公司已停用。请在个人资料中重新激活，或切换公司。"
   }
 }

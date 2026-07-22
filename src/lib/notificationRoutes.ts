@@ -13,7 +13,7 @@ export function resolveNotificationPath(
     notification.type === NotificationType.PARTNER_INVITATION_RECEIVED &&
     notification.partnerLinkId
   ) {
-    return `/app/partners?tab=inbound&linkId=${notification.partnerLinkId}`;
+    return `/app/partners?tab=invitations&linkId=${notification.partnerLinkId}`;
   }
 
   return resolveDocumentPath(

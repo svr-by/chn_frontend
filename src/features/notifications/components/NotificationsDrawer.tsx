@@ -16,7 +16,6 @@ import { useSnackbar } from 'notistack';
 
 import type { Notification } from '@/api/generated/models/notification';
 import {
-  useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation,
 } from '@/api/endpoints/notificationsApi';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
@@ -36,20 +35,6 @@ export function NotificationsDrawer({ open, onClose }: NotificationsDrawerProps)
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
 
   const [markRead] = useMarkNotificationReadMutation();
-  const [markAllRead, markAllState] = useMarkAllNotificationsReadMutation();
-
-  async function handleMarkAllRead() {
-    if (!companyId) {
-      return;
-    }
-
-    try {
-      await markAllRead({ companyId }).unwrap();
-      enqueueSnackbar(t('markAllReadSuccess'), { variant: 'success' });
-    } catch {
-      enqueueSnackbar(t('markAllReadError'), { variant: 'error' });
-    }
-  }
 
   async function handleNotificationClick(notification: Notification) {
     if (!companyId) {
@@ -90,13 +75,6 @@ export function NotificationsDrawer({ open, onClose }: NotificationsDrawerProps)
             alignItems="center"
           >
             <Typography variant="h6">{t('title')}</Typography>
-            <Button
-              size="small"
-              onClick={() => void handleMarkAllRead()}
-              disabled={markAllState.isLoading}
-            >
-              {t('markAllRead')}
-            </Button>
           </Stack>
 
           <ToggleButtonGroup

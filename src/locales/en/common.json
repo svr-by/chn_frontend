@@ -22,6 +22,8 @@
     "themeSystem": "System",
     "backButton": "Back",
     "sessionLoadFailed": "Unable to reach the server. Check your connection and try again.",
-    "retry": "Retry"
+    "retry": "Retry",
+    "inactiveCompanies": "Inactive",
+    "companyDeactivated": "This company is deactivated. Reactivate it in Profile or switch company."
   }
 }

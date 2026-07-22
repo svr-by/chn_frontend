@@ -11,7 +11,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PasswordField } from '@/components/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import {
-  getActiveMemberships,
+  getSwitcherMemberships,
   isEmailVerified,
   resolveActiveCompanyId,
   resolveAuthenticatedRedirect,
@@ -50,7 +50,7 @@ export function LoginPage() {
 
       const resolvedCompanyId = resolveActiveCompanyId(
         null,
-        getActiveMemberships(me.user),
+        getSwitcherMemberships(me.user),
       );
       dispatch(setActiveCompanyId(resolvedCompanyId));
 

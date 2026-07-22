@@ -1,8 +1,40 @@
 {
   "title": "Profile",
-  "subtitle": "Your account details.",
-  "name": "Name: {{name}}",
-  "email": "Email: {{email}}",
-  "emailVerified": "Email verified",
-  "emailNotVerified": "Email not verified"
+  "subtitle": "Your account and active company details.",
+  "sections": {
+    "account": "Account",
+    "accountHint": "Personal details for the signed-in user.",
+    "company": "Active company",
+    "companyHint": "Company selected in the switcher and your membership there."
+  },
+  "fields": {
+    "name": "Name",
+    "email": "Email",
+    "emailStatus": "Email verification",
+    "companyName": "Company",
+    "country": "Country",
+    "taxId": "Tax ID",
+    "role": "Role",
+    "companyStatus": "Company status",
+    "joinedAt": "Joined"
+  },
+  "emailVerified": "Verified",
+  "emailNotVerified": "Not verified",
+  "companyActive": "Active",
+  "companyInactive": "Inactive",
+  "noActiveCompany": "No active company selected.",
+  "companyStatus": {
+    "title": "Company status",
+    "activeHint": "This company is active. Deactivating blocks most company operations until reactivated.",
+    "inactiveHint": "This company is deactivated. Reactivate to restore access for members and API usage.",
+    "deactivate": "Deactivate company",
+    "reactivate": "Reactivate company",
+    "confirmDeactivateTitle": "Deactivate company?",
+    "confirmDeactivateMessage": "Members will lose access to company operations until an owner reactivates it. Data is kept.",
+    "cancel": "Cancel",
+    "toast": {
+      "deactivated": "Company deactivated",
+      "reactivated": "Company reactivated"
+    }
+  }
 }

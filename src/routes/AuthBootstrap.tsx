@@ -8,7 +8,7 @@ import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
 import {
-  getActiveMemberships,
+  getSwitcherMemberships,
   resolveActiveCompanyId,
 } from '@/lib/permissions';
 import { setActiveCompanyId, setBootstrapped } from '@/store/slices/authSlice';
@@ -54,10 +54,10 @@ export function AuthBootstrap() {
     }
 
     if (data?.user) {
-      const activeMemberships = getActiveMemberships(data.user);
+      const switcherMemberships = getSwitcherMemberships(data.user);
       const resolvedCompanyId = resolveActiveCompanyId(
         activeCompanyId,
-        activeMemberships,
+        switcherMemberships,
       );
 
       if (resolvedCompanyId !== activeCompanyId) {

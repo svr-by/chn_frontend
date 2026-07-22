@@ -1,5 +1,12 @@
 import { useMemo } from 'react';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+  Alert,
+  FormControl,
+  InputLabel,
+  ListSubheader,
+  MenuItem,
+  Select,
+} from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -7,7 +14,10 @@ import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
-import { getActiveMemberships } from '@/lib/permissions';
+import {
+  getSwitcherMemberships,
+  isCompanyOperational,
+} from '@/lib/permissions';
 import { setActiveCompanyId } from '@/store/slices/authSlice';
 import { baseApi } from '@/api/baseApi';
 
@@ -18,30 +28,38 @@ export function CompanySwitcher() {
   const hasRefreshToken = Boolean(authStorage.getRefreshToken());
   const { data } = useGetMeQuery(undefined, { skip: !hasRefreshToken });
 
-  const activeMemberships = useMemo(
-    () => getActiveMemberships(data?.user),
+  const switcherMemberships = useMemo(
+    () => getSwitcherMemberships(data?.user),
     [data?.user],
   );
 
-  if (activeMemberships.length <= 1) {
-    const companyName = activeMemberships[0]?.company?.name;
-    if (!companyName) {
-      return null;
-    }
+  const operationalMemberships = useMemo(
+    () =>
+      switcherMemberships.filter((membership) =>
+        isCompanyOperational(membership.company),
+      ),
+    [switcherMemberships],
+  );
 
-    return (
-      <FormControl size="small" sx={{ minWidth: 180 }}>
-        <Select
-          labelId="company-switcher-label"
-          value={activeCompanyId ?? ''}
-          label={t('app.company')}
-          variant="standard"
-          disabled
-        >
-          <MenuItem value={activeCompanyId ?? ''}>{companyName}</MenuItem>
-        </Select>
-      </FormControl>
-    );
+  const inactiveOwnerMemberships = useMemo(
+    () =>
+      switcherMemberships.filter(
+        (membership) =>
+          membership.role === 'OWNER' &&
+          !isCompanyOperational(membership.company),
+      ),
+    [switcherMemberships],
+  );
+
+  const activeMembership = switcherMemberships.find(
+    (membership) => membership.company?.id === activeCompanyId,
+  );
+  const isActiveCompanyInactive =
+    activeMembership != null &&
+    !isCompanyOperational(activeMembership.company);
+
+  if (switcherMemberships.length === 0) {
+    return null;
   }
 
   function handleChange(event: SelectChangeEvent<string>) {
@@ -50,24 +68,50 @@ export function CompanySwitcher() {
     dispatch(baseApi.util.invalidateTags(['Company']));
   }
 
+  const selectDisabled = switcherMemberships.length <= 1;
+
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
-      <InputLabel id="company-switcher-label">{t('app.company')}</InputLabel>
-      <Select
-        labelId="company-switcher-label"
-        value={activeCompanyId ?? ''}
-        label={t('app.company')}
-        onChange={handleChange}
-      >
-        {activeMemberships.map((membership) => (
-          <MenuItem
-            key={membership.company?.id}
-            value={membership.company?.id ?? ''}
-          >
-            {membership.company?.name}
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <>
+      <FormControl size="small" sx={{ minWidth: selectDisabled ? 180 : 200 }}>
+        {!selectDisabled && (
+          <InputLabel id="company-switcher-label">{t('app.company')}</InputLabel>
+        )}
+        <Select
+          labelId="company-switcher-label"
+          value={activeCompanyId ?? ''}
+          label={selectDisabled ? undefined : t('app.company')}
+          variant={selectDisabled ? 'standard' : 'outlined'}
+          disabled={selectDisabled}
+          onChange={handleChange}
+        >
+          {operationalMemberships.map((membership) => (
+            <MenuItem
+              key={membership.company?.id}
+              value={membership.company?.id ?? ''}
+            >
+              {membership.company?.name}
+            </MenuItem>
+          ))}
+          {inactiveOwnerMemberships.length > 0 && [
+            <ListSubheader key="inactive-header">
+              {t('app.inactiveCompanies')}
+            </ListSubheader>,
+            ...inactiveOwnerMemberships.map((membership) => (
+              <MenuItem
+                key={membership.company?.id}
+                value={membership.company?.id ?? ''}
+              >
+                {membership.company?.name}
+              </MenuItem>
+            )),
+          ]}
+        </Select>
+      </FormControl>
+      {isActiveCompanyInactive ? (
+        <Alert severity="warning" sx={{ mx: 1, py: 0 }}>
+          {t('app.companyDeactivated')}
+        </Alert>
+      ) : null}
+    </>
   );
 }
