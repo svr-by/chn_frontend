@@ -14,6 +14,7 @@ import { StatusBadge } from '@/components/StatusBadge';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
 import { RequestQuotesMatrix } from '@/features/requests/components/requestQuotesMatrix/RequestQuotesMatrix';
+import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -38,8 +39,7 @@ export function RequestDetailPage() {
 
   const request = requestQuery.data?.request;
   // const selection = selectionQuery.data?.selection;
-  const isDraft = request?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageRequests');
+  const canEdit = hasPermission('manageRequests');
 
   useEffect(() => {
     if (
@@ -62,7 +62,7 @@ export function RequestDetailPage() {
 
   return (
     <DocumentDetailLayout
-      title={title}
+      title={t('detail.title', { title })}
       statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
       loading={requestQuery.isLoading}
       error={requestQuery.error}
@@ -131,14 +131,24 @@ export function RequestDetailPage() {
               ),
             },
             {
+              value: 'suppliers',
+              label: t('tabs.suppliers'),
+              panel: (
+                <RequestSuppliersMatrix
+                  companyId={companyId}
+                  requestId={request.id}
+                  requestLines={request.lines}
+                  requestStatus={request.status}
+                />
+              ),
+            },
+            {
               value: 'quotes',
               label: t('tabs.quotes'),
               panel: (
                 <RequestQuotesMatrix
                   companyId={companyId}
                   requestId={request.id}
-                  requestLines={request.lines}
-                  requestStatus={request.status}
                 />
               ),
             },

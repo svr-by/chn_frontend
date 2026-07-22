@@ -36,7 +36,15 @@ vi.mock('@/api/endpoints/productsApi', () => ({
   })),
 }));
 
-vi.mock('@/api/endpoints/requestsApi', () => ({
+vi.mock('@/api/endpoints/requestsApi', () => {
+  const emptyDistributions = { distributions: [] as const };
+  const emptyQuoteComparison = {
+    request: null,
+    lines: [] as const,
+    suppliers: [] as const,
+  };
+
+  return {
   useGetRequestQuery: vi.fn(),
   useUpdateRequestMutation: vi.fn(),
   useAddRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
@@ -50,8 +58,12 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
+  useDeleteRequestDistributionMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn(), error: undefined },
+  ]),
   useGetRequestDistributionsQuery: vi.fn(() => ({
-    data: { distributions: [] },
+    data: emptyDistributions,
     isLoading: false,
     isFetching: false,
     refetch: vi.fn(),
@@ -59,14 +71,20 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
   useListRequestsQuery: vi.fn(),
   useCreateRequestMutation: vi.fn(),
   useListInboundRequestsQuery: vi.fn(),
-  useGetQuoteComparisonQuery: vi.fn(),
+  useGetQuoteComparisonQuery: vi.fn(() => ({
+    data: emptyQuoteComparison,
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
   useGetRequestSelectionQuery: vi.fn(() => ({
     data: undefined,
     isLoading: false,
     isFetching: false,
     refetch: vi.fn(),
   })),
-}));
+  };
+});
 
 vi.mock('@/api/endpoints/partnersApi', () => ({
   useListPartnersQuery: vi.fn(() => ({
@@ -122,7 +140,9 @@ describe('RequestDetailPage', () => {
     );
   });
 
-  it('shows send-to-suppliers action for draft requests with manageRequests', () => {
+  it('shows add-supplier action for draft requests with manageRequests', async () => {
+    const user = userEvent.setup();
+
     mockedUseGetRequestQuery.mockReturnValue({
       data: { request: createMaterialRequest({ status: 'DRAFT' }) },
       isLoading: false,
@@ -147,13 +167,18 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    expect(
-      screen.getByRole('button', { name: 'Send to suppliers' }),
-    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Add line' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Suppliers' }));
+
+    expect(
+      screen.getByRole('button', { name: 'Add supplier' }),
+    ).toBeInTheDocument();
   });
 
-  it('hides line actions and shows add suppliers for quoting requests', () => {
+  it('keeps line actions and shows add supplier for quoting requests', async () => {
+    const user = userEvent.setup();
+
     mockedUseGetRequestQuery.mockReturnValue({
       data: { request: createMaterialRequest({ status: 'QUOTING' }) },
       isLoading: false,
@@ -178,15 +203,13 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
+    expect(screen.getByRole('button', { name: 'Add line' })).toBeInTheDocument();
+
+    await user.click(screen.getByRole('tab', { name: 'Suppliers' }));
+
     expect(
-      screen.queryByRole('button', { name: 'Send to suppliers' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Add suppliers' }),
+      screen.getByRole('button', { name: 'Add supplier' }),
     ).toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Add line' }),
-    ).not.toBeInTheDocument();
   });
 
   it('opens distribute dialog from draft requests', async () => {
@@ -216,7 +239,8 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    await user.click(screen.getByRole('button', { name: 'Send to suppliers' }));
+    await user.click(screen.getByRole('tab', { name: 'Suppliers' }));
+    await user.click(screen.getByRole('button', { name: 'Add supplier' }));
 
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByText('Distribute to suppliers')).toBeInTheDocument();

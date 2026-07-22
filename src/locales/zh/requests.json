@@ -7,6 +7,7 @@
     "lines": "行",
     "notes": "备注",
     "details": "详情",
+    "suppliers": "供应商",
     "quotes": "报价"
   },
   "linesTitle": "行",
@@ -87,6 +88,7 @@
     "distribute": "分发",
     "sendToSuppliers": "发送给供应商",
     "addSuppliers": "添加供应商",
+    "addSupplier": "添加供应商",
     "compare": "比较报价",
     "manageSelection": "管理选择",
     "create": "创建申请",
@@ -148,6 +150,7 @@
     "replaceLinesMessage": "应用导入将替换表单中已添加的行。"
   },
   "detail": {
+    "title": "申请 {{title}}",
     "fallbackTitle": "申请 {{id}}",
     "createdBy": "创建人：{{name}}",
     "createdAt": "创建于 {{date}}",
@@ -170,11 +173,13 @@
     "message": "选择合作伙伴公司，并为每个供应商分配申请行。",
     "loading": "正在加载合作伙伴…",
     "empty": "未找到活跃合作伙伴。分发前请先建立合作伙伴关联。",
+    "allAssigned": "所有活跃合作伙伴均已收到此申请。",
     "goToPartners": "前往合作伙伴",
     "lineAssignment": "行分配",
     "createProducts": "为没有产品的行创建目录产品",
     "unassignedWarning": "{{count}} 行未分配给任何供应商。",
     "selectedLines": "已选择 {{count}} 个行项目",
+    "allLines": "将向该供应商发送全部 {{count}} 个行项目。",
     "supplier": "供应商",
     "supplierPlaceholder": "选择供应商",
     "validation": {
@@ -192,6 +197,20 @@
     "empty": "暂无供应商分发。",
     "rejectedCount": "{{count}} 个已拒绝",
     "resend": "重新发送",
+    "editLines": "保存行选择",
+    "remove": "移除供应商",
+    "rejected": "供应商已拒绝此申请",
+    "rejectedWithReason": "供应商已拒绝此申请：{{reason}}",
+    "toggleLine": "将第 {{line}} 行分配给 {{supplier}}",
+    "confirmEditTitle": "更新行选择？",
+    "confirmEditMessage": "将 {{count}} 个所选行项目发送给 {{supplier}}？其草稿报价（如有）将被替换。",
+    "confirmResendTitle": "重新发送？",
+    "confirmResendMessage": "以当前行选择再次向 {{supplier}} 发送申请？",
+    "confirmRemoveTitle": "移除供应商？",
+    "confirmRemoveMessage": "从该申请中移除 {{supplier}}？其草稿报价（如有）将被删除。",
+    "toast": {
+      "removed": "已移除供应商分发"
+    },
     "columns": {
       "supplier": "供应商",
       "status": "状态",
@@ -199,7 +218,7 @@
       "rejection": "拒绝"
     }
   },
-  "quotesMatrix": {
+  "suppliersMatrix": {
     "loading": "正在加载供应商分发…",
     "sent": "已发送给供应商",
     "notSent": "未发送给此供应商"

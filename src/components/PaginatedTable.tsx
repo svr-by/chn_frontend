@@ -3,6 +3,7 @@ import {
   type MRT_ColumnDef,
   type MRT_ColumnFiltersState,
   type MRT_PaginationState,
+  type MRT_RowSelectionState,
   type MRT_TableOptions,
 } from 'material-react-table';
 
@@ -23,6 +24,9 @@ interface PaginatedTableProps<T extends object> {
   onRowClick?: (row: T) => void;
   getRowId?: (row: T) => string;
   enableColumnFilters?: boolean;
+  enableRowSelection?: boolean;
+  rowSelection?: MRT_RowSelectionState;
+  onRowSelectionChange?: MRT_TableOptions<T>['onRowSelectionChange'];
   manualFiltering?: boolean;
   columnFilters?: MRT_ColumnFiltersState;
   onColumnFiltersChange?: MRT_TableOptions<T>['onColumnFiltersChange'];
@@ -48,6 +52,9 @@ export function PaginatedTable<T extends object>({
   onRowClick,
   getRowId,
   enableColumnFilters,
+  enableRowSelection = false,
+  rowSelection,
+  onRowSelectionChange,
   manualFiltering,
   columnFilters,
   onColumnFiltersChange,
@@ -78,6 +85,8 @@ export function PaginatedTable<T extends object>({
     enableDensityToggle: false,
     enableHiding: false,
     enableColumnFilters,
+    enableRowSelection,
+    onRowSelectionChange,
     manualFiltering,
     onColumnFiltersChange,
     columnFilterDisplayMode,
@@ -90,6 +99,7 @@ export function PaginatedTable<T extends object>({
       showProgressBars: isFetching,
       ...(columnFilters !== undefined ? { columnFilters } : {}),
       ...(globalFilter !== undefined ? { globalFilter } : {}),
+      ...(rowSelection !== undefined ? { rowSelection } : {}),
     },
     muiTableBodyRowProps: onRowClick
       ? ({ row }) => ({

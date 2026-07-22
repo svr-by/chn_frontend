@@ -1,4 +1,5 @@
 import {
+  getDeleteCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdUrl,
   getDeleteCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl,
   getDeleteCompaniesCompanyIdRequestsRequestIdUrl,
   getGetCompaniesCompanyIdRequestLinesInboundUrl,
@@ -267,6 +268,24 @@ export const requestsApi = baseApi.injectEndpoints({
         { type: 'Requests', id: `${requestId}-distributions` },
       ],
     }),
+    deleteRequestDistribution: builder.mutation<
+      void,
+      { companyId: string; requestId: string; distributionId: string }
+    >({
+      query: ({ companyId, requestId, distributionId }) => ({
+        url: getDeleteCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdUrl(
+          companyId,
+          requestId,
+          distributionId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (_result, _error, { companyId, requestId }) => [
+        ...requestDetailTags(companyId, requestId),
+        ...inboundTags(companyId),
+        { type: 'Requests', id: `${requestId}-distributions` },
+      ],
+    }),
     getQuoteComparison: builder.query<
       GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
       { companyId: string; requestId: string }
@@ -317,6 +336,7 @@ export const {
   useDeleteRequestMutation,
   useListInboundRequestsQuery,
   useDistributeRequestMutation,
+  useDeleteRequestDistributionMutation,
   useRejectInboundRequestMutation,
   useGetRequestDistributionsQuery,
   useGetQuoteComparisonQuery,

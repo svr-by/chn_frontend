@@ -9,6 +9,7 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -50,6 +51,7 @@ export function RequestStatusActions({
           <Button
             variant="outlined"
             color="error"
+            startIcon={<DeleteOutlineOutlinedIcon />}
             onClick={() => setDeleteConfirmOpen(true)}
           >
             {t('actions.delete')}

@@ -26,7 +26,7 @@ interface RequestDistributeToSupplierDialogProps {
   companyId: string;
   requestId: string;
   requestLineIds: string[];
-  initialSupplierCompanyId?: string;
+  excludeSupplierCompanyIds?: string[];
   onClose: () => void;
   onDistributed?: () => void;
 }
@@ -36,7 +36,7 @@ export function RequestDistributeToSupplierDialog({
   companyId,
   requestId,
   requestLineIds,
-  initialSupplierCompanyId,
+  excludeSupplierCompanyIds = [],
   onClose,
   onDistributed,
 }: RequestDistributeToSupplierDialogProps) {
@@ -52,9 +52,24 @@ export function RequestDistributeToSupplierDialog({
 
   const [distributeRequest, distributeState] = useDistributeRequestMutation();
 
-  const activePartners = useMemo(
+  const excludedIds = useMemo(
+    () => new Set(excludeSupplierCompanyIds),
+    [excludeSupplierCompanyIds],
+  );
+
+  const availablePartners = useMemo(
     () =>
       (partnersQuery.data?.partners ?? []).filter(
+        (partner) =>
+          partner.status === 'ACTIVE' &&
+          !excludedIds.has(partner.company.id),
+      ),
+    [partnersQuery.data?.partners, excludedIds],
+  );
+
+  const hasActivePartners = useMemo(
+    () =>
+      (partnersQuery.data?.partners ?? []).some(
         (partner) => partner.status === 'ACTIVE',
       ),
     [partnersQuery.data?.partners],
@@ -65,16 +80,9 @@ export function RequestDistributeToSupplierDialog({
       return;
     }
 
-    const preselected =
-      initialSupplierCompanyId == null
-        ? null
-        : (activePartners.find(
-            (partner) => partner.company.id === initialSupplierCompanyId,
-          ) ?? null);
-
-    setSupplier(preselected);
+    setSupplier(null);
     setValidationError(null);
-  }, [open, initialSupplierCompanyId, activePartners]);
+  }, [open]);
 
   async function handleDistribute() {
     if (!supplier) {
@@ -87,23 +95,27 @@ export function RequestDistributeToSupplierDialog({
       return;
     }
 
-    await distributeRequest({
-      companyId,
-      requestId,
-      createProducts: false,
-      distributions: [
-        {
-          supplierCompanyId: supplier.company.id,
-          requestLineIds,
-        },
-      ],
-    }).unwrap();
+    try {
+      await distributeRequest({
+        companyId,
+        requestId,
+        createProducts: false,
+        distributions: [
+          {
+            supplierCompanyId: supplier.company.id,
+            requestLineIds,
+          },
+        ],
+      }).unwrap();
 
-    enqueueSnackbar(t('distribute.toast.success'), { variant: 'success' });
-    setSupplier(null);
-    setValidationError(null);
-    onDistributed?.();
-    onClose();
+      enqueueSnackbar(t('distribute.toast.success'), { variant: 'success' });
+      setSupplier(null);
+      setValidationError(null);
+      onDistributed?.();
+      onClose();
+    } catch {
+      // ApiErrorAlert shows distributeState.error
+    }
   }
 
   function handleClose() {
@@ -120,12 +132,12 @@ export function RequestDistributeToSupplierDialog({
           <ApiErrorAlert error={distributeState.error} />
 
           <Typography>
-            {t('distribute.selectedLines', { count: requestLineIds.length })}
+            {t('distribute.allLines', { count: requestLineIds.length })}
           </Typography>
 
           {partnersQuery.isLoading ? (
             <Typography color="text.secondary">{t('distribute.loading')}</Typography>
-          ) : activePartners.length === 0 ? (
+          ) : !hasActivePartners ? (
             <Stack spacing={1}>
               <Typography color="text.secondary">
                 {t('distribute.empty')}
@@ -134,9 +146,13 @@ export function RequestDistributeToSupplierDialog({
                 {t('distribute.goToPartners')}
               </Link>
             </Stack>
+          ) : availablePartners.length === 0 ? (
+            <Typography color="text.secondary">
+              {t('distribute.allAssigned')}
+            </Typography>
           ) : (
             <Autocomplete
-              options={activePartners}
+              options={availablePartners}
               value={supplier}
               onChange={(_event, value) => {
                 setValidationError(null);
@@ -168,7 +184,7 @@ export function RequestDistributeToSupplierDialog({
             distributeState.isLoading ||
             !supplier ||
             requestLineIds.length === 0 ||
-            activePartners.length === 0
+            availablePartners.length === 0
           }
         >
           {t('actions.distribute')}

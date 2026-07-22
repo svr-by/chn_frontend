@@ -7,6 +7,7 @@
     "lines": "Lines",
     "notes": "Notes",
     "details": "Details",
+    "suppliers": "Suppliers",
     "quotes": "Quotes"
   },
   "linesTitle": "Lines",
@@ -87,6 +88,7 @@
     "distribute": "Distribute",
     "sendToSuppliers": "Send to suppliers",
     "addSuppliers": "Add suppliers",
+    "addSupplier": "Add supplier",
     "compare": "Compare quotes",
     "manageSelection": "Manage selection",
     "create": "Create request",
@@ -148,6 +150,7 @@
     "replaceLinesMessage": "Applying the import will replace the lines already added to the form."
   },
   "detail": {
+    "title": "Request {{title}}",
     "fallbackTitle": "Request {{id}}",
     "createdBy": "Created by {{name}}",
     "createdAt": "Created {{date}}",
@@ -170,11 +173,13 @@
     "message": "Select partner companies and assign request lines to each supplier.",
     "loading": "Loading partners…",
     "empty": "No active partners found. Connect partners before distributing.",
+    "allAssigned": "All active partners already have this request.",
     "goToPartners": "Go to partners",
     "lineAssignment": "Line assignment",
     "createProducts": "Create catalog products for lines without a product",
     "unassignedWarning": "{{count}} line(s) are not assigned to any supplier.",
     "selectedLines": "{{count}} position(s) selected",
+    "allLines": "All {{count}} position(s) will be sent to the supplier.",
     "supplier": "Supplier",
     "supplierPlaceholder": "Select a supplier",
     "validation": {
@@ -192,6 +197,20 @@
     "empty": "No supplier distributions yet.",
     "rejectedCount": "{{count}} rejected",
     "resend": "Send again",
+    "editLines": "Save line selection",
+    "remove": "Remove supplier",
+    "rejected": "Supplier rejected this request",
+    "rejectedWithReason": "Supplier rejected this request: {{reason}}",
+    "toggleLine": "Assign line {{line}} to {{supplier}}",
+    "confirmEditTitle": "Update line selection?",
+    "confirmEditMessage": "Send {{count}} selected position(s) to {{supplier}}? Their draft quote (if any) will be replaced.",
+    "confirmResendTitle": "Send again?",
+    "confirmResendMessage": "Send the request to {{supplier}} again with the current line selection?",
+    "confirmRemoveTitle": "Remove supplier?",
+    "confirmRemoveMessage": "Remove {{supplier}} from this request? Their draft quote (if any) will be deleted.",
+    "toast": {
+      "removed": "Supplier distribution removed"
+    },
     "columns": {
       "supplier": "Supplier",
       "status": "Status",
@@ -199,7 +218,7 @@
       "rejection": "Rejection"
     }
   },
-  "quotesMatrix": {
+  "suppliersMatrix": {
     "loading": "Loading supplier distributions…",
     "sent": "Sent to supplier",
     "notSent": "Not sent to this supplier"
