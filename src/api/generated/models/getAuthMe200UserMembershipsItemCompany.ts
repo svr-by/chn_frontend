@@ -10,4 +10,5 @@ export type GetAuthMe200UserMembershipsItemCompany = {
   name: string;
   taxId: GetAuthMe200UserMembershipsItemCompanyTaxId;
   country: GetAuthMe200UserMembershipsItemCompanyCountry;
+  isActive: boolean;
 };

@@ -10,4 +10,5 @@ export type PostAuthRegister201AcceptedMembershipCompany = {
   name: string;
   taxId: PostAuthRegister201AcceptedMembershipCompanyTaxId;
   country: PostAuthRegister201AcceptedMembershipCompanyCountry;
+  isActive: boolean;
 };

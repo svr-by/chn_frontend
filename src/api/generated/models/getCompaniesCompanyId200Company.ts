@@ -11,6 +11,6 @@ export type GetCompaniesCompanyId200Company = {
   name: string;
   taxId: GetCompaniesCompanyId200CompanyTaxId;
   country: GetCompaniesCompanyId200CompanyCountry;
-  membership: GetCompaniesCompanyId200CompanyMembership;
   isActive: boolean;
+  membership: GetCompaniesCompanyId200CompanyMembership;
 };

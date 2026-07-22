@@ -10,4 +10,5 @@ export type GetAuthMe200UserPendingInvitationsItemCompany = {
   name: string;
   taxId: GetAuthMe200UserPendingInvitationsItemCompanyTaxId;
   country: GetAuthMe200UserPendingInvitationsItemCompanyCountry;
+  isActive: boolean;
 };

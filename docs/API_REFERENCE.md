@@ -64,9 +64,11 @@ Exception: `POST /companies/{companyId}/members/accept` requires only Bearer JWT
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `POST` | `/companies` | 🔑 | Create a company |
-| `GET` | `/companies` | 🔑 | List companies for current user (paginated: `limit`, `offset`) |
-| `GET` | `/companies/{companyId}` | 🏢 | Get company details |
+| `POST` | `/companies` | 🔑 | Create a company (max **3** owned companies per user, including inactive) |
+| `GET` | `/companies` | 🔑 | List companies for current user (paginated: `limit`, `offset`; includes `isActive`) |
+| `GET` | `/companies/{companyId}` | 🏢 | Get company details (allowed when company is inactive) |
+| `POST` | `/companies/{companyId}/deactivate` | 🏢 | Soft-delete: set `isActive=false` (OWNER only) |
+| `POST` | `/companies/{companyId}/reactivate` | 🏢 | Restore: set `isActive=true` (OWNER only; allowed when inactive) |
 | `GET` | `/companies/{companyId}/members` | 🏢 | List company members (paginated) |
 | `GET` | `/companies/{companyId}/members/invitations` | 🏢 | List pending invitations (`MemberInvitation`, including expired; paginated) |
 | `POST` | `/companies/{companyId}/members/invite` | 🏢 | Invite member by email (`locale?`; always creates `MemberInvitation`) |
@@ -76,17 +78,30 @@ Exception: `POST /companies/{companyId}/members/accept` requires only Bearer JWT
 | `PATCH` | `/companies/{companyId}/members/{memberId}` | 🏢 | Update member role and/or status |
 | `PATCH` | `/companies/{companyId}/members/{memberId}/permissions` | 🏢 | Set permission grants/denies |
 
+### Soft-delete (`isActive`)
+
+- Deactivate / reactivate are **OWNER-only**. Responses: `{ company }` (full company object with `isActive`).
+- While `isActive=false`, company-scoped routes return `403 COMPANY_INACTIVE`, except:
+  - `GET /companies/{companyId}`
+  - `POST /companies/{companyId}/reactivate`
+- `GET /companies` and `GET /auth/me` still return the membership; company payloads include `isActive` so the client can hide inactive companies in the switcher.
+- Memberships, documents, partners, and API keys are **not** deleted. API keys for an inactive company fail with `COMPANY_INACTIVE`. Accepting a member invite into an inactive company fails with `COMPANY_INACTIVE`.
+
+### Create limit
+
+- A user may **own** at most **3** companies (`POST /companies`). Count is by `OWNER` memberships; inactive companies still count.
+- Over limit → `409 COMPANY_OWNERSHIP_LIMIT_REACHED`. Joining other companies as a non-owner member is unlimited.
+
 ---
 
 ## Partners
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| `GET` | `/companies/{companyId}/partners` | 🏢 | List all partner links |
-| `GET` | `/companies/{companyId}/partners/inbound` | 🏢 | Inbound partner invitations |
-| `GET` | `/companies/{companyId}/partners/outbound` | 🏢 | Outbound partner invitations |
-| `GET` | `/companies/{companyId}/partners/directory` | 🏢 | Search companies (`q` or `taxId`) |
-| `POST` | `/companies/{companyId}/partners/invite` | 🏢 | Invite partner company |
+| `GET` | `/companies/{companyId}/partners` | 🏢 | List active partner links |
+| `GET` | `/companies/{companyId}/partners/invitations` | 🏢 | Pending invitations (`direction?=inbound\|outbound`) |
+| `POST` | `/companies/{companyId}/partners/invite` | 🏢 | Invite by contact email (`email`, optional `companyId`) |
+| `DELETE` | `/companies/{companyId}/partners/{linkId}` | 🏢 | Cancel outbound pending invitation |
 | `POST` | `/companies/{companyId}/partners/{linkId}/accept` | 🏢 | Accept partner invitation |
 | `POST` | `/companies/{companyId}/partners/{linkId}/reject` | 🏢 | Reject partner invitation |
 
@@ -108,23 +123,26 @@ Hard delete removes the catalog row. Linked `RequestLine.productId` values becom
 
 ## Material requests
 
+Header and lines are editable in **all** request statuses (including `CLOSED`). Hard-delete of the whole request remains `DRAFT` only. 1C upsert remains `DRAFT` only (`REQUEST_NOT_EDITABLE_FROM_1C`).
+
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/companies/{companyId}/requests` | 🏢 | List material requests (`status?`, `productId?`) |
 | `GET` | `/companies/{companyId}/request-lines` | 🏢 | List request lines across company (work-queue filters + pipeline links) |
 | `POST` | `/companies/{companyId}/requests` | 🏢 | Create draft request (optionally with lines in one request) |
-| `GET` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Get request with lines |
-| `PATCH` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Update draft request (optionally full-replace `lines`) |
-| `DELETE` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Delete draft request (`204`, DRAFT only) |
+| `GET` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Get request with lines (includes cancelled lines; `cancelledAt`) |
+| `PATCH` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Update request header and/or full-replace `lines` |
+| `DELETE` | `/companies/{companyId}/requests/{requestId}` | 🏢 | Delete draft request (`204`) |
 | `POST` | `/companies/{companyId}/requests/{requestId}/lines` | 🏢 | Add request line |
-| `PATCH` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Update request line |
-| `DELETE` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Remove request line |
-| `POST` | `/companies/{companyId}/requests/{requestId}/distribute` | 🏢 | Send request to suppliers |
+| `PATCH` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Update request line (not cancelled) |
+| `DELETE` | `/companies/{companyId}/requests/{requestId}/lines/{lineId}` | 🏢 | Remove or soft-cancel request line |
+| `POST` | `/companies/{companyId}/requests/{requestId}/distribute` | 🏢 | Send / upsert request distributions to suppliers |
 | `GET` | `/companies/{companyId}/requests/{requestId}/distributions` | 🏢 | List all supplier distributions for a request (buyer view) |
+| `DELETE` | `/companies/{companyId}/requests/{requestId}/distributions/{distributionId}` | 🏢 | Remove a supplier distribution (`204`) |
 | `GET` | `/companies/{companyId}/requests/inbound` | 🏢 | Inbound request summaries (supplier view) |
 | `GET` | `/companies/{companyId}/requests/inbound/{requestId}` | 🏢 | Inbound request detail with assigned lines (supplier view) |
 | `POST` | `/companies/{companyId}/requests/inbound/{requestId}/reject` | 🏢 | Supplier rejects inbound request distribution |
-| `GET` | `/companies/{companyId}/request-lines/inbound` | 🏢 | Flat inbound request lines work-queue (supplier view) |
+| `GET` | `/companies/{companyId}/request-lines/inbound` | 🏢 | Flat inbound request lines work-queue (supplier view; active lines only) |
 | `GET` | `/companies/{companyId}/requests/{requestId}/billable-lines` | 🏢 | Lines available for invoicing |
 | `GET` | `/companies/{companyId}/requests/{requestId}/selection` | 🏢 | Selection for request |
 | `GET` | `/companies/{companyId}/requests/{requestId}/quotes/comparison` | 🏢 | Quote comparison matrix |
@@ -134,7 +152,7 @@ Hard delete removes the catalog row. Linked `RequestLine.productId` values becom
 
 Creates a **draft** (`DRAFT`). Quoting starts with `POST .../requests/{requestId}/distribute` from `DRAFT` (see Distribute request below).
 
-**Without `lines`** — empty draft (backward compatible): only header fields (`title`, `reference`, `notes`).
+**Without `lines`** — empty draft (backward compatible): only header fields (`title`, `reference`, `notes`, `createdAt`).
 
 **With `lines`** — atomic bulk-create of header + all request lines in one transaction.
 
@@ -145,6 +163,7 @@ Request body (relevant fields):
 | `title` | string? | Request title |
 | `reference` | string? | External reference |
 | `notes` | string? | Notes |
+| `createdAt` | ISO datetime? | Override creation timestamp (must be ≤ now; defaults to server time) |
 | `lines` | array? | Request lines (min 1 when provided) |
 
 Each line in `lines`:
@@ -177,13 +196,25 @@ Each item includes the line, a short `request` summary, and `links` flags for UI
 
 ### Update request (`PATCH /companies/{companyId}/requests/{requestId}`)
 
-Draft only. Updates header fields and/or **full-replaces** lines when `lines` is provided:
+Allowed in any request status. Updates header fields (`title`, `reference`, `notes`, `createdAt` — past or present only) and/or **full-replaces** lines when `lines` is provided:
 
-- line with `id` — update (preserves `lineageId`)
+- line with `id` — update (preserves `lineageId`; cancelled lines cannot be updated — `400 REQUEST_LINE_CANCELLED`)
 - line without `id` — create
-- existing lines missing from array — delete
+- existing **active** lines missing from array — hard-delete if unused, otherwise soft-cancel (`cancelledAt`)
+
+Quantity cannot drop below already selected quantity for the line’s `lineageId` (`400 REQUEST_QUANTITY_BELOW_SELECTED`).
 
 Same line fields as create. Product matching rules apply (match only, no auto-create).
+
+### Remove request line (`DELETE /companies/{companyId}/requests/{requestId}/lines/{lineId}`)
+
+Allowed in any request status.
+
+- No quote / distribution references → hard-delete
+- Otherwise → soft-cancel (`cancelledAt`); already cancelled → `409 REQUEST_LINE_ALREADY_CANCELLED`
+- Response `200`: `{ "success": true }`
+
+Distribute, inbound queues, and selection confirm use **active** lines only (`cancelledAt: null`).
 
 ### Distribute request (`POST /companies/{companyId}/requests/{requestId}/distribute`)
 
@@ -217,7 +248,12 @@ Example:
 
 Response `200`: `{ "request": { ... }, "productsCreated?": number }`
 
-Re-sending to a supplier who **rejected** the request (distribution status `REJECTED`) is allowed: the existing distribution is reset to `PENDING` with new `requestLineIds`. Returns `409 REQUEST_ALREADY_DISTRIBUTED` if that supplier already has a **pending** distribution. Returns `409 QUOTE_EXISTS_CANNOT_REDISTRIBUTE` if a submitted quote exists for that supplier on this request.
+**Upsert semantics:** for each supplier in `distributions`:
+
+- No existing distribution → create `PENDING` with the given lines
+- Existing `PENDING` or `REJECTED` → reset to `PENDING`, replace `requestLineIds`, clear reject metadata, bump `distributedAt`
+- Any existing `DRAFT` quote for that supplier on this request is deleted before the replace
+- Returns `409 QUOTE_EXISTS_CANNOT_REDISTRIBUTE` if a submitted (or further) quote exists for that supplier on this request
 
 ### List request distributions (`GET /companies/{companyId}/requests/{requestId}/distributions`)
 
@@ -245,6 +281,15 @@ Response `200`:
 
 Includes all statuses (`PENDING` and `REJECTED`). Sorted by `distributedAt` descending.
 
+### Delete request distribution (`DELETE /companies/{companyId}/requests/{requestId}/distributions/{distributionId}`)
+
+Buyer removes a supplier assignment. Requires `manageRequests`. Hard-deletes the `RequestDistribution` (lines cascade). Response `204`.
+
+- Existing `DRAFT` quote for that supplier on this request is deleted first
+- Returns `409 QUOTE_EXISTS_CANNOT_DELETE_DISTRIBUTION` if a submitted (or further) quote exists
+- Returns `403 REQUEST_NOT_DISTRIBUTED` if the distribution id is missing or does not belong to this request
+- After delete, the supplier disappears from inbound views; buyer may `POST .../distribute` again to the same supplier
+
 Suppliers see only assigned lines in inbound detail and flat inbound request-lines endpoints. Attempting to quote a non-assigned `requestLineId` returns `403 REQUEST_LINE_NOT_DISTRIBUTED`.
 
 ### Inbound requests (supplier view)
@@ -269,7 +314,7 @@ Requires `manageQuotes`. Optional body: `{ "reason": "..." }`.
 
 Response `200`: `{ "distribution": { "status": "REJECTED", "rejectionReason", "lines", ... } }`
 
-After reject, the request disappears from inbound views. A draft quote for this request (if any) is deleted. Returns `409 QUOTE_EXISTS_CANNOT_REJECT` if a submitted quote exists. Returns `409 REQUEST_DISTRIBUTION_NOT_REJECTABLE` on repeat reject.
+After reject, the request disappears from inbound views. A draft quote for this request (if any) is hard-deleted (with comments / document events / notifications). Returns `409 QUOTE_EXISTS_CANNOT_REJECT` if a submitted quote exists. Returns `409 REQUEST_DISTRIBUTION_NOT_REJECTABLE` on repeat reject.
 
 **Flat work-queue** — `GET /companies/{companyId}/request-lines/inbound`
 
@@ -286,12 +331,14 @@ GET /request-lines/inbound → POST /quotes
 Reject: POST /requests/inbound/{requestId}/reject
 ```
 
-Buyer re-send after reject: same `POST .../distribute` to the same supplier (distribution resets to `PENDING`).
+Buyer re-send after reject or to change lines on `PENDING`: same `POST .../distribute` (upsert). Buyer can remove a supplier assignment with `DELETE .../distributions/{distributionId}`.
 
 ### Delete request (`DELETE /companies/{companyId}/requests/{requestId}`)
 
-- Allowed only for `DRAFT` requests (`400 REQUEST_NOT_DELETABLE` otherwise)
-- Cascades delete of request lines; catalog products are kept
+- Allowed only for `DRAFT` (`400 REQUEST_NOT_DELETABLE` otherwise)
+- Blocked if quotes, selection, invoices, or shipping documents exist (`409 REQUEST_HAS_DOWNSTREAM_DOCUMENTS`) — cross-document FKs are `Restrict`
+- Cascades owned rows only (request lines, distributions); catalog products are kept
+- Cleans polymorphic artifacts (comments, document events, notifications) for this request
 - Response `204`
 
 **Typical UI flow:** preview file → fill form → `POST /requests` → edit → `PATCH /requests` → `POST .../distribute` with selected `requestLineIds` per supplier and optional `createProducts`
@@ -300,20 +347,34 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 
 ## Quotes
 
+Editable in `DRAFT` and `SUBMITTED`. Submit remains from `DRAFT` only.
+
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/companies/{companyId}/quotes` | 🏢 | List supplier quotes |
 | `POST` | `/companies/{companyId}/quotes` | 🏢 | Create quote for a request |
 | `GET` | `/companies/{companyId}/quotes/{quoteId}` | 🏢 | Get quote with lines |
-| `PATCH` | `/companies/{companyId}/quotes/{quoteId}` | 🏢 | Update draft quote |
+| `PATCH` | `/companies/{companyId}/quotes/{quoteId}` | 🏢 | Update quote header |
+| `DELETE` | `/companies/{companyId}/quotes/{quoteId}` | 🏢 | Delete draft quote (`204`) |
 | `POST` | `/companies/{companyId}/quotes/{quoteId}/lines` | 🏢 | Add quote line |
 | `PATCH` | `/companies/{companyId}/quotes/{quoteId}/lines/{lineId}` | 🏢 | Update quote line |
 | `DELETE` | `/companies/{companyId}/quotes/{quoteId}/lines/{lineId}` | 🏢 | Remove quote line |
 | `POST` | `/companies/{companyId}/quotes/{quoteId}/submit` | 🏢 | Submit quote to buyer |
 
+### Delete quote (`DELETE /companies/{companyId}/quotes/{quoteId}`)
+
+- `DRAFT` only (`400 QUOTE_NOT_DELETABLE`)
+- Blocked if any selection line references the quote (`409 QUOTE_HAS_SELECTIONS`)
+- Cleans comments / events / notifications for the quote
+- Response `204`
+
+Removing a quote line is blocked if a selection references it (`409 QUOTE_LINE_HAS_SELECTIONS`). Cancelled request lines cannot be quoted (`400 REQUEST_LINE_CANCELLED`).
+
 ---
 
 ## Selections
+
+Editable in `DRAFT` and `CONFIRMED` (not `CANCELLED`). Confirm / cancel remain draft-only transitions.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -321,27 +382,49 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 | `POST` | `/companies/{companyId}/selections` | 🏢 | Create selection for request |
 | `GET` | `/companies/{companyId}/selections/{selectionId}` | 🏢 | Get selection with lines |
 | `PATCH` | `/companies/{companyId}/selections/{selectionId}` | 🏢 | Update selection notes |
+| `DELETE` | `/companies/{companyId}/selections/{selectionId}` | 🏢 | Delete draft selection (`204`) |
 | `POST` | `/companies/{companyId}/selections/{selectionId}/lines` | 🏢 | Add selection line |
 | `PATCH` | `/companies/{companyId}/selections/{selectionId}/lines/{lineId}` | 🏢 | Update selection line |
 | `DELETE` | `/companies/{companyId}/selections/{selectionId}/lines/{lineId}` | 🏢 | Remove selection line |
 | `POST` | `/companies/{companyId}/selections/{selectionId}/confirm` | 🏢 | Confirm selection |
 | `POST` | `/companies/{companyId}/selections/{selectionId}/cancel` | 🏢 | Cancel selection |
 
+### Delete selection (`DELETE /companies/{companyId}/selections/{selectionId}`)
+
+- `DRAFT` only (`400 SELECTION_NOT_DELETABLE`)
+- Blocked if invoices reference selection lines (`409 SELECTION_HAS_INVOICES`)
+- Cleans comments / events / notifications
+- Response `204`
+
+Removing a selection line is blocked if invoiced (`409 SELECTION_LINE_HAS_INVOICES`).
+
 ---
 
 ## Invoices
+
+Editable in `DRAFT` and `ISSUED` (not paid / confirmed).
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/companies/{companyId}/invoices` | 🏢 | List invoices (`direction`, `status`) |
 | `POST` | `/companies/{companyId}/invoices` | 🏢 | Create draft invoice |
 | `GET` | `/companies/{companyId}/invoices/{invoiceId}` | 🏢 | Get invoice with lines |
-| `PATCH` | `/companies/{companyId}/invoices/{invoiceId}` | 🏢 | Update draft invoice |
+| `PATCH` | `/companies/{companyId}/invoices/{invoiceId}` | 🏢 | Update invoice header |
+| `DELETE` | `/companies/{companyId}/invoices/{invoiceId}` | 🏢 | Delete draft invoice (`204`) |
 | `POST` | `/companies/{companyId}/invoices/{invoiceId}/lines` | 🏢 | Add invoice line |
 | `PATCH` | `/companies/{companyId}/invoices/{invoiceId}/lines/{lineId}` | 🏢 | Update invoice line |
 | `DELETE` | `/companies/{companyId}/invoices/{invoiceId}/lines/{lineId}` | 🏢 | Remove invoice line |
 | `POST` | `/companies/{companyId}/invoices/{invoiceId}/issue` | 🏢 | Issue invoice |
 | `POST` | `/companies/{companyId}/invoices/{invoiceId}/confirm` | 🏢 | Confirm invoice fully paid |
+
+### Delete invoice (`DELETE /companies/{companyId}/invoices/{invoiceId}`)
+
+- `DRAFT` only (`400 INVOICE_NOT_DELETABLE`)
+- Blocked if shipping invoices exist (`409 INVOICE_HAS_SHIPPING`)
+- Cascades owned payments; cleans artifacts for the invoice **and** its payments
+- Response `204`
+
+Removing an invoice line is blocked if shipped (`409 INVOICE_LINE_HAS_SHIPPING`).
 
 ---
 
@@ -360,12 +443,15 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 
 ## Shipping invoices
 
+Editable in `DRAFT` and `ISSUED` (not `IN_TRANSIT` / `DELIVERED`).
+
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | `GET` | `/companies/{companyId}/shipping-invoices` | 🏢 | List shipping invoices |
 | `POST` | `/companies/{companyId}/shipping-invoices` | 🏢 | Create shipping invoice |
 | `GET` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}` | 🏢 | Get shipping invoice |
-| `PATCH` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}` | 🏢 | Update draft shipping invoice |
+| `PATCH` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}` | 🏢 | Update shipping invoice |
+| `DELETE` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}` | 🏢 | Delete draft shipping invoice (`204`) |
 | `POST` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}/lines` | 🏢 | Add shipping line |
 | `PATCH` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}/lines/{lineId}` | 🏢 | Update shipping line |
 | `DELETE` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}/lines/{lineId}` | 🏢 | Remove shipping line |
@@ -374,9 +460,18 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 | `POST` | `/companies/{companyId}/shipping-invoices/{shippingInvoiceId}/mark-delivered` | 🏢 | Mark delivered |
 | `GET` | `/companies/{companyId}/invoices/{invoiceId}/shippable-lines` | 🏢 | Lines ready to ship |
 
+### Delete shipping invoice (`DELETE /companies/{companyId}/shipping-invoices/{shippingInvoiceId}`)
+
+- `DRAFT` only (`400 SHIPPING_INVOICE_NOT_DELETABLE`)
+- Blocked if part of a consolidation (`409 SHIPPING_INVOICE_HAS_CONSOLIDATION`)
+- Cleans comments / events / notifications
+- Response `204`
+
 ---
 
 ## Consolidations
+
+Editable in `DRAFT` and `PLANNED` (not later logistics statuses). Plan remains from `DRAFT` only.
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
@@ -384,6 +479,7 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 | `POST` | `/companies/{companyId}/consolidations` | 🏢 | Create consolidation |
 | `GET` | `/companies/{companyId}/consolidations/{consolidationId}` | 🏢 | Get consolidation |
 | `PATCH` | `/companies/{companyId}/consolidations/{consolidationId}` | 🏢 | Update consolidation |
+| `DELETE` | `/companies/{companyId}/consolidations/{consolidationId}` | 🏢 | Delete draft consolidation (`204`) |
 | `POST` | `/companies/{companyId}/consolidations/{consolidationId}/shipping-invoices` | 🏢 | Add shipping invoice |
 | `DELETE` | `/companies/{companyId}/consolidations/{consolidationId}/shipping-invoices/{shippingInvoiceId}` | 🏢 | Remove shipping invoice |
 | `POST` | `/companies/{companyId}/consolidations/{consolidationId}/plan` | 🏢 | Plan consolidation |
@@ -392,11 +488,20 @@ Buyer re-send after reject: same `POST .../distribute` to the same supplier (dis
 | `POST` | `/companies/{companyId}/consolidations/{consolidationId}/mark-delivered` | 🏢 | Mark delivered |
 | `GET` | `/companies/{companyId}/consolidatable-shipping-invoices` | 🏢 | Shipping invoices eligible for consolidation |
 
+### Delete consolidation (`DELETE /companies/{companyId}/consolidations/{consolidationId}`)
+
+- `DRAFT` only (`400 CONSOLIDATION_NOT_DELETABLE`)
+- Cascades link rows to shipping invoices (shipping invoices themselves are kept)
+- Cleans comments / events / notifications
+- Response `204`
+
 ---
 
 ## Communication
 
 `documentType`: `MATERIAL_REQUEST` | `SUPPLIER_QUOTE` | `PURCHASE_SELECTION` | `INVOICE` | `PAYMENT` | `SHIPPING_INVOICE` | `CONSOLIDATION`
+
+Comments, document events, and related notifications are **not** FK-linked to document tables. Hard-delete of a document cleans them via `deleteDocumentArtifacts` (for invoice delete, payment artifacts are cleaned too).
 
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|

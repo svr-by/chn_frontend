@@ -4,6 +4,7 @@
 import type { RequestLineInputUnit } from './requestLineInputUnit';
 import type { RequestLineInputAttributes } from './requestLineInputAttributes';
 import type { RequestLineInputNotes } from './requestLineInputNotes';
+import type { RequestLineInputCancelledAt } from './requestLineInputCancelledAt';
 import type { RequestLineInputProduct } from './requestLineInputProduct';
 
 export interface RequestLineInput {
@@ -20,6 +21,7 @@ export interface RequestLineInput {
   unit: RequestLineInputUnit;
   attributes: RequestLineInputAttributes;
   notes: RequestLineInputNotes;
+  cancelledAt: RequestLineInputCancelledAt;
   product: RequestLineInputProduct;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

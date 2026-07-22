@@ -4,6 +4,7 @@
 import type { InboundRequestLineListItemUnit } from './inboundRequestLineListItemUnit';
 import type { InboundRequestLineListItemAttributes } from './inboundRequestLineListItemAttributes';
 import type { InboundRequestLineListItemNotes } from './inboundRequestLineListItemNotes';
+import type { InboundRequestLineListItemCancelledAt } from './inboundRequestLineListItemCancelledAt';
 import type { InboundRequestLineListItemProduct } from './inboundRequestLineListItemProduct';
 import type { InboundRequestLineListItemRequest } from './inboundRequestLineListItemRequest';
 import type { CompanySummary } from './companySummary';
@@ -24,6 +25,7 @@ export interface InboundRequestLineListItem {
   unit: InboundRequestLineListItemUnit;
   attributes: InboundRequestLineListItemAttributes;
   notes: InboundRequestLineListItemNotes;
+  cancelledAt: InboundRequestLineListItemCancelledAt;
   product: InboundRequestLineListItemProduct;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

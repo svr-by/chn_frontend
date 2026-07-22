@@ -3,6 +3,6 @@
  */
 import type { TradingPartner } from './tradingPartner';
 
-export type GetCompaniesCompanyIdPartnersInbound200 = {
+export type GetCompaniesCompanyIdPartnersInvitations200 = {
   partners: TradingPartner[];
 };

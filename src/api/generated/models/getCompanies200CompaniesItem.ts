@@ -11,5 +11,6 @@ export type GetCompanies200CompaniesItem = {
   name: string;
   taxId: GetCompanies200CompaniesItemTaxId;
   country: GetCompanies200CompaniesItemCountry;
+  isActive: boolean;
   membership: GetCompanies200CompaniesItemMembership;
 };
