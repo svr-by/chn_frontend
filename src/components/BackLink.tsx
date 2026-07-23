@@ -1,28 +1,24 @@
-import { Link as RouterLink } from 'react-router-dom';
-import { Link } from '@mui/material';
+import { Button } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import type { ReactNode } from 'react';
+import { useSafeAppBack } from '@/hooks/useSafeAppBack';
+import { useTranslation } from 'react-i18next';
 
 interface BackLinkProps {
   to: string;
-  children: ReactNode;
 }
 
-export function BackLink({ to, children }: BackLinkProps) {
+export function BackLink({ to }: BackLinkProps) {
+  const handleBack = useSafeAppBack(to);
+  const { t } = useTranslation('common');
+
   return (
-    <Link
-      component={RouterLink}
-      to={to}
-      underline="hover"
-      sx={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: 0.5,
-        alignSelf: 'flex-start',
-      }}
+    <Button
+      variant="text"
+      startIcon={<ArrowBackIcon fontSize="small" />}
+      onClick={handleBack}
+      sx={{ alignSelf: 'flex-start' }}
     >
-      <ArrowBackIcon fontSize="small" />
-      {children}
-    </Link>
+      {t('app.backButton')}
+    </Button>
   );
 }

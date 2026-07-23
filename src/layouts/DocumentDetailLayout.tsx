@@ -1,18 +1,15 @@
 import type { ReactNode } from 'react';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import {
   Box,
-  Button,
   CircularProgress,
   Stack,
   Typography,
 } from '@mui/material';
 
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { useSafeAppBack } from '@/hooks/useSafeAppBack';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
-import { useTranslation } from 'react-i18next';
+import { BackLink } from '@/components/BackLink';
 
 interface DocumentDetailLayoutProps {
   title: string;
@@ -37,9 +34,6 @@ export function DocumentDetailLayout({
   backFallbackTo,
   children,
 }: DocumentDetailLayoutProps) {
-  const handleBack = useSafeAppBack(backFallbackTo ?? '/app');
-  const { t } = useTranslation('common');
-
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" py={6}>
@@ -50,14 +44,7 @@ export function DocumentDetailLayout({
 
   return (
     <Stack spacing={3}>
-      <Button
-        variant="text"
-        startIcon={<ArrowBackIcon fontSize="small" />}
-        onClick={handleBack}
-        sx={{ alignSelf: 'flex-start' }}
-      >
-        {t('app.backButton')}
-      </Button>
+      <BackLink to={backFallbackTo ?? '/app'} />
 
       <ApiErrorAlert error={error} />
 

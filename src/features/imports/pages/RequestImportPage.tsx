@@ -206,7 +206,7 @@ export function RequestImportPage() {
     >
       <Stack spacing={3}>
         <Stack spacing={1}>
-          <BackLink to="/app/requests">{t('imports:actions.back')}</BackLink>
+          <BackLink to="/app/requests" />
           <Typography variant="h5" component="h1">
             {t('imports:title')}
           </Typography>
