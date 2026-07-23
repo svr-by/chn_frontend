@@ -2,8 +2,8 @@
   "title": "合作伙伴",
   "subtitle": "管理用于采购与物流的合作伙伴公司关联。",
   "tabs": {
-    "partners": "合作伙伴",
-    "invitations": "邀请"
+    "partners": "合作伙伴 ({{count}})",
+    "invitations": "邀请 ({{count}})"
   },
   "groups": {
     "inbound": "入站",

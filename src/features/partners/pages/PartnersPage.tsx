@@ -150,8 +150,12 @@ export function PartnersPage() {
         onChange={(_event, value: PartnersTab) => setTab(value)}
         sx={{ mb: 3 }}
       >
-        <Tab label={t('tabs.partners')} value="partners" />
-        <Tab label={t('tabs.invitations')} value="invitations" />
+        <Tab label={t('tabs.partners', {
+          count: partnersQuery.data?.partners.length ?? 0,
+        })} value="partners" />
+        <Tab label={t('tabs.invitations', {
+          count: invitationsQuery.data?.partners.length ?? 0,
+        })} value="invitations" />
       </Tabs>
 
       {tab === 'partners' && (

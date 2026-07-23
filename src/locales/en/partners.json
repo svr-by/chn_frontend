@@ -2,8 +2,8 @@
   "title": "Partners",
   "subtitle": "Manage partner company links for procurement and logistics.",
   "tabs": {
-    "partners": "Partners",
-    "invitations": "Invitations"
+    "partners": "Partners ({{count}})",
+    "invitations": "Invitations ({{count}})"
   },
   "groups": {
     "inbound": "Inbound",
