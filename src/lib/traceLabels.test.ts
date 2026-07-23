@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import i18n from '@/app/i18n';
 import { createLineageEvent } from '@/test/fixtures';
 import {
+  getDocumentStatusLabel,
   getLineageEventLabel,
   getPipelineStatusLabel,
   getRelationLabel,
@@ -14,6 +15,16 @@ describe('traceLabels', () => {
   it('translates pipeline status values', () => {
     expect(getPipelineStatusLabel('quoted', t)).toBe('Quoted');
     expect(getPipelineStatusLabel(null, t)).toBe('Unknown');
+  });
+
+  it('translates document status by document type', () => {
+    expect(getDocumentStatusLabel('MATERIAL_REQUEST', 'QUOTING', t)).toBe(
+      'Quoting',
+    );
+    expect(getDocumentStatusLabel('INVOICE', 'ISSUED', t)).toBe('Issued');
+    expect(getDocumentStatusLabel('PAYMENT', 'UNKNOWN_STATUS', t)).toBe(
+      'UNKNOWN_STATUS',
+    );
   });
 
   it('falls back to raw relation when key is missing', () => {

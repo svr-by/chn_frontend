@@ -15,7 +15,10 @@ import type { CommentDocumentType } from '@/api/generated/models/commentDocument
 import { useGetDocumentRelationshipsQuery } from '@/api/endpoints/traceApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { resolveDocumentPath } from '@/lib/documentRoutes';
-import { getRelationLabel } from '@/lib/traceLabels';
+import {
+  getDocumentStatusLabel,
+  getRelationLabel,
+} from '@/lib/traceLabels';
 
 interface DocumentRelatedPanelProps {
   companyId: string;
@@ -28,7 +31,7 @@ export function DocumentRelatedPanel({
   documentType,
   documentId,
 }: DocumentRelatedPanelProps) {
-  const { t } = useTranslation('trace');
+  const { t } = useTranslation(['trace', 'enums']);
   const navigate = useNavigate();
 
   const relationshipsQuery = useGetDocumentRelationshipsQuery(
@@ -68,8 +71,8 @@ export function DocumentRelatedPanel({
           gap: 2,
           gridTemplateColumns: {
             xs: '1fr',
-            sm: 'repeat(2, 1fr)',
-            md: 'repeat(3, 1fr)',
+            sm: 'repeat(3, 1fr)',
+            md: 'repeat(4, 1fr)',
           },
         }}
       >
@@ -86,23 +89,20 @@ export function DocumentRelatedPanel({
                 }}
               >
                 <CardContent>
-                  <Stack spacing={1}>
-                    <Typography variant="subtitle2">{node.label}</Typography>
-                    <Stack
-                      direction="row"
-                      spacing={1}
-                      flexWrap="wrap"
-                      useFlexGap
-                    >
-                      <Chip
-                        label={t(`related.documentTypes.${node.documentType}`, {
+                  <Stack spacing={1} alignItems="center">
+                    <Typography variant="subtitle2">{t(`related.documentTypes.${node.documentType}`, {
                           defaultValue: node.documentType,
-                        })}
+                        })} {node.label}</Typography>
+                    {node.status ? (
+                      <Chip
+                        label={getDocumentStatusLabel(
+                          node.documentType,
+                          node.status,
+                          t,
+                        )}
                         size="small"
-                        variant="outlined"
                       />
-                      <Chip label={node.status} size="small" />
-                    </Stack>
+                    ) : null}
                   </Stack>
                 </CardContent>
               </CardActionArea>

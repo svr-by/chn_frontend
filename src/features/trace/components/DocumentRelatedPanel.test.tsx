@@ -51,10 +51,16 @@ describe('DocumentRelatedPanel', () => {
       { route: '/document' },
     );
 
-    expect(screen.getByText('Office supplies')).toBeInTheDocument();
-    expect(screen.getByText('INV-001')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Office supplies/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /INV-001/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Quoting')).toBeInTheDocument();
+    expect(screen.getByText('Issued')).toBeInTheDocument();
 
-    await user.click(screen.getByText('Office supplies'));
+    await user.click(screen.getByRole('heading', { name: /Office supplies/ }));
     expect(screen.getByText('Request detail')).toBeInTheDocument();
   });
 

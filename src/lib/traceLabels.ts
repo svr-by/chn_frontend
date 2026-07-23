@@ -1,7 +1,21 @@
 import type { TFunction } from 'i18next';
 
+import type { DocumentRelationshipsNodesItemDocumentType } from '@/api/generated/models/documentRelationshipsNodesItemDocumentType';
 import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItemPipelineStatus } from '@/api/generated/models/traceSearchItemPipelineStatus';
+
+const DOCUMENT_STATUS_ENUM_KEYS = {
+  MATERIAL_REQUEST: 'materialRequestStatus',
+  SUPPLIER_QUOTE: 'supplierQuoteStatus',
+  PURCHASE_SELECTION: 'purchaseSelectionStatus',
+  INVOICE: 'supplierInvoiceStatus',
+  PAYMENT: 'paymentStatus',
+  SHIPPING_INVOICE: 'shippingInvoiceStatus',
+  CONSOLIDATION: 'consolidationStatus',
+} as const satisfies Record<
+  DocumentRelationshipsNodesItemDocumentType,
+  string
+>;
 
 export function getPipelineStatusLabel(
   status: TraceSearchItemPipelineStatus,
@@ -18,6 +32,26 @@ export function getPipelineStatusLabel(
   }
 
   return status;
+}
+
+export function getDocumentStatusLabel(
+  documentType: DocumentRelationshipsNodesItemDocumentType,
+  status: string,
+  t: TFunction,
+): string {
+  const enumKey = DOCUMENT_STATUS_ENUM_KEYS[documentType];
+  if (!enumKey) {
+    return status;
+  }
+
+  const statusKey = status.toLowerCase();
+  const key = `enums:${enumKey}.${statusKey}`;
+  const translated = t(key);
+  if (translated === key || translated === `${enumKey}.${statusKey}`) {
+    return status;
+  }
+
+  return translated;
 }
 
 export function getRelationLabel(relation: string, t: TFunction): string {
