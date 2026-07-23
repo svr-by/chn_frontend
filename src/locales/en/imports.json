@@ -19,7 +19,8 @@
     "delimiters": {
       ",": "Comma (,)",
       ";": "Semicolon (;)",
-      "tab": "Tab"
+      "\t": "Tab (\\t)",
+      "tab": "Tab (tab)"
     },
     "decimals": {
       ".": "Dot (.)",

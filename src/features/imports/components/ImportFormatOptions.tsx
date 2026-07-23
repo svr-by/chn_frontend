@@ -60,7 +60,7 @@ export function ImportFormatOptions({
             {DELIMITER_OPTIONS.map((delimiter) => (
               <MenuItem key={delimiter} value={delimiter}>
                 {t(
-                  `format.delimiters.${delimiter === '\t' ? 'tab' : delimiter}`,
+                  `format.delimiters.${delimiter}`,
                 )}
               </MenuItem>
             ))}
