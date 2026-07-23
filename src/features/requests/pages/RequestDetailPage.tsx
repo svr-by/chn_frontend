@@ -96,6 +96,7 @@ export function RequestDetailPage() {
           companyId={companyId}
           documentType="MATERIAL_REQUEST"
           documentId={request.id}
+          enableComments={false}
           extraTabs={[
             {
               value: 'details',

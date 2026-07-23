@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs, { type Dayjs } from 'dayjs';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -33,6 +33,7 @@ type FormTab = 'lines' | 'notes';
 
 type RequestFormValues = {
   title: string;
+  date: Dayjs;
   notes?: string;
 };
 
@@ -47,8 +48,6 @@ export function RequestNewPage() {
   const [linesError, setLinesError] = useState<string | undefined>();
   const [importOpen, setImportOpen] = useState(false);
   const [tab, setTab] = useState<FormTab>('lines');
-  // Reserved for upcoming backend support; not sent with create yet.
-  const [requestDate, setRequestDate] = useState<Dayjs | null>(dayjs());
 
   const [createRequest, createState] = useCreateRequestMutation();
 
@@ -61,19 +60,17 @@ export function RequestNewPage() {
           .min(3, {
             message: t('validation:minLength', { min: 3 }),
           }),
-        notes: z
-          .string()
-          .trim()
-          .transform((value) => (value === '' ? undefined : value))
-          .optional()
-          .refine((value) => value === undefined || value.length >= 1, {
-            message: t('validation:notEmpty'),
-          }),
+        date: z.custom<Dayjs>(
+          (value) => dayjs.isDayjs(value) && value.isValid(),
+          { message: t('validation:required') },
+        ),
+        notes: z.string().optional(),
       }),
     [t],
   );
 
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -81,6 +78,7 @@ export function RequestNewPage() {
     resolver: zodResolver(requestSchema),
     defaultValues: {
       title: '',
+      date: dayjs(),
       notes: '',
     },
   });
@@ -110,10 +108,13 @@ export function RequestNewPage() {
 
     setLinesError(undefined);
 
+    const notes = values.notes?.trim();
+
     const result = await createRequest({
       companyId,
       title: values.title,
-      notes: values.notes,
+      createdAt: values.date.toISOString(),
+      notes: notes || undefined,
       lines: draftLinesToCreatePayload(lines),
     }).unwrap();
 
@@ -124,7 +125,7 @@ export function RequestNewPage() {
   return (
     <Stack spacing={3} maxWidth={960} sx={{ width: '100%', mx: 'auto' }}>
       <Stack spacing={1}>
-        <BackLink to="/app/requests">{t('actions.backToList')}</BackLink>
+        <BackLink to="/app/requests" />
         <Typography variant="h5" component="h1">
           {t('form.newTitle')}
         </Typography>
@@ -139,21 +140,29 @@ export function RequestNewPage() {
         <Stack spacing={3}>
           <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
             <TextField
-              label={t('form.title')}
+              label={t('form.number')}
               fullWidth
               error={Boolean(errors.title)}
               helperText={errors.title?.message}
               {...register('title')}
             />
-            <DatePicker
-              label={t('form.date')}
-              value={requestDate}
-              onChange={setRequestDate}
-              slotProps={{
-                textField: {
-                  fullWidth: true,
-                },
-              }}
+            <Controller
+              name="date"
+              control={control}
+              render={({ field, fieldState }) => (
+                <DatePicker
+                  label={t('form.date')}
+                  value={field.value}
+                  onChange={(value) => field.onChange(value ?? dayjs())}
+                  slotProps={{
+                    textField: {
+                      fullWidth: true,
+                      error: Boolean(fieldState.error),
+                      helperText: fieldState.error?.message,
+                    },
+                  }}
+                />
+              )}
             />
           </Stack>
 

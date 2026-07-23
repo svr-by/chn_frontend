@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
+  useDeleteRequestLineMutation,
   useGetInboundRequestQuery,
   useRejectInboundRequestMutation,
 } from '@/api/endpoints/requestsApi';
@@ -34,6 +35,18 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useGetInboundRequestQuery: vi.fn(),
   useRejectInboundRequestMutation: vi.fn(),
+  useAddRequestLineMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
+  useUpdateRequestLineMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
+  useDeleteRequestLineMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
 }));
 
 vi.mock('@/api/endpoints/quotesApi', () => ({
@@ -48,6 +61,9 @@ const mockedUseRejectInboundRequestMutation = vi.mocked(
 );
 const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
 const mockedUseCreateQuoteMutation = vi.mocked(useCreateQuoteMutation);
+const mockedUseDeleteRequestLineMutation = vi.mocked(
+  useDeleteRequestLineMutation,
+);
 
 function renderPage() {
   return renderWithProviders(
@@ -102,6 +118,11 @@ describe('InboundRequestDetailPage', () => {
       vi.fn(),
       { isLoading: false, reset: vi.fn() },
     ] as ReturnType<typeof useCreateQuoteMutation>);
+
+    mockedUseDeleteRequestLineMutation.mockReturnValue([
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ] as ReturnType<typeof useDeleteRequestLineMutation>);
   });
 
   it('renders assigned lines and rejects inbound requests', async () => {
@@ -121,7 +142,8 @@ describe('InboundRequestDetailPage', () => {
       screen.getByRole('heading', { name: 'Office supplies' }),
     ).toBeInTheDocument();
     expect(screen.getByText('Buyer: Buyer Corp')).toBeInTheDocument();
-    expect(screen.getByText('1. Test line')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Details' })).toBeInTheDocument();
+    expect(screen.getByText('Test line')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Reject' }));
     await user.type(

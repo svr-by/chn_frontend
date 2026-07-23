@@ -10,6 +10,9 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import OpenInNewOutlinedIcon from '@mui/icons-material/OpenInNewOutlined';
+import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -75,6 +78,7 @@ export function InboundRequestStatusActions({
     return (
       <Button
         variant="contained"
+        startIcon={<OpenInNewOutlinedIcon />}
         onClick={() => navigate(`/app/quotes/${existingQuote.id}`)}
       >
         {t('inbound.actions.openQuote')}
@@ -87,6 +91,7 @@ export function InboundRequestStatusActions({
       <Stack direction="row" spacing={1}>
         <Button
           variant="contained"
+          startIcon={<RequestQuoteOutlinedIcon />}
           onClick={() => void handleCreateQuote()}
           disabled={isCreating || createState.isLoading}
         >
@@ -95,6 +100,7 @@ export function InboundRequestStatusActions({
         <Button
           variant="outlined"
           color="error"
+          startIcon={<CloseOutlinedIcon />}
           onClick={() => setRejectOpen(true)}
         >
           {t('inbound.actions.reject')}

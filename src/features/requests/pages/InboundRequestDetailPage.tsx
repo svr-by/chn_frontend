@@ -5,10 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetInboundRequestQuery } from '@/api/endpoints/requestsApi';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
 import { InboundRequestStatusActions } from '@/features/requests/components/InboundRequestStatusActions';
+import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 export function InboundRequestDetailPage() {
@@ -84,37 +85,26 @@ export function InboundRequestDetailPage() {
       }
     >
       {request ? (
-        <Stack spacing={2}>
-          <Typography variant="h6">{t('linesTitle')}</Typography>
-          {request.lines.length === 0 ? (
-            <Typography color="text.secondary">{t('empty.lines')}</Typography>
-          ) : (
-            request.lines.map((line) => (
-              <Stack
-                key={line.id}
-                spacing={0.5}
-                sx={{
-                  p: 2,
-                  border: 1,
-                  borderColor: 'divider',
-                  borderRadius: 1,
-                }}
-              >
-                <Typography variant="subtitle2">
-                  {line.lineNumber}. {line.description}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  <DecimalDisplay value={line.quantity} /> {line.unit ?? ''}
-                </Typography>
-                {line.product?.name ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {line.product.name}
-                  </Typography>
-                ) : null}
-              </Stack>
-            ))
-          )}
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="MATERIAL_REQUEST"
+          documentId={request.id}
+          enableComments={false}
+          extraTabs={[
+            {
+              value: 'details',
+              label: t('tabs.details'),
+              panel: (
+                <RequestLinesTable
+                  companyId={companyId}
+                  requestId={request.id}
+                  lines={request.lines}
+                  editable={false}
+                />
+              ),
+            },
+          ]}
+        />
       ) : null}
     </DocumentDetailLayout>
   );

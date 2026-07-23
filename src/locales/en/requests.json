@@ -119,6 +119,7 @@
     "newTitle": "New request",
     "newSubtitle": "Fill in request details and line items, then create the draft.",
     "title": "Title",
+    "number": "Number",
     "date": "Date",
     "notes": "Notes",
     "product": "Product (optional)",
