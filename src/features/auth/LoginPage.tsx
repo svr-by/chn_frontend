@@ -66,7 +66,10 @@ export function LoginPage() {
   }
 
   return (
-    <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
+    <Box
+      component="form"
+      onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+    >
       <ApiErrorAlert error={error} />
 
       <TextField
@@ -91,7 +94,12 @@ export function LoginPage() {
       />
 
       <Box sx={{ textAlign: 'right', mt: 1 }}>
-        <Link component={RouterLink} to="/forgot-password" underline="hover" variant="body2">
+        <Link
+          component={RouterLink}
+          to="/forgot-password"
+          underline="hover"
+          variant="body2"
+        >
           {t('forgotPasswordLink')}
         </Link>
       </Box>

@@ -26,12 +26,7 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 
 type TransportModeValue = NonNullable<ConsolidationTransportMode>;
 
-const TRANSPORT_MODES: TransportModeValue[] = [
-  'ROAD',
-  'AIR',
-  'RAIL',
-  'SEA',
-];
+const TRANSPORT_MODES: TransportModeValue[] = ['ROAD', 'AIR', 'RAIL', 'SEA'];
 
 interface ConsolidationCreateDialogProps {
   open: boolean;
@@ -50,9 +45,9 @@ export function ConsolidationCreateDialog({
   const { enqueueSnackbar } = useSnackbar();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
 
-  const [transportMode, setTransportMode] = useState<
-    TransportModeValue | ''
-  >('');
+  const [transportMode, setTransportMode] = useState<TransportModeValue | ''>(
+    '',
+  );
   const [carrier, setCarrier] = useState('');
   const [trackingNumber, setTrackingNumber] = useState('');
   const [origin, setOrigin] = useState('');
@@ -84,7 +79,9 @@ export function ConsolidationCreateDialog({
       companyId,
       ...(transportMode ? { transportMode } : {}),
       ...(carrier.trim() ? { carrier: carrier.trim() } : {}),
-      ...(trackingNumber.trim() ? { trackingNumber: trackingNumber.trim() } : {}),
+      ...(trackingNumber.trim()
+        ? { trackingNumber: trackingNumber.trim() }
+        : {}),
       ...(origin.trim() ? { origin: origin.trim() } : {}),
       ...(destination.trim() ? { destination: destination.trim() } : {}),
       shippingInvoiceIds: selectedIds,
@@ -109,9 +106,7 @@ export function ConsolidationCreateDialog({
               label={t('form.transportMode')}
               value={transportMode}
               onChange={(event) =>
-                setTransportMode(
-                  event.target.value as TransportModeValue | '',
-                )
+                setTransportMode(event.target.value as TransportModeValue | '')
               }
             >
               <MenuItem value="">

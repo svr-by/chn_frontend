@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import {
   Box,
-  Button,
   Divider,
   Drawer,
   Link,
@@ -15,9 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import type { Notification } from '@/api/generated/models/notification';
-import {
-  useMarkNotificationReadMutation,
-} from '@/api/endpoints/notificationsApi';
+import { useMarkNotificationReadMutation } from '@/api/endpoints/notificationsApi';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { resolveNotificationPath } from '@/lib/notificationRoutes';
@@ -27,7 +24,10 @@ interface NotificationsDrawerProps {
   onClose: () => void;
 }
 
-export function NotificationsDrawer({ open, onClose }: NotificationsDrawerProps) {
+export function NotificationsDrawer({
+  open,
+  onClose,
+}: NotificationsDrawerProps) {
   const { t } = useTranslation('notifications');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -101,7 +101,11 @@ export function NotificationsDrawer({ open, onClose }: NotificationsDrawerProps)
             }
           />
 
-          <Link component={RouterLink} to="/app/notifications" onClick={onClose}>
+          <Link
+            component={RouterLink}
+            to="/app/notifications"
+            onClick={onClose}
+          >
             {t('viewAll')}
           </Link>
         </Stack>

@@ -74,14 +74,18 @@ export const selectionsApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdSelectionsUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => selectionListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        selectionListTag(companyId),
     }),
     getSelection: builder.query<
       GetCompaniesCompanyIdSelectionsSelectionId200,
       { companyId: string; selectionId: string }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: getGetCompaniesCompanyIdSelectionsSelectionIdUrl(companyId, selectionId),
+        url: getGetCompaniesCompanyIdSelectionsSelectionIdUrl(
+          companyId,
+          selectionId,
+        ),
       }),
       providesTags: (_result, _error, { selectionId }) => [
         { type: 'Selections', id: selectionId },
@@ -116,12 +120,18 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdSelectionsSelectionIdUrl(companyId, selectionId),
+        url: getPatchCompaniesCompanyIdSelectionsSelectionIdUrl(
+          companyId,
+          selectionId,
+        ),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionDetailTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionDetailTags(companyId, selectionId, materialRequestId),
     }),
     addSelectionLine: builder.mutation<
       PostCompaniesCompanyIdSelectionsSelectionIdLines201,
@@ -137,12 +147,18 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: getPostCompaniesCompanyIdSelectionsSelectionIdLinesUrl(companyId, selectionId),
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdLinesUrl(
+          companyId,
+          selectionId,
+        ),
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionDetailTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionDetailTags(companyId, selectionId, materialRequestId),
     }),
     updateSelectionLine: builder.mutation<
       PatchCompaniesCompanyIdSelectionsSelectionIdLinesLineId200,
@@ -160,12 +176,19 @@ export const selectionsApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(companyId, selectionId, lineId),
+        url: getPatchCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(
+          companyId,
+          selectionId,
+          lineId,
+        ),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionDetailTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionDetailTags(companyId, selectionId, materialRequestId),
     }),
     deleteSelectionLine: builder.mutation<
       void,
@@ -177,11 +200,18 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId, lineId }) => ({
-        url: getDeleteCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(companyId, selectionId, lineId),
+        url: getDeleteCompaniesCompanyIdSelectionsSelectionIdLinesLineIdUrl(
+          companyId,
+          selectionId,
+          lineId,
+        ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionDetailTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionDetailTags(companyId, selectionId, materialRequestId),
     }),
     confirmSelection: builder.mutation<
       PostCompaniesCompanyIdSelectionsSelectionIdConfirm200,
@@ -192,11 +222,17 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: getPostCompaniesCompanyIdSelectionsSelectionIdConfirmUrl(companyId, selectionId),
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdConfirmUrl(
+          companyId,
+          selectionId,
+        ),
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionMutationTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionMutationTags(companyId, selectionId, materialRequestId),
     }),
     cancelSelection: builder.mutation<
       PostCompaniesCompanyIdSelectionsSelectionIdCancel200,
@@ -207,11 +243,17 @@ export const selectionsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, selectionId }) => ({
-        url: getPostCompaniesCompanyIdSelectionsSelectionIdCancelUrl(companyId, selectionId),
+        url: getPostCompaniesCompanyIdSelectionsSelectionIdCancelUrl(
+          companyId,
+          selectionId,
+        ),
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { companyId, selectionId, materialRequestId }) =>
-        selectionMutationTags(companyId, selectionId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, selectionId, materialRequestId },
+      ) => selectionMutationTags(companyId, selectionId, materialRequestId),
     }),
   }),
 });

@@ -16,12 +16,10 @@ export const UI_LOCALE_HTML_LANG: Record<UiLocale, string> = {
   zh: 'zh-Hans',
 };
 
-export function isUiLocale(value: string | null | undefined): value is UiLocale {
-  return (
-    value === 'en' ||
-    value === 'ru' ||
-    value === 'zh'
-  );
+export function isUiLocale(
+  value: string | null | undefined,
+): value is UiLocale {
+  return value === 'en' || value === 'ru' || value === 'zh';
 }
 
 export function normalizeUiLocale(value: string | null | undefined): UiLocale {

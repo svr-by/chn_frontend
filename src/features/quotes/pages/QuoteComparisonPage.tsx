@@ -15,8 +15,11 @@ export function QuoteComparisonPage() {
   const { t } = useTranslation(['quotes', 'selections']);
   const { requestId } = useParams<{ requestId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const { openRequestSelection, isOpening, error: openSelectionError } =
-    useOpenRequestSelection();
+  const {
+    openRequestSelection,
+    isOpening,
+    error: openSelectionError,
+  } = useOpenRequestSelection();
 
   const comparisonQuery = useGetQuoteComparisonQuery(
     { companyId: companyId ?? '', requestId: requestId ?? '' },

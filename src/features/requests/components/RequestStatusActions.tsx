@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Dialog,
@@ -16,8 +16,6 @@ import { useSnackbar } from 'notistack';
 import { useDeleteRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
-import { RequestDistributeDialog } from '@/features/requests/components/RequestDistributeDialog';
-import { useOpenRequestSelection } from '@/features/selections/hooks/useOpenRequestSelection';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { MaterialRequestStatus } from '@/types/api';
 
@@ -32,17 +30,13 @@ export function RequestStatusActions({
   companyId,
   requestId,
   status,
-  requestLines = [],
 }: RequestStatusActionsProps) {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-  // const [distributeOpen, setDistributeOpen] = useState(false);
 
   const [deleteRequest, deleteState] = useDeleteRequestMutation();
-  // const { openRequestSelection, isOpening, error: openSelectionError } =
-  //   useOpenRequestSelection();
 
   if (status === 'DRAFT') {
     return (
@@ -56,18 +50,7 @@ export function RequestStatusActions({
           >
             {t('actions.delete')}
           </Button>
-          {/* <Button variant="contained" onClick={() => setDistributeOpen(true)}>
-            {t('actions.sendToSuppliers')}
-          </Button> */}
         </Stack>
-
-        {/* <RequestDistributeDialog
-          open={distributeOpen}
-          companyId={companyId}
-          requestId={requestId}
-          requestLines={requestLines}
-          onClose={() => setDistributeOpen(false)}
-        /> */}
 
         <Dialog
           open={deleteConfirmOpen}
@@ -100,70 +83,6 @@ export function RequestStatusActions({
       </PermissionGate>
     );
   }
-
-  // if (status === 'QUOTING') {
-  //   return (
-  //     <Stack direction="row" spacing={1}>
-  //       <PermissionGate permission="manageRequests">
-  //         <Button variant="outlined" onClick={() => setDistributeOpen(true)}>
-  //           {t('actions.addSuppliers')}
-  //         </Button>
-  //         <RequestDistributeDialog
-  //           open={distributeOpen}
-  //           companyId={companyId}
-  //           requestId={requestId}
-  //           requestLines={requestLines}
-  //           onClose={() => setDistributeOpen(false)}
-  //         />
-  //       </PermissionGate>
-  //       <PermissionGate permission="viewRequests">
-  //         <Button
-  //           variant="outlined"
-  //           component={RouterLink}
-  //           to={`/app/requests/${requestId}/compare`}
-  //         >
-  //           {t('actions.compare')}
-  //         </Button>
-  //       </PermissionGate>
-  //       <PermissionGate permission="manageSelections">
-  //         <Button
-  //           variant="contained"
-  //           onClick={() => openRequestSelection(requestId)}
-  //           disabled={isOpening}
-  //         >
-  //           {t('actions.manageSelection')}
-  //         </Button>
-  //       </PermissionGate>
-  //       <ApiErrorAlert error={openSelectionError} />
-  //     </Stack>
-  //   );
-  // }
-
-  // if (status === 'PARTIALLY_ORDERED') {
-  //   return (
-  //     <Stack direction="row" spacing={1}>
-  //       <PermissionGate permission="viewRequests">
-  //         <Button
-  //           variant="outlined"
-  //           component={RouterLink}
-  //           to={`/app/requests/${requestId}/compare`}
-  //         >
-  //           {t('actions.compare')}
-  //         </Button>
-  //       </PermissionGate>
-  //       <PermissionGate permission="manageSelections">
-  //         <Button
-  //           variant="contained"
-  //           onClick={() => openRequestSelection(requestId)}
-  //           disabled={isOpening}
-  //         >
-  //           {t('actions.manageSelection')}
-  //         </Button>
-  //       </PermissionGate>
-  //       <ApiErrorAlert error={openSelectionError} />
-  //     </Stack>
-  //   );
-  // }
 
   return null;
 }

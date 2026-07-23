@@ -105,7 +105,10 @@ export const authApi = baseApi.injectEndpoints({
         );
       },
     }),
-    verifyEmail: builder.mutation<PostAuthVerifyEmail200, PostAuthVerifyEmailBody>({
+    verifyEmail: builder.mutation<
+      PostAuthVerifyEmail200,
+      PostAuthVerifyEmailBody
+    >({
       query: (body) => ({
         url: getPostAuthVerifyEmailUrl(),
         method: 'POST',

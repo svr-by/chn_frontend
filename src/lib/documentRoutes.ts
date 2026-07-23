@@ -1,7 +1,4 @@
-import {
-  DocumentTypeValues,
-  type DocumentType,
-} from '@/types/api';
+import { DocumentTypeValues, type DocumentType } from '@/types/api';
 
 export type DocumentDetailTab = 'comments' | 'activity' | 'trace' | 'related';
 

@@ -20,11 +20,17 @@ type DocumentScopedArgs<T = Record<string, never>> = {
   documentId: string;
 } & T;
 
-function documentCommentsTag(documentType: CommentDocumentType, documentId: string) {
+function documentCommentsTag(
+  documentType: CommentDocumentType,
+  documentId: string,
+) {
   return [{ type: 'Comments' as const, id: `${documentType}-${documentId}` }];
 }
 
-function documentActivityTag(documentType: CommentDocumentType, documentId: string) {
+function documentActivityTag(
+  documentType: CommentDocumentType,
+  documentId: string,
+) {
   return [{ type: 'Activity' as const, id: `${documentType}-${documentId}` }];
 }
 
@@ -43,7 +49,11 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<GetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsParams>
     >({
       query: ({ companyId, documentType, documentId, ...params }) => ({
-        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(companyId, documentType, documentId),
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(
+          companyId,
+          documentType,
+          documentId,
+        ),
         params,
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>
@@ -54,11 +64,19 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<PostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsBody>
     >({
       query: ({ companyId, documentType, documentId, ...body }) => ({
-        url: getPostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(companyId, documentType, documentId),
+        url: getPostCompaniesCompanyIdDocumentsDocumentTypeDocumentIdCommentsUrl(
+          companyId,
+          documentType,
+          documentId,
+        ),
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, documentType, documentId }) => [
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, documentType, documentId },
+      ) => [
         ...documentCommentsTag(documentType, documentId),
         ...documentActivityTag(documentType, documentId),
         ...notificationTags(companyId),
@@ -69,7 +87,11 @@ export const commentsApi = baseApi.injectEndpoints({
       DocumentScopedArgs<GetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityParams>
     >({
       query: ({ companyId, documentType, documentId, ...params }) => ({
-        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityUrl(companyId, documentType, documentId),
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdActivityUrl(
+          companyId,
+          documentType,
+          documentId,
+        ),
         params,
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>

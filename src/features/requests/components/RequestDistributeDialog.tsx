@@ -104,7 +104,10 @@ export function RequestDistributeDialog({
   const partnerNameById = useMemo(
     () =>
       new Map(
-        activePartners.map((partner) => [partner.company.id, partner.company.name]),
+        activePartners.map((partner) => [
+          partner.company.id,
+          partner.company.name,
+        ]),
       ),
     [activePartners],
   );
@@ -218,7 +221,9 @@ export function RequestDistributeDialog({
         <Typography sx={{ mb: 2 }}>{t('distribute.message')}</Typography>
 
         {partnersQuery.isLoading ? (
-          <Typography color="text.secondary">{t('distribute.loading')}</Typography>
+          <Typography color="text.secondary">
+            {t('distribute.loading')}
+          </Typography>
         ) : activePartners.length === 0 ? (
           <Stack spacing={1}>
             <Typography color="text.secondary">
@@ -271,7 +276,9 @@ export function RequestDistributeDialog({
                       <TableCell key={supplierId} align="center">
                         <Checkbox
                           size="small"
-                          checked={lineAssignments[supplierId]?.has(line.id) ?? false}
+                          checked={
+                            lineAssignments[supplierId]?.has(line.id) ?? false
+                          }
                           onChange={() =>
                             toggleLineForSupplier(supplierId, line.id)
                           }

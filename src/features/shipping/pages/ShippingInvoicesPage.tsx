@@ -89,9 +89,7 @@ export function ShippingInvoicesPage() {
       {
         id: 'counterparty',
         header:
-          direction === 'inbound'
-            ? t('columns.supplier')
-            : t('columns.buyer'),
+          direction === 'inbound' ? t('columns.supplier') : t('columns.buyer'),
         Cell: ({ row }) =>
           direction === 'inbound'
             ? (row.original.supplierCompany?.name ?? '—')

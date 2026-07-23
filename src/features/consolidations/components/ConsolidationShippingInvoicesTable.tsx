@@ -53,81 +53,80 @@ export function ConsolidationShippingInvoicesTable({
     (invoice) => !existingIds.has(invoice.id),
   );
 
-  const columns = useMemo<MRT_ColumnDef<ConsolidationShippingInvoiceEntry>[]>(
-    () => {
-      const baseColumns: MRT_ColumnDef<ConsolidationShippingInvoiceEntry>[] = [
-        {
-          accessorKey: 'lineNumber',
-          header: t('columns.lineNumber'),
-          size: 60,
-        },
-        {
-          id: 'shippingInvoice',
-          header: t('columns.shippingInvoice'),
-          Cell: ({ row }) => (
-            <Link
-              component={RouterLink}
-              to={`/app/shipping-invoices/${row.original.shippingInvoice.id}`}
-              underline="hover"
+  const columns = useMemo<
+    MRT_ColumnDef<ConsolidationShippingInvoiceEntry>[]
+  >(() => {
+    const baseColumns: MRT_ColumnDef<ConsolidationShippingInvoiceEntry>[] = [
+      {
+        accessorKey: 'lineNumber',
+        header: t('columns.lineNumber'),
+        size: 60,
+      },
+      {
+        id: 'shippingInvoice',
+        header: t('columns.shippingInvoice'),
+        Cell: ({ row }) => (
+          <Link
+            component={RouterLink}
+            to={`/app/shipping-invoices/${row.original.shippingInvoice.id}`}
+            underline="hover"
+          >
+            {row.original.shippingInvoice.id.slice(0, 8)}
+          </Link>
+        ),
+      },
+      {
+        id: 'supplier',
+        header: t('columns.supplier'),
+        Cell: ({ row }) =>
+          row.original.shippingInvoice.supplierCompany?.name ?? '—',
+      },
+      {
+        id: 'status',
+        header: t('columns.status'),
+        Cell: ({ row }) => (
+          <ShippingInvoiceStatusBadge
+            status={row.original.shippingInvoice.status}
+          />
+        ),
+      },
+      {
+        id: 'trackingNumber',
+        header: t('columns.trackingNumber'),
+        Cell: ({ row }) => row.original.shippingInvoice.trackingNumber ?? '—',
+      },
+      {
+        id: 'carrier',
+        header: t('columns.carrier'),
+        Cell: ({ row }) => row.original.shippingInvoice.carrier ?? '—',
+      },
+      {
+        accessorKey: 'notes',
+        header: t('columns.notes'),
+        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
+      },
+    ];
+
+    if (editable) {
+      baseColumns.push({
+        id: 'actions',
+        header: t('columns.actions'),
+        Cell: ({ row }) => (
+          <PermissionGate permission="manageConsolidations">
+            <Button
+              size="small"
+              color="error"
+              onClick={() => setEntryToRemove(row.original)}
             >
-              {row.original.shippingInvoice.id.slice(0, 8)}
-            </Link>
-          ),
-        },
-        {
-          id: 'supplier',
-          header: t('columns.supplier'),
-          Cell: ({ row }) =>
-            row.original.shippingInvoice.supplierCompany?.name ?? '—',
-        },
-        {
-          id: 'status',
-          header: t('columns.status'),
-          Cell: ({ row }) => (
-            <ShippingInvoiceStatusBadge
-              status={row.original.shippingInvoice.status}
-            />
-          ),
-        },
-        {
-          id: 'trackingNumber',
-          header: t('columns.trackingNumber'),
-          Cell: ({ row }) => row.original.shippingInvoice.trackingNumber ?? '—',
-        },
-        {
-          id: 'carrier',
-          header: t('columns.carrier'),
-          Cell: ({ row }) => row.original.shippingInvoice.carrier ?? '—',
-        },
-        {
-          accessorKey: 'notes',
-          header: t('columns.notes'),
-          Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
-        },
-      ];
+              {t('actions.removeShippingInvoice')}
+            </Button>
+          </PermissionGate>
+        ),
+      });
+    }
 
-      if (editable) {
-        baseColumns.push({
-          id: 'actions',
-          header: t('columns.actions'),
-          Cell: ({ row }) => (
-            <PermissionGate permission="manageConsolidations">
-              <Button
-                size="small"
-                color="error"
-                onClick={() => setEntryToRemove(row.original)}
-              >
-                {t('actions.removeShippingInvoice')}
-              </Button>
-            </PermissionGate>
-          ),
-        });
-      }
-
-      return baseColumns;
-    },
-    [editable, t],
-  );
+    return baseColumns;
+  }, [editable, t]);
 
   async function handleRemove() {
     if (!entryToRemove) {
@@ -162,7 +161,9 @@ export function ConsolidationShippingInvoicesTable({
       </Stack>
 
       {entries.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.shippingInvoices')}</Typography>
+        <Typography color="text.secondary">
+          {t('empty.shippingInvoices')}
+        </Typography>
       ) : (
         <SimpleTable
           columns={columns}

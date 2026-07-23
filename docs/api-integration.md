@@ -9,15 +9,15 @@ For architecture and codegen see [developer guide](./developer-guide.md).
 
 ## Connection overview
 
-| Item | Value |
-|------|-------|
-| API prefix | `/api/v1` |
-| Dev base URL | `/api/v1` (Vite proxy → `http://127.0.0.1:3000`) |
-| Production | Set `VITE_API_BASE_URL` to your API origin + `/api/v1` |
-| Health | `GET /health` (no prefix) |
-| Readiness | `GET /ready` (no prefix) |
-| OpenAPI UI | `GET /docs` (backend, when Swagger enabled) |
-| OpenAPI JSON | `GET /docs/json` or `openapi/api-docs.json` |
+| Item         | Value                                                  |
+| ------------ | ------------------------------------------------------ |
+| API prefix   | `/api/v1`                                              |
+| Dev base URL | `/api/v1` (Vite proxy → `http://127.0.0.1:3000`)       |
+| Production   | Set `VITE_API_BASE_URL` to your API origin + `/api/v1` |
+| Health       | `GET /health` (no prefix)                              |
+| Readiness    | `GET /ready` (no prefix)                               |
+| OpenAPI UI   | `GET /docs` (backend, when Swagger enabled)            |
+| OpenAPI JSON | `GET /docs/json` or `openapi/api-docs.json`            |
 
 ---
 
@@ -148,16 +148,16 @@ Always:
   "error": {
     "code": "REQUEST_NOT_EDITABLE",
     "message": "Request cannot be edited in its current status",
-    "details": { }
+    "details": {}
   }
 }
 ```
 
-| Field | Use in UI |
-|-------|-----------|
-| `code` | i18n key, conditional handling |
-| `message` | English fallback from server |
-| `details` | Field-level validation info |
+| Field     | Use in UI                      |
+| --------- | ------------------------------ |
+| `code`    | i18n key, conditional handling |
+| `message` | English fallback from server   |
+| `details` | Field-level validation info    |
 
 Common HTTP statuses: `400` validation/business, `401` auth, `403` permission, `404` not found, `409` conflict, `413` file too large, `422` unprocessable.
 
@@ -167,13 +167,13 @@ The `isApiError()` helper in `baseApi.ts` narrows unknown error payloads.
 
 ## Data conventions
 
-| Type | Format | Frontend rule |
-|------|--------|---------------|
-| IDs | UUID strings | Use as-is |
-| Dates | ISO 8601 | Parse with `dayjs` for display |
-| Quantities, amounts, prices | **Decimal strings** | `"10"`, `"10.5"` — max 4 decimal places; use `decimal.js`, never `number` in payloads |
-| Currency | 3-letter code | `"USD"`, `"EUR"` |
-| Enums | `SCREAMING_SNAKE_CASE` | Match backend exactly |
+| Type                        | Format                 | Frontend rule                                                                         |
+| --------------------------- | ---------------------- | ------------------------------------------------------------------------------------- |
+| IDs                         | UUID strings           | Use as-is                                                                             |
+| Dates                       | ISO 8601               | Parse with `dayjs` for display                                                        |
+| Quantities, amounts, prices | **Decimal strings**    | `"10"`, `"10.5"` — max 4 decimal places; use `decimal.js`, never `number` in payloads |
+| Currency                    | 3-letter code          | `"USD"`, `"EUR"`                                                                      |
+| Enums                       | `SCREAMING_SNAKE_CASE` | Match backend exactly                                                                 |
 
 ---
 
@@ -187,7 +187,7 @@ GET /api/v1/companies/:companyId/requests?limit=20&offset=0
 
 ```json
 {
-  "requests": [ ],
+  "requests": [],
   "pagination": { "total": 100, "limit": 20, "offset": 0 }
 }
 ```

@@ -61,8 +61,7 @@ export function RequestDistributeToSupplierDialog({
     () =>
       (partnersQuery.data?.partners ?? []).filter(
         (partner) =>
-          partner.status === 'ACTIVE' &&
-          !excludedIds.has(partner.company.id),
+          partner.status === 'ACTIVE' && !excludedIds.has(partner.company.id),
       ),
     [partnersQuery.data?.partners, excludedIds],
   );
@@ -136,7 +135,9 @@ export function RequestDistributeToSupplierDialog({
           </Typography>
 
           {partnersQuery.isLoading ? (
-            <Typography color="text.secondary">{t('distribute.loading')}</Typography>
+            <Typography color="text.secondary">
+              {t('distribute.loading')}
+            </Typography>
           ) : !hasActivePartners ? (
             <Stack spacing={1}>
               <Typography color="text.secondary">

@@ -3,10 +3,16 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
+const root = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../..',
+);
 const openApiPath = path.join(root, 'openapi/api-docs.json');
 const endpointsDir = path.join(root, 'src/api/endpoints');
-const generatedEndpointsPath = path.join(root, 'src/api/generated/endpoints.ts');
+const generatedEndpointsPath = path.join(
+  root,
+  'src/api/generated/endpoints.ts',
+);
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 

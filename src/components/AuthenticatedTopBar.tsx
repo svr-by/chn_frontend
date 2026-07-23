@@ -64,7 +64,10 @@ export function AuthenticatedTopBar() {
             variant="body2"
             color="text.secondary"
             noWrap
-            sx={{ maxWidth: { xs: 140, sm: 280 }, display: { xs: 'none', sm: 'block' } }}
+            sx={{
+              maxWidth: { xs: 140, sm: 280 },
+              display: { xs: 'none', sm: 'block' },
+            }}
           >
             {data.user.email}
           </Typography>

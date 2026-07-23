@@ -85,9 +85,7 @@ export function InvoicesPage() {
       {
         id: 'counterparty',
         header:
-          direction === 'inbound'
-            ? t('columns.supplier')
-            : t('columns.buyer'),
+          direction === 'inbound' ? t('columns.supplier') : t('columns.buyer'),
         Cell: ({ row }) =>
           direction === 'inbound'
             ? (row.original.supplierCompany?.name ?? '—')
@@ -179,7 +177,12 @@ export function InvoicesPage() {
             component="button"
             variant="body2"
             onClick={clearRequestFilter}
-            sx={{ cursor: 'pointer', border: 'none', background: 'none', color: 'primary.main' }}
+            sx={{
+              cursor: 'pointer',
+              border: 'none',
+              background: 'none',
+              color: 'primary.main',
+            }}
           >
             {t('filter.clearRequest')}
           </Typography>

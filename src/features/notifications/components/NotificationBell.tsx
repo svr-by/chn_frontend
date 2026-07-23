@@ -22,7 +22,11 @@ export function NotificationBell() {
           aria-label={t('app.notifications')}
           onClick={() => setDrawerOpen(true)}
         >
-          <Badge badgeContent={badgeContent} color="error" invisible={unreadCount === 0}>
+          <Badge
+            badgeContent={badgeContent}
+            color="error"
+            invisible={unreadCount === 0}
+          >
             <NotificationsNoneIcon />
           </Badge>
         </IconButton>

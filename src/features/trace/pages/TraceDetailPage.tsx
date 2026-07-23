@@ -1,12 +1,6 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Link,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -55,7 +49,11 @@ export function TraceDetailPage() {
   return (
     <PermissionGate permission="viewTrace">
       <Stack spacing={4}>
-        <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+        >
           <Box>
             <Typography variant="h5" component="h1">
               {t('detail.title')}
@@ -82,8 +80,12 @@ export function TraceDetailPage() {
         {trace ? (
           <>
             <Stack spacing={1}>
-              <Typography variant="subtitle1">{t('detail.requestLine')}</Typography>
-              <Typography variant="body1">{trace.requestLine.description}</Typography>
+              <Typography variant="subtitle1">
+                {t('detail.requestLine')}
+              </Typography>
+              <Typography variant="body1">
+                {trace.requestLine.description}
+              </Typography>
               <Typography variant="body2" color="text.secondary">
                 <DecimalDisplay
                   value={trace.requestLine.quantity}

@@ -94,7 +94,8 @@ describe('DocumentDetailTabs', () => {
       permissions: ['viewInvoices'],
       isLoading: false,
       hasPermission: (required) => required === 'viewInvoices',
-      hasAnyPermission: (required) => required.includes('viewInvoices' as never),
+      hasAnyPermission: (required) =>
+        required.includes('viewInvoices' as never),
     });
 
     renderWithProviders(
@@ -112,6 +113,8 @@ describe('DocumentDetailTabs', () => {
       />,
     );
 
-    expect(screen.queryByRole('tab', { name: 'Related' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('tab', { name: 'Related' }),
+    ).not.toBeInTheDocument();
   });
 });

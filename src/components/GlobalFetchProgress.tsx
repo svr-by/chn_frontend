@@ -28,7 +28,7 @@ export function GlobalFetchProgress() {
     <LinearProgress
       sx={{
         position: 'fixed',
-        top: (theme) => (theme.mixins.toolbar.minHeight ?? 0) as number + 4,
+        top: (theme) => ((theme.mixins.toolbar.minHeight ?? 0) as number) + 4,
         left: 0,
         right: 0,
         zIndex: (theme) => theme.zIndex.appBar,

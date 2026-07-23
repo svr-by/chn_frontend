@@ -15,7 +15,9 @@ interface DistributionStatusBadgeProps {
   status: RequestDistributionStatus;
 }
 
-export function DistributionStatusBadge({ status }: DistributionStatusBadgeProps) {
+export function DistributionStatusBadge({
+  status,
+}: DistributionStatusBadgeProps) {
   const { t } = useTranslation('enums');
 
   return (

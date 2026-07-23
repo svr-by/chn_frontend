@@ -67,11 +67,19 @@ interface RequestLinePipelineIconsProps {
   links: RequestLineLinks;
 }
 
-export function RequestLinePipelineIcons({ links }: RequestLinePipelineIconsProps) {
+export function RequestLinePipelineIcons({
+  links,
+}: RequestLinePipelineIconsProps) {
   const { t } = useTranslation('requests');
 
   return (
-    <Stack direction="row" spacing={0.25} alignItems="center" useFlexGap flexWrap="wrap">
+    <Stack
+      direction="row"
+      spacing={0.25}
+      alignItems="center"
+      useFlexGap
+      flexWrap="wrap"
+    >
       {PIPELINE_STAGES.map(({ key, icon: Icon, labelKey }) => {
         const active = links[key];
         if (!active) return null;

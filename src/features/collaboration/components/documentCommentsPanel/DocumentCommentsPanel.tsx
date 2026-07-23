@@ -87,7 +87,9 @@ export function DocumentCommentsPanel({
                   alignItems="baseline"
                   flexWrap="wrap"
                 >
-                  <Typography variant="subtitle2">{comment.author.name}</Typography>
+                  <Typography variant="subtitle2">
+                    {comment.author.name}
+                  </Typography>
                   <Typography variant="caption" color="text.secondary">
                     {comment.author.companyName}
                   </Typography>

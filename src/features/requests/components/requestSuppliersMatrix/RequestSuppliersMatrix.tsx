@@ -103,7 +103,8 @@ export function RequestSuppliersMatrix({
     // Newest distribution becomes the rightmost column.
     return [...items].sort(
       (a, b) =>
-        new Date(a.distributedAt).getTime() - new Date(b.distributedAt).getTime(),
+        new Date(a.distributedAt).getTime() -
+        new Date(b.distributedAt).getTime(),
     );
   }, [distributionsQuery.data?.distributions]);
 
@@ -130,10 +131,7 @@ export function RequestSuppliersMatrix({
       if (
         currentIds.length === nextIds.length &&
         nextIds.every((id) =>
-          areLineSetsEqual(
-            new Set(current[id] ?? []),
-            new Set(next[id] ?? []),
-          ),
+          areLineSetsEqual(new Set(current[id] ?? []), new Set(next[id] ?? [])),
         )
       ) {
         return current;
@@ -428,14 +426,14 @@ export function RequestSuppliersMatrix({
 
       <ApiErrorAlert
         error={
-          distributionsQuery.error ??
-          deleteState.error ??
-          distributeState.error
+          distributionsQuery.error ?? deleteState.error ?? distributeState.error
         }
       />
 
       {distributionsQuery.isLoading ? (
-        <Typography color="text.secondary">{t('suppliersMatrix.loading')}</Typography>
+        <Typography color="text.secondary">
+          {t('suppliersMatrix.loading')}
+        </Typography>
       ) : requestLines.length === 0 ? (
         <Typography color="text.secondary">{t('empty.lines')}</Typography>
       ) : (

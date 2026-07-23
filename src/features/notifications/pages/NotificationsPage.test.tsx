@@ -16,7 +16,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -78,8 +79,14 @@ describe('NotificationsPage', () => {
       preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
     });
 
-    expect(await screen.findByText('New comment on invoice')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Mark all read' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Unread only' })).toBeInTheDocument();
+    expect(
+      await screen.findByText('New comment on invoice'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Mark all read' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Unread only' }),
+    ).toBeInTheDocument();
   });
 });

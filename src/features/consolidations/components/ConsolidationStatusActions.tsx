@@ -41,7 +41,8 @@ export function ConsolidationStatusActions({
   const [planConsolidation, planState] = usePlanConsolidationMutation();
   const [markInTransit, transitState] = useMarkConsolidationInTransitMutation();
   const [markCustoms, customsState] = useMarkConsolidationCustomsMutation();
-  const [markDelivered, deliveredState] = useMarkConsolidationDeliveredMutation();
+  const [markDelivered, deliveredState] =
+    useMarkConsolidationDeliveredMutation();
 
   if (
     status !== 'DRAFT' &&

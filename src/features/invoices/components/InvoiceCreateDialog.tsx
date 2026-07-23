@@ -24,11 +24,7 @@ interface InvoiceCreateDialogProps {
   initialRequestId?: string | null;
 }
 
-const ORDERABLE_STATUSES = new Set([
-  'PARTIALLY_ORDERED',
-  'ORDERED',
-  'QUOTING',
-]);
+const ORDERABLE_STATUSES = new Set(['PARTIALLY_ORDERED', 'ORDERED', 'QUOTING']);
 
 export function InvoiceCreateDialog({
   open,
@@ -68,7 +64,9 @@ export function InvoiceCreateDialog({
         <ApiErrorAlert error={error} />
         <Stack spacing={2} sx={{ pt: 1 }}>
           <FormControl fullWidth>
-            <InputLabel id="invoice-request-label">{t('create.request')}</InputLabel>
+            <InputLabel id="invoice-request-label">
+              {t('create.request')}
+            </InputLabel>
             <Select
               labelId="invoice-request-label"
               label={t('create.request')}

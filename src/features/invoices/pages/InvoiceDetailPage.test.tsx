@@ -17,7 +17,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -137,7 +138,10 @@ describe('InvoiceDetailPage', () => {
 
     renderWithProviders(
       <Routes>
-        <Route path="/app/invoices/:invoiceId" element={<InvoiceDetailPage />} />
+        <Route
+          path="/app/invoices/:invoiceId"
+          element={<InvoiceDetailPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -164,7 +168,10 @@ describe('InvoiceDetailPage', () => {
 
     renderWithProviders(
       <Routes>
-        <Route path="/app/invoices/:invoiceId" element={<InvoiceDetailPage />} />
+        <Route
+          path="/app/invoices/:invoiceId"
+          element={<InvoiceDetailPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -193,7 +200,10 @@ describe('InvoiceDetailPage', () => {
 
     renderWithProviders(
       <Routes>
-        <Route path="/app/invoices/:invoiceId" element={<InvoiceDetailPage />} />
+        <Route
+          path="/app/invoices/:invoiceId"
+          element={<InvoiceDetailPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -204,6 +214,8 @@ describe('InvoiceDetailPage', () => {
     await user.click(screen.getByRole('tab', { name: 'Comments' }));
 
     expect(await screen.findByText('No comments yet.')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Post comment' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Post comment' }),
+    ).toBeInTheDocument();
   });
 });

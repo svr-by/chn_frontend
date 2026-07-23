@@ -17,7 +17,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -84,7 +85,9 @@ describe('ProductsPage', () => {
     });
 
     expect(screen.getByText('Test Product')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Add product' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add product' }),
+    ).toBeInTheDocument();
   });
 
   it('hides create button without manageProducts', () => {

@@ -33,7 +33,9 @@ export const importsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<{ formData: FormData }>
     >({
       query: ({ companyId, formData }) => ({
-        url: getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl(companyId),
+        url: getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl(
+          companyId,
+        ),
         method: 'POST',
         body: formData,
       }),
@@ -43,7 +45,9 @@ export const importsApi = baseApi.injectEndpoints({
       CompanyScopedArgs<{ formData: FormData }>
     >({
       query: ({ companyId, formData }) => ({
-        url: getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl(companyId),
+        url: getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl(
+          companyId,
+        ),
         method: 'POST',
         body: formData,
       }),

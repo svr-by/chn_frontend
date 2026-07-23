@@ -41,13 +41,14 @@ export function InboundRequestDetailPage() {
   }
 
   const title =
-    request?.title ??
-    t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
+    request?.title ?? t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
 
   return (
     <DocumentDetailLayout
       title={title}
-      statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
+      statusBadge={
+        request?.status ? <StatusBadge status={request.status} /> : undefined
+      }
       loading={requestQuery.isLoading}
       error={requestQuery.error}
       backFallbackTo="/app/requests?tab=inbound"

@@ -53,7 +53,8 @@ export function ApiErrorAlert({ error }: ApiErrorAlertProps) {
   return (
     <Alert severity="error" sx={{ mb: 2 }}>
       {t('UNKNOWN_ERROR', {
-        defaultValue: error.message ?? 'Something went wrong. Please try again.',
+        defaultValue:
+          error.message ?? 'Something went wrong. Please try again.',
       })}
     </Alert>
   );

@@ -22,12 +22,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 
 type TransportModeValue = NonNullable<ConsolidationTransportMode>;
 
-const TRANSPORT_MODES: TransportModeValue[] = [
-  'ROAD',
-  'AIR',
-  'RAIL',
-  'SEA',
-];
+const TRANSPORT_MODES: TransportModeValue[] = ['ROAD', 'AIR', 'RAIL', 'SEA'];
 
 const headerSchema = z.object({
   transportMode: z.enum(['ROAD', 'AIR', 'RAIL', 'SEA']).nullable().optional(),
@@ -107,7 +102,9 @@ export function ConsolidationHeaderForm({
         <Box>
           <strong>{t('form.transportMode')}:</strong>{' '}
           {consolidation.transportMode
-            ? tEnums(`transportMode.${consolidation.transportMode.toLowerCase()}`)
+            ? tEnums(
+                `transportMode.${consolidation.transportMode.toLowerCase()}`,
+              )
             : '—'}
         </Box>
         <Box>

@@ -50,17 +50,15 @@ function getRequestStatusFilter(
 }
 
 function getCreatedByFilter(columnFilters: MRT_ColumnFiltersState): string {
-  const value = columnFilters.find((filter) => filter.id === 'createdBy')?.value;
+  const value = columnFilters.find(
+    (filter) => filter.id === 'createdBy',
+  )?.value;
   return typeof value === 'string' ? value.trim() : '';
 }
 
 function getPipelineFilters(columnFilters: MRT_ColumnFiltersState) {
   const value = columnFilters.find((filter) => filter.id === 'pipeline')?.value;
-  const values = Array.isArray(value)
-    ? value
-    : value
-      ? [value]
-      : [];
+  const values = Array.isArray(value) ? value : value ? [value] : [];
 
   return {
     undistributed: values.includes('undistributed'),
@@ -188,7 +186,7 @@ export function OutboundRequestLinesPanel({
         Cell: ({ row }) => (
           <Stack spacing={0.5}>
             <Typography variant="body2">{row.original.description}</Typography>
-            {row.original.product?.sku ?? getImportSku(row.original) ? (
+            {(row.original.product?.sku ?? getImportSku(row.original)) ? (
               <Typography variant="caption" color="text.secondary">
                 {row.original.product?.sku ?? getImportSku(row.original)}
               </Typography>
@@ -304,7 +302,8 @@ export function OutboundRequestLinesPanel({
         globalFilter={globalFilter}
         onGlobalFilterChange={(updater) => {
           setGlobalFilter((prev) => {
-            const next = typeof updater === 'function' ? updater(prev) : updater;
+            const next =
+              typeof updater === 'function' ? updater(prev) : updater;
             return next ?? '';
           });
           setPagination((prev) => ({ ...prev, pageIndex: 0 }));

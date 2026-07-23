@@ -9,10 +9,7 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { QuoteComparisonLine } from '@/api/generated/models/quoteComparisonLine';
@@ -33,9 +30,7 @@ function findOffer(
   offers: QuoteOffer[],
   supplierCompanyId: string,
 ): QuoteOffer | undefined {
-  return offers.find(
-    (offer) => offer.supplierCompany.id === supplierCompanyId,
-  );
+  return offers.find((offer) => offer.supplierCompany.id === supplierCompanyId);
 }
 
 function ComparisonMobileCards({
@@ -53,7 +48,12 @@ function ComparisonMobileCards({
         <Card key={line.id} variant="outlined">
           <CardContent>
             <Stack spacing={1.5}>
-              <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                flexWrap="wrap"
+              >
                 <Typography variant="subtitle2">
                   #{line.requestLine.lineNumber}
                 </Typography>
@@ -73,7 +73,9 @@ function ComparisonMobileCards({
                 return (
                   <Box key={supplier.companyId}>
                     <Stack spacing={0.5}>
-                      <Typography variant="subtitle2">{supplier.name}</Typography>
+                      <Typography variant="subtitle2">
+                        {supplier.name}
+                      </Typography>
                       <QuoteStatusBadge status={supplier.status} />
                       {offer ? (
                         <Stack spacing={0.25}>
@@ -87,7 +89,8 @@ function ComparisonMobileCards({
                           </Typography>
                           <Typography variant="body2">
                             {t('comparison.cell.total')}:{' '}
-                            <DecimalDisplay value={offer.lineTotal} /> {offer.currency}
+                            <DecimalDisplay value={offer.lineTotal} />{' '}
+                            {offer.currency}
                           </Typography>
                         </Stack>
                       ) : (
@@ -125,8 +128,14 @@ export function QuoteComparisonMatrix({
     { skip: !companyId || !requestId },
   );
 
-  const lines = comparisonQuery.data?.lines ?? [];
-  const suppliers = comparisonQuery.data?.suppliers ?? [];
+  const lines = useMemo(
+    () => comparisonQuery.data?.lines ?? [],
+    [comparisonQuery.data?.lines],
+  );
+  const suppliers = useMemo(
+    () => comparisonQuery.data?.suppliers ?? [],
+    [comparisonQuery.data?.suppliers],
+  );
 
   const tableData = useMemo<ComparisonRow[]>(
     () =>
@@ -145,10 +154,20 @@ export function QuoteComparisonMatrix({
         size: 60,
         Cell: ({ row }) => row.original.requestLine.lineNumber,
         muiTableHeadCellProps: {
-          sx: { position: 'sticky', left: 0, zIndex: 2, bgcolor: 'background.paper' },
+          sx: {
+            position: 'sticky',
+            left: 0,
+            zIndex: 2,
+            bgcolor: 'background.paper',
+          },
         },
         muiTableBodyCellProps: {
-          sx: { position: 'sticky', left: 0, zIndex: 1, bgcolor: 'background.paper' },
+          sx: {
+            position: 'sticky',
+            left: 0,
+            zIndex: 1,
+            bgcolor: 'background.paper',
+          },
         },
       },
       {
@@ -156,10 +175,20 @@ export function QuoteComparisonMatrix({
         header: t('comparison.columns.description'),
         Cell: ({ row }) => row.original.requestLine.description,
         muiTableHeadCellProps: {
-          sx: { position: 'sticky', left: 60, zIndex: 2, bgcolor: 'background.paper' },
+          sx: {
+            position: 'sticky',
+            left: 60,
+            zIndex: 2,
+            bgcolor: 'background.paper',
+          },
         },
         muiTableBodyCellProps: {
-          sx: { position: 'sticky', left: 60, zIndex: 1, bgcolor: 'background.paper' },
+          sx: {
+            position: 'sticky',
+            left: 60,
+            zIndex: 1,
+            bgcolor: 'background.paper',
+          },
         },
       },
       {
@@ -243,7 +272,9 @@ export function QuoteComparisonMatrix({
       <ApiErrorAlert error={comparisonQuery.error} />
 
       {comparisonQuery.isLoading ? (
-        <Typography color="text.secondary">{t('comparison.loading')}</Typography>
+        <Typography color="text.secondary">
+          {t('comparison.loading')}
+        </Typography>
       ) : suppliers.length === 0 ? (
         <Typography color="text.secondary">{t('comparison.empty')}</Typography>
       ) : isMobile ? (

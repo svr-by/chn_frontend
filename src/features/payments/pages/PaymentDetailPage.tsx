@@ -10,9 +10,7 @@ import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';
-import { PaymentUploadSection } from '@/features/payments/components/PaymentUploadSection';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { usePermissions } from '@/hooks/usePermissions';
 
 export function PaymentDetailPage() {
   const { t } = useTranslation('payments');
@@ -20,7 +18,6 @@ export function PaymentDetailPage() {
   const { enqueueSnackbar } = useSnackbar();
   const { paymentId } = useParams<{ paymentId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const { hasPermission } = usePermissions();
 
   const paymentQuery = useGetPaymentQuery(
     { companyId: companyId ?? '', paymentId: paymentId ?? '' },
@@ -28,8 +25,6 @@ export function PaymentDetailPage() {
   );
 
   const payment = paymentQuery.data?.payment;
-  const canUpload =
-    payment?.status === 'PENDING' && hasPermission('managePayments');
 
   useEffect(() => {
     if (

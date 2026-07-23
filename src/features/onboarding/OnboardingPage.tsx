@@ -123,118 +123,123 @@ export function OnboardingPage() {
   return (
     <Card sx={{ width: '100%' }}>
       <CardContent sx={{ p: 4 }}>
-          <Typography variant="h5" component="h1" gutterBottom textAlign="center">
-            {t('onboardingTitle')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }} textAlign="center">
-            {t('onboardingSubtitle')}
-          </Typography>
+        <Typography variant="h5" component="h1" gutterBottom textAlign="center">
+          {t('onboardingTitle')}
+        </Typography>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ mb: 3 }}
+          textAlign="center"
+        >
+          {t('onboardingSubtitle')}
+        </Typography>
 
-          <ApiErrorAlert error={createState.error ?? acceptState.error} />
+        <ApiErrorAlert error={createState.error ?? acceptState.error} />
 
-          {hasPendingInvites && (
-            <Tabs
-              value={tab}
-              onChange={(_event, value: number) => setTab(value)}
-              variant="fullWidth"
-              sx={{ mb: 3 }}
-            >
-              <Tab label={t('pendingInvites')} />
-              <Tab label={t('createCompany')} />
-            </Tabs>
-          )}
+        {hasPendingInvites && (
+          <Tabs
+            value={tab}
+            onChange={(_event, value: number) => setTab(value)}
+            variant="fullWidth"
+            sx={{ mb: 3 }}
+          >
+            <Tab label={t('pendingInvites')} />
+            <Tab label={t('createCompany')} />
+          </Tabs>
+        )}
 
-          {hasPendingInvites && tab === 0 && (
-            <Stack spacing={2}>
-              {pendingInvitations.map((invitation) => (
-                <Box
-                  key={invitation.id}
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    gap: 2,
-                  }}
-                >
-                  <Box>
-                    <Typography fontWeight={600}>
-                      {invitation.company.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {t(`memberRole.${invitation.role.toLowerCase()}`, {
-                        ns: 'enums',
-                      })}
-                    </Typography>
-                  </Box>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    {invitation.expired && (
-                      <Chip
-                        label={t('inviteExpired')}
-                        size="small"
-                        color="default"
-                      />
-                    )}
-                    <Button
-                      variant="outlined"
-                      disabled={acceptState.isLoading || invitation.expired}
-                      onClick={() => void handleAccept(invitation.company.id)}
-                    >
-                      {t('acceptInvite')}
-                    </Button>
-                  </Stack>
-                </Box>
-              ))}
-            </Stack>
-          )}
-
-          {(!hasPendingInvites || tab === 1) && (
-            <Box
-              component="form"
-              onSubmit={(event) => void handleSubmit(onCreateCompany)(event)}
-            >
-              {!hasPendingInvites && (
-                <Typography variant="h6" sx={{ mb: 2 }} textAlign="center">
-                  {t('createCompany')}
-                </Typography>
-              )}
-              {atOwnershipLimit && (
-                <Typography
-                  variant="body2"
-                  color="error"
-                  sx={{ mb: 2 }}
-                  textAlign="center"
-                >
-                  {t('ownershipLimitReached')}
-                </Typography>
-              )}
-              <TextField
-                {...register('name')}
-                label={t('companyName')}
-                fullWidth
-                margin="normal"
-                error={Boolean(errors.name)}
-                helperText={errors.name?.message}
-                disabled={atOwnershipLimit}
-              />
-              <TextField
-                {...register('taxId')}
-                label={t('taxId')}
-                fullWidth
-                margin="normal"
-                disabled={atOwnershipLimit}
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{ mt: 2 }}
-                disabled={createState.isLoading || atOwnershipLimit}
+        {hasPendingInvites && tab === 0 && (
+          <Stack spacing={2}>
+            {pendingInvitations.map((invitation) => (
+              <Box
+                key={invitation.id}
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 2,
+                }}
               >
-                {t('createCompanyButton')}
-              </Button>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+                <Box>
+                  <Typography fontWeight={600}>
+                    {invitation.company.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t(`memberRole.${invitation.role.toLowerCase()}`, {
+                      ns: 'enums',
+                    })}
+                  </Typography>
+                </Box>
+                <Stack direction="row" spacing={1} alignItems="center">
+                  {invitation.expired && (
+                    <Chip
+                      label={t('inviteExpired')}
+                      size="small"
+                      color="default"
+                    />
+                  )}
+                  <Button
+                    variant="outlined"
+                    disabled={acceptState.isLoading || invitation.expired}
+                    onClick={() => void handleAccept(invitation.company.id)}
+                  >
+                    {t('acceptInvite')}
+                  </Button>
+                </Stack>
+              </Box>
+            ))}
+          </Stack>
+        )}
+
+        {(!hasPendingInvites || tab === 1) && (
+          <Box
+            component="form"
+            onSubmit={(event) => void handleSubmit(onCreateCompany)(event)}
+          >
+            {!hasPendingInvites && (
+              <Typography variant="h6" sx={{ mb: 2 }} textAlign="center">
+                {t('createCompany')}
+              </Typography>
+            )}
+            {atOwnershipLimit && (
+              <Typography
+                variant="body2"
+                color="error"
+                sx={{ mb: 2 }}
+                textAlign="center"
+              >
+                {t('ownershipLimitReached')}
+              </Typography>
+            )}
+            <TextField
+              {...register('name')}
+              label={t('companyName')}
+              fullWidth
+              margin="normal"
+              error={Boolean(errors.name)}
+              helperText={errors.name?.message}
+              disabled={atOwnershipLimit}
+            />
+            <TextField
+              {...register('taxId')}
+              label={t('taxId')}
+              fullWidth
+              margin="normal"
+              disabled={atOwnershipLimit}
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              sx={{ mt: 2 }}
+              disabled={createState.isLoading || atOwnershipLimit}
+            >
+              {t('createCompanyButton')}
+            </Button>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
   );
 }

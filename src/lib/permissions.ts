@@ -1,5 +1,9 @@
 import type { GetAuthMe200User } from '@/api/generated/models/getAuthMe200User';
-import type { MembershipSummary, Permission, PendingInvitation } from '@/types/api';
+import type {
+  MembershipSummary,
+  Permission,
+  PendingInvitation,
+} from '@/types/api';
 
 export function hasPermission(
   permissions: Permission[],
@@ -32,7 +36,8 @@ export function hasSuspendedMemberships(
   );
 }
 
-export type AuthenticatedRedirect = '/app' | '/onboarding' | '/access-suspended';
+export type AuthenticatedRedirect =
+  '/app' | '/onboarding' | '/access-suspended';
 
 export function resolveAuthenticatedRedirect(
   user: GetAuthMe200User | undefined,
@@ -137,8 +142,6 @@ export function resolveActiveCompanyId(
   );
 
   return (
-    operational?.company?.id ??
-    switcherMemberships[0]?.company?.id ??
-    null
+    operational?.company?.id ?? switcherMemberships[0]?.company?.id ?? null
   );
 }

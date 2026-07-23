@@ -4,13 +4,13 @@ English-language reference for building the CHN web client on top of the procure
 
 **Related documents**
 
-| Document | Audience |
-|----------|----------|
-| [Product overview](./product-overview.md) | End users, product, presentations |
-| [Developer guide](./developer-guide.md) | Frontend contributors |
-| [API integration](./api-integration.md) | HTTP contracts and codegen |
-| [API reference](./api-reference.md) | Endpoint lookup |
-| [Implementation plan](./implementation-plan.md) | Phased delivery roadmap |
+| Document                                        | Audience                          |
+| ----------------------------------------------- | --------------------------------- |
+| [Product overview](./product-overview.md)       | End users, product, presentations |
+| [Developer guide](./developer-guide.md)         | Frontend contributors             |
+| [API integration](./api-integration.md)         | HTTP contracts and codegen        |
+| [API reference](./api-reference.md)             | Endpoint lookup                   |
+| [Implementation plan](./implementation-plan.md) | Phased delivery roadmap           |
 
 ---
 
@@ -36,15 +36,15 @@ Material Request → Supplier Quotes → Purchase Selection → Invoice → Paym
 
 See [API integration](./api-integration.md) for full detail. Key points:
 
-| Item | Value |
-|------|-------|
-| API prefix | `/api/v1` |
-| Auth header | `Authorization: Bearer <accessToken>` |
-| Company context | `X-Company-Id: <uuid>` |
-| Money / quantities | Decimal **strings**, never JS `number` |
-| Errors | `{ error: { code, message, details? } }` |
-| List pagination | `limit` / `offset` (default limit 20) |
-| Comments / notifications | Cursor pagination |
+| Item                     | Value                                    |
+| ------------------------ | ---------------------------------------- |
+| API prefix               | `/api/v1`                                |
+| Auth header              | `Authorization: Bearer <accessToken>`    |
+| Company context          | `X-Company-Id: <uuid>`                   |
+| Money / quantities       | Decimal **strings**, never JS `number`   |
+| Errors                   | `{ error: { code, message, details? } }` |
+| List pagination          | `limit` / `offset` (default limit 20)    |
+| Comments / notifications | Cursor pagination                        |
 
 ---
 
@@ -101,15 +101,15 @@ Team settings (`/app/settings/team`) should show active members, pending invitat
 
 ### Roles (presets only — do not use for authorization)
 
-| Role | Typical UI areas |
-|------|------------------|
-| `OWNER` | Everything + member permissions |
-| `ADMIN` | Broad ops; no `manageMemberPermissions` |
-| `PROCUREMENT` | Requests, quotes, selections, invoices, payments |
-| `LOGISTICS` | Shipping, consolidations |
-| `ACCOUNTANT` | Payments; can **confirm** payments (`confirmPayments`) |
-| `WAREHOUSE` | Shipping + consolidations (read-heavy) |
-| `VIEWER` | Read-only across modules |
+| Role          | Typical UI areas                                       |
+| ------------- | ------------------------------------------------------ |
+| `OWNER`       | Everything + member permissions                        |
+| `ADMIN`       | Broad ops; no `manageMemberPermissions`                |
+| `PROCUREMENT` | Requests, quotes, selections, invoices, payments       |
+| `LOGISTICS`   | Shipping, consolidations                               |
+| `ACCOUNTANT`  | Payments; can **confirm** payments (`confirmPayments`) |
+| `WAREHOUSE`   | Shipping + consolidations (read-heavy)                 |
+| `VIEWER`      | Read-only across modules                               |
 
 `OWNER` cannot be assigned via API. Role changes reset custom permission overrides to `null`.
 
@@ -117,25 +117,25 @@ Team settings (`/app/settings/team`) should show active members, pending invitat
 
 Gate buttons, routes, and forms with `effectivePermissions` from `/auth/me` (for active company), **not role names alone**.
 
-| Permission | UI capability |
-|------------|---------------|
-| `manageMembers` | Invite members, change roles |
-| `manageMemberPermissions` | Owner-only permission overrides |
-| `manageCompany` | Company settings |
-| `viewMembers` | Member list |
-| `viewPartners` / `managePartners` | Partner directory and invites |
-| `viewProducts` / `manageProducts` | Product catalog |
-| `viewRequests` / `manageRequests` | Material requests, CSV import |
-| `viewQuotes` / `manageQuotes` | Quotes (supplier side) |
-| `viewSelections` / `manageSelections` | Purchase selections |
-| `viewInvoices` / `manageInvoices` | Invoices |
-| `viewPayments` / `managePayments` | Register and upload payments |
-| `confirmPayments` | Accountant confirm/reject |
-| `viewShippingInvoices` / `manageShippingInvoices` | Shipping documents |
-| `viewConsolidations` / `manageConsolidations` | Consolidations |
-| `viewNotifications` | Notification center |
-| `viewTrace` | Traceability views |
-| `manageIntegrations` | API keys, webhooks, mappings (admin settings) |
+| Permission                                        | UI capability                                 |
+| ------------------------------------------------- | --------------------------------------------- |
+| `manageMembers`                                   | Invite members, change roles                  |
+| `manageMemberPermissions`                         | Owner-only permission overrides               |
+| `manageCompany`                                   | Company settings                              |
+| `viewMembers`                                     | Member list                                   |
+| `viewPartners` / `managePartners`                 | Partner directory and invites                 |
+| `viewProducts` / `manageProducts`                 | Product catalog                               |
+| `viewRequests` / `manageRequests`                 | Material requests, CSV import                 |
+| `viewQuotes` / `manageQuotes`                     | Quotes (supplier side)                        |
+| `viewSelections` / `manageSelections`             | Purchase selections                           |
+| `viewInvoices` / `manageInvoices`                 | Invoices                                      |
+| `viewPayments` / `managePayments`                 | Register and upload payments                  |
+| `confirmPayments`                                 | Accountant confirm/reject                     |
+| `viewShippingInvoices` / `manageShippingInvoices` | Shipping documents                            |
+| `viewConsolidations` / `manageConsolidations`     | Consolidations                                |
+| `viewNotifications`                               | Notification center                           |
+| `viewTrace`                                       | Traceability views                            |
+| `manageIntegrations`                              | API keys, webhooks, mappings (admin settings) |
 
 Server returns `403` + `INSUFFICIENT_PERMISSIONS` if action is denied — hide UI where possible, but always handle API errors.
 
@@ -162,17 +162,17 @@ Use separate navigation or tabs: e.g. “Our invoices” vs “Invoices from sup
 
 ### 5.2 Buyer: request to delivery
 
-| Step | Actor | Key actions |
-|------|-------|-------------|
-| 1 | Procurement | Create request (draft), add lines, submit |
-| 2 | Procurement | Distribute to supplier companies |
-| 3 | Supplier | View inbound request, create & submit quote |
-| 4 | Buyer | Quote comparison view, create selection, add lines, confirm |
-| 5 | Supplier | Create invoice from billable lines, issue |
-| 6 | Buyer | Register payment, upload proof |
-| 7 | Accountant | Confirm or reject payment |
-| 8 | Supplier | Create shipping invoice, issue, mark in transit / delivered |
-| 9 | Buyer | Create consolidation, add shipping invoices, plan transit |
+| Step | Actor       | Key actions                                                 |
+| ---- | ----------- | ----------------------------------------------------------- |
+| 1    | Procurement | Create request (draft), add lines, submit                   |
+| 2    | Procurement | Distribute to supplier companies                            |
+| 3    | Supplier    | View inbound request, create & submit quote                 |
+| 4    | Buyer       | Quote comparison view, create selection, add lines, confirm |
+| 5    | Supplier    | Create invoice from billable lines, issue                   |
+| 6    | Buyer       | Register payment, upload proof                              |
+| 7    | Accountant  | Confirm or reject payment                                   |
+| 8    | Supplier    | Create shipping invoice, issue, mark in transit / delivered |
+| 9    | Buyer       | Create consolidation, add shipping invoices, plan transit   |
 
 The same company may appear on both sides in different tabs.
 
@@ -196,71 +196,71 @@ Use status to enable/disable actions. Server enforces transitions; UI should mir
 
 ### Material Request
 
-| Status | Meaning | Typical actions |
-|--------|---------|-----------------|
-| `DRAFT` | Editable | Edit header/lines, submit |
-| `SUBMITTED` | Sent internally | Distribute to suppliers |
-| `QUOTING` | With suppliers | View quotes, selection |
+| Status              | Meaning            | Typical actions              |
+| ------------------- | ------------------ | ---------------------------- |
+| `DRAFT`             | Editable           | Edit header/lines, submit    |
+| `SUBMITTED`         | Sent internally    | Distribute to suppliers      |
+| `QUOTING`           | With suppliers     | View quotes, selection       |
 | `PARTIALLY_ORDERED` | Some lines ordered | Continue selection/invoicing |
-| `ORDERED` | All lines covered | Close when done |
-| `CLOSED` | Finished | Read-only |
+| `ORDERED`           | All lines covered  | Close when done              |
+| `CLOSED`            | Finished           | Read-only                    |
 
 **Actions:** `POST .../submit`, `POST .../distribute` `{ supplierCompanyIds: [] }`  
 Edit/delete lines only in `DRAFT`.
 
 ### Supplier Quote
 
-| Status | Actions |
-|--------|---------|
-| `DRAFT` | Edit, add/remove lines, submit |
-| `SUBMITTED` | Read-only for supplier; buyer compares |
-| `PARTIALLY_ACCEPTED` / `ACCEPTED` / `REJECTED` / `EXPIRED` | Driven by selection workflow |
+| Status                                                     | Actions                                |
+| ---------------------------------------------------------- | -------------------------------------- |
+| `DRAFT`                                                    | Edit, add/remove lines, submit         |
+| `SUBMITTED`                                                | Read-only for supplier; buyer compares |
+| `PARTIALLY_ACCEPTED` / `ACCEPTED` / `REJECTED` / `EXPIRED` | Driven by selection workflow           |
 
 ### Purchase Selection
 
-| Status | Actions |
-|--------|---------|
-| `DRAFT` | Add/update/remove lines, confirm, cancel |
-| `CONFIRMED` | Invoice creation enabled |
-| `CANCELLED` | Terminal |
+| Status      | Actions                                  |
+| ----------- | ---------------------------------------- |
+| `DRAFT`     | Add/update/remove lines, confirm, cancel |
+| `CONFIRMED` | Invoice creation enabled                 |
+| `CANCELLED` | Terminal                                 |
 
 ### Invoice
 
-| Status | Actions |
-|--------|---------|
-| `DRAFT` | Edit lines, issue |
-| `ISSUED` | Payments allowed |
+| Status                    | Actions                             |
+| ------------------------- | ----------------------------------- |
+| `DRAFT`                   | Edit lines, issue                   |
+| `ISSUED`                  | Payments allowed                    |
 | `PARTIALLY_PAID` / `PAID` | More payments; supplier may confirm |
-| `CONFIRMED` | Terminal (fully reconciled) |
+| `CONFIRMED`               | Terminal (fully reconciled)         |
 
 List filter: `direction=inbound|outbound`.
 
 ### Payment
 
-| Status | Actions |
-|--------|---------|
-| `PENDING` | Upload file |
-| `UPLOADED` | Accountant confirm/reject |
-| `CONFIRMED` / `REJECTED` | Terminal |
+| Status                   | Actions                   |
+| ------------------------ | ------------------------- |
+| `PENDING`                | Upload file               |
+| `UPLOADED`               | Accountant confirm/reject |
+| `CONFIRMED` / `REJECTED` | Terminal                  |
 
 ### Shipping Invoice
 
-| Status | Actions |
-|--------|---------|
-| `DRAFT` | Edit, issue |
-| `ISSUED` | Mark in transit |
-| `IN_TRANSIT` | Mark delivered |
-| `DELIVERED` | Terminal; eligible for consolidation |
+| Status       | Actions                              |
+| ------------ | ------------------------------------ |
+| `DRAFT`      | Edit, issue                          |
+| `ISSUED`     | Mark in transit                      |
+| `IN_TRANSIT` | Mark delivered                       |
+| `DELIVERED`  | Terminal; eligible for consolidation |
 
 ### Consolidation
 
-| Status | Actions |
-|--------|---------|
-| `DRAFT` | Edit, add/remove shipping invoices, plan |
-| `PLANNED` | Mark in transit |
-| `IN_TRANSIT` | Mark at customs |
-| `CUSTOMS` | Mark delivered |
-| `DELIVERED` | Terminal |
+| Status       | Actions                                  |
+| ------------ | ---------------------------------------- |
+| `DRAFT`      | Edit, add/remove shipping invoices, plan |
+| `PLANNED`    | Mark in transit                          |
+| `IN_TRANSIT` | Mark at customs                          |
+| `CUSTOMS`    | Mark delivered                           |
+| `DELIVERED`  | Terminal                                 |
 
 Transport modes: `ROAD`, `AIR`, `RAIL`, `SEA`.
 
@@ -338,14 +338,14 @@ Reuse across request, quote, selection, invoice, payment, shipping, consolidatio
 
 ### Shared components (target)
 
-| Component | Purpose |
-|-----------|---------|
-| `DecimalInput` / `DecimalDisplay` | Money and quantity fields |
-| `StatusBadge` | Document status with i18n label |
-| `PermissionGate` | Conditional render by permission |
-| `LineageLink` | Navigate to `/app/trace/:lineageId` |
-| `ApiErrorAlert` | Map `error.code` to i18n |
-| `PaginatedTable` | Offset pagination wrapper for MRT |
+| Component                         | Purpose                             |
+| --------------------------------- | ----------------------------------- |
+| `DecimalInput` / `DecimalDisplay` | Money and quantity fields           |
+| `StatusBadge`                     | Document status with i18n label     |
+| `PermissionGate`                  | Conditional render by permission    |
+| `LineageLink`                     | Navigate to `/app/trace/:lineageId` |
+| `ApiErrorAlert`                   | Map `error.code` to i18n            |
+| `PaginatedTable`                  | Offset pagination wrapper for MRT   |
 
 ### Cross-cutting client rules
 
@@ -394,10 +394,10 @@ Used for comments, activity, notifications, and relationship graph endpoints.
 
 ## 12. Testing expectations
 
-| Layer | Tool | Focus |
-|-------|------|-------|
-| Unit / component | Vitest + Testing Library | Forms, decimal helpers, permission gates |
-| E2E | Playwright | Login → create request → quote → selection (critical paths) |
+| Layer            | Tool                     | Focus                                                       |
+| ---------------- | ------------------------ | ----------------------------------------------------------- |
+| Unit / component | Vitest + Testing Library | Forms, decimal helpers, permission gates                    |
+| E2E              | Playwright               | Login → create request → quote → selection (critical paths) |
 
 Test happy paths plus typical errors: no permission, wrong status, wrong company.
 

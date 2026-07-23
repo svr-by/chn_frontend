@@ -13,7 +13,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/requestsApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/requestsApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/requestsApi')>();
   return {
     ...actual,
     useListRequestsQuery: vi.fn(() => ({
@@ -25,7 +26,8 @@ vi.mock('@/api/endpoints/requestsApi', async (importOriginal) => {
 });
 
 vi.mock('@/api/endpoints/invoicesApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/invoicesApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/invoicesApi')>();
   return {
     ...actual,
     useListInvoicesQuery: vi.fn(),

@@ -7,7 +7,5 @@ export function RegisterSuccessRoute() {
   const email = searchParams.get('email') ?? undefined;
   const inviteAccepted = searchParams.get('inviteAccepted') === '1';
 
-  return (
-    <RegisterSuccessPage email={email} inviteAccepted={inviteAccepted} />
-  );
+  return <RegisterSuccessPage email={email} inviteAccepted={inviteAccepted} />;
 }

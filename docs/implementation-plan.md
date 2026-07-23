@@ -22,14 +22,14 @@ Each phase ends with a working, testable UI slice.
 
 ## Current progress
 
-| Phase | Name | Status |
-|-------|------|--------|
-| 0 | Foundation | **Done** |
-| 1 | Identity & shell | **Done** |
-| 2 | Partner network | **Done** |
-| 3 | Products & requests | **Done** |
-| 4 | CSV request import | **Done** |
-| 5–13 | See below | Not started |
+| Phase | Name                | Status      |
+| ----- | ------------------- | ----------- |
+| 0     | Foundation          | **Done**    |
+| 1     | Identity & shell    | **Done**    |
+| 2     | Partner network     | **Done**    |
+| 3     | Products & requests | **Done**    |
+| 4     | CSV request import  | **Done**    |
+| 5–13  | See below           | Not started |
 
 ---
 
@@ -53,16 +53,16 @@ Each phase ends with a working, testable UI slice.
 
 ## Stack
 
-| Area | Choice |
-|------|--------|
-| UI | React 19, MUI 6, material-react-table |
-| State | Redux Toolkit, RTK Query |
-| Routing | React Router 7 |
-| Forms | React Hook Form, Zod |
-| Build | Vite 6, TypeScript |
-| API types | Orval |
-| i18n | react-i18next (English first) |
-| Money | decimal.js |
+| Area      | Choice                                |
+| --------- | ------------------------------------- |
+| UI        | React 19, MUI 6, material-react-table |
+| State     | Redux Toolkit, RTK Query              |
+| Routing   | React Router 7                        |
+| Forms     | React Hook Form, Zod                  |
+| Build     | Vite 6, TypeScript                    |
+| API types | Orval                                 |
+| i18n      | react-i18next (English first)         |
+| Money     | decimal.js                            |
 
 ---
 
@@ -84,14 +84,14 @@ src/
 
 ## Cross-cutting rules
 
-| Topic | Rule |
-|-------|------|
-| HTTP | `Authorization` + `X-Company-Id` on company routes |
-| Auth | Refresh on 401 once; logout on failure |
-| Permissions | Use `effectivePermissions`, not role names |
-| Pagination | Offset for lists; cursor for notifications/comments |
-| Decimals | Strings in API; `decimal.js` for display |
-| Polling | Import jobs 1–2 s; notifications on focus/interval |
+| Topic       | Rule                                                |
+| ----------- | --------------------------------------------------- |
+| HTTP        | `Authorization` + `X-Company-Id` on company routes  |
+| Auth        | Refresh on 401 once; logout on failure              |
+| Permissions | Use `effectivePermissions`, not role names          |
+| Pagination  | Offset for lists; cursor for notifications/comments |
+| Decimals    | Strings in API; `decimal.js` for display            |
+| Polling     | Import jobs 1–2 s; notifications on focus/interval  |
 
 ---
 
@@ -316,10 +316,10 @@ See [API reference](./api-reference.md) and [API integration](./api-integration.
 
 **Status:** Infrastructure in place (Vitest + Testing Library). E2E (Playwright) planned before release.
 
-| Layer | Tool | Status |
-|-------|------|--------|
-| Unit / component | Vitest + Testing Library | **Done** — Phase 1 baseline |
-| E2E | Playwright | Not started (pre-release milestone) |
+| Layer            | Tool                     | Status                              |
+| ---------------- | ------------------------ | ----------------------------------- |
+| Unit / component | Vitest + Testing Library | **Done** — Phase 1 baseline         |
+| E2E              | Playwright               | Not started (pre-release milestone) |
 
 **Commands:**
 

@@ -7,7 +7,12 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
-import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -39,21 +44,22 @@ export function IntegrationScopesField<T extends FieldValues>({
             <Button
               size="small"
               variant="outlined"
-              onClick={() => field.onChange(applyScopePreset(READ_ONLY_SCOPE_PRESET))}
+              onClick={() =>
+                field.onChange(applyScopePreset(READ_ONLY_SCOPE_PRESET))
+              }
             >
               {t('apiKeys.presets.readOnly')}
             </Button>
             <Button
               size="small"
               variant="outlined"
-              onClick={() => field.onChange(applyScopePreset(FULL_ACCESS_SCOPE_PRESET))}
+              onClick={() =>
+                field.onChange(applyScopePreset(FULL_ACCESS_SCOPE_PRESET))
+              }
             >
               {t('apiKeys.presets.fullAccess')}
             </Button>
-            <Button
-              size="small"
-              onClick={() => field.onChange([])}
-            >
+            <Button size="small" onClick={() => field.onChange([])}>
               {t('apiKeys.presets.clear')}
             </Button>
           </Stack>

@@ -97,9 +97,7 @@ export const router = createBrowserRouter([
       },
       {
         element: <AuthLayout />,
-        children: [
-          { path: '/verify-email', element: <VerifyEmailPage /> },
-        ],
+        children: [{ path: '/verify-email', element: <VerifyEmailPage /> }],
       },
       {
         element: <GuestRoute />,
@@ -122,7 +120,10 @@ export const router = createBrowserRouter([
           {
             element: <AuthLayout variant="plain" />,
             children: [
-              { path: '/verify-email-prompt', element: <VerifyEmailPromptPage /> },
+              {
+                path: '/verify-email-prompt',
+                element: <VerifyEmailPromptPage />,
+              },
               { path: '/access-suspended', element: <AccessSuspendedPage /> },
             ],
           },
@@ -164,7 +165,10 @@ export const router = createBrowserRouter([
               { path: 'quotes', element: <QuotesPage /> },
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
               { path: 'selections', element: <SelectionsPage /> },
-              { path: 'selections/:selectionId', element: <SelectionDetailPage /> },
+              {
+                path: 'selections/:selectionId',
+                element: <SelectionDetailPage />,
+              },
               { path: 'invoices', element: <InvoicesPage /> },
               { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
               { path: 'payments', element: <PaymentsPage /> },
@@ -183,8 +187,14 @@ export const router = createBrowserRouter([
               { path: 'trace', element: <TraceSearchPage /> },
               { path: 'trace/:lineageId', element: <TraceDetailPage /> },
               { path: 'settings/team', element: <TeamSettingsPage /> },
-              { path: 'settings/team/:memberId', element: <MemberAccessPage /> },
-              { path: 'settings/integrations', element: <IntegrationsSettingsPage /> },
+              {
+                path: 'settings/team/:memberId',
+                element: <MemberAccessPage />,
+              },
+              {
+                path: 'settings/integrations',
+                element: <IntegrationsSettingsPage />,
+              },
               { path: 'settings/profile', element: <ProfilePage /> },
               ...stubRoutes,
             ],

@@ -33,7 +33,11 @@ function quoteListTag(companyId: string) {
   return [{ type: 'Quotes' as const, id: companyId }];
 }
 
-function quoteDetailTags(companyId: string, quoteId: string, requestId?: string) {
+function quoteDetailTags(
+  companyId: string,
+  quoteId: string,
+  requestId?: string,
+) {
   const tags: Array<
     { type: 'Quotes'; id: string } | { type: 'Requests'; id: string }
   > = [
@@ -92,13 +96,21 @@ export const quotesApi = baseApi.injectEndpoints({
         materialRequestId?: string;
       } & PatchCompaniesCompanyIdQuotesQuoteIdBody
     >({
-      query: ({ companyId, quoteId, materialRequestId: _requestId, ...body }) => ({
+      query: ({
+        companyId,
+        quoteId,
+        materialRequestId: _requestId,
+        ...body
+      }) => ({
         url: getPatchCompaniesCompanyIdQuotesQuoteIdUrl(companyId, quoteId),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
-        quoteDetailTags(companyId, quoteId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
     addQuoteLine: builder.mutation<
       PostCompaniesCompanyIdQuotesQuoteIdLines201,
@@ -108,13 +120,21 @@ export const quotesApi = baseApi.injectEndpoints({
         materialRequestId?: string;
       } & PostCompaniesCompanyIdQuotesQuoteIdLinesBody
     >({
-      query: ({ companyId, quoteId, materialRequestId: _requestId, ...body }) => ({
+      query: ({
+        companyId,
+        quoteId,
+        materialRequestId: _requestId,
+        ...body
+      }) => ({
         url: getPostCompaniesCompanyIdQuotesQuoteIdLinesUrl(companyId, quoteId),
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
-        quoteDetailTags(companyId, quoteId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
     updateQuoteLine: builder.mutation<
       PatchCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
@@ -132,12 +152,19 @@ export const quotesApi = baseApi.injectEndpoints({
         materialRequestId: _requestId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(companyId, quoteId, lineId),
+        url: getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
-        quoteDetailTags(companyId, quoteId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
     deleteQuoteLine: builder.mutation<
       DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
@@ -149,11 +176,18 @@ export const quotesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, quoteId, lineId }) => ({
-        url: getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(companyId, quoteId, lineId),
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
-        quoteDetailTags(companyId, quoteId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
     submitQuote: builder.mutation<
       PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
@@ -164,11 +198,17 @@ export const quotesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, quoteId }) => ({
-        url: getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl(companyId, quoteId),
+        url: getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl(
+          companyId,
+          quoteId,
+        ),
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { companyId, quoteId, materialRequestId }) =>
-        quoteDetailTags(companyId, quoteId, materialRequestId),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
   }),
 });

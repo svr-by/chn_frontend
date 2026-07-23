@@ -27,7 +27,11 @@ function paymentListTag(companyId: string) {
   return [{ type: 'Payments' as const, id: companyId }];
 }
 
-function paymentDetailTags(companyId: string, paymentId: string, invoiceId?: string) {
+function paymentDetailTags(
+  companyId: string,
+  paymentId: string,
+  invoiceId?: string,
+) {
   const tags: Array<
     { type: 'Payments'; id: string } | { type: 'Invoices'; id: string }
   > = [
@@ -51,7 +55,8 @@ export const paymentsApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdPaymentsUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => paymentListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        paymentListTag(companyId),
     }),
     getPayment: builder.query<
       GetCompaniesCompanyIdPaymentsPaymentId200,
@@ -86,7 +91,10 @@ export const paymentsApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, paymentId, formData }) => ({
-        url: getPostCompaniesCompanyIdPaymentsPaymentIdUploadUrl(companyId, paymentId),
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdUploadUrl(
+          companyId,
+          paymentId,
+        ),
         method: 'POST',
         body: formData,
       }),
@@ -98,7 +106,10 @@ export const paymentsApi = baseApi.injectEndpoints({
       { companyId: string; paymentId: string; invoiceId?: string }
     >({
       query: ({ companyId, paymentId }) => ({
-        url: getPostCompaniesCompanyIdPaymentsPaymentIdConfirmUrl(companyId, paymentId),
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdConfirmUrl(
+          companyId,
+          paymentId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId, paymentId, invoiceId }) =>
@@ -112,13 +123,11 @@ export const paymentsApi = baseApi.injectEndpoints({
         invoiceId?: string;
       } & PostCompaniesCompanyIdPaymentsPaymentIdRejectBody
     >({
-      query: ({
-        companyId,
-        paymentId,
-        invoiceId: _invoiceId,
-        ...body
-      }) => ({
-        url: getPostCompaniesCompanyIdPaymentsPaymentIdRejectUrl(companyId, paymentId),
+      query: ({ companyId, paymentId, invoiceId: _invoiceId, ...body }) => ({
+        url: getPostCompaniesCompanyIdPaymentsPaymentIdRejectUrl(
+          companyId,
+          paymentId,
+        ),
         method: 'POST',
         body,
       }),

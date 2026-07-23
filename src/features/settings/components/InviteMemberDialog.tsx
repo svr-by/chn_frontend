@@ -106,16 +106,18 @@ export function InviteMemberDialog({
             error={Boolean(errors.email)}
             helperText={errors.email?.message}
           />
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="invite-member-role-label">{t('team:role')}</InputLabel>
-              <Select
-                labelId="invite-member-role-label"
-                label={t('team:role')}
-                value={selectedRole}
-                onChange={(event) =>
-                  setValue('role', event.target.value as InviteFormValues['role'])
-                }
-              >
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="invite-member-role-label">
+              {t('team:role')}
+            </InputLabel>
+            <Select
+              labelId="invite-member-role-label"
+              label={t('team:role')}
+              value={selectedRole}
+              onChange={(event) =>
+                setValue('role', event.target.value as InviteFormValues['role'])
+              }
+            >
               {ASSIGNABLE_ROLES.map((role: MemberRole) => (
                 <MenuItem key={role} value={role}>
                   {formatMemberRole(t, role)}

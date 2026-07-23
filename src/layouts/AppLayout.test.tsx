@@ -9,7 +9,8 @@ import { renderWithProviders } from '@/test/render';
 import { AppThemeProvider } from '@/app/AppThemeProvider';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -85,7 +86,9 @@ describe('AppLayout', () => {
       },
     );
 
-    expect(screen.getByRole('button', { name: 'Language' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Language' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument();
     expect(screen.getAllByLabelText('Company').length).toBeGreaterThan(0);
     expect(screen.getByTestId('notification-bell')).toBeInTheDocument();

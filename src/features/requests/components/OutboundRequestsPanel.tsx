@@ -42,7 +42,9 @@ interface OutboundRequestsPanelProps {
   companyId: string;
 }
 
-export function OutboundRequestsPanel({ companyId }: OutboundRequestsPanelProps) {
+export function OutboundRequestsPanel({
+  companyId,
+}: OutboundRequestsPanelProps) {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
 

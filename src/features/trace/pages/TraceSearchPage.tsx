@@ -70,7 +70,9 @@ export function TraceSearchPage() {
         status as keyof typeof GetCompaniesCompanyIdTraceSearchStatus,
       )
     ) {
-      setStatusFilter(status as keyof typeof GetCompaniesCompanyIdTraceSearchStatus);
+      setStatusFilter(
+        status as keyof typeof GetCompaniesCompanyIdTraceSearchStatus,
+      );
     } else {
       setStatusFilter('ALL');
     }

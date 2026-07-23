@@ -1,17 +1,13 @@
 import { useEffect } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Link, Stack, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import {
-  useGetRequestQuery,
-  useGetRequestSelectionQuery,
-} from '@/api/endpoints/requestsApi';
+import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
 import { RequestQuotesMatrix } from '@/features/requests/components/requestQuotesMatrix/RequestQuotesMatrix';
 import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
@@ -32,13 +28,7 @@ export function RequestDetailPage() {
     { skip: !companyId || !requestId },
   );
 
-  // const selectionQuery = useGetRequestSelectionQuery(
-  //   { companyId: companyId ?? '', requestId: requestId ?? '' },
-  //   { skip: !companyId || !requestId },
-  // );
-
   const request = requestQuery.data?.request;
-  // const selection = selectionQuery.data?.selection;
   const canEdit = hasPermission('manageRequests');
 
   useEffect(() => {
@@ -57,13 +47,14 @@ export function RequestDetailPage() {
   }
 
   const title =
-    request?.title ??
-    t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
+    request?.title ?? t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
 
   return (
     <DocumentDetailLayout
       title={t('detail.title', { title })}
-      statusBadge={request?.status ? <StatusBadge status={request.status} /> : undefined}
+      statusBadge={
+        request?.status ? <StatusBadge status={request.status} /> : undefined
+      }
       loading={requestQuery.isLoading}
       error={requestQuery.error}
       actions={
@@ -96,18 +87,6 @@ export function RequestDetailPage() {
                 })}
               </Typography>
             ) : null}
-            {/* {selection ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.selection')}:{' '}
-                <Link
-                  component={RouterLink}
-                  to={`/app/selections/${selection.id}`}
-                  underline="hover"
-                >
-                  <SelectionStatusBadge status={selection.status} />
-                </Link>
-              </Typography>
-            ) : null} */}
           </Stack>
         ) : null
       }

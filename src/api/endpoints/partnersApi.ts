@@ -106,7 +106,10 @@ export const partnersApi = baseApi.injectEndpoints({
       { companyId: string; linkId: string }
     >({
       query: ({ companyId, linkId }) => ({
-        url: getPostCompaniesCompanyIdPartnersLinkIdAcceptUrl(companyId, linkId),
+        url: getPostCompaniesCompanyIdPartnersLinkIdAcceptUrl(
+          companyId,
+          linkId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>
@@ -117,7 +120,10 @@ export const partnersApi = baseApi.injectEndpoints({
       { companyId: string; linkId: string }
     >({
       query: ({ companyId, linkId }) => ({
-        url: getPostCompaniesCompanyIdPartnersLinkIdRejectUrl(companyId, linkId),
+        url: getPostCompaniesCompanyIdPartnersLinkIdRejectUrl(
+          companyId,
+          linkId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>

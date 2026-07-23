@@ -13,7 +13,10 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useCreateQuoteMutation, useListQuotesQuery } from '@/api/endpoints/quotesApi';
+import {
+  useCreateQuoteMutation,
+  useListQuotesQuery,
+} from '@/api/endpoints/quotesApi';
 import { useRejectInboundRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';

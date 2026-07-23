@@ -9,9 +9,9 @@ import {
 
 describe('draftRequestLine helpers', () => {
   it('detects CSV files by extension and mime type', () => {
-    expect(isCsvImportFile(new File(['a'], 'lines.csv', { type: 'text/csv' }))).toBe(
-      true,
-    );
+    expect(
+      isCsvImportFile(new File(['a'], 'lines.csv', { type: 'text/csv' })),
+    ).toBe(true);
     expect(
       isCsvImportFile(new File(['a'], 'lines.HTM', { type: 'text/html' })),
     ).toBe(false);

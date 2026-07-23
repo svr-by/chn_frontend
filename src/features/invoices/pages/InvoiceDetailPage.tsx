@@ -4,22 +4,17 @@ import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
 import { PermissionGate } from '@/components/PermissionGate';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
-import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderForm';
-import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTable';
-import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 const PAYMENT_ALLOWED_STATUSES = new Set(['ISSUED', 'PARTIALLY_PAID']);
 const SHIPPING_ALLOWED_STATUSES = new Set([
@@ -45,8 +40,6 @@ export function InvoiceDetailPage() {
 
   const invoice = invoiceQuery.data?.invoice;
   const materialRequestId = invoice?.materialRequestId;
-  const isDraft = invoice?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageInvoices');
   const canRegisterPayment =
     invoice &&
     PAYMENT_ALLOWED_STATUSES.has(invoice.status) &&
@@ -60,11 +53,6 @@ export function InvoiceDetailPage() {
 
   const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
     useCreateShippingInvoiceFromInvoice();
-
-  const billableQuery = useGetBillableLinesQuery(
-    { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
-    { skip: !companyId || !materialRequestId || !canEdit },
-  );
 
   useEffect(() => {
     if (
@@ -84,11 +72,6 @@ export function InvoiceDetailPage() {
   const title = invoice?.invoiceNumber
     ? t('detail.titleWithNumber', { number: invoice.invoiceNumber })
     : t('detail.fallbackTitle', { id: invoiceId.slice(0, 8) });
-
-  const showPayments =
-    invoice &&
-    invoice.status !== 'DRAFT' &&
-    (invoice.payments?.length ?? 0) > 0;
 
   return (
     <DocumentDetailLayout
@@ -112,7 +95,10 @@ export function InvoiceDetailPage() {
             />
             {canRegisterPayment ? (
               <PermissionGate permission="managePayments">
-                <Button variant="outlined" onClick={() => setRegisterOpen(true)}>
+                <Button
+                  variant="outlined"
+                  onClick={() => setRegisterOpen(true)}
+                >
                   {t('actions.registerPayment')}
                 </Button>
               </PermissionGate>

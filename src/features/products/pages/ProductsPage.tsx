@@ -18,9 +18,7 @@ import { useSnackbar } from 'notistack';
 import type { Product } from '@/api/generated/models/product';
 import { useListProductsQuery } from '@/api/endpoints/productsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import {
-  PaginatedTable,
-} from '@/components/PaginatedTable';
+import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -76,7 +74,11 @@ export function ProductsPage() {
         header: t('columns.isActive'),
         Cell: ({ cell }) => (
           <Chip
-            label={cell.getValue<boolean>() ? t('filter.active') : t('filter.inactive')}
+            label={
+              cell.getValue<boolean>()
+                ? t('filter.active')
+                : t('filter.inactive')
+            }
             size="small"
             color={cell.getValue<boolean>() ? 'success' : 'default'}
           />
@@ -129,10 +131,9 @@ export function ProductsPage() {
   }
 
   function handleDialogSuccess() {
-    enqueueSnackbar(
-      editingProduct ? t('toast.updated') : t('toast.created'),
-      { variant: 'success' },
-    );
+    enqueueSnackbar(editingProduct ? t('toast.updated') : t('toast.created'), {
+      variant: 'success',
+    });
   }
 
   return (
@@ -184,7 +185,9 @@ export function ProductsPage() {
           {t('search.submit')}
         </Button>
         <FormControl size="small" sx={{ minWidth: 160 }}>
-          <InputLabel id="product-active-filter">{t('filter.label')}</InputLabel>
+          <InputLabel id="product-active-filter">
+            {t('filter.label')}
+          </InputLabel>
           <Select
             labelId="product-active-filter"
             label={t('filter.label')}

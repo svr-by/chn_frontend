@@ -23,7 +23,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -132,9 +133,9 @@ describe('PartnersPage', () => {
       mockMutationHook(vi.fn()) as ReturnType<typeof useRejectPartnerMutation>,
     );
     mockedUseCancelPartnerInvitationMutation.mockReturnValue(
-      mockMutationHook(
-        vi.fn(),
-      ) as ReturnType<typeof useCancelPartnerInvitationMutation>,
+      mockMutationHook(vi.fn()) as ReturnType<
+        typeof useCancelPartnerInvitationMutation
+      >,
     );
     mockedUseUnlinkPartnerMutation.mockReturnValue(
       mockMutationHook(vi.fn()) as ReturnType<typeof useUnlinkPartnerMutation>,
@@ -158,7 +159,9 @@ describe('PartnersPage', () => {
       },
     });
 
-    expect(screen.getByRole('heading', { name: 'Partners' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Partners' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Active Corp')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'End partnership' }),
@@ -237,8 +240,12 @@ describe('PartnersPage', () => {
     await user.click(screen.getByRole('tab', { name: 'Invitations' }));
 
     expect(screen.getByText('Inbound Corp')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Accept' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Reject' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Accept' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Reject' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows outbound invitations with cancel action', async () => {

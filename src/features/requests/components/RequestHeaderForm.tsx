@@ -34,9 +34,12 @@ export function RequestHeaderForm({
   const headerSchema = useMemo(
     () =>
       z.object({
-        title: z.string().trim().min(3, {
-          message: t('validation:minLength', { min: 3 }),
-        }),
+        title: z
+          .string()
+          .trim()
+          .min(3, {
+            message: t('validation:minLength', { min: 3 }),
+          }),
         notes: z.string().trim().optional(),
       }),
     [t],

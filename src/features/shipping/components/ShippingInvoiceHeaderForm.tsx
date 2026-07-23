@@ -32,7 +32,8 @@ export function ShippingInvoiceHeaderForm({
   const { t } = useTranslation('shipping');
   const { enqueueSnackbar } = useSnackbar();
 
-  const [updateShippingInvoice, updateState] = useUpdateShippingInvoiceMutation();
+  const [updateShippingInvoice, updateState] =
+    useUpdateShippingInvoiceMutation();
 
   const {
     register,
@@ -101,7 +102,11 @@ export function ShippingInvoiceHeaderForm({
           fullWidth
           {...register('trackingNumber')}
         />
-        <TextField label={t('form.carrier')} fullWidth {...register('carrier')} />
+        <TextField
+          label={t('form.carrier')}
+          fullWidth
+          {...register('carrier')}
+        />
         <TextField
           label={t('form.notes')}
           fullWidth

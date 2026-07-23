@@ -4,17 +4,12 @@ import { Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { useGetSelectionQuery } from '@/api/endpoints/selectionsApi';
 import { SelectionStatusBadge } from '@/components/SelectionStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { SelectionHeaderForm } from '@/features/selections/components/SelectionHeaderForm';
-import { SelectionLinesTable } from '@/features/selections/components/SelectionLinesTable';
 import { SelectionStatusActions } from '@/features/selections/components/SelectionStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { usePermissions } from '@/hooks/usePermissions';
-import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function SelectionDetailPage() {
   const { t } = useTranslation('selections');
@@ -22,7 +17,6 @@ export function SelectionDetailPage() {
   const { enqueueSnackbar } = useSnackbar();
   const { selectionId } = useParams<{ selectionId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const { hasPermission } = usePermissions();
 
   const selectionQuery = useGetSelectionQuery(
     { companyId: companyId ?? '', selectionId: selectionId ?? '' },
@@ -31,13 +25,6 @@ export function SelectionDetailPage() {
 
   const selection = selectionQuery.data?.selection;
   const materialRequestId = selection?.materialRequestId;
-  const isDraft = selection?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageSelections');
-
-  const comparisonQuery = useGetQuoteComparisonQuery(
-    { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
-    { skip: !companyId || !materialRequestId || !canEdit },
-  );
 
   useEffect(() => {
     if (

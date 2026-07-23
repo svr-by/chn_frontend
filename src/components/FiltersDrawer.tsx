@@ -47,7 +47,11 @@ export function FiltersDrawer({
       }}
     >
       <Stack spacing={2} sx={{ p: 3, height: '100%' }}>
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+        >
           <Typography variant="h6">{title}</Typography>
           <IconButton aria-label={closeAriaLabel} onClick={onClose}>
             <CloseIcon />

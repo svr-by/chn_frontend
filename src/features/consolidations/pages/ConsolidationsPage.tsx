@@ -80,9 +80,7 @@ export function ConsolidationsPage() {
         header: t('columns.transportMode'),
         Cell: ({ cell }) => {
           const value = cell.getValue<string | null>();
-          return value
-            ? tEnums(`transportMode.${value.toLowerCase()}`)
-            : '—';
+          return value ? tEnums(`transportMode.${value.toLowerCase()}`) : '—';
         },
       },
       {

@@ -42,9 +42,13 @@ describe('DocumentCommentsPanel', () => {
       />,
     );
 
-    expect(await screen.findByText('Please confirm delivery date.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Please confirm delivery date.'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Post comment' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Post comment' }),
+    ).toBeInTheDocument();
   });
 
   it('shows empty state when there are no comments', async () => {

@@ -47,7 +47,10 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
             ) : (
               <Stack spacing={1.5} sx={{ pb: 2 }}>
                 {step.items.map((item) => (
-                  <Card key={`${step.stage}-${item.documentId}`} variant="outlined">
+                  <Card
+                    key={`${step.stage}-${item.documentId}`}
+                    variant="outlined"
+                  >
                     <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
                       <Stack spacing={1}>
                         <Stack
@@ -65,7 +68,11 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
                           >
                             {item.label}
                           </Link>
-                          <Chip label={item.status} size="small" variant="outlined" />
+                          <Chip
+                            label={item.status}
+                            size="small"
+                            variant="outlined"
+                          />
                         </Stack>
 
                         {step.stage === 'request' && item.meta ? (
@@ -74,7 +81,10 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
                               {item.meta.description}
                             </Typography>
                             <Typography variant="body2">
-                              <DecimalDisplay value={item.meta.quantity} component="span" />
+                              <DecimalDisplay
+                                value={item.meta.quantity}
+                                component="span"
+                              />
                               {item.meta.unit ? ` ${item.meta.unit}` : ''}
                             </Typography>
                           </Box>
@@ -99,7 +109,8 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
                           </Typography>
                         ) : null}
 
-                        {step.stage === 'shipments' && item.meta?.trackingNumber ? (
+                        {step.stage === 'shipments' &&
+                        item.meta?.trackingNumber ? (
                           <Typography variant="body2" color="text.secondary">
                             {t('pipeline.shipmentMeta', {
                               carrier: item.meta.carrier || '—',
@@ -111,21 +122,30 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
                         {step.stage === 'consolidations' && item.meta ? (
                           <Stack spacing={0.5}>
                             {item.meta.transportMode ? (
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 {t('pipeline.consolidationTransport', {
                                   mode: item.meta.transportMode,
                                 })}
                               </Typography>
                             ) : null}
                             {item.meta.linkedViaShippingInvoiceId ? (
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 {t('pipeline.consolidationViaShipping')}:{' '}
                                 <Link
                                   component={RouterLink}
                                   to={`/app/shipping-invoices/${item.meta.linkedViaShippingInvoiceId}`}
                                   underline="hover"
                                 >
-                                  {item.meta.linkedViaShippingInvoiceId.slice(0, 8)}
+                                  {item.meta.linkedViaShippingInvoiceId.slice(
+                                    0,
+                                    8,
+                                  )}
                                 </Link>
                               </Typography>
                             ) : null}

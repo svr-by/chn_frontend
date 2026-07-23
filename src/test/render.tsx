@@ -41,11 +41,7 @@ export function createTestStore(preloadedState?: Partial<RootState>) {
 
 export function renderWithProviders(
   ui: ReactElement,
-  {
-    preloadedState,
-    route = '/',
-    ...renderOptions
-  }: ExtendedRenderOptions = {},
+  { preloadedState, route = '/', ...renderOptions }: ExtendedRenderOptions = {},
 ) {
   const store = createTestStore(preloadedState);
 

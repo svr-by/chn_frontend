@@ -210,7 +210,10 @@ export function SelectionLinesTable({
         }
       />
 
-      <Dialog open={Boolean(lineToDelete)} onClose={() => setLineToDelete(null)}>
+      <Dialog
+        open={Boolean(lineToDelete)}
+        onClose={() => setLineToDelete(null)}
+      >
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>
         <DialogContent>
           <Typography>{t('confirm.deleteLineMessage')}</Typography>

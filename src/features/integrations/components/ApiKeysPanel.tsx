@@ -147,7 +147,11 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Typography variant="body2">{apiKey.name}</Typography>
                   {apiKey.revokedAt ? (
-                    <Chip label={t('apiKeys.revokedLabel')} size="small" color="default" />
+                    <Chip
+                      label={t('apiKeys.revokedLabel')}
+                      size="small"
+                      color="default"
+                    />
                   ) : null}
                 </Stack>
               </TableCell>
@@ -176,7 +180,8 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
               </TableCell>
             </TableRow>
           ))}
-          {(listQuery.data?.apiKeys ?? []).length === 0 && !listQuery.isLoading ? (
+          {(listQuery.data?.apiKeys ?? []).length === 0 &&
+          !listQuery.isLoading ? (
             <TableRow>
               <TableCell colSpan={6}>
                 <Typography variant="body2" color="text.secondary">
@@ -188,9 +193,17 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
         </TableBody>
       </Table>
 
-      <Dialog open={createOpen} onClose={() => setCreateOpen(false)} fullWidth maxWidth="md">
+      <Dialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        fullWidth
+        maxWidth="md"
+      >
         <DialogTitle>{t('apiKeys.create')}</DialogTitle>
-        <Box component="form" onSubmit={(event) => void handleSubmit(onCreate)(event)}>
+        <Box
+          component="form"
+          onSubmit={(event) => void handleSubmit(onCreate)(event)}
+        >
           <DialogContent>
             <ApiErrorAlert error={createState.error} />
             <TextField
@@ -218,8 +231,14 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
             ) : null}
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setCreateOpen(false)}>{t('common.cancel')}</Button>
-            <Button type="submit" variant="contained" disabled={createState.isLoading}>
+            <Button onClick={() => setCreateOpen(false)}>
+              {t('common.cancel')}
+            </Button>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={createState.isLoading}
+            >
               {t('apiKeys.create')}
             </Button>
           </DialogActions>
@@ -232,7 +251,9 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
           <Typography>{t('apiKeys.revokeConfirm')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setKeyToRevoke(null)}>{t('common.cancel')}</Button>
+          <Button onClick={() => setKeyToRevoke(null)}>
+            {t('common.cancel')}
+          </Button>
           <Button
             color="error"
             variant="contained"

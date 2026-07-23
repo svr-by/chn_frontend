@@ -14,7 +14,8 @@ import { COMPANY_ID, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -33,7 +34,9 @@ const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseListMembersQuery = vi.mocked(useListMembersQuery);
 const mockedUseListInvitationsQuery = vi.mocked(useListInvitationsQuery);
 const mockedUseInviteMemberMutation = vi.mocked(useInviteMemberMutation);
-const mockedUseRevokeInvitationMutation = vi.mocked(useRevokeInvitationMutation);
+const mockedUseRevokeInvitationMutation = vi.mocked(
+  useRevokeInvitationMutation,
+);
 const mockedUseRemoveMemberMutation = vi.mocked(useRemoveMemberMutation);
 
 function mockMutationHook(mock: ReturnType<typeof vi.fn>) {
@@ -106,7 +109,9 @@ describe('TeamSettingsPage', () => {
       mockMutationHook(vi.fn()) as ReturnType<typeof useInviteMemberMutation>,
     );
     mockedUseRevokeInvitationMutation.mockReturnValue(
-      mockMutationHook(vi.fn()) as ReturnType<typeof useRevokeInvitationMutation>,
+      mockMutationHook(vi.fn()) as ReturnType<
+        typeof useRevokeInvitationMutation
+      >,
     );
     mockedUseRemoveMemberMutation.mockReturnValue(
       mockMutationHook(vi.fn()) as ReturnType<typeof useRemoveMemberMutation>,
@@ -131,7 +136,9 @@ describe('TeamSettingsPage', () => {
     });
 
     expect(screen.getByText('Team settings')).toBeInTheDocument();
-    expect(screen.getByRole('tab', { name: 'Members (2)' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('tab', { name: 'Members (2)' }),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('tab', { name: 'Invitations (0)' }),
     ).toBeInTheDocument();
@@ -147,4 +154,3 @@ describe('TeamSettingsPage', () => {
     expect(screen.getByText('Viewer')).toBeInTheDocument();
   });
 });
-

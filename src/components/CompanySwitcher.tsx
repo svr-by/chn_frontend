@@ -55,8 +55,7 @@ export function CompanySwitcher() {
     (membership) => membership.company?.id === activeCompanyId,
   );
   const isActiveCompanyInactive =
-    activeMembership != null &&
-    !isCompanyOperational(activeMembership.company);
+    activeMembership != null && !isCompanyOperational(activeMembership.company);
 
   if (switcherMemberships.length === 0) {
     return null;
@@ -74,7 +73,9 @@ export function CompanySwitcher() {
     <>
       <FormControl size="small" sx={{ minWidth: selectDisabled ? 180 : 200 }}>
         {!selectDisabled && (
-          <InputLabel id="company-switcher-label">{t('app.company')}</InputLabel>
+          <InputLabel id="company-switcher-label">
+            {t('app.company')}
+          </InputLabel>
         )}
         <Select
           labelId="company-switcher-label"

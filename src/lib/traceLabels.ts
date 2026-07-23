@@ -30,7 +30,10 @@ export function getRelationLabel(relation: string, t: TFunction): string {
   return translated;
 }
 
-export function getLineageEventLabel(event: LineageEvent, t: TFunction): string {
+export function getLineageEventLabel(
+  event: LineageEvent,
+  t: TFunction,
+): string {
   const key = `enums:activityEventType.${event.eventType}`;
   const translated = t(key);
   if (translated !== key) {

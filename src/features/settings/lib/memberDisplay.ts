@@ -2,10 +2,7 @@ import type { TFunction } from 'i18next';
 
 import type { MemberRole } from '@/types/api';
 
-export function formatMemberRole(
-  t: TFunction,
-  role: MemberRole,
-): string {
+export function formatMemberRole(t: TFunction, role: MemberRole): string {
   return t(`enums:memberRole.${role.toLowerCase()}`);
 }
 

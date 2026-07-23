@@ -17,10 +17,10 @@ describe('SecretRevealDialog', () => {
       />,
     );
 
-    expect(screen.getByDisplayValue('chn_live_secret_value')).toBeInTheDocument();
     expect(
-      screen.getByText(/will not be shown again/i),
+      screen.getByDisplayValue('chn_live_secret_value'),
     ).toBeInTheDocument();
+    expect(screen.getByText(/will not be shown again/i)).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /I have saved it/i }));
     expect(onClose).toHaveBeenCalled();

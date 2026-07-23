@@ -54,7 +54,14 @@ export function useCreateInvoiceFromRequest() {
         setIsCreating(false);
       }
     },
-    [companyId, createInvoice, enqueueSnackbar, navigate, t, triggerBillableLines],
+    [
+      companyId,
+      createInvoice,
+      enqueueSnackbar,
+      navigate,
+      t,
+      triggerBillableLines,
+    ],
   );
 
   return {

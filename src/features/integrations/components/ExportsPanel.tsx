@@ -155,19 +155,16 @@ export function ExportsPanel({ companyId }: ExportsPanelProps) {
             label={t('exports.fields.type')}
             value={selectedType}
             onChange={(event) =>
-              setValue(
-                'type',
-                event.target.value as ExportFormValues['type'],
-              )
+              setValue('type', event.target.value as ExportFormValues['type'])
             }
           >
-            {Object.values(PostCompaniesCompanyIdIntegrationExportsBodyType).map(
-              (type) => (
-                <MenuItem key={type} value={type}>
-                  {t(`exportTypes.${type}`)}
-                </MenuItem>
-              ),
-            )}
+            {Object.values(
+              PostCompaniesCompanyIdIntegrationExportsBodyType,
+            ).map((type) => (
+              <MenuItem key={type} value={type}>
+                {t(`exportTypes.${type}`)}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 

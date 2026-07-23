@@ -40,7 +40,8 @@ export function ConsolidationShippingInvoiceAddDialog({
   const [shippingInvoiceId, setShippingInvoiceId] = useState('');
   const [notes, setNotes] = useState('');
 
-  const [addShippingInvoice, addState] = useAddConsolidationShippingInvoiceMutation();
+  const [addShippingInvoice, addState] =
+    useAddConsolidationShippingInvoiceMutation();
 
   const existingIds = new Set(
     existingEntries.map((entry) => entry.shippingInvoice.id),

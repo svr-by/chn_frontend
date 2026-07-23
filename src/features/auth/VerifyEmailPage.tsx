@@ -12,7 +12,8 @@ export function VerifyEmailPage() {
   const { enqueueSnackbar } = useSnackbar();
   const [searchParams] = useSearchParams();
   const token = searchParams.get('token') ?? '';
-  const [verifyEmail, { isLoading, error, isSuccess }] = useVerifyEmailMutation();
+  const [verifyEmail, { isLoading, error, isSuccess }] =
+    useVerifyEmailMutation();
   const [submitted, setSubmitted] = useState(false);
   const attemptedRef = useRef(false);
 

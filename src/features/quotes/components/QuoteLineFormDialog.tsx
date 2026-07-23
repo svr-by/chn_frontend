@@ -92,12 +92,11 @@ export function QuoteLineFormDialog({
   const unitPrice = watch('unitPrice');
   const selectedRequestLineId = watch('requestLineId');
 
-  const availableRequestLines = requestLines.filter(
-    (requestLine) =>
-      isEdit
-        ? requestLine.id === line?.requestLineId ||
-          !existingLineIds.includes(requestLine.id)
-        : !existingLineIds.includes(requestLine.id),
+  const availableRequestLines = requestLines.filter((requestLine) =>
+    isEdit
+      ? requestLine.id === line?.requestLineId ||
+        !existingLineIds.includes(requestLine.id)
+      : !existingLineIds.includes(requestLine.id),
   );
 
   useEffect(() => {

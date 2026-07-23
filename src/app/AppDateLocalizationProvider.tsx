@@ -37,7 +37,10 @@ export function AppDateLocalizationProvider({
   }, [adapterLocale]);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale={adapterLocale}>
+    <LocalizationProvider
+      dateAdapter={AdapterDayjs}
+      adapterLocale={adapterLocale}
+    >
       {children}
     </LocalizationProvider>
   );

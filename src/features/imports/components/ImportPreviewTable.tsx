@@ -9,10 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
@@ -128,10 +125,16 @@ export function ImportPreviewTable({ preview }: ImportPreviewTableProps) {
           onChange={(_event, expanded) => setMappingExpanded(expanded)}
           disableGutters
           elevation={0}
-          sx={{ border: 1, borderColor: 'divider', '&:before': { display: 'none' } }}
+          sx={{
+            border: 1,
+            borderColor: 'divider',
+            '&:before': { display: 'none' },
+          }}
         >
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="body2">{t('preview.columnMapping')}</Typography>
+            <Typography variant="body2">
+              {t('preview.columnMapping')}
+            </Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Stack spacing={0.5}>

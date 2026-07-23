@@ -1,13 +1,6 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import { Link as RouterLink, useSearchParams } from 'react-router-dom';
-import {
-  Box,
-  Button,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useTranslation } from 'react-i18next';
 

@@ -23,21 +23,21 @@ The client must support:
 
 ## Tech stack
 
-| Technology | Role |
-|------------|------|
-| React 19 | UI framework |
-| TypeScript | Type safety (strict mode) |
-| Vite 6 | Dev server and build |
-| Redux Toolkit + RTK Query | Client state and server cache |
-| React Router 7 | Routing |
-| MUI 6 + Emotion | Component library |
-| material-react-table | Data grids (planned for lists and line tables) |
-| React Hook Form + Zod | Forms and validation |
-| decimal.js | Safe arithmetic on API decimal strings |
-| Orval | OpenAPI → TypeScript types |
-| react-i18next | UI strings and error code mapping |
-| notistack | Toast notifications |
-| SASS | Global layout styles |
+| Technology                | Role                                           |
+| ------------------------- | ---------------------------------------------- |
+| React 19                  | UI framework                                   |
+| TypeScript                | Type safety (strict mode)                      |
+| Vite 6                    | Dev server and build                           |
+| Redux Toolkit + RTK Query | Client state and server cache                  |
+| React Router 7            | Routing                                        |
+| MUI 6 + Emotion           | Component library                              |
+| material-react-table      | Data grids (planned for lists and line tables) |
+| React Hook Form + Zod     | Forms and validation                           |
+| decimal.js                | Safe arithmetic on API decimal strings         |
+| Orval                     | OpenAPI → TypeScript types                     |
+| react-i18next             | UI strings and error code mapping              |
+| notistack                 | Toast notifications                            |
+| SASS                      | Global layout styles                           |
 
 ---
 
@@ -124,12 +124,12 @@ CHN Backend /api/v1
 
 ### State management rules
 
-| Concern | Where |
-|---------|-------|
-| Access/refresh tokens, active company | `authSlice` + `authStorage` |
-| User profile and memberships | RTK Query cache (`/auth/me`) |
-| Lists and document details | RTK Query cache (domain endpoints) |
-| UI-only state | Local component state or Redux if shared |
+| Concern                               | Where                                    |
+| ------------------------------------- | ---------------------------------------- |
+| Access/refresh tokens, active company | `authSlice` + `authStorage`              |
+| User profile and memberships          | RTK Query cache (`/auth/me`)             |
+| Lists and document details            | RTK Query cache (domain endpoints)       |
+| UI-only state                         | Local component state or Redux if shared |
 
 **Do not** duplicate server lists in Redux — use RTK Query tags for cache invalidation.
 
@@ -174,15 +174,15 @@ Generated files live in `src/api/generated/` (`models/` + `endpoints.ts` with `g
 
 ## Routing
 
-| Path | Access | Purpose |
-|------|--------|---------|
-| `/login`, `/register` | Guest | Authentication (`register` supports `?inviteToken=`) |
-| `/forgot-password`, `/reset-password` | Guest | Password reset flow |
-| `/verify-email` | Guest | Email verification from link |
-| `/onboarding` | Authenticated | Create or join a company |
-| `/app` | Authenticated + company | Main shell |
-| `/app/settings/team` | `viewMembers` | Members and pending invitations |
-| `/app/*` | Permission-gated | Domain modules (many are placeholders) |
+| Path                                  | Access                  | Purpose                                              |
+| ------------------------------------- | ----------------------- | ---------------------------------------------------- |
+| `/login`, `/register`                 | Guest                   | Authentication (`register` supports `?inviteToken=`) |
+| `/forgot-password`, `/reset-password` | Guest                   | Password reset flow                                  |
+| `/verify-email`                       | Guest                   | Email verification from link                         |
+| `/onboarding`                         | Authenticated           | Create or join a company                             |
+| `/app`                                | Authenticated + company | Main shell                                           |
+| `/app/settings/team`                  | `viewMembers`           | Members and pending invitations                      |
+| `/app/*`                              | Permission-gated        | Domain modules (many are placeholders)               |
 
 Stub routes for upcoming phases are generated from `navConfig` and render `PlaceholderPage`.
 
@@ -218,11 +218,11 @@ Reuse across request, quote, selection, invoice, payment, shipping, consolidatio
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Vite dev server with API proxy |
-| `npm run build` | `tsc -b` + production bundle |
-| `npm run preview` | Serve production build locally |
+| Command           | Description                           |
+| ----------------- | ------------------------------------- |
+| `npm run dev`     | Vite dev server with API proxy        |
+| `npm run build`   | `tsc -b` + production bundle          |
+| `npm run preview` | Serve production build locally        |
 | `npm run codegen` | Regenerate Orval models + URL helpers |
 
 ---
@@ -240,16 +240,16 @@ Reuse across request, quote, selection, invoice, payment, shipping, consolidatio
 
 ## Where to find examples
 
-| Task | Reference |
-|------|-----------|
-| Token refresh | `src/api/baseApi.ts` |
-| Auth state | `src/store/slices/authSlice.ts` |
-| Permission gating | `src/components/PermissionGate.tsx`, `src/hooks/usePermissions.ts` |
-| Company switcher | `src/components/CompanySwitcher.tsx` |
-| Route guards | `src/routes/ProtectedRoute.tsx`, `src/routes/AuthBootstrap.tsx` |
-| API endpoints | `src/api/endpoints/authApi.ts`, `companiesApi.ts` |
-| API type aliases | `src/types/api.ts` |
-| Contract smoke test | `src/api/contract.smoke.test.ts` |
+| Task                | Reference                                                          |
+| ------------------- | ------------------------------------------------------------------ |
+| Token refresh       | `src/api/baseApi.ts`                                               |
+| Auth state          | `src/store/slices/authSlice.ts`                                    |
+| Permission gating   | `src/components/PermissionGate.tsx`, `src/hooks/usePermissions.ts` |
+| Company switcher    | `src/components/CompanySwitcher.tsx`                               |
+| Route guards        | `src/routes/ProtectedRoute.tsx`, `src/routes/AuthBootstrap.tsx`    |
+| API endpoints       | `src/api/endpoints/authApi.ts`, `companiesApi.ts`                  |
+| API type aliases    | `src/types/api.ts`                                                 |
+| Contract smoke test | `src/api/contract.smoke.test.ts`                                   |
 
 ---
 

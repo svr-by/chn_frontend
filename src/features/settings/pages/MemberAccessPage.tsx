@@ -36,10 +36,12 @@ import type { MemberRole, Permission } from '@/types/api';
 
 const TEAM_PATH = '/app/settings/team';
 
-function getOverrides(permissions: {
-  grants?: Permission[] | null;
-  denies?: Permission[] | null;
-} | null): { grants: Permission[]; denies: Permission[] } {
+function getOverrides(
+  permissions: {
+    grants?: Permission[] | null;
+    denies?: Permission[] | null;
+  } | null,
+): { grants: Permission[]; denies: Permission[] } {
   return {
     grants: (permissions?.grants ?? []).filter(Boolean) as Permission[],
     denies: (permissions?.denies ?? []).filter(Boolean) as Permission[],
@@ -111,7 +113,9 @@ export function MemberAccessPage() {
         title={t('team:accessTitle')}
         backFallbackTo={TEAM_PATH}
       >
-        <Typography color="text.secondary">{t('team:memberNotFound')}</Typography>
+        <Typography color="text.secondary">
+          {t('team:memberNotFound')}
+        </Typography>
       </DocumentDetailLayout>
     );
   }
@@ -137,8 +141,7 @@ export function MemberAccessPage() {
     JSON.stringify(grants) !== JSON.stringify(initialOverrides.grants) ||
     JSON.stringify(denies) !== JSON.stringify(initialOverrides.denies);
 
-  const isSaving =
-    memberState.isLoading || permissionsState.isLoading;
+  const isSaving = memberState.isLoading || permissionsState.isLoading;
   const pageError =
     membersQuery.error ?? memberState.error ?? permissionsState.error;
 
@@ -279,9 +282,7 @@ export function MemberAccessPage() {
                     />
                   }
                   label={
-                    isActive
-                      ? t('team:memberActive')
-                      : t('team:memberInactive')
+                    isActive ? t('team:memberActive') : t('team:memberInactive')
                   }
                 />
               ) : (
@@ -290,9 +291,7 @@ export function MemberAccessPage() {
                   color={isActive ? 'success' : 'warning'}
                   variant="outlined"
                   label={
-                    isActive
-                      ? t('team:memberActive')
-                      : t('team:memberInactive')
+                    isActive ? t('team:memberActive') : t('team:memberInactive')
                   }
                 />
               )}

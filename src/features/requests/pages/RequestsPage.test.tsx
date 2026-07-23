@@ -13,7 +13,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -78,7 +79,9 @@ describe('RequestsPage', () => {
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Outbound' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Inbound' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'New request' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'New request' }),
+    ).toBeInTheDocument();
   });
 
   it('passes status filter to list query', () => {

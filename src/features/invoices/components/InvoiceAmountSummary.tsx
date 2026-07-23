@@ -26,7 +26,8 @@ export function InvoiceAmountSummary({
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {t('amounts.confirmedPaid')}:{' '}
-        <DecimalDisplay value={confirmedPaidAmount} component="span" /> {currency}
+        <DecimalDisplay value={confirmedPaidAmount} component="span" />{' '}
+        {currency}
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {t('amounts.remaining')}:{' '}

@@ -26,7 +26,10 @@ function notificationUnreadCountTag(companyId: string) {
 }
 
 function notificationTags(companyId: string) {
-  return [...notificationListTag(companyId), ...notificationUnreadCountTag(companyId)];
+  return [
+    ...notificationListTag(companyId),
+    ...notificationUnreadCountTag(companyId),
+  ];
 }
 
 export const notificationsApi = baseApi.injectEndpoints({
@@ -40,7 +43,8 @@ export const notificationsApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdNotificationsUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => notificationListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        notificationListTag(companyId),
     }),
     getUnreadNotificationCount: builder.query<
       GetCompaniesCompanyIdNotificationsUnreadCount200,
@@ -57,10 +61,14 @@ export const notificationsApi = baseApi.injectEndpoints({
       { companyId: string; notificationId: string }
     >({
       query: ({ companyId, notificationId }) => ({
-        url: getPostCompaniesCompanyIdNotificationsNotificationIdReadUrl(companyId, notificationId),
+        url: getPostCompaniesCompanyIdNotificationsNotificationIdReadUrl(
+          companyId,
+          notificationId,
+        ),
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { companyId }) => notificationTags(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        notificationTags(companyId),
     }),
     markAllNotificationsRead: builder.mutation<
       PostCompaniesCompanyIdNotificationsReadAll200,
@@ -70,7 +78,8 @@ export const notificationsApi = baseApi.injectEndpoints({
         url: getPostCompaniesCompanyIdNotificationsReadAllUrl(companyId),
         method: 'POST',
       }),
-      invalidatesTags: (_result, _error, { companyId }) => notificationTags(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        notificationTags(companyId),
     }),
   }),
 });

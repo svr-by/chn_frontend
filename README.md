@@ -11,15 +11,15 @@ Web client for **CHN** — a multi-tenant B2B procurement and logistics platform
 
 ## Tech stack
 
-| Layer | Technology |
-|-------|------------|
-| UI | React 19, MUI 6, Emotion |
-| State | Redux Toolkit, RTK Query |
-| Routing | React Router 7 |
-| Forms | React Hook Form, Zod |
-| Build | Vite 6, TypeScript |
-| API types | Orval (from OpenAPI) |
-| i18n | react-i18next |
+| Layer     | Technology                            |
+| --------- | ------------------------------------- |
+| UI        | React 19, MUI 6, Emotion              |
+| State     | Redux Toolkit, RTK Query              |
+| Routing   | React Router 7                        |
+| Forms     | React Hook Form, Zod                  |
+| Build     | Vite 6, TypeScript                    |
+| API types | Orval (from OpenAPI)                  |
+| i18n      | react-i18next                         |
 | Money/qty | decimal.js (API uses decimal strings) |
 
 ## Prerequisites
@@ -70,11 +70,11 @@ Sync CSV preview works without the worker; creating a request from an uploaded f
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Vite dev server |
-| `npm run build` | Type-check and production build |
-| `npm run preview` | Preview production build |
+| Command           | Description                                   |
+| ----------------- | --------------------------------------------- |
+| `npm run dev`     | Start Vite dev server                         |
+| `npm run build`   | Type-check and production build               |
+| `npm run preview` | Preview production build                      |
 | `npm run codegen` | Regenerate types from `openapi/api-docs.json` |
 
 ## Project structure
@@ -98,14 +98,14 @@ src/
 
 Full documentation lives in [`docs/`](./docs/README.md):
 
-| Document | Description |
-|----------|-------------|
-| [Product overview](./docs/product-overview.md) | What CHN does — for users and stakeholders |
-| [Developer guide](./docs/developer-guide.md) | Local setup, architecture, conventions |
-| [Frontend specification](./docs/frontend-spec.md) | UX flows, permissions, document statuses |
-| [API integration](./docs/api-integration.md) | Auth, headers, errors, pagination |
-| [API reference](./docs/api-reference.md) | REST endpoint catalog |
-| [Implementation plan](./docs/implementation-plan.md) | Phased roadmap and current progress |
+| Document                                             | Description                                |
+| ---------------------------------------------------- | ------------------------------------------ |
+| [Product overview](./docs/product-overview.md)       | What CHN does — for users and stakeholders |
+| [Developer guide](./docs/developer-guide.md)         | Local setup, architecture, conventions     |
+| [Frontend specification](./docs/frontend-spec.md)    | UX flows, permissions, document statuses   |
+| [API integration](./docs/api-integration.md)         | Auth, headers, errors, pagination          |
+| [API reference](./docs/api-reference.md)             | REST endpoint catalog                      |
+| [Implementation plan](./docs/implementation-plan.md) | Phased roadmap and current progress        |
 
 ## Current status
 

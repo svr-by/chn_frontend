@@ -4,12 +4,12 @@ English-language documentation for the CHN web client. These docs are derived fr
 
 ## Start here
 
-| Audience | Read first |
-|----------|------------|
-| New developers | [Developer guide](./developer-guide.md) → [API integration](./api-integration.md) |
-| Product / stakeholders | [Product overview](./product-overview.md) |
-| UI / feature work | [Frontend specification](./frontend-spec.md) → [Implementation plan](./implementation-plan.md) |
-| API lookup | [API reference](./api-reference.md) |
+| Audience               | Read first                                                                                     |
+| ---------------------- | ---------------------------------------------------------------------------------------------- |
+| New developers         | [Developer guide](./developer-guide.md) → [API integration](./api-integration.md)              |
+| Product / stakeholders | [Product overview](./product-overview.md)                                                      |
+| UI / feature work      | [Frontend specification](./frontend-spec.md) → [Implementation plan](./implementation-plan.md) |
+| API lookup             | [API reference](./api-reference.md)                                                            |
 
 ## Documents
 
@@ -39,11 +39,11 @@ Phased roadmap aligned with the backend release plan. Includes stack decisions, 
 
 ## Related artifacts
 
-| Location | Purpose |
-|----------|---------|
-| `openapi/api-docs.json` | OpenAPI 3.1 snapshot for Orval codegen (108 paths) |
-| `.cursor/` | Agent handoff specs and planning notes (source material for this docs folder) |
-| Backend `/docs` | Live Swagger UI when the API server runs |
+| Location                | Purpose                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------- |
+| `openapi/api-docs.json` | OpenAPI 3.1 snapshot for Orval codegen (108 paths)                            |
+| `.cursor/`              | Agent handoff specs and planning notes (source material for this docs folder) |
+| Backend `/docs`         | Live Swagger UI when the API server runs                                      |
 
 ## Keeping docs up to date
 

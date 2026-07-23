@@ -14,7 +14,8 @@ import { COMPANY_ID, createMembership, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -37,13 +38,19 @@ const mockedUseUpdateMemberPermissionsMutation = vi.mocked(
 const MEMBER_ID = '00000000-0000-0000-0000-000000000041';
 
 function mockMutationHook(mock: ReturnType<typeof vi.fn>) {
-  return [mock, { isLoading: false, reset: vi.fn(), error: undefined }] as const;
+  return [
+    mock,
+    { isLoading: false, reset: vi.fn(), error: undefined },
+  ] as const;
 }
 
 function renderAccessPage() {
   return renderWithProviders(
     <Routes>
-      <Route path="/app/settings/team/:memberId" element={<MemberAccessPage />} />
+      <Route
+        path="/app/settings/team/:memberId"
+        element={<MemberAccessPage />}
+      />
     </Routes>,
     {
       route: `/app/settings/team/${MEMBER_ID}`,
@@ -131,7 +138,9 @@ describe('MemberAccessPage', () => {
       unwrap: () => Promise.resolve({}),
     });
     mockedUseUpdateMemberMutation.mockReturnValue(
-      mockMutationHook(updateMember) as ReturnType<typeof useUpdateMemberMutation>,
+      mockMutationHook(updateMember) as ReturnType<
+        typeof useUpdateMemberMutation
+      >,
     );
 
     renderAccessPage();

@@ -132,7 +132,11 @@ export function RequestLinesTable({
         },
         Cell: ({ row }) => (
           <PermissionGate permission="manageRequests">
-            <Stack direction="row" spacing={0.5} sx={{ justifyContent: 'flex-end' }}>
+            <Stack
+              direction="row"
+              spacing={0.5}
+              sx={{ justifyContent: 'flex-end' }}
+            >
               <Tooltip title={t('actions.editLine')}>
                 <IconButton
                   size="small"
@@ -229,7 +233,10 @@ export function RequestLinesTable({
         }
       />
 
-      <Dialog open={Boolean(lineToDelete)} onClose={() => setLineToDelete(null)}>
+      <Dialog
+        open={Boolean(lineToDelete)}
+        onClose={() => setLineToDelete(null)}
+      >
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>
         <DialogContent>
           <Typography>{t('confirm.deleteLineMessage')}</Typography>

@@ -24,7 +24,9 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
 }));
 
 const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
-const mockedUseDistributeRequestMutation = vi.mocked(useDistributeRequestMutation);
+const mockedUseDistributeRequestMutation = vi.mocked(
+  useDistributeRequestMutation,
+);
 
 describe('RequestDistributeDialog', () => {
   beforeEach(() => {

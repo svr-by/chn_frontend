@@ -88,7 +88,12 @@ export function DocumentRelatedPanel({
                 <CardContent>
                   <Stack spacing={1}>
                     <Typography variant="subtitle2">{node.label}</Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      useFlexGap
+                    >
                       <Chip
                         label={t(`related.documentTypes.${node.documentType}`, {
                           defaultValue: node.documentType,
@@ -108,7 +113,9 @@ export function DocumentRelatedPanel({
 
       {graph.edges.length > 0 ? (
         <Stack spacing={1}>
-          <Typography variant="subtitle2">{t('related.connections')}</Typography>
+          <Typography variant="subtitle2">
+            {t('related.connections')}
+          </Typography>
           {graph.edges.map((edge) => {
             const from = nodeById.get(edge.fromId);
             const to = nodeById.get(edge.toId);

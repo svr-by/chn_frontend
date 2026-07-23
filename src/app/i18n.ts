@@ -8,7 +8,9 @@ const localeModules = import.meta.glob('../locales/*/*.json', {
   eager: true,
 }) as Record<string, { default: Record<string, unknown> }>;
 
-function loadLocaleResources(lang: string): Record<string, Record<string, unknown>> {
+function loadLocaleResources(
+  lang: string,
+): Record<string, Record<string, unknown>> {
   const resources: Record<string, Record<string, unknown>> = {};
 
   for (const [filePath, module] of Object.entries(localeModules)) {

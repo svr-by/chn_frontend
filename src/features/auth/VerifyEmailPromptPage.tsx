@@ -23,7 +23,12 @@ export function RegisterSuccessPage({
       <Typography variant="h6" gutterBottom textAlign="center">
         {t('registerSuccessTitle')}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} textAlign="center">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mb: 2 }}
+        textAlign="center"
+      >
         {email
           ? t('registerSuccessSubtitleWithEmail', { email })
           : t('registerSuccessSubtitle')}

@@ -73,7 +73,12 @@ export function AuthLayout({
             </CardContent>
           </Card>
         ) : (
-          <Box sx={{ width: '100%', maxWidth: centered ? contentMaxWidth : 'none' }}>
+          <Box
+            sx={{
+              width: '100%',
+              maxWidth: centered ? contentMaxWidth : 'none',
+            }}
+          >
             <Outlet />
           </Box>
         )}

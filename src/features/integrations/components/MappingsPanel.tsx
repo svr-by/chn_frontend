@@ -51,9 +51,8 @@ export function MappingsPanel({ companyId }: MappingsPanelProps) {
   const { t } = useTranslation('integrations');
   const { enqueueSnackbar } = useSnackbar();
   const [createOpen, setCreateOpen] = useState(false);
-  const [editingMapping, setEditingMapping] = useState<PartnerExternalMapping | null>(
-    null,
-  );
+  const [editingMapping, setEditingMapping] =
+    useState<PartnerExternalMapping | null>(null);
   const [mappingToDelete, setMappingToDelete] = useState<string | null>(null);
 
   const listQuery = useListMappingsQuery({ companyId });
@@ -199,7 +198,8 @@ export function MappingsPanel({ companyId }: MappingsPanelProps) {
               </TableCell>
             </TableRow>
           ))}
-          {(listQuery.data?.mappings ?? []).length === 0 && !listQuery.isLoading ? (
+          {(listQuery.data?.mappings ?? []).length === 0 &&
+          !listQuery.isLoading ? (
             <TableRow>
               <TableCell colSpan={4}>
                 <Typography variant="body2" color="text.secondary">
@@ -215,7 +215,10 @@ export function MappingsPanel({ companyId }: MappingsPanelProps) {
         <DialogTitle>
           {isEdit ? t('mappings.edit') : t('mappings.create')}
         </DialogTitle>
-        <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
+        <Box
+          component="form"
+          onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+        >
           <DialogContent>
             <ApiErrorAlert error={mutationError} />
             <FormControl fullWidth margin="normal">
@@ -230,11 +233,13 @@ export function MappingsPanel({ companyId }: MappingsPanelProps) {
                   )
                 }
               >
-                {Object.values(PartnerExternalMappingMappingType).map((type) => (
-                  <MenuItem key={type} value={type}>
-                    {t(`mappingTypes.${type}`)}
-                  </MenuItem>
-                ))}
+                {Object.values(PartnerExternalMappingMappingType).map(
+                  (type) => (
+                    <MenuItem key={type} value={type}>
+                      {t(`mappingTypes.${type}`)}
+                    </MenuItem>
+                  ),
+                )}
               </Select>
             </FormControl>
             <TextField
@@ -270,13 +275,18 @@ export function MappingsPanel({ companyId }: MappingsPanelProps) {
         </Box>
       </Dialog>
 
-      <Dialog open={Boolean(mappingToDelete)} onClose={() => setMappingToDelete(null)}>
+      <Dialog
+        open={Boolean(mappingToDelete)}
+        onClose={() => setMappingToDelete(null)}
+      >
         <DialogTitle>{t('mappings.deleteTitle')}</DialogTitle>
         <DialogContent>
           <Typography>{t('mappings.deleteConfirm')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setMappingToDelete(null)}>{t('common.cancel')}</Button>
+          <Button onClick={() => setMappingToDelete(null)}>
+            {t('common.cancel')}
+          </Button>
           <Button
             color="error"
             variant="contained"

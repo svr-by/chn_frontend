@@ -162,9 +162,7 @@ export function PartnerInviteDialog({
         onSubmit={(event) => void handleSubmit(onInvite)(event)}
       >
         <DialogContent>
-          {!showAmbiguousPicker && (
-            <ApiErrorAlert error={inviteState.error} />
-          )}
+          {!showAmbiguousPicker && <ApiErrorAlert error={inviteState.error} />}
 
           <TextField
             {...register('email')}

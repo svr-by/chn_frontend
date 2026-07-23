@@ -97,9 +97,12 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
           .uuid({ message: t('validation:invalidUuid') })
           .nullable()
           .optional(),
-        description: z.string().trim().min(1, {
-          message: t('validation:required'),
-        }),
+        description: z
+          .string()
+          .trim()
+          .min(1, {
+            message: t('validation:required'),
+          }),
         quantity: z.string().refine(isValidDecimal, {
           message: t('validation:invalidQuantity'),
         }),
@@ -129,7 +132,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       return;
     }
 
-  //   setProductSearch('');
+    //   setProductSearch('');
     if (isLocal) {
       // setSelectedProduct(null);
       reset({

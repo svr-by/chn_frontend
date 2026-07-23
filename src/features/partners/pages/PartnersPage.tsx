@@ -136,7 +136,8 @@ export function PartnersPage() {
           <Button
             variant="contained"
             startIcon={<PersonAddAlt1OutlinedIcon />}
-            onClick={() => setInviteDialogOpen(true)}>
+            onClick={() => setInviteDialogOpen(true)}
+          >
             {t('actions.invite')}
           </Button>
         </PermissionGate>

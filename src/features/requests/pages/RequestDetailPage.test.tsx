@@ -20,7 +20,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -45,44 +46,50 @@ vi.mock('@/api/endpoints/requestsApi', () => {
   };
 
   return {
-  useGetRequestQuery: vi.fn(),
-  useUpdateRequestMutation: vi.fn(),
-  useAddRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
-  useUpdateRequestLineMutation: vi.fn(() => [vi.fn(), { isLoading: false, reset: vi.fn() }]),
-  useDeleteRequestLineMutation: vi.fn(),
-  useDeleteRequestMutation: vi.fn(() => [
-    vi.fn(),
-    { isLoading: false, reset: vi.fn() },
-  ]),
-  useDistributeRequestMutation: vi.fn(() => [
-    vi.fn(),
-    { isLoading: false, reset: vi.fn() },
-  ]),
-  useDeleteRequestDistributionMutation: vi.fn(() => [
-    vi.fn(),
-    { isLoading: false, reset: vi.fn(), error: undefined },
-  ]),
-  useGetRequestDistributionsQuery: vi.fn(() => ({
-    data: emptyDistributions,
-    isLoading: false,
-    isFetching: false,
-    refetch: vi.fn(),
-  })),
-  useListRequestsQuery: vi.fn(),
-  useCreateRequestMutation: vi.fn(),
-  useListInboundRequestsQuery: vi.fn(),
-  useGetQuoteComparisonQuery: vi.fn(() => ({
-    data: emptyQuoteComparison,
-    isLoading: false,
-    isFetching: false,
-    refetch: vi.fn(),
-  })),
-  useGetRequestSelectionQuery: vi.fn(() => ({
-    data: undefined,
-    isLoading: false,
-    isFetching: false,
-    refetch: vi.fn(),
-  })),
+    useGetRequestQuery: vi.fn(),
+    useUpdateRequestMutation: vi.fn(),
+    useAddRequestLineMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ]),
+    useUpdateRequestLineMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ]),
+    useDeleteRequestLineMutation: vi.fn(),
+    useDeleteRequestMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ]),
+    useDistributeRequestMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ]),
+    useDeleteRequestDistributionMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn(), error: undefined },
+    ]),
+    useGetRequestDistributionsQuery: vi.fn(() => ({
+      data: emptyDistributions,
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    })),
+    useListRequestsQuery: vi.fn(),
+    useCreateRequestMutation: vi.fn(),
+    useListInboundRequestsQuery: vi.fn(),
+    useGetQuoteComparisonQuery: vi.fn(() => ({
+      data: emptyQuoteComparison,
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    })),
+    useGetRequestSelectionQuery: vi.fn(() => ({
+      data: undefined,
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    })),
   };
 });
 
@@ -167,7 +174,9 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    expect(screen.getByRole('button', { name: 'Add line' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add line' }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole('tab', { name: 'Suppliers' }));
 
@@ -203,7 +212,9 @@ describe('RequestDetailPage', () => {
 
     renderDetailPage();
 
-    expect(screen.getByRole('button', { name: 'Add line' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add line' }),
+    ).toBeInTheDocument();
 
     await user.click(screen.getByRole('tab', { name: 'Suppliers' }));
 

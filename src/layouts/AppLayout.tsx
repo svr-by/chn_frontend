@@ -1,5 +1,10 @@
 import { useState } from 'react';
-import { Link as RouterLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import {
+  Link as RouterLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom';
 import {
   AppBar,
   Box,
@@ -132,12 +137,16 @@ export function AppLayout() {
           width: '100%',
         }}
       >
-        <Toolbar sx={{ gap: { xs: 0.5, sm: 1 }, minHeight: { xs: 56, sm: 64 } }}>
+        <Toolbar
+          sx={{ gap: { xs: 0.5, sm: 1 }, minHeight: { xs: 56, sm: 64 } }}
+        >
           <IconButton
             color="inherit"
             edge="start"
             onClick={toggleNav}
-            aria-label={navOpen ? t('common:app.closeNav') : t('common:app.openNav')}
+            aria-label={
+              navOpen ? t('common:app.closeNav') : t('common:app.openNav')
+            }
             size="large"
           >
             <MenuIcon />
@@ -183,8 +192,13 @@ export function AppLayout() {
             open={Boolean(userMenuAnchor)}
             onClose={() => setUserMenuAnchor(null)}
           >
-            <MenuItem onClick={handleProfile}>{t('common:app.profile')}</MenuItem>
-            <MenuItem onClick={() => void handleLogout()} disabled={isLoggingOut}>
+            <MenuItem onClick={handleProfile}>
+              {t('common:app.profile')}
+            </MenuItem>
+            <MenuItem
+              onClick={() => void handleLogout()}
+              disabled={isLoggingOut}
+            >
               {t('common:app.logout')}
             </MenuItem>
           </Menu>

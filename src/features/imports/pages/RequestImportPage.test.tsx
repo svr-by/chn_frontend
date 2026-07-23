@@ -23,7 +23,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -44,21 +45,29 @@ vi.mock('@/api/endpoints/importsApi', () => ({
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
-const mockedUsePreviewCsvImportMutation = vi.mocked(usePreviewCsvImportMutation);
+const mockedUsePreviewCsvImportMutation = vi.mocked(
+  usePreviewCsvImportMutation,
+);
 const mockedUseUploadImportMutation = vi.mocked(useUploadImportMutation);
 const mockedUseConfirmImportMutation = vi.mocked(useConfirmImportMutation);
 
 function mockMutationHook<T extends (...args: never[]) => unknown>(
   mock: ReturnType<typeof vi.fn>,
 ) {
-  return [mock, { isLoading: false, reset: vi.fn() }] as unknown as ReturnType<T>;
+  return [
+    mock,
+    { isLoading: false, reset: vi.fn() },
+  ] as unknown as ReturnType<T>;
 }
 
 function renderImportPage(route = '/app/requests/import') {
   return renderWithProviders(
     <Routes>
       <Route path="/app/requests/import" element={<RequestImportPage />} />
-      <Route path="/app/requests/:requestId" element={<div>Request detail</div>} />
+      <Route
+        path="/app/requests/:requestId"
+        element={<div>Request detail</div>}
+      />
     </Routes>,
     {
       preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -72,20 +81,24 @@ describe('RequestImportPage', () => {
     vi.clearAllMocks();
 
     mockedUseGetMeQuery.mockReturnValue({
-      data: { user: createTestUser({
-        memberships: [
-          createMembership({
-            effectivePermissions: ['viewRequests', 'manageRequests'],
-          }),
-        ],
-      }) },
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['viewRequests', 'manageRequests'],
+            }),
+          ],
+        }),
+      },
       isLoading: false,
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useGetMeQuery>);
 
     mockedUsePreviewCsvImportMutation.mockReturnValue(
-      mockMutationHook(vi.fn()) as ReturnType<typeof usePreviewCsvImportMutation>,
+      mockMutationHook(vi.fn()) as ReturnType<
+        typeof usePreviewCsvImportMutation
+      >,
     );
     mockedUseUploadImportMutation.mockReturnValue(
       mockMutationHook(vi.fn()) as ReturnType<typeof useUploadImportMutation>,
@@ -98,7 +111,9 @@ describe('RequestImportPage', () => {
   it('renders import page for users with manageRequests', () => {
     renderImportPage();
 
-    expect(screen.getByRole('heading', { name: /import request from csv/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /import request from csv/i }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /preview/i })).toBeDisabled();
     expect(screen.getByRole('button', { name: /^import$/i })).toBeDisabled();
   });
@@ -116,7 +131,9 @@ describe('RequestImportPage', () => {
     const user = userEvent.setup();
     renderImportPage();
 
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
     const file = new File(['description,quantity\nItem,1'], 'lines.csv', {
       type: 'text/csv',
     });
@@ -149,7 +166,9 @@ describe('RequestImportPage', () => {
       >,
     );
     mockedUseUploadImportMutation.mockReturnValue(
-      mockMutationHook(uploadMock) as ReturnType<typeof useUploadImportMutation>,
+      mockMutationHook(uploadMock) as ReturnType<
+        typeof useUploadImportMutation
+      >,
     );
     mockedUseConfirmImportMutation.mockReturnValue(
       mockMutationHook(confirmMock) as ReturnType<
@@ -160,10 +179,14 @@ describe('RequestImportPage', () => {
     const user = userEvent.setup();
     renderImportPage();
 
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
     await user.upload(
       fileInput,
-      new File(['description,quantity\nItem,1'], 'lines.csv', { type: 'text/csv' }),
+      new File(['description,quantity\nItem,1'], 'lines.csv', {
+        type: 'text/csv',
+      }),
     );
     await user.click(screen.getByRole('button', { name: /preview/i }));
 
@@ -186,7 +209,9 @@ describe('RequestImportPage', () => {
   it('keeps import disabled when preview has zero valid rows', async () => {
     const previewMock = vi.fn().mockReturnValue({
       unwrap: () =>
-        Promise.resolve(createImportPreview({ validRowCount: 0, invalidRowCount: 2 })),
+        Promise.resolve(
+          createImportPreview({ validRowCount: 0, invalidRowCount: 2 }),
+        ),
     });
     mockedUsePreviewCsvImportMutation.mockReturnValue(
       mockMutationHook(previewMock) as ReturnType<
@@ -197,7 +222,9 @@ describe('RequestImportPage', () => {
     const user = userEvent.setup();
     renderImportPage();
 
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]',
+    ) as HTMLInputElement;
     await user.upload(
       fileInput,
       new File(['description,quantity\n,'], 'lines.csv', { type: 'text/csv' }),

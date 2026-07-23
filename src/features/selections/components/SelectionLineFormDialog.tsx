@@ -119,7 +119,8 @@ export function SelectionLineFormDialog({
   const [addLine, addState] = useAddSelectionLineMutation();
   const [updateLine, updateState] = useUpdateSelectionLineMutation();
 
-  const maxQuantity = line?.quoteLine.quantity ?? selectableOffers[0]?.maxQuantity ?? '0';
+  const maxQuantity =
+    line?.quoteLine.quantity ?? selectableOffers[0]?.maxQuantity ?? '0';
 
   const createSchema = useMemo(
     () => createLineSchema(maxQuantity),
@@ -316,7 +317,9 @@ export function SelectionLineFormDialog({
                       ))}
                     </Select>
                     {fieldState.error ? (
-                      <FormHelperText>{fieldState.error.message}</FormHelperText>
+                      <FormHelperText>
+                        {fieldState.error.message}
+                      </FormHelperText>
                     ) : null}
                   </FormControl>
                 )}
@@ -333,7 +336,9 @@ export function SelectionLineFormDialog({
                 required
                 value={createQuantity}
                 onChange={(value) =>
-                  createForm.setValue('quantity', value, { shouldValidate: true })
+                  createForm.setValue('quantity', value, {
+                    shouldValidate: true,
+                  })
                 }
                 error={Boolean(createForm.formState.errors.quantity)}
                 helperText={createForm.formState.errors.quantity?.message}
@@ -354,7 +359,9 @@ export function SelectionLineFormDialog({
         {isEdit || selectableOffers.length > 0 ? (
           <Button
             type="submit"
-            form={isEdit ? 'selection-line-edit-form' : 'selection-line-create-form'}
+            form={
+              isEdit ? 'selection-line-edit-form' : 'selection-line-create-form'
+            }
             variant="contained"
             disabled={isLoading}
           >

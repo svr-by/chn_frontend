@@ -34,9 +34,9 @@ describe('permissions', () => {
   });
   describe('hasPermission', () => {
     it('returns true when permission is present', () => {
-      expect(hasPermission(['viewMembers', 'manageMembers'], 'viewMembers')).toBe(
-        true,
-      );
+      expect(
+        hasPermission(['viewMembers', 'manageMembers'], 'viewMembers'),
+      ).toBe(true);
     });
 
     it('returns false when permission is missing', () => {
@@ -261,9 +261,9 @@ describe('permissions', () => {
     });
 
     it('falls back to first membership when current is invalid', () => {
-      expect(
-        resolveActiveCompanyId('invalid-company', memberships),
-      ).toBe(COMPANY_ID);
+      expect(resolveActiveCompanyId('invalid-company', memberships)).toBe(
+        COMPANY_ID,
+      );
     });
 
     it('returns null when there are no active memberships', () => {

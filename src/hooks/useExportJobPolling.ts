@@ -35,9 +35,7 @@ export function useExportJobPolling({
   const job = query.data?.job;
   const status = job?.status;
 
-  const isPolling = Boolean(
-    poll && status && POLLING_STATUSES.has(status),
-  );
+  const isPolling = Boolean(poll && status && POLLING_STATUSES.has(status));
   const isCompleted = status === ExportJobStatus.COMPLETED;
   const isFailed = status === ExportJobStatus.FAILED;
 

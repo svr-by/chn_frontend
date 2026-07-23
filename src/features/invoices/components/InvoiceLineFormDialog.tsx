@@ -90,11 +90,12 @@ export function InvoiceLineFormDialog({
     [billableLines, existingSelectionLineIds],
   );
 
-  const maxQuantity = isEdit && line
-    ? (billableLines.find(
-        (item) => item.selectionLineId === line.selectionLine?.id,
-      )?.quantity ?? line.quantity)
-    : (selectableLines[0]?.quantity ?? '0');
+  const maxQuantity =
+    isEdit && line
+      ? (billableLines.find(
+          (item) => item.selectionLineId === line.selectionLine?.id,
+        )?.quantity ?? line.quantity)
+      : (selectableLines[0]?.quantity ?? '0');
 
   const createSchema = useMemo(
     () => createLineSchema(maxQuantity),
@@ -296,7 +297,9 @@ export function InvoiceLineFormDialog({
                       ))}
                     </Select>
                     {fieldState.error ? (
-                      <FormHelperText>{fieldState.error.message}</FormHelperText>
+                      <FormHelperText>
+                        {fieldState.error.message}
+                      </FormHelperText>
                     ) : null}
                   </FormControl>
                 )}
@@ -313,7 +316,9 @@ export function InvoiceLineFormDialog({
                 required
                 value={createQuantity}
                 onChange={(value) =>
-                  createForm.setValue('quantity', value, { shouldValidate: true })
+                  createForm.setValue('quantity', value, {
+                    shouldValidate: true,
+                  })
                 }
                 error={Boolean(createForm.formState.errors.quantity)}
                 helperText={createForm.formState.errors.quantity?.message}
@@ -334,7 +339,9 @@ export function InvoiceLineFormDialog({
         {isEdit || selectableLines.length > 0 ? (
           <Button
             type="submit"
-            form={isEdit ? 'invoice-line-edit-form' : 'invoice-line-create-form'}
+            form={
+              isEdit ? 'invoice-line-edit-form' : 'invoice-line-create-form'
+            }
             variant="contained"
             disabled={isLoading}
           >

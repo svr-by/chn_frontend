@@ -101,7 +101,11 @@ function InfoSection({ title, hint, children }: InfoSectionProps) {
       <Typography variant="subtitle1" component="h2">
         {title}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, mb: 1.5 }}>
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mt: 0.5, mb: 1.5 }}
+      >
         {hint}
       </Typography>
       <Box sx={{ flex: 1, minWidth: 0 }}>{children}</Box>

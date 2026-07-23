@@ -26,7 +26,9 @@ export function InvoicePaymentsTable({
         accessorKey: 'status',
         header: t('paymentsColumns.status'),
         Cell: ({ cell }) => (
-          <PaymentStatusBadge status={cell.getValue<InvoicePaymentSummary['status']>()} />
+          <PaymentStatusBadge
+            status={cell.getValue<InvoicePaymentSummary['status']>()}
+          />
         ),
       },
       {

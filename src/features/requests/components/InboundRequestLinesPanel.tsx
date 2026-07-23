@@ -47,7 +47,9 @@ function getRequestStatusFilter(
   return value as InboundRequestLineStatusFilter;
 }
 
-function getWithoutQuotesFilter(columnFilters: MRT_ColumnFiltersState): boolean {
+function getWithoutQuotesFilter(
+  columnFilters: MRT_ColumnFiltersState,
+): boolean {
   const value = columnFilters.find((filter) => filter.id === 'hasQuote')?.value;
   const values = Array.isArray(value) ? value : value ? [value] : [];
 
@@ -140,7 +142,7 @@ export function InboundRequestLinesPanel({
         Cell: ({ row }) => (
           <Stack spacing={0.5}>
             <Typography variant="body2">{row.original.description}</Typography>
-            {row.original.product?.sku ?? getImportSku(row.original) ? (
+            {(row.original.product?.sku ?? getImportSku(row.original)) ? (
               <Typography variant="caption" color="text.secondary">
                 {row.original.product?.sku ?? getImportSku(row.original)}
               </Typography>
@@ -278,7 +280,8 @@ export function InboundRequestLinesPanel({
         globalFilter={globalFilter}
         onGlobalFilterChange={(updater) => {
           setGlobalFilter((prev) => {
-            const next = typeof updater === 'function' ? updater(prev) : updater;
+            const next =
+              typeof updater === 'function' ? updater(prev) : updater;
             return next ?? '';
           });
           setPagination((prev) => ({ ...prev, pageIndex: 0 }));

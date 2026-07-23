@@ -37,7 +37,9 @@ describe('CommentForm', () => {
 
     await user.click(screen.getByRole('button', { name: 'Post comment' }));
 
-    expect(await screen.findByText('Comment cannot be empty')).toBeInTheDocument();
+    expect(
+      await screen.findByText('Comment cannot be empty'),
+    ).toBeInTheDocument();
   });
 
   it('submits trimmed comment body', async () => {

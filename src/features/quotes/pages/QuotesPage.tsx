@@ -116,7 +116,9 @@ export function QuotesPage() {
       <ApiErrorAlert error={listQuery.error} />
 
       <FormControl size="small" sx={{ minWidth: 200 }}>
-        <InputLabel id="quote-status-filter">{t('statusFilter.label')}</InputLabel>
+        <InputLabel id="quote-status-filter">
+          {t('statusFilter.label')}
+        </InputLabel>
         <Select
           labelId="quote-status-filter"
           label={t('statusFilter.label')}

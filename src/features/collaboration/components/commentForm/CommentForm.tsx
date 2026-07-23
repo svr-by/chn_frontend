@@ -88,12 +88,19 @@ export function CommentForm({
             ? t('comments.maxLength', { max: MAX_COMMENT_LENGTH })
             : errors.body?.message === 'required'
               ? t('comments.required')
-              : t('comments.charCount', { count: charCount, max: MAX_COMMENT_LENGTH })
+              : t('comments.charCount', {
+                  count: charCount,
+                  max: MAX_COMMENT_LENGTH,
+                })
         }
         inputProps={{ maxLength: MAX_COMMENT_LENGTH }}
       />
       <Stack direction="row" justifyContent="flex-end">
-        <Button type="submit" variant="contained" disabled={createState.isLoading}>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={createState.isLoading}
+        >
           {t('comments.submit')}
         </Button>
       </Stack>

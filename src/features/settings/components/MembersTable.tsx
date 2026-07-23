@@ -1,11 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  Chip,
-  IconButton,
-  Stack,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Chip, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import PersonRemoveOutlinedIcon from '@mui/icons-material/PersonRemoveOutlined';
 import { useNavigate } from 'react-router-dom';
@@ -111,7 +105,9 @@ export function MembersTable({
             size="small"
             label={formatMemberRole(t, cell.getValue<CompanyMember['role']>())}
             color={cell.getValue<string>() === 'OWNER' ? 'primary' : 'default'}
-            variant={cell.getValue<string>() === 'OWNER' ? 'filled' : 'outlined'}
+            variant={
+              cell.getValue<string>() === 'OWNER' ? 'filled' : 'outlined'
+            }
           />
         ),
       },
@@ -153,9 +149,7 @@ export function MembersTable({
                   <IconButton
                     size="small"
                     aria-label={t('team:manageAccess')}
-                    onClick={() =>
-                      navigate(`/app/settings/team/${member.id}`)
-                    }
+                    onClick={() => navigate(`/app/settings/team/${member.id}`)}
                   >
                     <ManageAccountsOutlinedIcon fontSize="small" />
                   </IconButton>

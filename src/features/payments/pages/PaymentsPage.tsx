@@ -43,9 +43,9 @@ export function PaymentsPage() {
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
-  const [statusFilter, setStatusFilter] = useState<PaymentSummaryStatus | 'ALL'>(
-    'ALL',
-  );
+  const [statusFilter, setStatusFilter] = useState<
+    PaymentSummaryStatus | 'ALL'
+  >('ALL');
 
   useEffect(() => {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
@@ -74,7 +74,8 @@ export function PaymentsPage() {
         header: t('columns.amount'),
         Cell: ({ row }) => (
           <>
-            <DecimalDisplay value={row.original.amount} /> {row.original.currency}
+            <DecimalDisplay value={row.original.amount} />{' '}
+            {row.original.currency}
           </>
         ),
       },
@@ -140,7 +141,9 @@ export function PaymentsPage() {
             label={t('statusFilter.label')}
             value={statusFilter}
             onChange={(event) =>
-              setStatusFilter(event.target.value as PaymentSummaryStatus | 'ALL')
+              setStatusFilter(
+                event.target.value as PaymentSummaryStatus | 'ALL',
+              )
             }
           >
             {STATUS_OPTIONS.map((status) => (

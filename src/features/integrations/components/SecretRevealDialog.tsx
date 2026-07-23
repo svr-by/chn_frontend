@@ -76,7 +76,11 @@ export function SecretRevealDialog({
           }}
         />
         {copied ? (
-          <Typography variant="caption" color="success.main" sx={{ mt: 1, display: 'block' }}>
+          <Typography
+            variant="caption"
+            color="success.main"
+            sx={{ mt: 1, display: 'block' }}
+          >
             {t('secretReveal.copiedHint')}
           </Typography>
         ) : null}

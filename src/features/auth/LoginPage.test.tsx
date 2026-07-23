@@ -7,7 +7,8 @@ import { LoginPage } from '@/features/auth/LoginPage';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useLoginMutation: vi.fn(),
@@ -28,10 +29,9 @@ describe('LoginPage', () => {
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute(
-      'href',
-      '/forgot-password',
-    );
+    expect(
+      screen.getByRole('link', { name: 'Forgot password?' }),
+    ).toHaveAttribute('href', '/forgot-password');
   });
 
   it('shows validation errors for empty submit', async () => {

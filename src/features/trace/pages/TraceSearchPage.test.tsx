@@ -15,7 +15,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -60,10 +61,7 @@ describe('TraceSearchPage', () => {
     renderWithProviders(
       <Routes>
         <Route path="/app/trace" element={<TraceSearchPage />} />
-        <Route
-          path="/app/trace/:lineageId"
-          element={<div>Trace detail</div>}
-        />
+        <Route path="/app/trace/:lineageId" element={<div>Trace detail</div>} />
       </Routes>,
       {
         preloadedState: {

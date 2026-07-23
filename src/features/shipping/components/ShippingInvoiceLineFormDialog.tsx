@@ -176,7 +176,10 @@ export function ShippingInvoiceLineFormDialog({
     const shippable = selectableLines.find(
       (item) => item.invoiceLineId === values.invoiceLineId,
     );
-    if (!shippable || !isDecimalLte(values.quantity, shippable.remainingQuantity)) {
+    if (
+      !shippable ||
+      !isDecimalLte(values.quantity, shippable.remainingQuantity)
+    ) {
       return;
     }
 
@@ -304,7 +307,9 @@ export function ShippingInvoiceLineFormDialog({
                       ))}
                     </Select>
                     {fieldState.error ? (
-                      <FormHelperText>{fieldState.error.message}</FormHelperText>
+                      <FormHelperText>
+                        {fieldState.error.message}
+                      </FormHelperText>
                     ) : null}
                   </FormControl>
                 )}
@@ -327,7 +332,9 @@ export function ShippingInvoiceLineFormDialog({
                 required
                 value={createQuantity}
                 onChange={(value) =>
-                  createForm.setValue('quantity', value, { shouldValidate: true })
+                  createForm.setValue('quantity', value, {
+                    shouldValidate: true,
+                  })
                 }
                 error={Boolean(createForm.formState.errors.quantity)}
                 helperText={createForm.formState.errors.quantity?.message}
@@ -348,7 +355,9 @@ export function ShippingInvoiceLineFormDialog({
         {isEdit || selectableLines.length > 0 ? (
           <Button
             type="submit"
-            form={isEdit ? 'shipping-line-edit-form' : 'shipping-line-create-form'}
+            form={
+              isEdit ? 'shipping-line-edit-form' : 'shipping-line-create-form'
+            }
             variant="contained"
             disabled={isLoading}
           >

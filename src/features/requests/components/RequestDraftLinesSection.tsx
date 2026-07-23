@@ -75,7 +75,8 @@ export function RequestDraftLinesSection({
         </Typography>
       ) : null}
 
-      {<Table size="small" sx={{ border: 1, borderColor: 'divider' }}>
+      {
+        <Table size="small" sx={{ border: 1, borderColor: 'divider' }}>
           <TableHead>
             <TableRow>
               <TableCell width={48}>{t('columns.lineNumber')}</TableCell>
@@ -87,55 +88,61 @@ export function RequestDraftLinesSection({
             </TableRow>
           </TableHead>
           <TableBody>
-            {numberedLines.length > 0 ? numberedLines.map(({ line, lineNumber }) => (
-              <TableRow key={line.clientId}>
-                <TableCell>{lineNumber}</TableCell>
-                <TableCell>{line.description}</TableCell>
-                <TableCell align="right">
-                  <DecimalDisplay value={line.quantity} />
-                </TableCell>
-                <TableCell align="center">{line.unit ?? '—'}</TableCell>
-                <TableCell>{line.notes ?? '—'}</TableCell>
-                <TableCell align="right">
-                  <Stack direction="row" spacing={0.5} justifyContent="flex-end">
-                    <Tooltip title={t('actions.editLine')}>
-                      <IconButton
-                        size="small"
-                        aria-label={t('actions.editLine')}
-                        onClick={() => {
-                          setEditingLine(line);
-                          setDialogOpen(true);
-                        }}
-                      >
-                        <EditOutlinedIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title={t('actions.deleteLine')}>
-                      <IconButton
-                        size="small"
-                        color="error"
-                        aria-label={t('actions.deleteLine')}
-                        onClick={() =>
-                          onChange(
-                            lines.filter(
-                              (item) => item.clientId !== line.clientId,
-                            ),
-                          )
-                        }
-                      >
-                        <DeleteOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Stack>
-                </TableCell>
-                </TableRow>
-              )) : (
-                <TableRow>
-                  <TableCell colSpan={6} align="center">
-                    {t('empty.lines')}
+            {numberedLines.length > 0 ? (
+              numberedLines.map(({ line, lineNumber }) => (
+                <TableRow key={line.clientId}>
+                  <TableCell>{lineNumber}</TableCell>
+                  <TableCell>{line.description}</TableCell>
+                  <TableCell align="right">
+                    <DecimalDisplay value={line.quantity} />
+                  </TableCell>
+                  <TableCell align="center">{line.unit ?? '—'}</TableCell>
+                  <TableCell>{line.notes ?? '—'}</TableCell>
+                  <TableCell align="right">
+                    <Stack
+                      direction="row"
+                      spacing={0.5}
+                      justifyContent="flex-end"
+                    >
+                      <Tooltip title={t('actions.editLine')}>
+                        <IconButton
+                          size="small"
+                          aria-label={t('actions.editLine')}
+                          onClick={() => {
+                            setEditingLine(line);
+                            setDialogOpen(true);
+                          }}
+                        >
+                          <EditOutlinedIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t('actions.deleteLine')}>
+                        <IconButton
+                          size="small"
+                          color="error"
+                          aria-label={t('actions.deleteLine')}
+                          onClick={() =>
+                            onChange(
+                              lines.filter(
+                                (item) => item.clientId !== line.clientId,
+                              ),
+                            )
+                          }
+                        >
+                          <DeleteOutlineIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Stack>
                   </TableCell>
                 </TableRow>
-              )}
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  {t('empty.lines')}
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       }

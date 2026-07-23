@@ -8,7 +8,8 @@ import { COMPANY_ID, createMembership, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -24,7 +25,9 @@ vi.mock('@/features/notifications/components/NotificationsDrawer', () => ({
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
-const mockedUseNotificationUnreadPolling = vi.mocked(useNotificationUnreadPolling);
+const mockedUseNotificationUnreadPolling = vi.mocked(
+  useNotificationUnreadPolling,
+);
 
 describe('NotificationBell', () => {
   beforeEach(() => {
@@ -65,7 +68,9 @@ describe('NotificationBell', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
-          memberships: [createMembership({ effectivePermissions: ['viewInvoices'] })],
+          memberships: [
+            createMembership({ effectivePermissions: ['viewInvoices'] }),
+          ],
         }),
       },
       isLoading: false,

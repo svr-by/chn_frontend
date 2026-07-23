@@ -27,7 +27,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -112,7 +113,9 @@ describe('IntegrationsSettingsPage', () => {
       mockMutationHook(vi.fn()) as ReturnType<typeof useDeleteWebhookMutation>,
     );
     mockedUseCreateExportJobMutation.mockReturnValue(
-      mockMutationHook(vi.fn()) as ReturnType<typeof useCreateExportJobMutation>,
+      mockMutationHook(vi.fn()) as ReturnType<
+        typeof useCreateExportJobMutation
+      >,
     );
     mockedUseGetExportJobQuery.mockReturnValue({
       data: undefined,

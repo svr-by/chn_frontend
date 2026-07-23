@@ -71,14 +71,20 @@ export const membersApi = baseApi.injectEndpoints({
       { companyId: string; invitationId: string }
     >({
       query: ({ companyId, invitationId }) => ({
-        url: getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl(companyId, invitationId),
+        url: getDeleteCompaniesCompanyIdMembersInvitationsInvitationIdUrl(
+          companyId,
+          invitationId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) => [
         { type: 'Invitations', id: companyId },
       ],
     }),
-    removeMember: builder.mutation<void, { companyId: string; memberId: string }>({
+    removeMember: builder.mutation<
+      void,
+      { companyId: string; memberId: string }
+    >({
       query: ({ companyId, memberId }) => ({
         url: getDeleteCompaniesCompanyIdMembersMemberIdUrl(companyId, memberId),
         method: 'DELETE',
@@ -115,7 +121,10 @@ export const membersApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, memberId, body }) => ({
-        url: getPatchCompaniesCompanyIdMembersMemberIdPermissionsUrl(companyId, memberId),
+        url: getPatchCompaniesCompanyIdMembersMemberIdPermissionsUrl(
+          companyId,
+          memberId,
+        ),
         method: 'PATCH',
         body,
       }),

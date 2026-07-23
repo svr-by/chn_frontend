@@ -9,10 +9,7 @@ import {
 } from '@/api/endpoints/requestsApi';
 import { useListMembersQuery } from '@/api/endpoints/membersApi';
 import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
-import {
-  COMPANY_ID,
-  createRequestLineListItem,
-} from '@/test/fixtures';
+import { COMPANY_ID, createRequestLineListItem } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
@@ -34,7 +31,10 @@ function renderPage(route = '/app/request-lines') {
   return renderWithProviders(
     <Routes>
       <Route path="/app/request-lines" element={<RequestLinesPage />} />
-      <Route path="/app/requests/:requestId" element={<div>Request detail</div>} />
+      <Route
+        path="/app/requests/:requestId"
+        element={<div>Request detail</div>}
+      />
     </Routes>,
     {
       preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -76,7 +76,9 @@ describe('RequestLinesPage', () => {
   it('renders request lines and queries newest request lines first', () => {
     renderPage();
 
-    expect(screen.getByRole('heading', { name: 'Request lines' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Request lines' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Office paper')).toBeInTheDocument();
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
     expect(screen.getByText('Jane Doe')).toBeInTheDocument();

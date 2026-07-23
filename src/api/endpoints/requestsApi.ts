@@ -83,7 +83,8 @@ export const requestsApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdRequestsUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => requestListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        requestListTag(companyId),
     }),
     listRequestLines: builder.query<
       GetCompaniesCompanyIdRequestLines200,
@@ -93,7 +94,8 @@ export const requestsApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdRequestLinesUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => requestListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        requestListTag(companyId),
     }),
     listInboundRequestLines: builder.query<
       GetCompaniesCompanyIdRequestLinesInbound200,
@@ -123,7 +125,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getGetCompaniesCompanyIdRequestsInboundRequestIdUrl(companyId, requestId),
+        url: getGetCompaniesCompanyIdRequestsInboundRequestIdUrl(
+          companyId,
+          requestId,
+        ),
       }),
       providesTags: (_result, _error, { companyId, requestId }) => [
         ...inboundTags(companyId),
@@ -150,7 +155,10 @@ export const requestsApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdRequestsRequestIdBody
     >({
       query: ({ companyId, requestId, ...body }) => ({
-        url: getPatchCompaniesCompanyIdRequestsRequestIdUrl(companyId, requestId),
+        url: getPatchCompaniesCompanyIdRequestsRequestIdUrl(
+          companyId,
+          requestId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -165,7 +173,10 @@ export const requestsApi = baseApi.injectEndpoints({
       } & PostCompaniesCompanyIdRequestsRequestIdLinesBody
     >({
       query: ({ companyId, requestId, ...body }) => ({
-        url: getPostCompaniesCompanyIdRequestsRequestIdLinesUrl(companyId, requestId),
+        url: getPostCompaniesCompanyIdRequestsRequestIdLinesUrl(
+          companyId,
+          requestId,
+        ),
         method: 'POST',
         body,
       }),
@@ -181,7 +192,11 @@ export const requestsApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdRequestsRequestIdLinesLineIdBody
     >({
       query: ({ companyId, requestId, lineId, ...body }) => ({
-        url: getPatchCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl(companyId, requestId, lineId),
+        url: getPatchCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl(
+          companyId,
+          requestId,
+          lineId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -193,7 +208,11 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string; lineId: string }
     >({
       query: ({ companyId, requestId, lineId }) => ({
-        url: getDeleteCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl(companyId, requestId, lineId),
+        url: getDeleteCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl(
+          companyId,
+          requestId,
+          lineId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId, requestId }) =>
@@ -204,7 +223,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getDeleteCompaniesCompanyIdRequestsRequestIdUrl(companyId, requestId),
+        url: getDeleteCompaniesCompanyIdRequestsRequestIdUrl(
+          companyId,
+          requestId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>
@@ -230,7 +252,10 @@ export const requestsApi = baseApi.injectEndpoints({
       } & PostCompaniesCompanyIdRequestsRequestIdDistributeBody
     >({
       query: ({ companyId, requestId, ...body }) => ({
-        url: getPostCompaniesCompanyIdRequestsRequestIdDistributeUrl(companyId, requestId),
+        url: getPostCompaniesCompanyIdRequestsRequestIdDistributeUrl(
+          companyId,
+          requestId,
+        ),
         method: 'POST',
         body,
       }),
@@ -248,7 +273,10 @@ export const requestsApi = baseApi.injectEndpoints({
       } & PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody
     >({
       query: ({ companyId, requestId, ...body }) => ({
-        url: getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl(companyId, requestId),
+        url: getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl(
+          companyId,
+          requestId,
+        ),
         method: 'POST',
         body,
       }),
@@ -262,7 +290,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl(companyId, requestId),
+        url: getGetCompaniesCompanyIdRequestsRequestIdDistributionsUrl(
+          companyId,
+          requestId,
+        ),
       }),
       providesTags: (_result, _error, { requestId }) => [
         { type: 'Requests', id: `${requestId}-distributions` },
@@ -291,7 +322,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getGetCompaniesCompanyIdRequestsRequestIdQuotesComparisonUrl(companyId, requestId),
+        url: getGetCompaniesCompanyIdRequestsRequestIdQuotesComparisonUrl(
+          companyId,
+          requestId,
+        ),
       }),
       providesTags: (_result, _error, { requestId }) => [
         { type: 'Requests', id: `${requestId}-comparison` },
@@ -302,7 +336,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getGetCompaniesCompanyIdRequestsRequestIdSelectionUrl(companyId, requestId),
+        url: getGetCompaniesCompanyIdRequestsRequestIdSelectionUrl(
+          companyId,
+          requestId,
+        ),
       }),
       providesTags: (_result, _error, { requestId }) => [
         { type: 'Selections', id: requestId },
@@ -313,7 +350,10 @@ export const requestsApi = baseApi.injectEndpoints({
       { companyId: string; requestId: string }
     >({
       query: ({ companyId, requestId }) => ({
-        url: getGetCompaniesCompanyIdRequestsRequestIdBillableLinesUrl(companyId, requestId),
+        url: getGetCompaniesCompanyIdRequestsRequestIdBillableLinesUrl(
+          companyId,
+          requestId,
+        ),
       }),
       providesTags: (_result, _error, { requestId }) => [
         { type: 'Invoices', id: `billable-${requestId}` },

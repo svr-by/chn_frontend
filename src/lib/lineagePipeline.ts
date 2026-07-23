@@ -43,7 +43,8 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             trace.request.reference ??
             trace.request.id.slice(0, 8),
           status: trace.request.status,
-          link: resolveDocumentPath('MATERIAL_REQUEST', trace.request.id) ?? '#',
+          link:
+            resolveDocumentPath('MATERIAL_REQUEST', trace.request.id) ?? '#',
           meta: {
             lineNumber: String(trace.requestLine.lineNumber),
             description: trace.requestLine.description,
@@ -74,7 +75,8 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
         label: selection.selectionId.slice(0, 8),
         status: selection.status,
         link:
-          resolveDocumentPath('PURCHASE_SELECTION', selection.selectionId) ?? '#',
+          resolveDocumentPath('PURCHASE_SELECTION', selection.selectionId) ??
+          '#',
         meta: {
           quantity: selection.line.quantity,
         },
@@ -131,6 +133,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
   ];
 
   return STAGE_ORDER.map(
-    (stage) => steps.find((step) => step.stage === stage) ?? { stage, items: [] },
+    (stage) =>
+      steps.find((step) => step.stage === stage) ?? { stage, items: [] },
   );
 }

@@ -16,7 +16,8 @@ export function useCreateConsolidationFromShippingInvoice() {
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('consolidations');
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const [triggerConsolidatable] = useLazyGetConsolidatableShippingInvoicesQuery();
+  const [triggerConsolidatable] =
+    useLazyGetConsolidatableShippingInvoicesQuery();
   const [createConsolidation, createState] = useCreateConsolidationMutation();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<
@@ -33,7 +34,9 @@ export function useCreateConsolidationFromShippingInvoice() {
       setError(undefined);
 
       try {
-        const consolidatable = await triggerConsolidatable({ companyId }).unwrap();
+        const consolidatable = await triggerConsolidatable({
+          companyId,
+        }).unwrap();
         const isEligible = consolidatable.shippingInvoices.some(
           (invoice) => invoice.id === shippingInvoiceId,
         );

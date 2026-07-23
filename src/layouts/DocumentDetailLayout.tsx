@@ -68,7 +68,12 @@ export function DocumentDetailLayout({
         spacing={2}
       >
         <Box>
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            flexWrap="wrap"
+          >
             <Typography variant="h5" component="h1">
               {title}
             </Typography>

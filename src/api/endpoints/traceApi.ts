@@ -63,7 +63,8 @@ export const traceApi = baseApi.injectEndpoints({
       query: ({ companyId, lineageId }) => ({
         url: getGetCompaniesCompanyIdTraceLineageIdUrl(companyId, lineageId),
       }),
-      providesTags: (_result, _error, { lineageId }) => lineageTraceTag(lineageId),
+      providesTags: (_result, _error, { lineageId }) =>
+        lineageTraceTag(lineageId),
     }),
     getLineageEvents: builder.query<
       GetCompaniesCompanyIdTraceLineageIdEvents200,
@@ -73,17 +74,25 @@ export const traceApi = baseApi.injectEndpoints({
       } & GetCompaniesCompanyIdTraceLineageIdEventsParams
     >({
       query: ({ companyId, lineageId, ...params }) => ({
-        url: getGetCompaniesCompanyIdTraceLineageIdEventsUrl(companyId, lineageId),
+        url: getGetCompaniesCompanyIdTraceLineageIdEventsUrl(
+          companyId,
+          lineageId,
+        ),
         params,
       }),
-      providesTags: (_result, _error, { lineageId }) => lineageEventsTag(lineageId),
+      providesTags: (_result, _error, { lineageId }) =>
+        lineageEventsTag(lineageId),
     }),
     getDocumentRelationships: builder.query<
       DocumentRelationships,
       DocumentScopedArgs
     >({
       query: ({ companyId, documentType, documentId }) => ({
-        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdRelationshipsUrl(companyId, documentType, documentId),
+        url: getGetCompaniesCompanyIdDocumentsDocumentTypeDocumentIdRelationshipsUrl(
+          companyId,
+          documentType,
+          documentId,
+        ),
       }),
       providesTags: (_result, _error, { documentType, documentId }) =>
         documentRelationshipsTag(documentType, documentId),

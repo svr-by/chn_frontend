@@ -21,7 +21,8 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useLogoutMutation: vi.fn(),

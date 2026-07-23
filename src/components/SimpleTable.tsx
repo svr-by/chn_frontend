@@ -1,4 +1,9 @@
-import { MaterialReactTable, type MRT_ColumnDef, type MRT_RowData, type MRT_TableOptions } from 'material-react-table';
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  type MRT_RowData,
+  type MRT_TableOptions,
+} from 'material-react-table';
 
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 

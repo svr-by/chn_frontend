@@ -28,13 +28,13 @@ Real supply chains work this way. CHN supports it without splitting users into s
 
 ## Problem vs solution
 
-| Without CHN | With CHN |
-|-------------|----------|
-| Requests in Excel, communication in email | Unified procurement document flow |
-| Hard to compare offers from multiple suppliers | Quote comparison in one interface |
-| Unclear origin of a line item in a shipment | Full traceability from request to delivery |
-| Payments and shipments live separately | Linked invoices, payments, and shipping documents |
-| Every employee sees everything | Roles and access control within the company |
+| Without CHN                                    | With CHN                                          |
+| ---------------------------------------------- | ------------------------------------------------- |
+| Requests in Excel, communication in email      | Unified procurement document flow                 |
+| Hard to compare offers from multiple suppliers | Quote comparison in one interface                 |
+| Unclear origin of a line item in a shipment    | Full traceability from request to delivery        |
+| Payments and shipments live separately         | Linked invoices, payments, and shipping documents |
+| Every employee sees everything                 | Roles and access control within the company       |
 
 ---
 
@@ -86,15 +86,15 @@ This simplifies logistics planning and tracking.
 
 Each employee has a role with a permission set. The company owner can fine-tune access per person.
 
-| Role | Focus |
-|------|-------|
-| **Owner** | Company management, members, permissions |
-| **Admin** | Broad operational access |
-| **Procurement** | Requests, quotes, selections, invoices |
-| **Logistics** | Shipments and consolidations |
-| **Accountant** | Payments and confirmation |
-| **Warehouse** | Receiving and warehouse ops (planned) |
-| **Viewer** | Read-only access |
+| Role            | Focus                                    |
+| --------------- | ---------------------------------------- |
+| **Owner**       | Company management, members, permissions |
+| **Admin**       | Broad operational access                 |
+| **Procurement** | Requests, quotes, selections, invoices   |
+| **Logistics**   | Shipments and consolidations             |
+| **Accountant**  | Payments and confirmation                |
+| **Warehouse**   | Receiving and warehouse ops (planned)    |
+| **Viewer**      | Read-only access                         |
 
 One user can belong to multiple companies and switch between them.
 

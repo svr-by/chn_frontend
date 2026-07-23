@@ -16,8 +16,7 @@ export function DecimalInput({
   ...props
 }: DecimalInputProps) {
   const showError =
-    Boolean(error) ||
-    (value.trim() !== '' && !isValidDecimal(value));
+    Boolean(error) || (value.trim() !== '' && !isValidDecimal(value));
 
   const validationMessage =
     value.trim() !== '' && !isValidDecimal(value)

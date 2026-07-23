@@ -85,7 +85,8 @@ export const invoicesApi = baseApi.injectEndpoints({
         url: getGetCompaniesCompanyIdInvoicesUrl(companyId),
         params,
       }),
-      providesTags: (_result, _error, { companyId }) => invoiceListTag(companyId),
+      providesTags: (_result, _error, { companyId }) =>
+        invoiceListTag(companyId),
     }),
     getInvoice: builder.query<
       GetCompaniesCompanyIdInvoicesInvoiceId200,
@@ -129,7 +130,10 @@ export const invoicesApi = baseApi.injectEndpoints({
         purchaseSelectionId: _selectionId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdInvoicesInvoiceIdUrl(companyId, invoiceId),
+        url: getPatchCompaniesCompanyIdInvoicesInvoiceIdUrl(
+          companyId,
+          invoiceId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -161,7 +165,10 @@ export const invoicesApi = baseApi.injectEndpoints({
         purchaseSelectionId: _selectionId,
         ...body
       }) => ({
-        url: getPostCompaniesCompanyIdInvoicesInvoiceIdLinesUrl(companyId, invoiceId),
+        url: getPostCompaniesCompanyIdInvoicesInvoiceIdLinesUrl(
+          companyId,
+          invoiceId,
+        ),
         method: 'POST',
         body,
       }),
@@ -195,7 +202,11 @@ export const invoicesApi = baseApi.injectEndpoints({
         purchaseSelectionId: _selectionId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(companyId, invoiceId, lineId),
+        url: getPatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(
+          companyId,
+          invoiceId,
+          lineId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -222,7 +233,11 @@ export const invoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, invoiceId, lineId }) => ({
-        url: getDeleteCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(companyId, invoiceId, lineId),
+        url: getDeleteCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(
+          companyId,
+          invoiceId,
+          lineId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (
@@ -247,7 +262,10 @@ export const invoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, invoiceId }) => ({
-        url: getPostCompaniesCompanyIdInvoicesInvoiceIdIssueUrl(companyId, invoiceId),
+        url: getPostCompaniesCompanyIdInvoicesInvoiceIdIssueUrl(
+          companyId,
+          invoiceId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (
@@ -267,7 +285,10 @@ export const invoicesApi = baseApi.injectEndpoints({
       { companyId: string; invoiceId: string }
     >({
       query: ({ companyId, invoiceId }) => ({
-        url: getGetCompaniesCompanyIdInvoicesInvoiceIdShippableLinesUrl(companyId, invoiceId),
+        url: getGetCompaniesCompanyIdInvoicesInvoiceIdShippableLinesUrl(
+          companyId,
+          invoiceId,
+        ),
       }),
       providesTags: (_result, _error, { invoiceId }) => [
         { type: 'Invoices', id: `shippable-${invoiceId}` },
@@ -283,7 +304,10 @@ export const invoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, invoiceId }) => ({
-        url: getPostCompaniesCompanyIdInvoicesInvoiceIdConfirmUrl(companyId, invoiceId),
+        url: getPostCompaniesCompanyIdInvoicesInvoiceIdConfirmUrl(
+          companyId,
+          invoiceId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (

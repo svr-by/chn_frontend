@@ -41,18 +41,28 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)} >
+    <Box
+      component="form"
+      onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+    >
       <Typography variant="h6" gutterBottom textAlign="center">
         {t('forgotPasswordTitle')}
       </Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }} textAlign="center">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{ mb: 2 }}
+        textAlign="center"
+      >
         {t('forgotPasswordSubtitle')}
       </Typography>
 
       <ApiErrorAlert error={error} />
 
       {isSuccess ? (
-        <Typography color="success.main">{t('forgotPasswordSuccess')}</Typography>
+        <Typography color="success.main">
+          {t('forgotPasswordSuccess')}
+        </Typography>
       ) : (
         <>
           <TextField

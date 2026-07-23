@@ -77,14 +77,19 @@ export const integrationApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId }) => apiKeysTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        apiKeysTag(companyId),
     }),
     revokeApiKey: builder.mutation<void, { companyId: string; keyId: string }>({
       query: ({ companyId, keyId }) => ({
-        url: getDeleteCompaniesCompanyIdIntegrationApiKeysKeyIdUrl(companyId, keyId),
+        url: getDeleteCompaniesCompanyIdIntegrationApiKeysKeyIdUrl(
+          companyId,
+          keyId,
+        ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId }) => apiKeysTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        apiKeysTag(companyId),
     }),
     listMappings: builder.query<
       GetCompaniesCompanyIdIntegrationMappings200,
@@ -104,7 +109,8 @@ export const integrationApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId }) => mappingsTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        mappingsTag(companyId),
     }),
     updateMapping: builder.mutation<
       PatchCompaniesCompanyIdIntegrationMappingsMappingId200,
@@ -115,21 +121,29 @@ export const integrationApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, mappingId, body }) => ({
-        url: getPatchCompaniesCompanyIdIntegrationMappingsMappingIdUrl(companyId, mappingId),
+        url: getPatchCompaniesCompanyIdIntegrationMappingsMappingIdUrl(
+          companyId,
+          mappingId,
+        ),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId }) => mappingsTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        mappingsTag(companyId),
     }),
     deleteMapping: builder.mutation<
       void,
       { companyId: string; mappingId: string }
     >({
       query: ({ companyId, mappingId }) => ({
-        url: getDeleteCompaniesCompanyIdIntegrationMappingsMappingIdUrl(companyId, mappingId),
+        url: getDeleteCompaniesCompanyIdIntegrationMappingsMappingIdUrl(
+          companyId,
+          mappingId,
+        ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId }) => mappingsTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        mappingsTag(companyId),
     }),
     listWebhooks: builder.query<
       GetCompaniesCompanyIdIntegrationWebhooks200,
@@ -149,7 +163,8 @@ export const integrationApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId }) => webhooksTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        webhooksTag(companyId),
     }),
     updateWebhook: builder.mutation<
       PatchCompaniesCompanyIdIntegrationWebhooksWebhookId200,
@@ -160,21 +175,29 @@ export const integrationApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, webhookId, body }) => ({
-        url: getPatchCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(companyId, webhookId),
+        url: getPatchCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(
+          companyId,
+          webhookId,
+        ),
         method: 'PATCH',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId }) => webhooksTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        webhooksTag(companyId),
     }),
     deleteWebhook: builder.mutation<
       void,
       { companyId: string; webhookId: string }
     >({
       query: ({ companyId, webhookId }) => ({
-        url: getDeleteCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(companyId, webhookId),
+        url: getDeleteCompaniesCompanyIdIntegrationWebhooksWebhookIdUrl(
+          companyId,
+          webhookId,
+        ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId }) => webhooksTag(companyId),
+      invalidatesTags: (_result, _error, { companyId }) =>
+        webhooksTag(companyId),
     }),
     createExportJob: builder.mutation<
       PostCompaniesCompanyIdIntegrationExports202,
@@ -194,7 +217,10 @@ export const integrationApi = baseApi.injectEndpoints({
       { companyId: string; jobId: string }
     >({
       query: ({ companyId, jobId }) => ({
-        url: getGetCompaniesCompanyIdIntegrationExportsJobIdUrl(companyId, jobId),
+        url: getGetCompaniesCompanyIdIntegrationExportsJobIdUrl(
+          companyId,
+          jobId,
+        ),
       }),
       providesTags: (_result, _error, { companyId, jobId }) =>
         exportJobTag(companyId, jobId),

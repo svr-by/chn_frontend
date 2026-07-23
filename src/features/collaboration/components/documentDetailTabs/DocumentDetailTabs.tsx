@@ -6,9 +6,7 @@ import { useTranslation } from 'react-i18next';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import { DocumentActivityPanel } from '@/features/collaboration/components/documentActivityPanel/DocumentActivityPanel';
 import { DocumentCommentsPanel } from '@/features/collaboration/components/documentCommentsPanel/DocumentCommentsPanel';
-import {
-  DocumentRelatedPanel,
-} from '@/features/trace/components/DocumentRelatedPanel';
+import { DocumentRelatedPanel } from '@/features/trace/components/DocumentRelatedPanel';
 import { usePermissions } from '@/hooks/usePermissions';
 import {
   parseDocumentDetailTab,

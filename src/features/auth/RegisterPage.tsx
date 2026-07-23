@@ -1,5 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
+import {
+  Link as RouterLink,
+  useNavigate,
+  useSearchParams,
+} from 'react-router-dom';
 import { Box, Button, Link, TextField } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -60,7 +64,10 @@ export function RegisterPage() {
   }
 
   return (
-    <Box component="form" onSubmit={(event) => void handleSubmit(onSubmit)(event)}>
+    <Box
+      component="form"
+      onSubmit={(event) => void handleSubmit(onSubmit)(event)}
+    >
       <ApiErrorAlert error={error} />
 
       {inviteToken && (

@@ -10,8 +10,7 @@ import type { Permission } from '@/types/api';
 export function usePermissions() {
   const activeCompanyId = useAppSelector((state) => state.auth.activeCompanyId);
   const hasRefreshToken = Boolean(
-    typeof window !== 'undefined' &&
-      localStorage.getItem('chn_refresh_token'),
+    typeof window !== 'undefined' && localStorage.getItem('chn_refresh_token'),
   );
   const { data, isLoading, isFetching } = useGetMeQuery(undefined, {
     skip: !hasRefreshToken,
@@ -26,7 +25,8 @@ export function usePermissions() {
     membership,
     permissions,
     isLoading: isLoading || isFetching,
-    hasPermission: (required: Permission) => hasPermission(permissions, required),
+    hasPermission: (required: Permission) =>
+      hasPermission(permissions, required),
     hasAnyPermission: (required: Permission[]) =>
       hasAnyPermission(permissions, required),
   };

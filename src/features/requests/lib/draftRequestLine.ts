@@ -68,7 +68,9 @@ export function draftLinesToCreatePayload(
   }));
 }
 
-export function mapPreviewRowsToDraftLines(rows: PreviewRow[]): DraftRequestLine[] {
+export function mapPreviewRowsToDraftLines(
+  rows: PreviewRow[],
+): DraftRequestLine[] {
   return rows
     .filter((row) => row.parsed && row.errors.length === 0)
     .map((row) => {

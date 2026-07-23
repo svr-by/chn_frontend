@@ -63,7 +63,9 @@ export function ThemeModeProvider({ children }: { children: ReactNode }) {
   );
 
   return (
-    <ThemeModeContext.Provider value={value}>{children}</ThemeModeContext.Provider>
+    <ThemeModeContext.Provider value={value}>
+      {children}
+    </ThemeModeContext.Provider>
   );
 }
 

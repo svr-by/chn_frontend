@@ -3,10 +3,7 @@ import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import CheckOutlinedIcon from '@mui/icons-material/CheckOutlined';
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import LinkOffOutlinedIcon from '@mui/icons-material/LinkOffOutlined';
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';

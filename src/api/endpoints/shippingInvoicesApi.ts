@@ -42,8 +42,7 @@ function shippingDetailTags(
   supplierInvoiceId?: string,
 ) {
   const tags: Array<
-    | { type: 'ShippingInvoices'; id: string }
-    | { type: 'Invoices'; id: string }
+    { type: 'ShippingInvoices'; id: string } | { type: 'Invoices'; id: string }
   > = [
     { type: 'ShippingInvoices', id: companyId },
     { type: 'ShippingInvoices', id: shippingInvoiceId },
@@ -73,7 +72,10 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       { companyId: string; shippingInvoiceId: string }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: getGetCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(companyId, shippingInvoiceId),
+        url: getGetCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
       }),
       providesTags: (_result, _error, { shippingInvoiceId }) => [
         { type: 'ShippingInvoices', id: shippingInvoiceId },
@@ -107,7 +109,10 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(companyId, shippingInvoiceId),
+        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -115,8 +120,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     addShippingLine: builder.mutation<
       PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLines201,
@@ -132,7 +136,10 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesUrl(companyId, shippingInvoiceId),
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
         method: 'POST',
         body,
       }),
@@ -140,8 +147,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     updateShippingLine: builder.mutation<
       PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineId200,
@@ -159,7 +165,11 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         supplierInvoiceId: _supplierInvoiceId,
         ...body
       }) => ({
-        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(companyId, shippingInvoiceId, lineId),
+        url: getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(
+          companyId,
+          shippingInvoiceId,
+          lineId,
+        ),
         method: 'PATCH',
         body,
       }),
@@ -167,8 +177,7 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     deleteShippingLine: builder.mutation<
       void,
@@ -180,15 +189,18 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId, lineId }) => ({
-        url: getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(companyId, shippingInvoiceId, lineId),
+        url: getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl(
+          companyId,
+          shippingInvoiceId,
+          lineId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     issueShippingInvoice: builder.mutation<
       PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssue200,
@@ -199,15 +211,17 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssueUrl(companyId, shippingInvoiceId),
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssueUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     markShippingInTransit: builder.mutation<
       PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransit200,
@@ -218,15 +232,17 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransitUrl(companyId, shippingInvoiceId),
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransitUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
     markShippingDelivered: builder.mutation<
       PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDelivered200,
@@ -237,15 +253,17 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
       }
     >({
       query: ({ companyId, shippingInvoiceId }) => ({
-        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDeliveredUrl(companyId, shippingInvoiceId),
+        url: getPostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDeliveredUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
         method: 'POST',
       }),
       invalidatesTags: (
         _result,
         _error,
         { companyId, shippingInvoiceId, supplierInvoiceId },
-      ) =>
-        shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
   }),
 });

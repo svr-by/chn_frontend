@@ -4,19 +4,15 @@ import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetShippableLinesQuery } from '@/api/endpoints/invoicesApi';
 import { useGetShippingInvoiceQuery } from '@/api/endpoints/shippingInvoicesApi';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { ShippingInvoiceHeaderForm } from '@/features/shipping/components/ShippingInvoiceHeaderForm';
-import { ShippingInvoiceLinesTable } from '@/features/shipping/components/ShippingInvoiceLinesTable';
 import { ShippingStatusActions } from '@/features/shipping/components/ShippingStatusActions';
 import { useCreateConsolidationFromShippingInvoice } from '@/features/consolidations/hooks/useCreateConsolidationFromShippingInvoice';
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function ShippingInvoiceDetailPage() {
   const { t } = useTranslation('shipping');
@@ -34,18 +30,10 @@ export function ShippingInvoiceDetailPage() {
   );
 
   const shippingInvoice = shippingQuery.data?.shippingInvoice;
-  const supplierInvoiceId = shippingInvoice?.supplierInvoiceId;
-  const isDraft = shippingInvoice?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageShippingInvoices');
   const canCreateConsolidation =
     shippingInvoice?.status === 'DELIVERED' &&
     hasPermission('manageConsolidations');
   const showConsolidationsLink = shippingInvoice?.status === 'DELIVERED';
-
-  const shippableQuery = useGetShippableLinesQuery(
-    { companyId: companyId ?? '', invoiceId: supplierInvoiceId ?? '' },
-    { skip: !companyId || !supplierInvoiceId || !canEdit },
-  );
 
   useEffect(() => {
     if (

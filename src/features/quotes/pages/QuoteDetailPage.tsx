@@ -9,12 +9,8 @@ import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { QuoteHeaderForm } from '@/features/quotes/components/QuoteHeaderForm';
-import { QuoteLinesTable } from '@/features/quotes/components/QuoteLinesTable';
 import { QuoteStatusActions } from '@/features/quotes/components/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { usePermissions } from '@/hooks/usePermissions';
-import { mapNestedRequestLineToLineageEntry } from '@/lib/lineageEntries';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -22,7 +18,6 @@ export function QuoteDetailPage() {
   const { enqueueSnackbar } = useSnackbar();
   const { quoteId } = useParams<{ quoteId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const { hasPermission } = usePermissions();
 
   const quoteQuery = useGetQuoteQuery(
     { companyId: companyId ?? '', quoteId: quoteId ?? '' },
@@ -36,9 +31,6 @@ export function QuoteDetailPage() {
     { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
     { skip: !companyId || !materialRequestId },
   );
-
-  const isDraft = quote?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageQuotes');
 
   useEffect(() => {
     if (
@@ -92,7 +84,9 @@ export function QuoteDetailPage() {
                   to={`/app/requests/${materialRequestId}`}
                   underline="hover"
                 >
-                  {request?.reference ?? request?.title ?? materialRequestId.slice(0, 8)}
+                  {request?.reference ??
+                    request?.title ??
+                    materialRequestId.slice(0, 8)}
                 </Link>
               </Typography>
             ) : null}

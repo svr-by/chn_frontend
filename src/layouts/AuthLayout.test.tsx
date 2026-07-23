@@ -10,7 +10,8 @@ import { createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -64,10 +65,14 @@ describe('AuthLayout', () => {
     expect(
       screen.getByText('One board for your entire supply chain'),
     ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Language' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Language' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument();
     expect(screen.getByText('Auth child content')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Log out' })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Log out' }),
+    ).not.toBeInTheDocument();
   });
 
   it('renders plain variant without brand card chrome', () => {
@@ -77,7 +82,9 @@ describe('AuthLayout', () => {
     expect(
       screen.queryByText('One board for your entire supply chain'),
     ).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Language' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Language' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument();
     expect(screen.getByText('Auth child content')).toBeInTheDocument();
   });
@@ -99,7 +106,9 @@ describe('AuthLayout', () => {
     expect(shortLogo).toHaveAttribute('src', '/assets/logo_short.png');
     expect(screen.getByText('owner@example.com')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Log out' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Language' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Language' }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Theme' })).toBeInTheDocument();
     expect(screen.getByText('Auth child content')).toBeInTheDocument();
   });

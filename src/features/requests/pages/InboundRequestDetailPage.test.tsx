@@ -23,7 +23,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/authApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/authApi')>();
   return {
     ...actual,
     useGetMeQuery: vi.fn(),
@@ -116,12 +117,17 @@ describe('InboundRequestDetailPage', () => {
 
     renderPage();
 
-    expect(screen.getByRole('heading', { name: 'Office supplies' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Office supplies' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Buyer: Buyer Corp')).toBeInTheDocument();
     expect(screen.getByText('1. Test line')).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Reject' }));
-    await user.type(screen.getByLabelText('Reason (optional)'), 'Not available');
+    await user.type(
+      screen.getByLabelText('Reason (optional)'),
+      'Not available',
+    );
     await user.click(screen.getAllByRole('button', { name: 'Reject' }).at(-1)!);
 
     await waitFor(() => {

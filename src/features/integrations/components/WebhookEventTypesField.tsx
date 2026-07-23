@@ -1,5 +1,10 @@
 import { Autocomplete, TextField } from '@mui/material';
-import { Controller, type Control, type FieldValues, type Path } from 'react-hook-form';
+import {
+  Controller,
+  type Control,
+  type FieldValues,
+  type Path,
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 import { WEBHOOK_EVENT_TYPES } from '@/lib/webhookEventTypes';
@@ -33,7 +38,9 @@ export function WebhookEventTypesField<T extends FieldValues>({
               {...params}
               label={t('webhooks.fields.eventTypes')}
               error={Boolean(fieldState.error)}
-              helperText={fieldState.error?.message ?? t('webhooks.eventTypesHint')}
+              helperText={
+                fieldState.error?.message ?? t('webhooks.eventTypesHint')
+              }
             />
           )}
         />

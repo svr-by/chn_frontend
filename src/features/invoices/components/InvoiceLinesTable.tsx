@@ -190,7 +190,10 @@ export function InvoiceLinesTable({
         line={editingLine}
       />
 
-      <Dialog open={Boolean(lineToDelete)} onClose={() => setLineToDelete(null)}>
+      <Dialog
+        open={Boolean(lineToDelete)}
+        onClose={() => setLineToDelete(null)}
+      >
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>
         <DialogContent>
           <ApiErrorAlert error={deleteState.error} />

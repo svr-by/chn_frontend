@@ -131,16 +131,8 @@ export function ProductFormDialog({
               helperText={errors.name?.message}
               {...register('name')}
             />
-            <TextField
-              label={t('form.sku')}
-              fullWidth
-              {...register('sku')}
-            />
-            <TextField
-              label={t('form.unit')}
-              fullWidth
-              {...register('unit')}
-            />
+            <TextField label={t('form.sku')} fullWidth {...register('sku')} />
+            <TextField label={t('form.unit')} fullWidth {...register('unit')} />
             <TextField
               label={t('form.description')}
               fullWidth

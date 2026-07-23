@@ -55,9 +55,8 @@ export function WebhooksPanel({ companyId }: WebhooksPanelProps) {
   const { t } = useTranslation('integrations');
   const { enqueueSnackbar } = useSnackbar();
   const [createOpen, setCreateOpen] = useState(false);
-  const [editingWebhook, setEditingWebhook] = useState<IntegrationWebhook | null>(
-    null,
-  );
+  const [editingWebhook, setEditingWebhook] =
+    useState<IntegrationWebhook | null>(null);
   const [webhookToDelete, setWebhookToDelete] = useState<string | null>(null);
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
 
@@ -215,7 +214,8 @@ export function WebhooksPanel({ companyId }: WebhooksPanelProps) {
               </TableCell>
             </TableRow>
           ))}
-          {(listQuery.data?.webhooks ?? []).length === 0 && !listQuery.isLoading ? (
+          {(listQuery.data?.webhooks ?? []).length === 0 &&
+          !listQuery.isLoading ? (
             <TableRow>
               <TableCell colSpan={4}>
                 <Typography variant="body2" color="text.secondary">
@@ -247,7 +247,11 @@ export function WebhooksPanel({ companyId }: WebhooksPanelProps) {
           </DialogContent>
           <DialogActions>
             <Button onClick={closeDialog}>{t('common.cancel')}</Button>
-            <Button type="submit" variant="contained" disabled={createState.isLoading}>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={createState.isLoading}
+            >
               {t('webhooks.create')}
             </Button>
           </DialogActions>
@@ -286,20 +290,29 @@ export function WebhooksPanel({ companyId }: WebhooksPanelProps) {
           </DialogContent>
           <DialogActions>
             <Button onClick={closeDialog}>{t('common.cancel')}</Button>
-            <Button type="submit" variant="contained" disabled={updateState.isLoading}>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={updateState.isLoading}
+            >
               {t('common.save')}
             </Button>
           </DialogActions>
         </Box>
       </Dialog>
 
-      <Dialog open={Boolean(webhookToDelete)} onClose={() => setWebhookToDelete(null)}>
+      <Dialog
+        open={Boolean(webhookToDelete)}
+        onClose={() => setWebhookToDelete(null)}
+      >
         <DialogTitle>{t('webhooks.deleteTitle')}</DialogTitle>
         <DialogContent>
           <Typography>{t('webhooks.deleteConfirm')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setWebhookToDelete(null)}>{t('common.cancel')}</Button>
+          <Button onClick={() => setWebhookToDelete(null)}>
+            {t('common.cancel')}
+          </Button>
           <Button
             color="error"
             variant="contained"

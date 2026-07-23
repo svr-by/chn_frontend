@@ -110,7 +110,9 @@ export function PaymentRegisterDialog({
             fullWidth
             required
             value={amount}
-            onChange={(value) => setValue('amount', value, { shouldValidate: true })}
+            onChange={(value) =>
+              setValue('amount', value, { shouldValidate: true })
+            }
             error={Boolean(errors.amount)}
             helperText={errors.amount?.message}
           />

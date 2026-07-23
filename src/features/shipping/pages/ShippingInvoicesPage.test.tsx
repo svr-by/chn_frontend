@@ -13,7 +13,8 @@ import {
 import { renderWithProviders } from '@/test/render';
 
 vi.mock('@/api/endpoints/invoicesApi', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@/api/endpoints/invoicesApi')>();
+  const actual =
+    await importOriginal<typeof import('@/api/endpoints/invoicesApi')>();
   return {
     ...actual,
     useListInvoicesQuery: vi.fn(() => ({
@@ -26,7 +27,9 @@ vi.mock('@/api/endpoints/invoicesApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/shippingInvoicesApi', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@/api/endpoints/shippingInvoicesApi')>();
+    await importOriginal<
+      typeof import('@/api/endpoints/shippingInvoicesApi')
+    >();
   return {
     ...actual,
     useListShippingInvoicesQuery: vi.fn(),
@@ -58,7 +61,10 @@ describe('ShippingInvoicesPage', () => {
   it('renders inbound tab by default', () => {
     renderWithProviders(
       <Routes>
-        <Route path="/app/shipping-invoices" element={<ShippingInvoicesPage />} />
+        <Route
+          path="/app/shipping-invoices"
+          element={<ShippingInvoicesPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -73,7 +79,10 @@ describe('ShippingInvoicesPage', () => {
   it('applies supplierInvoiceId filter from URL', () => {
     renderWithProviders(
       <Routes>
-        <Route path="/app/shipping-invoices" element={<ShippingInvoicesPage />} />
+        <Route
+          path="/app/shipping-invoices"
+          element={<ShippingInvoicesPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
@@ -91,7 +100,10 @@ describe('ShippingInvoicesPage', () => {
 
     renderWithProviders(
       <Routes>
-        <Route path="/app/shipping-invoices" element={<ShippingInvoicesPage />} />
+        <Route
+          path="/app/shipping-invoices"
+          element={<ShippingInvoicesPage />}
+        />
       </Routes>,
       {
         preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },

@@ -15,7 +15,8 @@ export function useCreateShippingInvoiceFromInvoice() {
   const { t } = useTranslation('shipping');
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const [triggerShippableLines] = useLazyGetShippableLinesQuery();
-  const [createShippingInvoice, createState] = useCreateShippingInvoiceMutation();
+  const [createShippingInvoice, createState] =
+    useCreateShippingInvoiceMutation();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<
     FetchBaseQueryError | SerializedError | undefined

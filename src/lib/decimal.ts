@@ -31,7 +31,10 @@ export function formatDecimal(
   const decimal = parseDecimal(value);
 
   return decimal.toFixed(
-    Math.max(minimumFractionDigits, Math.min(maximumFractionDigits, countFractionDigits(value))),
+    Math.max(
+      minimumFractionDigits,
+      Math.min(maximumFractionDigits, countFractionDigits(value)),
+    ),
     Decimal.ROUND_HALF_UP,
   );
 }

@@ -73,7 +73,10 @@ export const productsApi = baseApi.injectEndpoints({
       } & PatchCompaniesCompanyIdProductsProductIdBody
     >({
       query: ({ companyId, productId, ...body }) => ({
-        url: getPatchCompaniesCompanyIdProductsProductIdUrl(companyId, productId),
+        url: getPatchCompaniesCompanyIdProductsProductIdUrl(
+          companyId,
+          productId,
+        ),
         method: 'PATCH',
         body,
       }),

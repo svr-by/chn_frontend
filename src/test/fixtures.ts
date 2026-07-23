@@ -321,9 +321,7 @@ export function createTestUser(
   };
 }
 
-export function createQuoteLine(
-  overrides: Partial<QuoteLine> = {},
-): QuoteLine {
+export function createQuoteLine(overrides: Partial<QuoteLine> = {}): QuoteLine {
   return {
     id: QUOTE_LINE_ID,
     lineNumber: 1,
@@ -405,7 +403,10 @@ export function createInboundMaterialRequest(
   overrides: Partial<InboundMaterialRequest> = {},
 ): InboundMaterialRequest {
   return {
-    ...createMaterialRequest({ status: 'QUOTING', submittedAt: '2026-01-01T00:00:00.000Z' }),
+    ...createMaterialRequest({
+      status: 'QUOTING',
+      submittedAt: '2026-01-01T00:00:00.000Z',
+    }),
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Corp',
@@ -664,9 +665,7 @@ export function createSupplierInvoiceSummary(
   };
 }
 
-export function createPayment(
-  overrides: Partial<Payment> = {},
-): Payment {
+export function createPayment(overrides: Partial<Payment> = {}): Payment {
   return {
     id: PAYMENT_ID,
     invoiceId: INVOICE_ID,
@@ -1159,9 +1158,7 @@ export function createIntegrationWebhook(
   };
 }
 
-export function createExportJob(
-  overrides: Partial<ExportJob> = {},
-): ExportJob {
+export function createExportJob(overrides: Partial<ExportJob> = {}): ExportJob {
   return {
     id: EXPORT_JOB_ID,
     companyId: COMPANY_ID,

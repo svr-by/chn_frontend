@@ -125,7 +125,12 @@ export function RequestImportPage() {
   );
 
   const handleImport = async () => {
-    if (!companyId || !file || !preview || preview.preview.validRowCount === 0) {
+    if (
+      !companyId ||
+      !file ||
+      !preview ||
+      preview.preview.validRowCount === 0
+    ) {
       return;
     }
 
@@ -184,8 +189,7 @@ export function RequestImportPage() {
     jobPolling.isFetching;
 
   const canPreview = Boolean(file) && !isBusy;
-  const canImport =
-    (preview?.preview.validRowCount ?? 0) > 0 && !isBusy;
+  const canImport = (preview?.preview.validRowCount ?? 0) > 0 && !isBusy;
 
   if (!companyId) {
     return null;
@@ -195,7 +199,9 @@ export function RequestImportPage() {
     <PermissionGate
       permission="manageRequests"
       fallback={
-        <Typography color="text.secondary">{t('imports:noPermission')}</Typography>
+        <Typography color="text.secondary">
+          {t('imports:noPermission')}
+        </Typography>
       }
     >
       <Stack spacing={3}>
@@ -248,7 +254,10 @@ export function RequestImportPage() {
 
         <ApiErrorAlert
           error={
-            previewState.error ?? uploadState.error ?? confirmState.error ?? jobPolling.error
+            previewState.error ??
+            uploadState.error ??
+            confirmState.error ??
+            jobPolling.error
           }
         />
 

@@ -42,11 +42,7 @@ export function ShippingStatusActions({
   const [markInTransit, transitState] = useMarkShippingInTransitMutation();
   const [markDelivered, deliveredState] = useMarkShippingDeliveredMutation();
 
-  if (
-    status !== 'DRAFT' &&
-    status !== 'ISSUED' &&
-    status !== 'IN_TRANSIT'
-  ) {
+  if (status !== 'DRAFT' && status !== 'ISSUED' && status !== 'IN_TRANSIT') {
     return null;
   }
 

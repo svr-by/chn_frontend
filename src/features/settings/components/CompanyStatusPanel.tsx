@@ -20,10 +20,7 @@ import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
-import {
-  getActiveMembership,
-  isCompanyOperational,
-} from '@/lib/permissions';
+import { getActiveMembership, isCompanyOperational } from '@/lib/permissions';
 
 export function CompanyStatusPanel() {
   const { t } = useTranslation('profile');

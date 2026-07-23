@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import {
   Box,
   Button,
@@ -8,10 +8,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import {
-  MaterialReactTable,
-  type MRT_ColumnDef,
-} from 'material-react-table';
+import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
@@ -51,22 +48,24 @@ export function MemberPermissionsEditor({
   const theme = useTheme();
 
   const roleDefaults = useMemo(
-    () =>
-      buildRoleDefaults(effectivePermissions, initialGrants, initialDenies),
+    () => buildRoleDefaults(effectivePermissions, initialGrants, initialDenies),
     [effectivePermissions, initialDenies, initialGrants],
   );
 
-  function handleToggle(permission: Permission, enabled: boolean) {
-    const next = applyPermissionToggle(
-      permission,
-      enabled,
-      roleDefaults,
-      grants,
-      denies,
-    );
-    onGrantsChange(next.grants);
-    onDeniesChange(next.denies);
-  }
+  const handleToggle = useCallback(
+    (permission: Permission, enabled: boolean) => {
+      const next = applyPermissionToggle(
+        permission,
+        enabled,
+        roleDefaults,
+        grants,
+        denies,
+      );
+      onGrantsChange(next.grants);
+      onDeniesChange(next.denies);
+    },
+    [denies, grants, onDeniesChange, onGrantsChange, roleDefaults],
+  );
 
   function handleClear() {
     onGrantsChange([]);
@@ -121,7 +120,7 @@ export function MemberPermissionsEditor({
         },
       },
     ],
-    [denies, disabled, grants, roleDefaults, t],
+    [denies, disabled, grants, handleToggle, roleDefaults, t],
   );
 
   const table = useAppMaterialReactTable({
