@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Stack, TextField } from '@mui/material';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -24,6 +25,19 @@ interface QuoteHeaderFormProps {
   editable: boolean;
 }
 
+function toDateTimeLocalValue(iso: string | null | undefined): string {
+  if (!iso) {
+    return '';
+  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return '';
+  }
+  const offset = date.getTimezoneOffset();
+  const local = new Date(date.getTime() - offset * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
 export function QuoteHeaderForm({
   companyId,
   quote,
@@ -43,7 +57,7 @@ export function QuoteHeaderForm({
     resolver: zodResolver(headerSchema),
     defaultValues: {
       currency: quote.currency,
-      validUntil: quote.validUntil ?? '',
+      validUntil: toDateTimeLocalValue(quote.validUntil),
       notes: quote.notes ?? '',
     },
   });
@@ -51,7 +65,7 @@ export function QuoteHeaderForm({
   useEffect(() => {
     reset({
       currency: quote.currency,
-      validUntil: quote.validUntil ?? '',
+      validUntil: toDateTimeLocalValue(quote.validUntil),
       notes: quote.notes ?? '',
     });
   }, [quote, reset]);
@@ -62,7 +76,9 @@ export function QuoteHeaderForm({
       quoteId: quote.id,
       materialRequestId: quote.materialRequestId,
       currency: values.currency,
-      validUntil: values.validUntil || null,
+      validUntil: values.validUntil
+        ? new Date(values.validUntil).toISOString()
+        : null,
       notes: values.notes || null,
     }).unwrap();
 
@@ -71,18 +87,23 @@ export function QuoteHeaderForm({
 
   if (!editable) {
     return (
-      <Stack spacing={1}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        spacing={2}
+        flexWrap="wrap"
+        useFlexGap
+      >
         <Box>
           <strong>{t('form.currency')}:</strong> {quote.currency}
         </Box>
         {quote.validUntil ? (
           <Box>
             <strong>{t('form.validUntil')}:</strong>{' '}
-            {new Date(quote.validUntil).toLocaleString()}
+            {new Date(quote.validUntil).toLocaleDateString()}
           </Box>
         ) : null}
         {quote.notes ? (
-          <Box>
+          <Box sx={{ flexBasis: '100%' }}>
             <strong>{t('form.notes')}:</strong> {quote.notes}
           </Box>
         ) : null}
@@ -93,21 +114,36 @@ export function QuoteHeaderForm({
   return (
     <Box component="form" onSubmit={handleSubmit(onSubmit)}>
       <ApiErrorAlert error={updateState.error} />
-      <Stack spacing={2}>
-        <TextField
-          label={t('form.currency')}
-          fullWidth
-          required
-          inputProps={{ maxLength: 3 }}
-          {...register('currency')}
-        />
-        <TextField
-          label={t('form.validUntil')}
-          fullWidth
-          type="datetime-local"
-          InputLabelProps={{ shrink: true }}
-          {...register('validUntil')}
-        />
+      <Stack spacing={1.5}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          spacing={1.5}
+          alignItems={{ sm: 'flex-start' }}
+        >
+          <TextField
+            label={t('form.currency')}
+            required
+            inputProps={{ maxLength: 3 }}
+            sx={{ width: { xs: '100%', sm: 120 } }}
+            {...register('currency')}
+          />
+          <TextField
+            label={t('form.validUntil')}
+            type="datetime-local"
+            InputLabelProps={{ shrink: true }}
+            sx={{ width: { xs: '100%', sm: 240 } }}
+            {...register('validUntil')}
+          />
+          <Button
+            type="submit"
+            variant="outlined"
+            startIcon={<SaveOutlinedIcon />}
+            disabled={!isDirty || updateState.isLoading}
+            sx={{ mt: { sm: 1 }, flexShrink: 0 }}
+          >
+            {t('actions.saveHeader')}
+          </Button>
+        </Stack>
         <TextField
           label={t('form.notes')}
           fullWidth
@@ -115,15 +151,6 @@ export function QuoteHeaderForm({
           minRows={2}
           {...register('notes')}
         />
-        <Box>
-          <Button
-            type="submit"
-            variant="outlined"
-            disabled={!isDirty || updateState.isLoading}
-          >
-            {t('actions.saveHeader')}
-          </Button>
-        </Box>
       </Stack>
     </Box>
   );

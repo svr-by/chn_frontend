@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -50,6 +50,7 @@ interface QuoteLineFormDialogProps {
   requestLines: RequestLine[];
   existingLineIds: string[];
   line?: QuoteLine | null;
+  initialRequestLineId?: string | null;
   onSuccess?: () => void;
 }
 
@@ -62,6 +63,7 @@ export function QuoteLineFormDialog({
   requestLines,
   existingLineIds,
   line,
+  initialRequestLineId,
   onSuccess,
 }: QuoteLineFormDialogProps) {
   const { t } = useTranslation('quotes');
@@ -92,11 +94,15 @@ export function QuoteLineFormDialog({
   const unitPrice = watch('unitPrice');
   const selectedRequestLineId = watch('requestLineId');
 
-  const availableRequestLines = requestLines.filter((requestLine) =>
-    isEdit
-      ? requestLine.id === line?.requestLineId ||
-        !existingLineIds.includes(requestLine.id)
-      : !existingLineIds.includes(requestLine.id),
+  const availableRequestLines = useMemo(
+    () =>
+      requestLines.filter((requestLine) =>
+        isEdit
+          ? requestLine.id === line?.requestLineId ||
+            !existingLineIds.includes(requestLine.id)
+          : !existingLineIds.includes(requestLine.id),
+      ),
+    [existingLineIds, isEdit, line?.requestLineId, requestLines],
   );
 
   useEffect(() => {
@@ -104,13 +110,32 @@ export function QuoteLineFormDialog({
       return;
     }
 
+    const preferredRequestLineId =
+      line?.requestLineId ??
+      (initialRequestLineId &&
+      availableRequestLines.some((item) => item.id === initialRequestLineId)
+        ? initialRequestLineId
+        : availableRequestLines[0]?.id) ??
+      '';
+
+    const preferredRequestLine = requestLines.find(
+      (item) => item.id === preferredRequestLineId,
+    );
+
     reset({
-      requestLineId: line?.requestLineId ?? availableRequestLines[0]?.id ?? '',
-      quantity: line?.quantity ?? '',
+      requestLineId: preferredRequestLineId,
+      quantity: line?.quantity ?? preferredRequestLine?.quantity ?? '',
       unitPrice: line?.unitPrice ?? '',
       notes: line?.notes ?? '',
     });
-  }, [open, line, availableRequestLines, reset]);
+  }, [
+    open,
+    line,
+    initialRequestLineId,
+    availableRequestLines,
+    requestLines,
+    reset,
+  ]);
 
   useEffect(() => {
     if (!selectedRequestLineId || isEdit) {
@@ -120,10 +145,10 @@ export function QuoteLineFormDialog({
     const requestLine = requestLines.find(
       (item) => item.id === selectedRequestLineId,
     );
-    if (requestLine && !quantity) {
+    if (requestLine) {
       setValue('quantity', requestLine.quantity, { shouldValidate: true });
     }
-  }, [selectedRequestLineId, requestLines, quantity, isEdit, setValue]);
+  }, [selectedRequestLineId, requestLines, isEdit, setValue]);
 
   const pageError = addState.error ?? updateState.error;
   const isSubmitting = addState.isLoading || updateState.isLoading;

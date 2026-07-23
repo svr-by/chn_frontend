@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetQuoteQuery } from '@/api/endpoints/quotesApi';
-import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
+import { useGetInboundRequestQuery } from '@/api/endpoints/requestsApi';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { QuoteStatusActions } from '@/features/quotes/components/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { QuoteHeaderForm } from '../components/QuoteHeaderForm';
+import { QuoteLinesTable } from '../components/QuoteLinesTable';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -27,7 +29,7 @@ export function QuoteDetailPage() {
   const quote = quoteQuery.data?.quote;
   const materialRequestId = quote?.materialRequestId;
 
-  const requestQuery = useGetRequestQuery(
+  const requestQuery = useGetInboundRequestQuery(
     { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
     { skip: !companyId || !materialRequestId },
   );
@@ -47,8 +49,13 @@ export function QuoteDetailPage() {
     return null;
   }
 
-  const title = t('detail.fallbackTitle', { id: quoteId.slice(0, 8) });
+  const title = quote
+    ? t('detail.fallbackTitle', {
+        date: new Date(quote.createdAt).toLocaleDateString(),
+      })
+    : '';
   const request = requestQuery.data?.request;
+  const canEdit = quote?.status === 'DRAFT';
 
   return (
     <DocumentDetailLayout
@@ -58,6 +65,7 @@ export function QuoteDetailPage() {
       }
       loading={quoteQuery.isLoading}
       error={quoteQuery.error}
+      backFallbackTo="/app/quotes"
       actions={
         quote ? (
           <QuoteStatusActions
@@ -81,27 +89,20 @@ export function QuoteDetailPage() {
                 {t('detail.request')}:{' '}
                 <Link
                   component={RouterLink}
-                  to={`/app/requests/${materialRequestId}`}
+                  to={`/app/requests/inbound/${materialRequestId}`}
                   underline="hover"
                 >
-                  {request?.reference ??
-                    request?.title ??
-                    materialRequestId.slice(0, 8)}
+                  {t('detail.inboundRequest')}
                 </Link>
               </Typography>
             ) : null}
             {quote.submittedAt ? (
               <Typography variant="body2" color="text.secondary">
                 {t('detail.submittedAt', {
-                  date: new Date(quote.submittedAt).toLocaleString(),
+                  date: new Date(quote.submittedAt).toLocaleDateString(),
                 })}
               </Typography>
             ) : null}
-            <Typography variant="body2" color="text.secondary">
-              {t('detail.createdAt', {
-                date: new Date(quote.createdAt).toLocaleString(),
-              })}
-            </Typography>
           </Stack>
         ) : null
       }
@@ -111,24 +112,29 @@ export function QuoteDetailPage() {
           companyId={companyId}
           documentType="SUPPLIER_QUOTE"
           documentId={quote.id}
-          // lineageEntries={quote.lines.map(mapNestedRequestLineToLineageEntry)}
-          // details={
-          //   <Stack spacing={4}>
-          //     <QuoteHeaderForm
-          //       companyId={companyId}
-          //       quote={quote}
-          //       editable={canEdit}
-          //     />
-          //     <QuoteLinesTable
-          //       companyId={companyId}
-          //       quoteId={quote.id}
-          //       materialRequestId={quote.materialRequestId}
-          //       lines={quote.lines}
-          //       requestLines={request?.lines ?? []}
-          //       editable={canEdit}
-          //     />
-          //   </Stack>
-          // }
+          extraTabs={[
+            {
+              value: 'details',
+              label: t('tabs.details'),
+              panel: (
+                <Stack spacing={3}>
+                  <QuoteHeaderForm
+                    companyId={companyId}
+                    quote={quote}
+                    editable={canEdit}
+                  />
+                  <QuoteLinesTable
+                    companyId={companyId}
+                    quoteId={quote.id}
+                    materialRequestId={quote.materialRequestId}
+                    lines={quote.lines}
+                    requestLines={request?.lines ?? []}
+                    editable={canEdit}
+                  />
+                </Stack>
+              ),
+            },
+          ]}
         />
       ) : null}
     </DocumentDetailLayout>

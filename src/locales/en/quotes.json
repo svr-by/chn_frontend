@@ -2,6 +2,9 @@
   "title": "Quotes",
   "subtitle": "Supplier quotes for inbound material requests.",
   "linesTitle": "Lines",
+  "tabs": {
+    "details": "Details"
+  },
   "columns": {
     "buyer": "Buyer",
     "request": "Request",
@@ -12,6 +15,7 @@
     "lineNumber": "#",
     "requestLine": "Request line",
     "quantity": "Quantity",
+    "offerQuantity": "Offer qty",
     "unitPrice": "Unit price",
     "lineTotal": "Line total",
     "lineage": "Trace",
@@ -20,11 +24,13 @@
   },
   "actions": {
     "submit": "Submit quote",
+    "delete": "Delete quote",
     "addLine": "Add line",
+    "addOffer": "Add offer",
     "editLine": "Edit",
     "deleteLine": "Delete",
     "save": "Save",
-    "saveHeader": "Save details",
+    "saveHeader": "Save",
     "cancel": "Cancel",
     "backToList": "Back to quotes"
   },
@@ -40,7 +46,7 @@
   },
   "empty": {
     "list": "No quotes found.",
-    "lines": "No lines yet. Add a line to continue."
+    "lines": "No request lines available yet."
   },
   "form": {
     "currency": "Currency",
@@ -49,19 +55,22 @@
     "requestLine": "Request line",
     "quantity": "Quantity",
     "unitPrice": "Unit price",
-    "addLineTitle": "Add line",
-    "editLineTitle": "Edit line"
+    "addLineTitle": "Add offer",
+    "editLineTitle": "Edit offer"
   },
   "confirm": {
     "submitTitle": "Submit quote",
     "submitMessage": "Submit this quote? Lines will no longer be editable.",
+    "deleteTitle": "Delete quote",
+    "deleteMessage": "Delete this draft quote? This cannot be undone.",
     "deleteLineTitle": "Delete line",
-    "deleteLineMessage": "Remove this line from the quote?"
+    "deleteLineMessage": "Remove this offer from the quote?"
   },
   "detail": {
-    "fallbackTitle": "Quote {{id}}",
+    "fallbackTitle": "Quote {{date}}",
     "buyer": "Buyer: {{name}}",
     "request": "Request",
+    "inboundRequest": "Incoming request",
     "createdAt": "Created {{date}}",
     "submittedAt": "Submitted {{date}}"
   },
@@ -87,9 +96,10 @@
   "toast": {
     "updated": "Quote updated",
     "submitted": "Quote submitted",
-    "lineAdded": "Line added",
-    "lineUpdated": "Line updated",
-    "lineDeleted": "Line deleted",
+    "deleted": "Quote deleted",
+    "lineAdded": "Offer added",
+    "lineUpdated": "Offer updated",
+    "lineDeleted": "Offer deleted",
     "notFound": "Quote not found"
   }
 }

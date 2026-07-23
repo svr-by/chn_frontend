@@ -2,6 +2,9 @@
   "title": "报价",
   "subtitle": "入站物料申请的供应商报价。",
   "linesTitle": "行",
+  "tabs": {
+    "details": "详情"
+  },
   "columns": {
     "buyer": "买方",
     "request": "申请",
@@ -12,6 +15,7 @@
     "lineNumber": "#",
     "requestLine": "申请行",
     "quantity": "数量",
+    "offerQuantity": "报价数量",
     "unitPrice": "单价",
     "lineTotal": "行合计",
     "lineage": "溯源",
@@ -20,11 +24,13 @@
   },
   "actions": {
     "submit": "提交报价",
+    "delete": "删除报价",
     "addLine": "添加行",
+    "addOffer": "添加报价",
     "editLine": "编辑",
     "deleteLine": "删除",
     "save": "保存",
-    "saveHeader": "保存详情",
+    "saveHeader": "保存",
     "cancel": "取消",
     "backToList": "返回报价"
   },
@@ -40,7 +46,7 @@
   },
   "empty": {
     "list": "未找到报价。",
-    "lines": "暂无行。请添加一行以继续。"
+    "lines": "暂无可用申请行。"
   },
   "form": {
     "currency": "货币",
@@ -49,19 +55,22 @@
     "requestLine": "申请行",
     "quantity": "数量",
     "unitPrice": "单价",
-    "addLineTitle": "添加行",
-    "editLineTitle": "编辑行"
+    "addLineTitle": "添加报价",
+    "editLineTitle": "编辑报价"
   },
   "confirm": {
     "submitTitle": "提交报价",
     "submitMessage": "提交此报价？行项目将不可编辑。",
+    "deleteTitle": "删除报价",
+    "deleteMessage": "删除此草稿报价？此操作无法撤销。",
     "deleteLineTitle": "删除行",
     "deleteLineMessage": "从报价中移除此行？"
   },
   "detail": {
-    "fallbackTitle": "报价 {{id}}",
+    "fallbackTitle": "报价 {{date}}",
     "buyer": "买方：{{name}}",
     "request": "申请",
+    "inboundRequest": "入站申请",
     "createdAt": "创建于 {{date}}",
     "submittedAt": "已提交 {{date}}"
   },
@@ -87,9 +96,10 @@
   "toast": {
     "updated": "报价已更新",
     "submitted": "报价已提交",
-    "lineAdded": "行已添加",
-    "lineUpdated": "行已更新",
-    "lineDeleted": "行已删除",
+    "deleted": "报价已删除",
+    "lineAdded": "报价行已添加",
+    "lineUpdated": "报价行已更新",
+    "lineDeleted": "报价行已删除",
     "notFound": "未找到报价"
   }
 }

@@ -1,5 +1,6 @@
 import {
   getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
+  getDeleteCompaniesCompanyIdQuotesQuoteIdUrl,
   getGetCompaniesCompanyIdQuotesQuoteIdUrl,
   getGetCompaniesCompanyIdQuotesUrl,
   getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
@@ -189,6 +190,24 @@ export const quotesApi = baseApi.injectEndpoints({
         { companyId, quoteId, materialRequestId },
       ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
+    deleteQuote: builder.mutation<
+      void,
+      {
+        companyId: string;
+        quoteId: string;
+        materialRequestId?: string;
+      }
+    >({
+      query: ({ companyId, quoteId }) => ({
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdUrl(companyId, quoteId),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
+    }),
     submitQuote: builder.mutation<
       PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
       {
@@ -221,5 +240,6 @@ export const {
   useAddQuoteLineMutation,
   useUpdateQuoteLineMutation,
   useDeleteQuoteLineMutation,
+  useDeleteQuoteMutation,
   useSubmitQuoteMutation,
 } = quotesApi;
