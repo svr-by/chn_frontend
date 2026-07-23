@@ -19,6 +19,7 @@ interface DocumentDetailTabsProps {
   companyId: string;
   documentType: CommentDocumentType;
   documentId: string;
+  enableComments?: boolean;
   extraTabs?: Array<{
     value: string;
     label: string;
@@ -44,6 +45,7 @@ export function DocumentDetailTabs({
   companyId,
   documentType,
   documentId,
+  enableComments = true,
   extraTabs,
 }: DocumentDetailTabsProps) {
   const { t } = useTranslation('collaboration');
@@ -85,7 +87,9 @@ export function DocumentDetailTabs({
         {extraTabs?.map((tab) => (
           <Tab key={tab.value} value={tab.value} label={tab.label} />
         ))}
-        <Tab value="comments" label={t('tabs.comments')} />
+        {enableComments ? (
+          <Tab value="comments" label={t('tabs.comments')} />
+        ) : null}
         <Tab value="activity" label={t('tabs.activity')} />
         {canViewTrace ? (
           <Tab value="related" label={t('tabs.related')} />
@@ -97,13 +101,15 @@ export function DocumentDetailTabs({
           {tab.panel}
         </TabPanel>
       ))}
-      <TabPanel value="comments" activeTab={activeTab}>
-        <DocumentCommentsPanel
-          companyId={companyId}
-          documentType={documentType}
-          documentId={documentId}
-        />
-      </TabPanel>
+      {enableComments ? (
+        <TabPanel value="comments" activeTab={activeTab}>
+          <DocumentCommentsPanel
+            companyId={companyId}
+            documentType={documentType}
+            documentId={documentId}
+          />
+        </TabPanel>
+      ) : null}
       <TabPanel value="activity" activeTab={activeTab}>
         <DocumentActivityPanel
           companyId={companyId}
