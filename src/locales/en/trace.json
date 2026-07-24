@@ -65,8 +65,7 @@
   },
   "related": {
     "empty": "No related documents.",
-    "connections": "Connections",
-    "edgeFormat": "{{from}} → {{to}} ({{relation}})",
+    "current": "Current",
     "documentTypes": {
       "MATERIAL_REQUEST": "Request",
       "SUPPLIER_QUOTE": "Quote",
@@ -77,5 +76,7 @@
       "CONSOLIDATION": "Consolidation"
     }
   },
-  "relations": {}
+  "relations": {
+    "generates": "Generates"
+  }
 }

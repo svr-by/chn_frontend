@@ -65,8 +65,7 @@
   },
   "related": {
     "empty": "暂无关联文档。",
-    "connections": "连接",
-    "edgeFormat": "{{from}} → {{to}}（{{relation}}）",
+    "current": "当前",
     "documentTypes": {
       "MATERIAL_REQUEST": "申请",
       "SUPPLIER_QUOTE": "报价",
@@ -77,5 +76,7 @@
       "CONSOLIDATION": "集运"
     }
   },
-  "relations": {}
+  "relations": {
+    "generates": "生成"
+  }
 }

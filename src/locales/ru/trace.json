@@ -65,8 +65,7 @@
   },
   "related": {
     "empty": "Связанных документов нет.",
-    "connections": "Подключения",
-    "edgeFormat": "{{from}} → {{to}} ({{relation}})",
+    "current": "Текущий",
     "documentTypes": {
       "MATERIAL_REQUEST": "Заявка",
       "SUPPLIER_QUOTE": "Коммерческое предложение",
@@ -77,5 +76,7 @@
       "CONSOLIDATION": "Консолидация"
     }
   },
-  "relations": {}
+  "relations": {
+    "generates": "Порождает"
+  }
 }

@@ -228,6 +228,7 @@ export function createRequestLineListItem(
     unit: 'pack',
     attributes: { importSku: 'PAPER-A4' },
     notes: null,
+    cancelledAt: null,
     product: {
       id: PRODUCT_ID,
       name: 'A4 Paper',
@@ -1091,12 +1092,14 @@ export function createDocumentRelationships(
         documentType: 'MATERIAL_REQUEST',
         status: 'QUOTING',
         label: 'Office supplies',
+        companyName: 'Buyer Corp',
       },
       {
         id: INVOICE_ID,
         documentType: 'INVOICE',
         status: 'ISSUED',
         label: 'INV-001',
+        companyName: 'Supplier Corp',
       },
     ],
     edges: [

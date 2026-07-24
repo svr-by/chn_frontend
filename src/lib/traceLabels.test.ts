@@ -27,7 +27,8 @@ describe('traceLabels', () => {
     );
   });
 
-  it('falls back to raw relation when key is missing', () => {
+  it('translates known relations and falls back when missing', () => {
+    expect(getRelationLabel('generates', t)).toBe('Generates');
     expect(getRelationLabel('custom_relation', t)).toBe('custom_relation');
   });
 
