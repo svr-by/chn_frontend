@@ -1791,53 +1791,53 @@ export const postCompaniesCompanyIdPartnersInvite = async (companyId: string,
 
 
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse204 = {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse204 = {
   data: void
   status: 204
 }
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse400 = {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse400 = {
   data: ErrorResponse
   status: 400
 }
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse401 = {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse401 = {
   data: ErrorResponse
   status: 401
 }
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse403 = {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse403 = {
   data: ErrorResponse
   status: 403
 }
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse404 = {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse404 = {
   data: ErrorResponse
   status: 404
 }
     
-export type deleteCompaniesCompanyIdPartnersLinkIdResponseSuccess = (deleteCompaniesCompanyIdPartnersLinkIdResponse204) & {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponseSuccess = (deleteCompaniesCompanyIdPartnersPartnerIdResponse204) & {
   headers: Headers;
 };
-export type deleteCompaniesCompanyIdPartnersLinkIdResponseError = (deleteCompaniesCompanyIdPartnersLinkIdResponse400 | deleteCompaniesCompanyIdPartnersLinkIdResponse401 | deleteCompaniesCompanyIdPartnersLinkIdResponse403 | deleteCompaniesCompanyIdPartnersLinkIdResponse404) & {
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponseError = (deleteCompaniesCompanyIdPartnersPartnerIdResponse400 | deleteCompaniesCompanyIdPartnersPartnerIdResponse401 | deleteCompaniesCompanyIdPartnersPartnerIdResponse403 | deleteCompaniesCompanyIdPartnersPartnerIdResponse404) & {
   headers: Headers;
 };
 
-export type deleteCompaniesCompanyIdPartnersLinkIdResponse = (deleteCompaniesCompanyIdPartnersLinkIdResponseSuccess | deleteCompaniesCompanyIdPartnersLinkIdResponseError)
+export type deleteCompaniesCompanyIdPartnersPartnerIdResponse = (deleteCompaniesCompanyIdPartnersPartnerIdResponseSuccess | deleteCompaniesCompanyIdPartnersPartnerIdResponseError)
 
-export const getDeleteCompaniesCompanyIdPartnersLinkIdUrl = (companyId: string,
-    linkId: string,) => {
+export const getDeleteCompaniesCompanyIdPartnersPartnerIdUrl = (companyId: string,
+    partnerId: string,) => {
 
 
   
 
-  return `/companies/${companyId}/partners/${linkId}`
+  return `/companies/${companyId}/partners/${partnerId}`
 }
 
-export const deleteCompaniesCompanyIdPartnersLinkId = async (companyId: string,
-    linkId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdPartnersLinkIdResponse> => {
+export const deleteCompaniesCompanyIdPartnersPartnerId = async (companyId: string,
+    partnerId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdPartnersPartnerIdResponse> => {
   
-  const res = await fetch(getDeleteCompaniesCompanyIdPartnersLinkIdUrl(companyId,linkId),
+  const res = await fetch(getDeleteCompaniesCompanyIdPartnersPartnerIdUrl(companyId,partnerId),
   {      
     ...options,
     method: 'DELETE'
@@ -1848,8 +1848,8 @@ export const deleteCompaniesCompanyIdPartnersLinkId = async (companyId: string,
 
   const body = [204, 205, 304].includes(res.status) ? null : await res.text();
   
-  const data: deleteCompaniesCompanyIdPartnersLinkIdResponse['data'] = body ? JSON.parse(body) : {}
-  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdPartnersLinkIdResponse
+  const data: deleteCompaniesCompanyIdPartnersPartnerIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdPartnersPartnerIdResponse
 }
 
 
