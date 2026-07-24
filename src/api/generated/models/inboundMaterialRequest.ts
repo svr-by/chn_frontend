@@ -3,9 +3,12 @@
  */
 import type { InboundMaterialRequestCreatedByUserId } from './inboundMaterialRequestCreatedByUserId';
 import type { InboundMaterialRequestCreatedByUserName } from './inboundMaterialRequestCreatedByUserName';
-import type { InboundMaterialRequestTitle } from './inboundMaterialRequestTitle';
+import type { InboundMaterialRequestAssigneeUserId } from './inboundMaterialRequestAssigneeUserId';
+import type { InboundMaterialRequestAssigneeUserName } from './inboundMaterialRequestAssigneeUserName';
 import type { InboundMaterialRequestReference } from './inboundMaterialRequestReference';
 import type { InboundMaterialRequestStatus } from './inboundMaterialRequestStatus';
+import type { InboundMaterialRequestPriority } from './inboundMaterialRequestPriority';
+import type { InboundMaterialRequestDueDate } from './inboundMaterialRequestDueDate';
 import type { InboundMaterialRequestNotes } from './inboundMaterialRequestNotes';
 import type { InboundMaterialRequestSubmittedAt } from './inboundMaterialRequestSubmittedAt';
 import type { RequestLine } from './requestLine';
@@ -19,9 +22,13 @@ export interface InboundMaterialRequest {
   companyId: string;
   createdByUserId: InboundMaterialRequestCreatedByUserId;
   createdByUserName: InboundMaterialRequestCreatedByUserName;
-  title: InboundMaterialRequestTitle;
+  assigneeUserId: InboundMaterialRequestAssigneeUserId;
+  assigneeUserName: InboundMaterialRequestAssigneeUserName;
+  title: string;
   reference: InboundMaterialRequestReference;
   status: InboundMaterialRequestStatus;
+  priority: InboundMaterialRequestPriority;
+  dueDate: InboundMaterialRequestDueDate;
   notes: InboundMaterialRequestNotes;
   submittedAt: InboundMaterialRequestSubmittedAt;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */

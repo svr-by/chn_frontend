@@ -184,6 +184,7 @@ import type {
   PostCompaniesCompanyIdRequestsBody,
   PostCompaniesCompanyIdRequestsInboundRequestIdReject200,
   PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody,
+  PostCompaniesCompanyIdRequestsRequestIdClose200,
   PostCompaniesCompanyIdRequestsRequestIdDistribute200,
   PostCompaniesCompanyIdRequestsRequestIdDistributeBody,
   PostCompaniesCompanyIdRequestsRequestIdLines201,
@@ -7824,6 +7825,69 @@ export const deleteCompaniesCompanyIdRequestsRequestIdDistributionsDistributionI
   
   const data: deleteCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdResponse
+}
+
+
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse200 = {
+  data: PostCompaniesCompanyIdRequestsRequestIdClose200
+  status: 200
+}
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponseSuccess = (postCompaniesCompanyIdRequestsRequestIdCloseResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponseError = (postCompaniesCompanyIdRequestsRequestIdCloseResponse400 | postCompaniesCompanyIdRequestsRequestIdCloseResponse401 | postCompaniesCompanyIdRequestsRequestIdCloseResponse403 | postCompaniesCompanyIdRequestsRequestIdCloseResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdRequestsRequestIdCloseResponse = (postCompaniesCompanyIdRequestsRequestIdCloseResponseSuccess | postCompaniesCompanyIdRequestsRequestIdCloseResponseError)
+
+export const getPostCompaniesCompanyIdRequestsRequestIdCloseUrl = (companyId: string,
+    requestId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/requests/${requestId}/close`
+}
+
+export const postCompaniesCompanyIdRequestsRequestIdClose = async (companyId: string,
+    requestId: string, options?: RequestInit): Promise<postCompaniesCompanyIdRequestsRequestIdCloseResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdRequestsRequestIdCloseUrl(companyId,requestId),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdRequestsRequestIdCloseResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdRequestsRequestIdCloseResponse
 }
 
 

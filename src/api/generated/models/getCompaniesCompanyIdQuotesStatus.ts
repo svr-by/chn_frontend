@@ -12,5 +12,4 @@ export const GetCompaniesCompanyIdQuotesStatus = {
   PARTIALLY_ACCEPTED: 'PARTIALLY_ACCEPTED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
-  EXPIRED: 'EXPIRED',
 } as const;

@@ -3,9 +3,12 @@
  */
 import type { InboundMaterialRequestSummaryCreatedByUserId } from './inboundMaterialRequestSummaryCreatedByUserId';
 import type { InboundMaterialRequestSummaryCreatedByUserName } from './inboundMaterialRequestSummaryCreatedByUserName';
-import type { InboundMaterialRequestSummaryTitle } from './inboundMaterialRequestSummaryTitle';
+import type { InboundMaterialRequestSummaryAssigneeUserId } from './inboundMaterialRequestSummaryAssigneeUserId';
+import type { InboundMaterialRequestSummaryAssigneeUserName } from './inboundMaterialRequestSummaryAssigneeUserName';
 import type { InboundMaterialRequestSummaryReference } from './inboundMaterialRequestSummaryReference';
 import type { InboundMaterialRequestSummaryStatus } from './inboundMaterialRequestSummaryStatus';
+import type { InboundMaterialRequestSummaryPriority } from './inboundMaterialRequestSummaryPriority';
+import type { InboundMaterialRequestSummaryDueDate } from './inboundMaterialRequestSummaryDueDate';
 import type { InboundMaterialRequestSummarySubmittedAt } from './inboundMaterialRequestSummarySubmittedAt';
 import type { CompanySummary } from './companySummary';
 import type { InboundMaterialRequestSummaryDistributedAt } from './inboundMaterialRequestSummaryDistributedAt';
@@ -17,9 +20,13 @@ export interface InboundMaterialRequestSummary {
   companyId: string;
   createdByUserId: InboundMaterialRequestSummaryCreatedByUserId;
   createdByUserName: InboundMaterialRequestSummaryCreatedByUserName;
-  title: InboundMaterialRequestSummaryTitle;
+  assigneeUserId: InboundMaterialRequestSummaryAssigneeUserId;
+  assigneeUserName: InboundMaterialRequestSummaryAssigneeUserName;
+  title: string;
   reference: InboundMaterialRequestSummaryReference;
   status: InboundMaterialRequestSummaryStatus;
+  priority: InboundMaterialRequestSummaryPriority;
+  dueDate: InboundMaterialRequestSummaryDueDate;
   submittedAt: InboundMaterialRequestSummarySubmittedAt;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

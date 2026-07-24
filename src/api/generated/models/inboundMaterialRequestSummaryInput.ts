@@ -3,9 +3,12 @@
  */
 import type { InboundMaterialRequestSummaryInputCreatedByUserId } from './inboundMaterialRequestSummaryInputCreatedByUserId';
 import type { InboundMaterialRequestSummaryInputCreatedByUserName } from './inboundMaterialRequestSummaryInputCreatedByUserName';
-import type { InboundMaterialRequestSummaryInputTitle } from './inboundMaterialRequestSummaryInputTitle';
+import type { InboundMaterialRequestSummaryInputAssigneeUserId } from './inboundMaterialRequestSummaryInputAssigneeUserId';
+import type { InboundMaterialRequestSummaryInputAssigneeUserName } from './inboundMaterialRequestSummaryInputAssigneeUserName';
 import type { InboundMaterialRequestSummaryInputReference } from './inboundMaterialRequestSummaryInputReference';
 import type { InboundMaterialRequestSummaryInputStatus } from './inboundMaterialRequestSummaryInputStatus';
+import type { InboundMaterialRequestSummaryInputPriority } from './inboundMaterialRequestSummaryInputPriority';
+import type { InboundMaterialRequestSummaryInputDueDate } from './inboundMaterialRequestSummaryInputDueDate';
 import type { InboundMaterialRequestSummaryInputSubmittedAt } from './inboundMaterialRequestSummaryInputSubmittedAt';
 import type { CompanySummaryInput } from './companySummaryInput';
 import type { InboundMaterialRequestSummaryInputDistributedAt } from './inboundMaterialRequestSummaryInputDistributedAt';
@@ -17,9 +20,13 @@ export interface InboundMaterialRequestSummaryInput {
   companyId: string;
   createdByUserId: InboundMaterialRequestSummaryInputCreatedByUserId;
   createdByUserName: InboundMaterialRequestSummaryInputCreatedByUserName;
-  title: InboundMaterialRequestSummaryInputTitle;
+  assigneeUserId: InboundMaterialRequestSummaryInputAssigneeUserId;
+  assigneeUserName: InboundMaterialRequestSummaryInputAssigneeUserName;
+  title: string;
   reference: InboundMaterialRequestSummaryInputReference;
   status: InboundMaterialRequestSummaryInputStatus;
+  priority: InboundMaterialRequestSummaryInputPriority;
+  dueDate: InboundMaterialRequestSummaryInputDueDate;
   submittedAt: InboundMaterialRequestSummaryInputSubmittedAt;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

@@ -3,9 +3,12 @@
  */
 import type { MaterialRequestSummaryInputCreatedByUserId } from './materialRequestSummaryInputCreatedByUserId';
 import type { MaterialRequestSummaryInputCreatedByUserName } from './materialRequestSummaryInputCreatedByUserName';
-import type { MaterialRequestSummaryInputTitle } from './materialRequestSummaryInputTitle';
+import type { MaterialRequestSummaryInputAssigneeUserId } from './materialRequestSummaryInputAssigneeUserId';
+import type { MaterialRequestSummaryInputAssigneeUserName } from './materialRequestSummaryInputAssigneeUserName';
 import type { MaterialRequestSummaryInputReference } from './materialRequestSummaryInputReference';
 import type { MaterialRequestSummaryInputStatus } from './materialRequestSummaryInputStatus';
+import type { MaterialRequestSummaryInputPriority } from './materialRequestSummaryInputPriority';
+import type { MaterialRequestSummaryInputDueDate } from './materialRequestSummaryInputDueDate';
 import type { MaterialRequestSummaryInputSubmittedAt } from './materialRequestSummaryInputSubmittedAt';
 
 export interface MaterialRequestSummaryInput {
@@ -15,9 +18,13 @@ export interface MaterialRequestSummaryInput {
   companyId: string;
   createdByUserId: MaterialRequestSummaryInputCreatedByUserId;
   createdByUserName: MaterialRequestSummaryInputCreatedByUserName;
-  title: MaterialRequestSummaryInputTitle;
+  assigneeUserId: MaterialRequestSummaryInputAssigneeUserId;
+  assigneeUserName: MaterialRequestSummaryInputAssigneeUserName;
+  title: string;
   reference: MaterialRequestSummaryInputReference;
   status: MaterialRequestSummaryInputStatus;
+  priority: MaterialRequestSummaryInputPriority;
+  dueDate: MaterialRequestSummaryInputDueDate;
   submittedAt: MaterialRequestSummaryInputSubmittedAt;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   createdAt: string;

@@ -3,9 +3,12 @@
  */
 import type { MaterialRequestInputCreatedByUserId } from './materialRequestInputCreatedByUserId';
 import type { MaterialRequestInputCreatedByUserName } from './materialRequestInputCreatedByUserName';
-import type { MaterialRequestInputTitle } from './materialRequestInputTitle';
+import type { MaterialRequestInputAssigneeUserId } from './materialRequestInputAssigneeUserId';
+import type { MaterialRequestInputAssigneeUserName } from './materialRequestInputAssigneeUserName';
 import type { MaterialRequestInputReference } from './materialRequestInputReference';
 import type { MaterialRequestInputStatus } from './materialRequestInputStatus';
+import type { MaterialRequestInputPriority } from './materialRequestInputPriority';
+import type { MaterialRequestInputDueDate } from './materialRequestInputDueDate';
 import type { MaterialRequestInputNotes } from './materialRequestInputNotes';
 import type { MaterialRequestInputSubmittedAt } from './materialRequestInputSubmittedAt';
 import type { RequestLineInput } from './requestLineInput';
@@ -17,9 +20,13 @@ export interface MaterialRequestInput {
   companyId: string;
   createdByUserId: MaterialRequestInputCreatedByUserId;
   createdByUserName: MaterialRequestInputCreatedByUserName;
-  title: MaterialRequestInputTitle;
+  assigneeUserId: MaterialRequestInputAssigneeUserId;
+  assigneeUserName: MaterialRequestInputAssigneeUserName;
+  title: string;
   reference: MaterialRequestInputReference;
   status: MaterialRequestInputStatus;
+  priority: MaterialRequestInputPriority;
+  dueDate: MaterialRequestInputDueDate;
   notes: MaterialRequestInputNotes;
   submittedAt: MaterialRequestInputSubmittedAt;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
