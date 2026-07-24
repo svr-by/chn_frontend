@@ -6,6 +6,17 @@
     "ordered": "Ordered",
     "closed": "Closed"
   },
+  "materialRequestPriority": {
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High",
+    "urgent": "Urgent"
+  },
+  "leadTimeUnit": {
+    "day": "Days",
+    "week": "Weeks",
+    "month": "Months"
+  },
   "requestDistributionStatus": {
     "pending": "Pending",
     "rejected": "Rejected"
@@ -15,8 +26,7 @@
     "submitted": "Submitted",
     "partially_accepted": "Partially accepted",
     "accepted": "Accepted",
-    "rejected": "Rejected",
-    "expired": "Expired"
+    "rejected": "Rejected"
   },
   "purchaseSelectionStatus": {
     "draft": "Draft",

@@ -6,6 +6,17 @@
     "ordered": "已下单",
     "closed": "已关闭"
   },
+  "materialRequestPriority": {
+    "low": "低",
+    "normal": "普通",
+    "high": "高",
+    "urgent": "紧急"
+  },
+  "leadTimeUnit": {
+    "day": "天",
+    "week": "周",
+    "month": "月"
+  },
   "requestDistributionStatus": {
     "pending": "待处理",
     "rejected": "已拒绝"
@@ -15,8 +26,7 @@
     "submitted": "已提交",
     "partially_accepted": "部分接受",
     "accepted": "已接受",
-    "rejected": "已拒绝",
-    "expired": "已过期"
+    "rejected": "已拒绝"
   },
   "purchaseSelectionStatus": {
     "draft": "草稿",

@@ -37,6 +37,15 @@ vi.mock('@/api/endpoints/productsApi', () => ({
   })),
 }));
 
+vi.mock('@/api/endpoints/membersApi', () => ({
+  useListMembersQuery: vi.fn(() => ({
+    data: { members: [] },
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  })),
+}));
+
 vi.mock('@/api/endpoints/requestsApi', () => {
   const emptyDistributions = { distributions: [] as const };
   const emptyQuoteComparison = {
@@ -58,6 +67,10 @@ vi.mock('@/api/endpoints/requestsApi', () => {
     ]),
     useDeleteRequestLineMutation: vi.fn(),
     useDeleteRequestMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ]),
+    useCloseRequestMutation: vi.fn(() => [
       vi.fn(),
       { isLoading: false, reset: vi.fn() },
     ]),

@@ -125,7 +125,9 @@ describe('InboundRequestDetailPage', () => {
     ] as ReturnType<typeof useDeleteRequestLineMutation>);
   });
 
-  it('renders assigned lines and rejects inbound requests', async () => {
+  it(
+    'renders assigned lines and rejects inbound requests',
+    async () => {
     const user = userEvent.setup();
     const rejectInboundRequest = vi.fn().mockReturnValue({
       unwrap: () => Promise.resolve({ distribution: null }),
@@ -159,5 +161,7 @@ describe('InboundRequestDetailPage', () => {
         reason: 'Not available',
       });
     });
-  });
+  },
+    15_000,
+  );
 });

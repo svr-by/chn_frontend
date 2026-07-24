@@ -6,6 +6,17 @@
     "ordered": "Заказано",
     "closed": "Закрыто"
   },
+  "materialRequestPriority": {
+    "low": "Низкий",
+    "normal": "Обычный",
+    "high": "Высокий",
+    "urgent": "Срочный"
+  },
+  "leadTimeUnit": {
+    "day": "Дни",
+    "week": "Недели",
+    "month": "Месяцы"
+  },
   "requestDistributionStatus": {
     "pending": "Ожидает",
     "rejected": "Отклонено"
@@ -15,8 +26,7 @@
     "submitted": "Утверждено",
     "partially_accepted": "Частично принято",
     "accepted": "Принято",
-    "rejected": "Отклонено",
-    "expired": "Истёк"
+    "rejected": "Отклонено"
   },
   "purchaseSelectionStatus": {
     "draft": "Черновик",

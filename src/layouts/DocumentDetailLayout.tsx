@@ -13,6 +13,7 @@ import { BackLink } from '@/components/BackLink';
 
 interface DocumentDetailLayoutProps {
   title: string;
+  titleAction?: ReactNode;
   subtitle?: string | null;
   statusBadge?: ReactNode;
   actions?: ReactNode;
@@ -25,6 +26,7 @@ interface DocumentDetailLayoutProps {
 
 export function DocumentDetailLayout({
   title,
+  titleAction,
   subtitle,
   statusBadge,
   actions,
@@ -64,6 +66,7 @@ export function DocumentDetailLayout({
             <Typography variant="h5" component="h1">
               {title}
             </Typography>
+            {titleAction ?? null}
             {statusBadge ?? null}
           </Stack>
           {subtitle ? (

@@ -13,7 +13,7 @@ import { RequestLinesTable } from '@/features/requests/components/RequestLinesTa
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 export function InboundRequestDetailPage() {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'enums']);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { requestId } = useParams<{ requestId: string }>();
@@ -67,6 +67,25 @@ export function InboundRequestDetailPage() {
             <Typography variant="body2" color="text.secondary">
               {t('inbound.columns.buyer')}: {request.buyerCompany.name}
             </Typography>
+            {request.assigneeUserName ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.assignee', { name: request.assigneeUserName })}
+              </Typography>
+            ) : null}
+            <Typography variant="body2" color="text.secondary">
+              {t('detail.priority', {
+                priority: t(
+                  `enums:materialRequestPriority.${request.priority.toLowerCase()}`,
+                ),
+              })}
+            </Typography>
+            {request.dueDate ? (
+              <Typography variant="body2" color="text.secondary">
+                {t('detail.dueDate', {
+                  date: new Date(request.dueDate).toLocaleDateString(),
+                })}
+              </Typography>
+            ) : null}
             {request.distributedAt ? (
               <Typography variant="body2" color="text.secondary">
                 {t('inbound.columns.distributedAt')}:{' '}

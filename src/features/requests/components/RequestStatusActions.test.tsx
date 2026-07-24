@@ -2,7 +2,10 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { useDeleteRequestMutation } from '@/api/endpoints/requestsApi';
+import {
+  useCloseRequestMutation,
+  useDeleteRequestMutation,
+} from '@/api/endpoints/requestsApi';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
 import {
   COMPANY_ID,
@@ -23,10 +26,12 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useDeleteRequestMutation: vi.fn(),
+  useCloseRequestMutation: vi.fn(),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseDeleteRequestMutation = vi.mocked(useDeleteRequestMutation);
+const mockedUseCloseRequestMutation = vi.mocked(useCloseRequestMutation);
 
 describe('RequestStatusActions', () => {
   beforeEach(() => {
@@ -36,9 +41,14 @@ describe('RequestStatusActions', () => {
       vi.fn(),
       { isLoading: false, reset: vi.fn() },
     ] as ReturnType<typeof useDeleteRequestMutation>);
+
+    mockedUseCloseRequestMutation.mockReturnValue([
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ] as ReturnType<typeof useCloseRequestMutation>);
   });
 
-  it('shows delete button on DRAFT status with manageRequests', () => {
+  it('shows close and delete buttons on DRAFT status with manageRequests', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -63,10 +73,11 @@ describe('RequestStatusActions', () => {
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
+    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
   });
 
-  it('hides actions when status is not DRAFT', () => {
+  it('shows close but not delete when status is QUOTING', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -91,12 +102,46 @@ describe('RequestStatusActions', () => {
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
+    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Delete' }),
     ).not.toBeInTheDocument();
   });
 
-  it('hides delete button without manageRequests', () => {
+  it('hides actions when status is CLOSED', () => {
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['manageRequests'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(
+      <RequestStatusActions
+        companyId={COMPANY_ID}
+        requestId={REQUEST_ID}
+        status="CLOSED"
+      />,
+      { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Close' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Delete' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('hides actions without manageRequests', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -121,6 +166,9 @@ describe('RequestStatusActions', () => {
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
+    expect(
+      screen.queryByRole('button', { name: 'Close' }),
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', { name: 'Delete' }),
     ).not.toBeInTheDocument();

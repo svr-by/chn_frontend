@@ -42,7 +42,7 @@ interface InboundRequestsPanelProps {
 }
 
 export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'enums']);
   const navigate = useNavigate();
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -91,7 +91,25 @@ export function InboundRequestsPanel({ companyId }: InboundRequestsPanelProps) {
         accessorKey: 'title',
         header: t('columns.title'),
         enableColumnFilter: false,
-        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
+        Cell: ({ cell }) => cell.getValue<string>() || '—',
+      },
+      {
+        accessorKey: 'priority',
+        header: t('columns.priority'),
+        enableColumnFilter: false,
+        Cell: ({ cell }) =>
+          t(
+            `enums:materialRequestPriority.${cell.getValue<string>().toLowerCase()}`,
+          ),
+      },
+      {
+        accessorKey: 'dueDate',
+        header: t('columns.dueDate'),
+        enableColumnFilter: false,
+        Cell: ({ cell }) => {
+          const value = cell.getValue<string | null>();
+          return value ? new Date(value).toLocaleDateString() : '—';
+        },
       },
       {
         accessorKey: 'status',
