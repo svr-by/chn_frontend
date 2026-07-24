@@ -206,7 +206,7 @@ describe('PartnersPage', () => {
       },
     });
 
-    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
+    await user.click(screen.getByRole('tab', { name: /Invitations/ }));
 
     expect(screen.getByText('Inbound Corp')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Accept' })).toBeInTheDocument();
@@ -237,7 +237,7 @@ describe('PartnersPage', () => {
       },
     });
 
-    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
+    await user.click(screen.getByRole('tab', { name: /Invitations/ }));
 
     expect(screen.getByText('Inbound Corp')).toBeInTheDocument();
     expect(
@@ -257,7 +257,7 @@ describe('PartnersPage', () => {
       },
     });
 
-    await user.click(screen.getByRole('tab', { name: 'Invitations' }));
+    await user.click(screen.getByRole('tab', { name: /Invitations/ }));
 
     expect(screen.getByText('Outbound Corp')).toBeInTheDocument();
     expect(

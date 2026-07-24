@@ -1,5 +1,5 @@
 import {
-  getDeleteCompaniesCompanyIdPartnersLinkIdUrl,
+  getDeleteCompaniesCompanyIdPartnersPartnerIdUrl,
   getGetCompaniesCompanyIdPartnersInvitationsUrl,
   getGetCompaniesCompanyIdPartnersUrl,
   getPostCompaniesCompanyIdPartnersInviteUrl,
@@ -80,10 +80,13 @@ export const partnersApi = baseApi.injectEndpoints({
     }),
     cancelPartnerInvitation: builder.mutation<
       void,
-      { companyId: string; linkId: string }
+      { companyId: string; partnerId: string }
     >({
-      query: ({ companyId, linkId }) => ({
-        url: getDeleteCompaniesCompanyIdPartnersLinkIdUrl(companyId, linkId),
+      query: ({ companyId, partnerId }) => ({
+        url: getDeleteCompaniesCompanyIdPartnersPartnerIdUrl(
+          companyId,
+          partnerId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>
@@ -92,10 +95,13 @@ export const partnersApi = baseApi.injectEndpoints({
     /** Remove an active partner link (same DELETE as cancel invitation). */
     unlinkPartner: builder.mutation<
       void,
-      { companyId: string; linkId: string }
+      { companyId: string; partnerId: string }
     >({
-      query: ({ companyId, linkId }) => ({
-        url: getDeleteCompaniesCompanyIdPartnersLinkIdUrl(companyId, linkId),
+      query: ({ companyId, partnerId }) => ({
+        url: getDeleteCompaniesCompanyIdPartnersPartnerIdUrl(
+          companyId,
+          partnerId,
+        ),
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId }) =>

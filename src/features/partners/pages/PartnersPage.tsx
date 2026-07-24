@@ -86,18 +86,18 @@ export function PartnersPage() {
     }
   }
 
-  async function handleCancel(linkId: string) {
+  async function handleCancel(partnerId: string) {
     try {
-      await cancelInvitation({ companyId: activeCompanyId, linkId }).unwrap();
+      await cancelInvitation({ companyId: activeCompanyId, partnerId }).unwrap();
       enqueueSnackbar(t('toast.cancelled'), { variant: 'success' });
     } catch {
       // ApiErrorAlert
     }
   }
 
-  async function handleUnlink(linkId: string) {
+  async function handleUnlink(partnerId: string) {
     try {
-      await unlinkPartner({ companyId: activeCompanyId, linkId }).unwrap();
+      await unlinkPartner({ companyId: activeCompanyId, partnerId }).unwrap();
       enqueueSnackbar(t('toast.unlinked'), { variant: 'success' });
     } catch {
       // ApiErrorAlert
@@ -163,7 +163,7 @@ export function PartnersPage() {
           partners={partnersQuery.data?.partners ?? []}
           isLoading={partnersQuery.isLoading}
           isFetching={partnersQuery.isFetching}
-          onUnlink={(linkId) => void handleUnlink(linkId)}
+          onUnlink={(partnerId) => void handleUnlink(partnerId)}
           actionsDisabled={actionsDisabled}
         />
       )}
