@@ -14,6 +14,7 @@ import {
   Select,
   Stack,
   TextField,
+  Typography,
 } from '@mui/material';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -21,6 +22,7 @@ import { z } from 'zod';
 
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
+import { PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit } from '@/api/generated/models/postCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit';
 import {
   useAddQuoteLineMutation,
   useUpdateQuoteLineMutation,
@@ -30,19 +32,21 @@ import { DecimalInput } from '@/components/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
 
-const lineSchema = z.object({
-  requestLineId: z.string().uuid(),
-  quantity: z.string().refine(isValidDecimal, {
-    message: 'Invalid quantity',
-  }),
-  unitPrice: z.string().refine(isValidDecimal, {
-    message: 'Invalid unit price',
-  }),
-  leadTimeWeeks: z.string().trim().optional(),
-  notes: z.string().trim().optional(),
-});
+const LEAD_TIME_UNITS = Object.values(
+  PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit,
+);
 
-type LineFormValues = z.infer<typeof lineSchema>;
+type LeadTimeUnit =
+  (typeof PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit)[keyof typeof PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit];
+
+type LineFormValues = {
+  requestLineId: string;
+  quantity: string;
+  unitPrice: string;
+  leadTime: string;
+  leadTimeUnit: LeadTimeUnit | '';
+  notes?: string;
+};
 
 interface QuoteLineFormDialogProps {
   open: boolean;
@@ -71,11 +75,60 @@ export function QuoteLineFormDialog({
   initialRequestLineId,
   onSuccess,
 }: QuoteLineFormDialogProps) {
-  const { t } = useTranslation('quotes');
+  const { t } = useTranslation(['quotes', 'enums']);
   const isEdit = Boolean(line);
 
   const [addLine, addState] = useAddQuoteLineMutation();
   const [updateLine, updateState] = useUpdateQuoteLineMutation();
+
+  const lineSchema = useMemo(
+    () =>
+      z
+        .object({
+          requestLineId: z.string().uuid(),
+          quantity: z.string().refine(isValidDecimal, {
+            message: 'Invalid quantity',
+          }),
+          unitPrice: z.string().refine(isValidDecimal, {
+            message: 'Invalid unit price',
+          }),
+          leadTime: z.string().trim(),
+          leadTimeUnit: z.union([
+            z.enum([
+              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.DAY,
+              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.WEEK,
+              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.MONTH,
+            ]),
+            z.literal(''),
+          ]),
+          notes: z.string().trim().optional(),
+        })
+        .superRefine((values, ctx) => {
+          const hasValue = values.leadTime.length > 0;
+          const hasUnit = values.leadTimeUnit !== '';
+
+          if (hasValue !== hasUnit) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: t('form.leadTimeHint'),
+              path: hasValue ? ['leadTimeUnit'] : ['leadTime'],
+            });
+            return;
+          }
+
+          if (hasValue) {
+            const parsed = Number(values.leadTime);
+            if (!Number.isInteger(parsed) || parsed <= 0) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: t('form.leadTimeHint'),
+                path: ['leadTime'],
+              });
+            }
+          }
+        }),
+    [t],
+  );
 
   const {
     register,
@@ -91,7 +144,8 @@ export function QuoteLineFormDialog({
       requestLineId: '',
       quantity: '',
       unitPrice: '',
-      leadTimeWeeks: '',
+      leadTime: '',
+      leadTimeUnit: '',
       notes: '',
     },
   });
@@ -99,6 +153,11 @@ export function QuoteLineFormDialog({
   const quantity = watch('quantity');
   const unitPrice = watch('unitPrice');
   const selectedRequestLineId = watch('requestLineId');
+
+  const selectedRequestLine = useMemo(
+    () => requestLines.find((item) => item.id === selectedRequestLineId),
+    [requestLines, selectedRequestLineId],
+  );
 
   const availableRequestLines = useMemo(
     () =>
@@ -143,7 +202,11 @@ export function QuoteLineFormDialog({
       requestLineId: preferredRequestLineId,
       quantity: line?.quantity ?? preferredRequestLine?.quantity ?? '',
       unitPrice: line?.unitPrice ?? '',
-      leadTimeWeeks: '',
+      leadTime:
+        line?.leadTime != null && line.leadTimeUnit
+          ? String(line.leadTime)
+          : '',
+      leadTimeUnit: line?.leadTimeUnit ?? '',
       notes: line?.notes ?? '',
     });
   }, [
@@ -181,16 +244,19 @@ export function QuoteLineFormDialog({
     onClose();
   }
 
-  async function onSubmit(values: LineFormValues) {
-    const mutationArgs = {
-      companyId,
-      quoteId,
-      materialRequestId,
-      requestLineId: values.requestLineId,
-      quantity: values.quantity,
-      unitPrice: values.unitPrice,
-      notes: values.notes || undefined,
+  function buildLeadTimePayload(values: LineFormValues) {
+    if (!values.leadTime || !values.leadTimeUnit) {
+      return { leadTime: null as number | null, leadTimeUnit: null as null };
+    }
+
+    return {
+      leadTime: Number(values.leadTime),
+      leadTimeUnit: values.leadTimeUnit,
     };
+  }
+
+  async function onSubmit(values: LineFormValues) {
+    const leadTimePayload = buildLeadTimePayload(values);
 
     if (isEdit && line) {
       await updateLine({
@@ -201,9 +267,25 @@ export function QuoteLineFormDialog({
         quantity: values.quantity,
         unitPrice: values.unitPrice,
         notes: values.notes || null,
+        leadTime: leadTimePayload.leadTime,
+        leadTimeUnit: leadTimePayload.leadTimeUnit,
       }).unwrap();
     } else {
-      await addLine(mutationArgs).unwrap();
+      await addLine({
+        companyId,
+        quoteId,
+        materialRequestId,
+        requestLineId: values.requestLineId,
+        quantity: values.quantity,
+        unitPrice: values.unitPrice,
+        notes: values.notes || undefined,
+        ...(leadTimePayload.leadTime != null && leadTimePayload.leadTimeUnit
+          ? {
+              leadTime: leadTimePayload.leadTime,
+              leadTimeUnit: leadTimePayload.leadTimeUnit,
+            }
+          : {}),
+      }).unwrap();
     }
 
     onSuccess?.();
@@ -265,7 +347,14 @@ export function QuoteLineFormDialog({
                 setValue('quantity', value, { shouldValidate: true })
               }
               error={Boolean(errors.quantity)}
-              helperText={errors.quantity?.message}
+              helperText={
+                errors.quantity?.message ??
+                (selectedRequestLine
+                  ? t('form.requestedQuantityHint', {
+                      quantity: selectedRequestLine.quantity,
+                    })
+                  : undefined)
+              }
             />
             <DecimalInput
               label={t('form.unitPrice')}
@@ -283,21 +372,47 @@ export function QuoteLineFormDialog({
                 ),
               }}
             />
-            <TextField
-              label={t('form.leadTime')}
-              type="number"
-              fullWidth
-              inputProps={{ min: 0, step: 1 }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {t('form.leadTimeWeeks')}
-                  </InputAdornment>
-                ),
-              }}
-              helperText={t('form.leadTimeHint')}
-              {...register('leadTimeWeeks')}
-            />
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+              <TextField
+                label={t('form.leadTimeValue')}
+                type="number"
+                fullWidth
+                inputProps={{ min: 1, step: 1 }}
+                error={Boolean(errors.leadTime)}
+                helperText={errors.leadTime?.message ?? t('form.leadTimeHint')}
+                {...register('leadTime')}
+              />
+              <Controller
+                name="leadTimeUnit"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth error={Boolean(errors.leadTimeUnit)}>
+                    <InputLabel id="quote-lead-time-unit-label">
+                      {t('form.leadTimeUnit')}
+                    </InputLabel>
+                    <Select
+                      {...field}
+                      labelId="quote-lead-time-unit-label"
+                      label={t('form.leadTimeUnit')}
+                    >
+                      <MenuItem value="">
+                        <em>—</em>
+                      </MenuItem>
+                      {LEAD_TIME_UNITS.map((unit) => (
+                        <MenuItem key={unit} value={unit}>
+                          {t(`enums:leadTimeUnit.${unit.toLowerCase()}`)}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {errors.leadTimeUnit?.message ? (
+                      <Typography variant="caption" color="error" sx={{ mt: 0.5 }}>
+                        {errors.leadTimeUnit.message}
+                      </Typography>
+                    ) : null}
+                  </FormControl>
+                )}
+              />
+            </Stack>
             <TextField
               label={t('form.notes')}
               fullWidth

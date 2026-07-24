@@ -26,11 +26,76 @@ type ComparisonRow = QuoteComparisonLine & {
   id: string;
 };
 
-function findOffer(
+function findOffers(
   offers: QuoteOffer[],
   supplierCompanyId: string,
-): QuoteOffer | undefined {
-  return offers.find((offer) => offer.supplierCompany.id === supplierCompanyId);
+): QuoteOffer[] {
+  return offers.filter(
+    (offer) => offer.supplierCompany.id === supplierCompanyId,
+  );
+}
+
+function OfferDetails({
+  offer,
+  index,
+  total,
+}: {
+  offer: QuoteOffer;
+  index: number;
+  total: number;
+}) {
+  const { t } = useTranslation(['quotes', 'enums']);
+
+  return (
+    <Stack spacing={0.25}>
+      {total > 1 ? (
+        <Typography variant="caption" color="text.secondary">
+          {t('comparison.cell.variant', { index: index + 1 })}
+        </Typography>
+      ) : null}
+      <Typography variant="body2">
+        {t('comparison.cell.unitPrice')}:{' '}
+        <DecimalDisplay value={offer.unitPrice} />
+      </Typography>
+      <Typography variant="body2">
+        {t('comparison.cell.quantity')}:{' '}
+        <DecimalDisplay value={offer.quantity} />
+      </Typography>
+      <Typography variant="body2">
+        {t('comparison.cell.total')}: <DecimalDisplay value={offer.lineTotal} />{' '}
+        {offer.currency}
+      </Typography>
+      {offer.leadTime != null && offer.leadTimeUnit ? (
+        <Typography variant="body2">
+          {t('comparison.cell.leadTime')}: {offer.leadTime}{' '}
+          {t(`enums:leadTimeUnit.${offer.leadTimeUnit.toLowerCase()}`)}
+        </Typography>
+      ) : null}
+    </Stack>
+  );
+}
+
+function OfferStack({ offers }: { offers: QuoteOffer[] }) {
+  if (offers.length === 0) {
+    return (
+      <Typography variant="body2" color="text.secondary">
+        —
+      </Typography>
+    );
+  }
+
+  return (
+    <Stack spacing={1} divider={<Divider flexItem />}>
+      {offers.map((offer, index) => (
+        <OfferDetails
+          key={offer.quoteLineId}
+          offer={offer}
+          index={index}
+          total={offers.length}
+        />
+      ))}
+    </Stack>
+  );
 }
 
 function ComparisonMobileCards({
@@ -69,7 +134,7 @@ function ComparisonMobileCards({
               </Typography>
               <Divider />
               {suppliers.map((supplier) => {
-                const offer = findOffer(line.offers, supplier.companyId);
+                const offers = findOffers(line.offers, supplier.companyId);
                 return (
                   <Box key={supplier.companyId}>
                     <Stack spacing={0.5}>
@@ -77,27 +142,7 @@ function ComparisonMobileCards({
                         {supplier.name}
                       </Typography>
                       <QuoteStatusBadge status={supplier.status} />
-                      {offer ? (
-                        <Stack spacing={0.25}>
-                          <Typography variant="body2">
-                            {t('comparison.cell.unitPrice')}:{' '}
-                            <DecimalDisplay value={offer.unitPrice} />
-                          </Typography>
-                          <Typography variant="body2">
-                            {t('comparison.cell.quantity')}:{' '}
-                            <DecimalDisplay value={offer.quantity} />
-                          </Typography>
-                          <Typography variant="body2">
-                            {t('comparison.cell.total')}:{' '}
-                            <DecimalDisplay value={offer.lineTotal} />{' '}
-                            {offer.currency}
-                          </Typography>
-                        </Stack>
-                      ) : (
-                        <Typography variant="body2" color="text.secondary">
-                          —
-                        </Typography>
-                      )}
+                      <OfferStack offers={offers} />
                     </Stack>
                   </Box>
                 );
@@ -121,7 +166,7 @@ export function QuoteComparisonMatrix({
 }: QuoteComparisonMatrixProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const { t } = useTranslation('quotes');
+  const { t } = useTranslation(['quotes', 'enums']);
 
   const comparisonQuery = useGetQuoteComparisonQuery(
     { companyId, requestId },
@@ -227,29 +272,11 @@ export function QuoteComparisonMatrix({
             ) : null}
           </Stack>
         ),
-        Cell: ({ row }) => {
-          const offer = findOffer(row.original.offers, supplier.companyId);
-          if (!offer) {
-            return '—';
-          }
-
-          return (
-            <Stack spacing={0.25}>
-              <Typography variant="body2">
-                {t('comparison.cell.unitPrice')}:{' '}
-                <DecimalDisplay value={offer.unitPrice} />
-              </Typography>
-              <Typography variant="body2">
-                {t('comparison.cell.quantity')}:{' '}
-                <DecimalDisplay value={offer.quantity} />
-              </Typography>
-              <Typography variant="body2">
-                {t('comparison.cell.total')}:{' '}
-                <DecimalDisplay value={offer.lineTotal} /> {offer.currency}
-              </Typography>
-            </Stack>
-          );
-        },
+        Cell: ({ row }) => (
+          <OfferStack
+            offers={findOffers(row.original.offers, supplier.companyId)}
+          />
+        ),
       }),
     );
 

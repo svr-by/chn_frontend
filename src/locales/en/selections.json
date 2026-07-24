@@ -49,7 +49,8 @@
     "maxQuantity": "Max quantity",
     "quantity": "Quantity",
     "offer": "Quote offer",
-    "offerOption": "{{description}} — {{supplier}} @ {{price}} {{currency}} (max {{max}})",
+    "offerOption": "{{description}} — {{supplier}} @ {{price}} {{currency}} (max {{max}}){{leadTime}}",
+    "offerLeadTime": ", lead {{value}} {{unit}}",
     "addLineTitle": "Add line",
     "editLineTitle": "Edit line"
   },

@@ -26,6 +26,7 @@
   "actions": {
     "submit": "提交报价",
     "delete": "删除报价",
+    "withdraw": "撤回报价",
     "addLine": "添加行",
     "addOffer": "添加报价",
     "addVariant": "添加方案",
@@ -45,8 +46,7 @@
     "submitted": "已提交",
     "partially_accepted": "部分接受",
     "accepted": "已接受",
-    "rejected": "已拒绝",
-    "expired": "已过期"
+    "rejected": "已拒绝"
   },
   "empty": {
     "list": "未找到报价。",
@@ -58,10 +58,12 @@
     "notes": "备注",
     "requestLine": "申请行",
     "quantity": "数量",
+    "requestedQuantityHint": "需求数量：{{quantity}}",
     "unitPrice": "单价",
     "leadTime": "交货期",
-    "leadTimeWeeks": "周",
-    "leadTimeHint": "暂不保存 — 即将支持",
+    "leadTimeValue": "数值",
+    "leadTimeUnit": "单位",
+    "leadTimeHint": "数值与单位需同时填写，或同时留空",
     "addLineTitle": "添加报价",
     "addVariantTitle": "添加报价方案",
     "editLineTitle": "编辑报价",
@@ -69,17 +71,21 @@
   },
   "confirm": {
     "submitTitle": "提交报价",
-    "submitMessage": "提交此报价？行项目将不可编辑。",
+    "submitMessage": "将此报价提交给买方？",
     "deleteTitle": "删除报价",
     "deleteMessage": "删除此草稿报价？此操作无法撤销。",
+    "withdrawTitle": "撤回报价",
+    "withdrawMessage": "撤回已提交的报价？若未被选择引用，此操作无法撤销。",
     "deleteLineTitle": "删除行",
     "deleteLineMessage": "从报价中移除此行？"
   },
   "detail": {
     "fallbackTitle": "报价 {{date}}",
     "buyer": "买方：{{name}}",
+    "supplier": "供应商：{{name}}",
     "request": "申请",
     "inboundRequest": "入站申请",
+    "outboundRequest": "申请",
     "createdAt": "创建于 {{date}}",
     "submittedAt": "已提交 {{date}}"
   },
@@ -99,13 +105,16 @@
     "cell": {
       "unitPrice": "单价",
       "quantity": "数量",
-      "total": "合计"
+      "total": "合计",
+      "leadTime": "交货期",
+      "variant": "方案 {{index}}"
     }
   },
   "toast": {
     "updated": "报价已更新",
     "submitted": "报价已提交",
     "deleted": "报价已删除",
+    "withdrawn": "报价已撤回",
     "lineAdded": "报价行已添加",
     "lineUpdated": "报价行已更新",
     "lineDeleted": "报价行已删除",

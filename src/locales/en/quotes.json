@@ -26,6 +26,7 @@
   "actions": {
     "submit": "Submit quote",
     "delete": "Delete quote",
+    "withdraw": "Withdraw quote",
     "addLine": "Add line",
     "addOffer": "Add offer",
     "addVariant": "Add variant",
@@ -45,8 +46,7 @@
     "submitted": "Submitted",
     "partially_accepted": "Partially accepted",
     "accepted": "Accepted",
-    "rejected": "Rejected",
-    "expired": "Expired"
+    "rejected": "Rejected"
   },
   "empty": {
     "list": "No quotes found.",
@@ -58,10 +58,12 @@
     "notes": "Notes",
     "requestLine": "Request line",
     "quantity": "Quantity",
+    "requestedQuantityHint": "Requested: {{quantity}}",
     "unitPrice": "Unit price",
     "leadTime": "Lead time",
-    "leadTimeWeeks": "weeks",
-    "leadTimeHint": "Not saved yet — coming soon",
+    "leadTimeValue": "Value",
+    "leadTimeUnit": "Unit",
+    "leadTimeHint": "Set both value and unit, or leave both empty",
     "addLineTitle": "Add offer",
     "addVariantTitle": "Add offer variant",
     "editLineTitle": "Edit offer",
@@ -69,17 +71,21 @@
   },
   "confirm": {
     "submitTitle": "Submit quote",
-    "submitMessage": "Submit this quote? Lines will no longer be editable.",
+    "submitMessage": "Submit this quote to the buyer?",
     "deleteTitle": "Delete quote",
     "deleteMessage": "Delete this draft quote? This cannot be undone.",
+    "withdrawTitle": "Withdraw quote",
+    "withdrawMessage": "Withdraw this submitted quote? This cannot be undone if no selections reference it.",
     "deleteLineTitle": "Delete line",
     "deleteLineMessage": "Remove this offer from the quote?"
   },
   "detail": {
     "fallbackTitle": "Quote {{date}}",
     "buyer": "Buyer: {{name}}",
+    "supplier": "Supplier: {{name}}",
     "request": "Request",
     "inboundRequest": "Incoming request",
+    "outboundRequest": "Request",
     "createdAt": "Created {{date}}",
     "submittedAt": "Submitted {{date}}"
   },
@@ -99,13 +105,16 @@
     "cell": {
       "unitPrice": "Unit price",
       "quantity": "Qty",
-      "total": "Total"
+      "total": "Total",
+      "leadTime": "Lead time",
+      "variant": "Offer {{index}}"
     }
   },
   "toast": {
     "updated": "Quote updated",
     "submitted": "Quote submitted",
     "deleted": "Quote deleted",
+    "withdrawn": "Quote withdrawn",
     "lineAdded": "Offer added",
     "lineUpdated": "Offer updated",
     "lineDeleted": "Offer deleted",

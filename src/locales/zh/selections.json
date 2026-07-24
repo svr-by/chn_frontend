@@ -49,7 +49,8 @@
     "maxQuantity": "最大数量",
     "quantity": "数量",
     "offer": "报价方案",
-    "offerOption": "{{description}} — {{supplier}} @ {{price}} {{currency}}（最大 {{max}}）",
+    "offerOption": "{{description}} — {{supplier}} @ {{price}} {{currency}}（最大 {{max}}）{{leadTime}}",
+    "offerLeadTime": "，交货期 {{value}} {{unit}}",
     "addLineTitle": "添加行",
     "editLineTitle": "编辑行"
   },

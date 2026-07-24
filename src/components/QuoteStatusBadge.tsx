@@ -12,7 +12,6 @@ const STATUS_COLORS: Record<
   PARTIALLY_ACCEPTED: 'warning',
   ACCEPTED: 'success',
   REJECTED: 'error',
-  EXPIRED: 'default',
 };
 
 interface QuoteStatusBadgeProps {

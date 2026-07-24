@@ -11,7 +11,6 @@ describe('QuoteStatusBadge', () => {
     ['PARTIALLY_ACCEPTED', 'Partially accepted'],
     ['ACCEPTED', 'Accepted'],
     ['REJECTED', 'Rejected'],
-    ['EXPIRED', 'Expired'],
   ] as const)('renders %s as %s', (status, label) => {
     renderWithProviders(<QuoteStatusBadge status={status} />);
     expect(screen.getByText(label)).toBeInTheDocument();

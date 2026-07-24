@@ -34,10 +34,16 @@ export function QuoteDetailPage() {
 
   const quote = quoteQuery.data?.quote;
   const materialRequestId = quote?.materialRequestId;
+  const isSupplier = Boolean(
+    quote && companyId && quote.supplierCompanyId === companyId,
+  );
+  const isBuyer = Boolean(
+    quote && companyId && quote.buyerCompanyId === companyId,
+  );
 
-  const requestQuery = useGetInboundRequestQuery(
+  const inboundRequestQuery = useGetInboundRequestQuery(
     { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
-    { skip: !companyId || !materialRequestId },
+    { skip: !companyId || !materialRequestId || !isSupplier },
   );
 
   useEffect(() => {
@@ -51,6 +57,25 @@ export function QuoteDetailPage() {
     }
   }, [quoteQuery.isError, quoteQuery.error, enqueueSnackbar, navigate, t]);
 
+  useEffect(() => {
+    if (!quote || !companyId) {
+      return;
+    }
+
+    if (!isSupplier && !isBuyer) {
+      enqueueSnackbar(t('toast.notAvailable'), { variant: 'error' });
+      navigate('/app/quotes', { replace: true });
+    }
+  }, [
+    quote,
+    companyId,
+    isSupplier,
+    isBuyer,
+    enqueueSnackbar,
+    navigate,
+    t,
+  ]);
+
   if (!companyId || !quoteId) {
     return null;
   }
@@ -60,8 +85,23 @@ export function QuoteDetailPage() {
         date: new Date(quote.createdAt).toLocaleDateString(),
       })
     : '';
-  const request = requestQuery.data?.request;
-  const canEdit = quote?.status === 'DRAFT';
+  const requestLines = isSupplier
+    ? (inboundRequestQuery.data?.request.lines ?? [])
+    : [];
+  const canEdit =
+    isSupplier &&
+    (quote?.status === 'DRAFT' || quote?.status === 'SUBMITTED');
+  const requestLink = materialRequestId
+    ? isSupplier
+      ? `/app/requests/inbound/${materialRequestId}`
+      : `/app/requests/${materialRequestId}`
+    : null;
+  const counterpartyName = isSupplier
+    ? quote?.buyerCompany?.name
+    : quote?.supplierCompany?.name;
+  const counterpartyLabel = isSupplier
+    ? t('detail.buyer', { name: counterpartyName ?? '—' })
+    : t('detail.supplier', { name: counterpartyName ?? '—' });
 
   return (
     <DocumentDetailLayout
@@ -73,7 +113,7 @@ export function QuoteDetailPage() {
       error={quoteQuery.error}
       backFallbackTo="/app/quotes"
       actions={
-        quote ? (
+        quote && isSupplier ? (
           <QuoteStatusActions
             companyId={companyId}
             quoteId={quote.id}
@@ -85,25 +125,27 @@ export function QuoteDetailPage() {
       meta={
         quote ? (
           <Stack spacing={0.75}>
-            {quote.buyerCompany ? (
+            {counterpartyName ? (
               <Stack direction="row" spacing={1} alignItems="center">
                 <BusinessOutlinedIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
-                  {t('detail.buyer', { name: quote.buyerCompany.name })}
+                  {counterpartyLabel}
                 </Typography>
               </Stack>
             ) : null}
-            {materialRequestId ? (
+            {requestLink ? (
               <Stack direction="row" spacing={1} alignItems="center">
                 <DescriptionOutlinedIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
                   {t('detail.request')}:{' '}
                   <Link
                     component={RouterLink}
-                    to={`/app/requests/inbound/${materialRequestId}`}
+                    to={requestLink}
                     underline="hover"
                   >
-                    {t('detail.inboundRequest')}
+                    {isSupplier
+                      ? t('detail.inboundRequest')
+                      : t('detail.outboundRequest')}
                   </Link>
                 </Typography>
               </Stack>
@@ -122,7 +164,7 @@ export function QuoteDetailPage() {
         ) : null
       }
     >
-      {quote ? (
+      {quote && (isSupplier || isBuyer) ? (
         <Stack spacing={3}>
           <QuoteCurrencyValidUntilFields
             companyId={companyId}
@@ -145,7 +187,7 @@ export function QuoteDetailPage() {
                       materialRequestId={quote.materialRequestId}
                       currency={quote.currency}
                       lines={quote.lines}
-                      requestLines={request?.lines ?? []}
+                      requestLines={requestLines}
                       editable={canEdit}
                     />
                     <QuoteNotesField

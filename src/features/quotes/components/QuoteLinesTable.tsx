@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
@@ -20,7 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import type { MRT_ColumnDef } from 'material-react-table';
+import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -29,10 +29,12 @@ import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteQuoteLineMutation } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
-import { SimpleTable } from '@/components/SimpleTable';
 import { QuoteLineFormDialog } from '@/features/quotes/components/QuoteLineFormDialog';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
+
+const PAGE_SIZE = 20;
 
 type OfferRow = {
   id: string;
@@ -150,7 +152,7 @@ export function QuoteLinesTable({
   requestLines,
   editable,
 }: QuoteLinesTableProps) {
-  const { t } = useTranslation('quotes');
+  const { t } = useTranslation(['quotes', 'enums']);
   const { enqueueSnackbar } = useSnackbar();
 
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -163,6 +165,10 @@ export function QuoteLinesTable({
     anchor: HTMLElement;
     row: OfferRow;
   } | null>(null);
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+  });
 
   const [deleteLine, deleteState] = useDeleteQuoteLineMutation();
 
@@ -183,6 +189,25 @@ export function QuoteLinesTable({
   const rows = useMemo(
     () => buildOfferRows(lines, requestLines, editable),
     [editable, lines, requestLines],
+  );
+
+  useEffect(() => {
+    const maxPageIndex = Math.max(
+      0,
+      Math.ceil(rows.length / pagination.pageSize) - 1,
+    );
+    if (pagination.pageIndex > maxPageIndex) {
+      setPagination((current) => ({ ...current, pageIndex: maxPageIndex }));
+    }
+  }, [rows.length, pagination.pageIndex, pagination.pageSize]);
+
+  const pagedRows = useMemo(
+    () =>
+      rows.slice(
+        pagination.pageIndex * pagination.pageSize,
+        pagination.pageIndex * pagination.pageSize + pagination.pageSize,
+      ),
+    [rows, pagination.pageIndex, pagination.pageSize],
   );
 
   const columns = useMemo<MRT_ColumnDef<OfferRow>[]>(() => {
@@ -252,7 +277,16 @@ export function QuoteLinesTable({
       {
         id: 'leadTime',
         header: t('columns.leadTime'),
-        Cell: () => '—',
+        Cell: ({ row }) => {
+          const quoteLine = row.original.quoteLine;
+          if (!quoteLine?.leadTime || !quoteLine.leadTimeUnit) {
+            return '—';
+          }
+
+          return `${quoteLine.leadTime} ${t(
+            `enums:leadTimeUnit.${quoteLine.leadTimeUnit.toLowerCase()}`,
+          )}`;
+        },
       },
       {
         id: 'notes',
@@ -439,10 +473,13 @@ export function QuoteLinesTable({
       {rows.length === 0 ? (
         <Typography color="text.secondary">{t('empty.lines')}</Typography>
       ) : (
-        <SimpleTable
+        <PaginatedTable
           columns={columns}
-          data={rows}
-          options={{ getRowId: (row) => row.id }}
+          data={pagedRows}
+          rowCount={rows.length}
+          pagination={pagination}
+          onPaginationChange={setPagination}
+          getRowId={(row) => row.id}
         />
       )}
 

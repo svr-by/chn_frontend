@@ -38,6 +38,8 @@ export interface SelectableOffer {
   maxQuantity: string;
   unitPrice: string;
   currency: string;
+  leadTime: number | null;
+  leadTimeUnit: 'DAY' | 'WEEK' | 'MONTH' | null;
 }
 
 const SELECTABLE_OFFER_STATUSES = new Set(['SUBMITTED', 'PARTIALLY_ACCEPTED']);
@@ -63,6 +65,8 @@ export function buildSelectableOffers(
           maxQuantity: offer.quantity,
           unitPrice: offer.unitPrice,
           currency: offer.currency,
+          leadTime: offer.leadTime ?? null,
+          leadTimeUnit: offer.leadTimeUnit ?? null,
         });
       }
     }
@@ -113,7 +117,7 @@ export function SelectionLineFormDialog({
   line,
   onSuccess,
 }: SelectionLineFormDialogProps) {
-  const { t } = useTranslation('selections');
+  const { t } = useTranslation(['selections', 'enums']);
   const isEdit = Boolean(line);
 
   const [addLine, addState] = useAddSelectionLineMutation();
@@ -301,20 +305,33 @@ export function SelectionLineFormDialog({
                       labelId="selection-offer-label"
                       label={t('form.offer')}
                     >
-                      {selectableOffers.map((offer) => (
-                        <MenuItem
-                          key={offer.quoteLineId}
-                          value={offer.quoteLineId}
-                        >
-                          {t('form.offerOption', {
-                            description: offer.requestLineDescription,
-                            supplier: offer.supplierName,
-                            price: offer.unitPrice,
-                            currency: offer.currency,
-                            max: offer.maxQuantity,
-                          })}
-                        </MenuItem>
-                      ))}
+                      {selectableOffers.map((offer) => {
+                        const leadTimeLabel =
+                          offer.leadTime != null && offer.leadTimeUnit
+                            ? t('form.offerLeadTime', {
+                                value: offer.leadTime,
+                                unit: t(
+                                  `enums:leadTimeUnit.${offer.leadTimeUnit.toLowerCase()}`,
+                                ),
+                              })
+                            : '';
+
+                        return (
+                          <MenuItem
+                            key={offer.quoteLineId}
+                            value={offer.quoteLineId}
+                          >
+                            {t('form.offerOption', {
+                              description: offer.requestLineDescription,
+                              supplier: offer.supplierName,
+                              price: offer.unitPrice,
+                              currency: offer.currency,
+                              max: offer.maxQuantity,
+                              leadTime: leadTimeLabel,
+                            })}
+                          </MenuItem>
+                        );
+                      })}
                     </Select>
                     {fieldState.error ? (
                       <FormHelperText>

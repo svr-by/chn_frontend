@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
+import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -44,7 +45,11 @@ export function QuoteStatusActions({
   const [submitQuote, submitState] = useSubmitQuoteMutation();
   const [deleteQuote, deleteState] = useDeleteQuoteMutation();
 
-  if (status !== 'DRAFT') {
+  const canSubmit = status === 'DRAFT';
+  const canDelete = status === 'DRAFT' || status === 'SUBMITTED';
+  const isWithdraw = status === 'SUBMITTED';
+
+  if (!canSubmit && !canDelete) {
     return null;
   }
 
@@ -56,7 +61,10 @@ export function QuoteStatusActions({
 
   async function handleDelete() {
     await deleteQuote({ companyId, quoteId, materialRequestId }).unwrap();
-    enqueueSnackbar(t('toast.deleted'), { variant: 'success' });
+    enqueueSnackbar(
+      isWithdraw ? t('toast.withdrawn') : t('toast.deleted'),
+      { variant: 'success' },
+    );
     setDeleteConfirmOpen(false);
     navigate('/app/quotes');
   }
@@ -64,21 +72,27 @@ export function QuoteStatusActions({
   return (
     <PermissionGate permission="manageQuotes">
       <Stack direction="row" spacing={1}>
-        <Button
-          variant="contained"
-          startIcon={<SendOutlinedIcon />}
-          onClick={() => setSubmitConfirmOpen(true)}
-        >
-          {t('actions.submit')}
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<DeleteOutlineOutlinedIcon />}
-          onClick={() => setDeleteConfirmOpen(true)}
-        >
-          {t('actions.delete')}
-        </Button>
+        {canSubmit ? (
+          <Button
+            variant="contained"
+            startIcon={<SendOutlinedIcon />}
+            onClick={() => setSubmitConfirmOpen(true)}
+          >
+            {t('actions.submit')}
+          </Button>
+        ) : null}
+        {canDelete ? (
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={
+              isWithdraw ? <UndoOutlinedIcon /> : <DeleteOutlineOutlinedIcon />
+            }
+            onClick={() => setDeleteConfirmOpen(true)}
+          >
+            {isWithdraw ? t('actions.withdraw') : t('actions.delete')}
+          </Button>
+        ) : null}
       </Stack>
 
       <Dialog
@@ -109,10 +123,16 @@ export function QuoteStatusActions({
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
       >
-        <DialogTitle>{t('confirm.deleteTitle')}</DialogTitle>
+        <DialogTitle>
+          {isWithdraw ? t('confirm.withdrawTitle') : t('confirm.deleteTitle')}
+        </DialogTitle>
         <DialogContent>
           <ApiErrorAlert error={deleteState.error} />
-          <Typography>{t('confirm.deleteMessage')}</Typography>
+          <Typography>
+            {isWithdraw
+              ? t('confirm.withdrawMessage')
+              : t('confirm.deleteMessage')}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmOpen(false)}>
@@ -121,11 +141,13 @@ export function QuoteStatusActions({
           <Button
             color="error"
             variant="contained"
-            startIcon={<DeleteOutlineOutlinedIcon />}
+            startIcon={
+              isWithdraw ? <UndoOutlinedIcon /> : <DeleteOutlineOutlinedIcon />
+            }
             onClick={() => void handleDelete()}
             disabled={deleteState.isLoading}
           >
-            {t('actions.delete')}
+            {isWithdraw ? t('actions.withdraw') : t('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>

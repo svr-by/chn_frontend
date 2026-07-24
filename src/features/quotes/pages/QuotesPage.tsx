@@ -29,7 +29,6 @@ const STATUS_OPTIONS: Array<SupplierQuoteStatus | 'ALL'> = [
   'PARTIALLY_ACCEPTED',
   'ACCEPTED',
   'REJECTED',
-  'EXPIRED',
 ];
 
 export function QuotesPage() {
