@@ -24,5 +24,8 @@
     "retry": "重试",
     "inactiveCompanies": "已停用",
     "companyDeactivated": "该公司已停用。请在个人资料中重新激活，或切换公司。"
+  },
+  "lineage": {
+    "open": "打开溯源"
   }
 }

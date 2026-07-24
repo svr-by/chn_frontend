@@ -25,5 +25,8 @@
     "retry": "Retry",
     "inactiveCompanies": "Inactive",
     "companyDeactivated": "This company is deactivated. Reactivate it in Profile or switch company."
+  },
+  "lineage": {
+    "open": "Open trace"
   }
 }

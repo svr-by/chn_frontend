@@ -18,6 +18,7 @@
     "offerQuantity": "报价数量",
     "unitPrice": "单价",
     "lineTotal": "行合计",
+    "leadTime": "交货期",
     "lineage": "溯源",
     "notes": "备注",
     "actions": "操作"
@@ -27,8 +28,11 @@
     "delete": "删除报价",
     "addLine": "添加行",
     "addOffer": "添加报价",
+    "addVariant": "添加方案",
     "editLine": "编辑",
     "deleteLine": "删除",
+    "more": "更多操作",
+    "openTrace": "打开溯源",
     "save": "保存",
     "saveHeader": "保存",
     "cancel": "取消",
@@ -55,8 +59,13 @@
     "requestLine": "申请行",
     "quantity": "数量",
     "unitPrice": "单价",
+    "leadTime": "交货期",
+    "leadTimeWeeks": "周",
+    "leadTimeHint": "暂不保存 — 即将支持",
     "addLineTitle": "添加报价",
-    "editLineTitle": "编辑报价"
+    "addVariantTitle": "添加报价方案",
+    "editLineTitle": "编辑报价",
+    "variantCount": "{{count}}/{{max}} 个报价"
   },
   "confirm": {
     "submitTitle": "提交报价",
@@ -100,6 +109,7 @@
     "lineAdded": "报价行已添加",
     "lineUpdated": "报价行已更新",
     "lineDeleted": "报价行已删除",
-    "notFound": "未找到报价"
+    "notFound": "未找到报价",
+    "notAvailable": "此报价不可用"
   }
 }

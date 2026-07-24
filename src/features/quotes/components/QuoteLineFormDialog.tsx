@@ -8,6 +8,7 @@ import {
   DialogContent,
   DialogTitle,
   FormControl,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
@@ -27,6 +28,7 @@ import {
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalInput } from '@/components/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
+import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
 
 const lineSchema = z.object({
   requestLineId: z.string().uuid(),
@@ -36,6 +38,7 @@ const lineSchema = z.object({
   unitPrice: z.string().refine(isValidDecimal, {
     message: 'Invalid unit price',
   }),
+  leadTimeWeeks: z.string().trim().optional(),
   notes: z.string().trim().optional(),
 });
 
@@ -47,8 +50,9 @@ interface QuoteLineFormDialogProps {
   companyId: string;
   quoteId: string;
   materialRequestId: string;
+  currency: string;
   requestLines: RequestLine[];
-  existingLineIds: string[];
+  quoteLineCountByRequestLineId: Map<string, number>;
   line?: QuoteLine | null;
   initialRequestLineId?: string | null;
   onSuccess?: () => void;
@@ -60,8 +64,9 @@ export function QuoteLineFormDialog({
   companyId,
   quoteId,
   materialRequestId,
+  currency,
   requestLines,
-  existingLineIds,
+  quoteLineCountByRequestLineId,
   line,
   initialRequestLineId,
   onSuccess,
@@ -86,6 +91,7 @@ export function QuoteLineFormDialog({
       requestLineId: '',
       quantity: '',
       unitPrice: '',
+      leadTimeWeeks: '',
       notes: '',
     },
   });
@@ -96,14 +102,25 @@ export function QuoteLineFormDialog({
 
   const availableRequestLines = useMemo(
     () =>
-      requestLines.filter((requestLine) =>
-        isEdit
-          ? requestLine.id === line?.requestLineId ||
-            !existingLineIds.includes(requestLine.id)
-          : !existingLineIds.includes(requestLine.id),
-      ),
-    [existingLineIds, isEdit, line?.requestLineId, requestLines],
+      requestLines.filter((requestLine) => {
+        if (isEdit) {
+          return requestLine.id === line?.requestLineId;
+        }
+        const count = quoteLineCountByRequestLineId.get(requestLine.id) ?? 0;
+        return count < MAX_QUOTE_LINE_VARIANTS;
+      }),
+    [isEdit, line?.requestLineId, quoteLineCountByRequestLineId, requestLines],
   );
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    addState.reset();
+    updateState.reset();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- clear stale mutation errors when dialog opens
+  }, [open]);
 
   useEffect(() => {
     if (!open) {
@@ -126,6 +143,7 @@ export function QuoteLineFormDialog({
       requestLineId: preferredRequestLineId,
       quantity: line?.quantity ?? preferredRequestLine?.quantity ?? '',
       unitPrice: line?.unitPrice ?? '',
+      leadTimeWeeks: '',
       notes: line?.notes ?? '',
     });
   }, [
@@ -152,6 +170,16 @@ export function QuoteLineFormDialog({
 
   const pageError = addState.error ?? updateState.error;
   const isSubmitting = addState.isLoading || updateState.isLoading;
+  const isAddingVariant =
+    !isEdit &&
+    Boolean(initialRequestLineId) &&
+    (quoteLineCountByRequestLineId.get(initialRequestLineId ?? '') ?? 0) > 0;
+
+  function handleClose() {
+    addState.reset();
+    updateState.reset();
+    onClose();
+  }
 
   async function onSubmit(values: LineFormValues) {
     const mutationArgs = {
@@ -179,13 +207,17 @@ export function QuoteLineFormDialog({
     }
 
     onSuccess?.();
-    onClose();
+    handleClose();
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>
-        {isEdit ? t('form.editLineTitle') : t('form.addLineTitle')}
+        {isEdit
+          ? t('form.editLineTitle')
+          : isAddingVariant
+            ? t('form.addVariantTitle')
+            : t('form.addLineTitle')}
       </DialogTitle>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
@@ -203,13 +235,23 @@ export function QuoteLineFormDialog({
                     {...field}
                     labelId="quote-request-line-label"
                     label={t('form.requestLine')}
-                    disabled={isEdit}
+                    disabled={isEdit || Boolean(initialRequestLineId)}
                   >
-                    {availableRequestLines.map((requestLine) => (
-                      <MenuItem key={requestLine.id} value={requestLine.id}>
-                        #{requestLine.lineNumber} — {requestLine.description}
-                      </MenuItem>
-                    ))}
+                    {availableRequestLines.map((requestLine) => {
+                      const count =
+                        quoteLineCountByRequestLineId.get(requestLine.id) ?? 0;
+                      return (
+                        <MenuItem key={requestLine.id} value={requestLine.id}>
+                          #{requestLine.lineNumber} — {requestLine.description}
+                          {count > 0
+                            ? ` (${t('form.variantCount', {
+                                count,
+                                max: MAX_QUOTE_LINE_VARIANTS,
+                              })})`
+                            : ''}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 )}
               />
@@ -235,6 +277,26 @@ export function QuoteLineFormDialog({
               }
               error={Boolean(errors.unitPrice)}
               helperText={errors.unitPrice?.message}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">{currency}</InputAdornment>
+                ),
+              }}
+            />
+            <TextField
+              label={t('form.leadTime')}
+              type="number"
+              fullWidth
+              inputProps={{ min: 0, step: 1 }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {t('form.leadTimeWeeks')}
+                  </InputAdornment>
+                ),
+              }}
+              helperText={t('form.leadTimeHint')}
+              {...register('leadTimeWeeks')}
             />
             <TextField
               label={t('form.notes')}
@@ -246,11 +308,15 @@ export function QuoteLineFormDialog({
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} disabled={isSubmitting}>
+          <Button onClick={handleClose} disabled={isSubmitting}>
             {t('actions.cancel')}
           </Button>
           <Button type="submit" variant="contained" disabled={isSubmitting}>
-            {isEdit ? t('actions.save') : t('actions.addLine')}
+            {isEdit
+              ? t('actions.save')
+              : isAddingVariant
+                ? t('actions.addVariant')
+                : t('actions.addLine')}
           </Button>
         </DialogActions>
       </Box>

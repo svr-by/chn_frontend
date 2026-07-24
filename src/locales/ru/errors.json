@@ -17,6 +17,8 @@
   "PARTNER_ONLY_INITIATOR_CAN_CANCEL": "Отменить приглашение может только пригласившая компания.",
   "PARTNER_INVITATION_NOT_PENDING": "Это приглашение уже не ожидает ответа.",
   "PARTNER_LINK_NOT_FOUND": "Связь с партнёром не найдена.",
+  "QUOTE_NOT_FOUND": "Это коммерческое предложение недоступно.",
+  "DOCUMENT_NOT_ACCESSIBLE": "Этот документ недоступен.",
   "QUOTE_EXISTS_CANNOT_REDISTRIBUTE": "Нельзя изменить распределение: у поставщика уже есть отправленное КП.",
   "QUOTE_EXISTS_CANNOT_DELETE_DISTRIBUTION": "Нельзя убрать поставщика: у него уже есть отправленное КП.",
   "COMPANY_INACTIVE": "Эта компания деактивирована.",

@@ -17,6 +17,8 @@
   "PARTNER_ONLY_INITIATOR_CAN_CANCEL": "Only the inviting company can cancel this invitation.",
   "PARTNER_INVITATION_NOT_PENDING": "This invitation is no longer pending.",
   "PARTNER_LINK_NOT_FOUND": "Partner link not found.",
+  "QUOTE_NOT_FOUND": "This quote is not available.",
+  "DOCUMENT_NOT_ACCESSIBLE": "This document is not available.",
   "QUOTE_EXISTS_CANNOT_REDISTRIBUTE": "Cannot change distribution because a submitted quote exists for this supplier.",
   "QUOTE_EXISTS_CANNOT_DELETE_DISTRIBUTION": "Cannot remove this supplier because a submitted quote exists.",
   "COMPANY_INACTIVE": "This company is deactivated.",

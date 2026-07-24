@@ -17,6 +17,8 @@
   "PARTNER_ONLY_INITIATOR_CAN_CANCEL": "仅邀请方可取消此邀请。",
   "PARTNER_INVITATION_NOT_PENDING": "此邀请已不再处于待处理状态。",
   "PARTNER_LINK_NOT_FOUND": "未找到合作伙伴关联。",
+  "QUOTE_NOT_FOUND": "此报价不可用。",
+  "DOCUMENT_NOT_ACCESSIBLE": "此文档不可用。",
   "QUOTE_EXISTS_CANNOT_REDISTRIBUTE": "无法更改分发：该供应商已有已提交的报价。",
   "QUOTE_EXISTS_CANNOT_DELETE_DISTRIBUTION": "无法移除此供应商：已存在已提交的报价。",
   "COMPANY_INACTIVE": "该公司已停用。",

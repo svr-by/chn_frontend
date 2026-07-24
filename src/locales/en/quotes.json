@@ -18,6 +18,7 @@
     "offerQuantity": "Offer qty",
     "unitPrice": "Unit price",
     "lineTotal": "Line total",
+    "leadTime": "Lead time",
     "lineage": "Trace",
     "notes": "Notes",
     "actions": "Actions"
@@ -27,8 +28,11 @@
     "delete": "Delete quote",
     "addLine": "Add line",
     "addOffer": "Add offer",
+    "addVariant": "Add variant",
     "editLine": "Edit",
     "deleteLine": "Delete",
+    "more": "More actions",
+    "openTrace": "Open trace",
     "save": "Save",
     "saveHeader": "Save",
     "cancel": "Cancel",
@@ -55,8 +59,13 @@
     "requestLine": "Request line",
     "quantity": "Quantity",
     "unitPrice": "Unit price",
+    "leadTime": "Lead time",
+    "leadTimeWeeks": "weeks",
+    "leadTimeHint": "Not saved yet — coming soon",
     "addLineTitle": "Add offer",
-    "editLineTitle": "Edit offer"
+    "addVariantTitle": "Add offer variant",
+    "editLineTitle": "Edit offer",
+    "variantCount": "{{count}}/{{max}} offers"
   },
   "confirm": {
     "submitTitle": "Submit quote",
@@ -100,6 +109,7 @@
     "lineAdded": "Offer added",
     "lineUpdated": "Offer updated",
     "lineDeleted": "Offer deleted",
-    "notFound": "Quote not found"
+    "notFound": "Quote not found",
+    "notAvailable": "This quote is not available"
   }
 }
