@@ -4,7 +4,8 @@ Technical guide for contributors working on the CHN frontend (`chn_frontend`).
 
 For product context see [product overview](./product-overview.md).  
 For API contracts see [API integration](./api-integration.md) and [API reference](./api-reference.md).  
-For the delivery roadmap see [implementation plan](./implementation-plan.md).
+For the delivery roadmap see [implementation plan](./implementation-plan.md).  
+For **Cursor agent rules** see [`.cursor/rules/`](../.cursor/rules/) and [`AGENTS.md`](../AGENTS.md) at the repo root.
 
 ---
 
@@ -107,6 +108,20 @@ chn_frontend/
 ```
 
 Path alias `@/` maps to `src/` (configured in `tsconfig` and `vite.config.ts`).
+
+### Feature module layout
+
+New and refactored features follow the structure in `src/features/quotes/`:
+
+```text
+features/<domain>/
+├── pages/<pageGroup>/       # Page + colocated *.test.tsx
+├── components/<group>/      # camelCase UI groups (no root barrel files)
+├── hooks/                   # Domain hooks (RTK + snackbar flows)
+└── lib/                     # Pure logic (filters, row builders)
+```
+
+Cross-feature helpers belong in `src/lib/` (e.g. `dateInput.ts`). Agent-enforced details: `.cursor/rules/feature-module-structure.mdc`.
 
 ---
 
