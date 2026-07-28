@@ -4,10 +4,13 @@ import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
+import { useGetShippableLinesQuery } from '@/api/endpoints/invoicesApi';
 import { useGetShippingInvoiceQuery } from '@/api/endpoints/shippingInvoicesApi';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { ShippingInvoiceHeaderForm } from '@/features/shipping/components/ShippingInvoiceHeaderForm';
+import { ShippingInvoiceLinesTable } from '@/features/shipping/components/ShippingInvoiceLinesTable';
 import { ShippingStatusActions } from '@/features/shipping/components/ShippingStatusActions';
 import { useCreateConsolidationFromShippingInvoice } from '@/features/consolidations/hooks/useCreateConsolidationFromShippingInvoice';
 import { PermissionGate } from '@/components/PermissionGate';
@@ -16,6 +19,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 
 export function ShippingInvoiceDetailPage() {
   const { t } = useTranslation('shipping');
+  const { t: tCollab } = useTranslation('collaboration');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { shippingInvoiceId } = useParams<{ shippingInvoiceId: string }>();
@@ -30,10 +34,18 @@ export function ShippingInvoiceDetailPage() {
   );
 
   const shippingInvoice = shippingQuery.data?.shippingInvoice;
+  const supplierInvoiceId = shippingInvoice?.supplierInvoiceId;
+  const isDraft = shippingInvoice?.status === 'DRAFT';
+  const canEdit = isDraft && hasPermission('manageShippingInvoices');
   const canCreateConsolidation =
     shippingInvoice?.status === 'DELIVERED' &&
     hasPermission('manageConsolidations');
   const showConsolidationsLink = shippingInvoice?.status === 'DELIVERED';
+
+  const shippableQuery = useGetShippableLinesQuery(
+    { companyId: companyId ?? '', invoiceId: supplierInvoiceId ?? '' },
+    { skip: !companyId || !supplierInvoiceId || !canEdit },
+  );
 
   useEffect(() => {
     if (
@@ -182,24 +194,29 @@ export function ShippingInvoiceDetailPage() {
           companyId={companyId}
           documentType="SHIPPING_INVOICE"
           documentId={shippingInvoice.id}
-          // lineageEntries={shippingInvoice.lines.map(mapNestedRequestLineToLineageEntry)}
-          // details={
-          //   <Stack spacing={3}>
-          //     <ShippingInvoiceHeaderForm
-          //       companyId={companyId}
-          //       shippingInvoice={shippingInvoice}
-          //       editable={canEdit}
-          //     />
-          //     <ShippingInvoiceLinesTable
-          //       companyId={companyId}
-          //       shippingInvoiceId={shippingInvoice.id}
-          //       supplierInvoiceId={shippingInvoice.supplierInvoiceId}
-          //       lines={shippingInvoice.lines}
-          //       shippableLines={shippableQuery.data?.lines ?? []}
-          //       editable={canEdit}
-          //     />
-          //   </Stack>
-          // }
+          extraTabs={[
+            {
+              value: 'details',
+              label: tCollab('tabs.details'),
+              panel: (
+                <Stack spacing={3}>
+                  <ShippingInvoiceHeaderForm
+                    companyId={companyId}
+                    shippingInvoice={shippingInvoice}
+                    editable={canEdit}
+                  />
+                  <ShippingInvoiceLinesTable
+                    companyId={companyId}
+                    shippingInvoiceId={shippingInvoice.id}
+                    supplierInvoiceId={shippingInvoice.supplierInvoiceId}
+                    lines={shippingInvoice.lines}
+                    shippableLines={shippableQuery.data?.lines ?? []}
+                    editable={canEdit}
+                  />
+                </Stack>
+              ),
+            },
+          ]}
         />
       ) : null}
     </DocumentDetailLayout>

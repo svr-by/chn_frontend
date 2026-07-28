@@ -4,20 +4,28 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useGetConsolidationQuery } from '@/api/endpoints/consolidationsApi';
+import {
+  useGetConsolidatableShippingInvoicesQuery,
+  useGetConsolidationQuery,
+} from '@/api/endpoints/consolidationsApi';
 import { ConsolidationStatusBadge } from '@/components/ConsolidationStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { ConsolidationHeaderForm } from '@/features/consolidations/components/ConsolidationHeaderForm';
+import { ConsolidationShippingInvoicesTable } from '@/features/consolidations/components/ConsolidationShippingInvoicesTable';
 import { ConsolidationStatusActions } from '@/features/consolidations/components/ConsolidationStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export function ConsolidationDetailPage() {
   const { t } = useTranslation('consolidations');
   const { t: tEnums } = useTranslation('enums');
+  const { t: tCollab } = useTranslation('collaboration');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { consolidationId } = useParams<{ consolidationId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const { hasPermission } = usePermissions();
 
   const consolidationQuery = useGetConsolidationQuery(
     { companyId: companyId ?? '', consolidationId: consolidationId ?? '' },
@@ -25,6 +33,13 @@ export function ConsolidationDetailPage() {
   );
 
   const consolidation = consolidationQuery.data?.consolidation;
+  const isDraft = consolidation?.status === 'DRAFT';
+  const canEdit = isDraft && hasPermission('manageConsolidations');
+
+  const consolidatableQuery = useGetConsolidatableShippingInvoicesQuery(
+    { companyId: companyId ?? '' },
+    { skip: !companyId || !canEdit },
+  );
 
   useEffect(() => {
     if (
@@ -148,29 +163,30 @@ export function ConsolidationDetailPage() {
           companyId={companyId}
           documentType="CONSOLIDATION"
           documentId={consolidation.id}
-          // extraTabs={[
-          //   {
-          //     value: 'details',
-          //     label: t('detail.details'),
-          //     panel:
-          //       <Stack spacing={3}>
-          //         <ConsolidationHeaderForm
-          //           companyId={companyId}
-          //           consolidation={consolidation}
-          //           editable={canEdit}
-          //         />
-          //         <ConsolidationShippingInvoicesTable
-          //           companyId={companyId}
-          //           consolidationId={consolidation.id}
-          //           entries={consolidation.shippingInvoices}
-          //           consolidatableInvoices={
-          //             consolidatableQuery.data?.shippingInvoices ?? []
-          //           }
-          //           editable={canEdit}
-          //         />
-          //       </Stack>,
-          //   },
-          // ]}
+          extraTabs={[
+            {
+              value: 'details',
+              label: tCollab('tabs.details'),
+              panel: (
+                <Stack spacing={3}>
+                  <ConsolidationHeaderForm
+                    companyId={companyId}
+                    consolidation={consolidation}
+                    editable={canEdit}
+                  />
+                  <ConsolidationShippingInvoicesTable
+                    companyId={companyId}
+                    consolidationId={consolidation.id}
+                    entries={consolidation.shippingInvoices}
+                    consolidatableInvoices={
+                      consolidatableQuery.data?.shippingInvoices ?? []
+                    }
+                    editable={canEdit}
+                  />
+                </Stack>
+              ),
+            },
+          ]}
         />
       ) : null}
     </DocumentDetailLayout>

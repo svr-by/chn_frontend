@@ -10,14 +10,18 @@ import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';
+import { PaymentUploadSection } from '@/features/payments/components/PaymentUploadSection';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export function PaymentDetailPage() {
   const { t } = useTranslation('payments');
+  const { t: tCollab } = useTranslation('collaboration');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { paymentId } = useParams<{ paymentId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const { hasPermission } = usePermissions();
 
   const paymentQuery = useGetPaymentQuery(
     { companyId: companyId ?? '', paymentId: paymentId ?? '' },
@@ -25,6 +29,8 @@ export function PaymentDetailPage() {
   );
 
   const payment = paymentQuery.data?.payment;
+  const canUpload =
+    payment?.status === 'PENDING' && hasPermission('managePayments');
 
   useEffect(() => {
     if (
@@ -128,16 +134,23 @@ export function PaymentDetailPage() {
           companyId={companyId}
           documentType="PAYMENT"
           documentId={payment.id}
-          // paymentInvoiceId={payment.invoiceId}
-          // details={
-          //   canUpload ? (
-          //     <PaymentUploadSection
-          //       companyId={companyId}
-          //       paymentId={payment.id}
-          //       invoiceId={payment.invoiceId}
-          //     />
-          //   ) : null
-          // }
+          extraTabs={
+            canUpload
+              ? [
+                  {
+                    value: 'details',
+                    label: tCollab('tabs.details'),
+                    panel: (
+                      <PaymentUploadSection
+                        companyId={companyId}
+                        paymentId={payment.id}
+                        invoiceId={payment.invoiceId}
+                      />
+                    ),
+                  },
+                ]
+              : undefined
+          }
         />
       ) : null}
     </DocumentDetailLayout>
