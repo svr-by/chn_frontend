@@ -7,8 +7,8 @@ import { I18nextProvider } from 'react-i18next';
 
 import { AppDateLocalizationProvider } from '@/app/AppDateLocalizationProvider';
 import { AppThemeProvider } from '@/app/AppThemeProvider';
-import { router } from '@/app/router';
-import { store } from '@/app/store';
+import { router } from '@/routes/router';
+import { store } from '@/store/store';
 import i18n from '@/app/i18n';
 
 import '@/styles/global.scss';
