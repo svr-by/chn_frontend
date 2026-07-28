@@ -1,27 +1,48 @@
 {
   "title": "Quotes",
-  "subtitle": "Supplier quotes for inbound material requests.",
+  "subtitle": "Quotes you receive from suppliers and quotes you send as a supplier.",
   "linesTitle": "Lines",
   "tabs": {
-    "details": "Details"
+    "details": "Details",
+    "inbound": "Inbound",
+    "outbound": "Outbound"
   },
   "columns": {
     "buyer": "Buyer",
+    "supplier": "Supplier",
     "request": "Request",
     "status": "Status",
     "currency": "Currency",
     "submittedAt": "Submitted",
     "createdAt": "Created",
+    "validUntil": "Valid until",
     "lineNumber": "#",
     "requestLine": "Request line",
     "quantity": "Quantity",
     "offerQuantity": "Offer qty",
+    "selectedQuantity": "Selected qty",
     "unitPrice": "Unit price",
     "lineTotal": "Line total",
     "leadTime": "Lead time",
     "lineage": "Trace",
     "notes": "Notes",
     "actions": "Actions"
+  },
+  "filters": {
+    "title": "Filters",
+    "open": "Filters",
+    "apply": "Apply",
+    "reset": "Reset",
+    "closeAriaLabel": "Close filters",
+    "supplier": "Supplier",
+    "buyer": "Buyer",
+    "currency": "Currency",
+    "createdFrom": "Created from",
+    "createdTo": "Created to",
+    "placeholders": {
+      "company": "Select company",
+      "currency": "Any currency"
+    }
   },
   "actions": {
     "submit": "Submit quote",

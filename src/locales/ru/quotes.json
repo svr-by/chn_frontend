@@ -1,27 +1,48 @@
 {
   "title": "Коммерческие предложения",
-  "subtitle": "Коммерческие предложения поставщиков по входящим заявкам на материалы.",
+  "subtitle": "Входящие КП от поставщиков и исходящие КП, которые вы отправляете как поставщик.",
   "linesTitle": "Позиции",
   "tabs": {
-    "details": "Детали"
+    "details": "Детали",
+    "inbound": "Входящие",
+    "outbound": "Исходящие"
   },
   "columns": {
     "buyer": "Покупатель",
+    "supplier": "Поставщик",
     "request": "Заявка",
     "status": "Статус",
     "currency": "Валюта",
     "submittedAt": "Отправлено",
     "createdAt": "Создано",
+    "validUntil": "Действительно до",
     "lineNumber": "#",
     "requestLine": "Позиция заявки",
     "quantity": "Количество",
     "offerQuantity": "Кол-во в КП",
+    "selectedQuantity": "Выбранное кол-во",
     "unitPrice": "Цена за единицу",
     "lineTotal": "Итого по позиции",
     "leadTime": "Срок поставки",
     "lineage": "Трассировка",
     "notes": "Примечания",
     "actions": "Действия"
+  },
+  "filters": {
+    "title": "Фильтры",
+    "open": "Фильтры",
+    "apply": "Применить",
+    "reset": "Сбросить",
+    "closeAriaLabel": "Закрыть фильтры",
+    "supplier": "Поставщик",
+    "buyer": "Покупатель",
+    "currency": "Валюта",
+    "createdFrom": "Создано с",
+    "createdTo": "Создано по",
+    "placeholders": {
+      "company": "Выберите компанию",
+      "currency": "Любая валюта"
+    }
   },
   "actions": {
     "submit": "Отправить",

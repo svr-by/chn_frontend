@@ -41,7 +41,7 @@ export function InboundRequestStatusActions({
   const [isCreating, setIsCreating] = useState(false);
 
   const quotesQuery = useListQuotesQuery(
-    { companyId, requestId, limit: 1, offset: 0 },
+    { companyId, requestId, limit: 1, offset: 0, direction: 'outbound' },
     { skip: !companyId || !requestId },
   );
 

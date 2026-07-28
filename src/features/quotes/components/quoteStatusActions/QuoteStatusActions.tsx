@@ -26,7 +26,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 interface QuoteStatusActionsProps {
   companyId: string;
   quoteId: string;
-  materialRequestId: string;
+  materialRequestId?: string;
   status: SupplierQuoteStatus;
 }
 

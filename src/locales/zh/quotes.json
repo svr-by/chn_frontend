@@ -1,27 +1,48 @@
 {
   "title": "报价",
-  "subtitle": "入站物料申请的供应商报价。",
+  "subtitle": "您收到的供应商报价以及作为供应商发出的报价。",
   "linesTitle": "行",
   "tabs": {
-    "details": "详情"
+    "details": "详情",
+    "inbound": "入站",
+    "outbound": "出站"
   },
   "columns": {
     "buyer": "买方",
+    "supplier": "供应商",
     "request": "申请",
     "status": "状态",
     "currency": "货币",
     "submittedAt": "已提交",
     "createdAt": "已创建",
+    "validUntil": "有效期至",
     "lineNumber": "#",
     "requestLine": "申请行",
     "quantity": "数量",
     "offerQuantity": "报价数量",
+    "selectedQuantity": "已选数量",
     "unitPrice": "单价",
     "lineTotal": "行合计",
     "leadTime": "交货期",
     "lineage": "溯源",
     "notes": "备注",
     "actions": "操作"
+  },
+  "filters": {
+    "title": "筛选",
+    "open": "筛选",
+    "apply": "应用",
+    "reset": "重置",
+    "closeAriaLabel": "关闭筛选",
+    "supplier": "供应商",
+    "buyer": "买方",
+    "currency": "货币",
+    "createdFrom": "创建自",
+    "createdTo": "创建至",
+    "placeholders": {
+      "company": "选择公司",
+      "currency": "任意货币"
+    }
   },
   "actions": {
     "submit": "提交报价",

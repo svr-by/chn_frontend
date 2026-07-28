@@ -6,7 +6,7 @@ import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
 import { StatusBadge } from '@/components/StatusBadge';
-import { QuoteComparisonMatrix } from '@/features/quotes/components/QuoteComparisonMatrix';
+import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import { useOpenRequestSelection } from '@/features/selections/hooks/useOpenRequestSelection';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';

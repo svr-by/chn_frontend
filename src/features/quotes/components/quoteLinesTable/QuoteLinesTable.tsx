@@ -31,116 +31,23 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
-import { QuoteLineFormDialog } from '@/features/quotes/components/QuoteLineFormDialog';
+import {
+  buildQuoteOfferRows,
+  type QuoteOfferRow,
+} from '@/features/quotes/lib/buildQuoteOfferRows';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
+import { QuoteLineFormDialog } from './QuoteLineFormDialog';
 
 const PAGE_SIZE = 20;
-
-type OfferRow = {
-  id: string;
-  requestLineId: string;
-  lineNumber: number;
-  description: string;
-  requestedQuantity: string;
-  unit: string | null;
-  quoteLine: QuoteLine | null;
-  variantIndex: number;
-  variantCount: number;
-  canAddVariant: boolean;
-  isLastInGroup: boolean;
-};
 
 interface QuoteLinesTableProps {
   companyId: string;
   quoteId: string;
-  materialRequestId: string;
+  materialRequestId?: string;
   currency: string;
   lines: QuoteLine[];
   requestLines: RequestLine[];
   editable: boolean;
-}
-
-function buildOfferRows(
-  lines: QuoteLine[],
-  requestLines: RequestLine[],
-  editable: boolean,
-): OfferRow[] {
-  const quoteLinesByRequestLineId = new Map<string, QuoteLine[]>();
-  for (const line of lines) {
-    const group = quoteLinesByRequestLineId.get(line.requestLineId) ?? [];
-    group.push(line);
-    quoteLinesByRequestLineId.set(line.requestLineId, group);
-  }
-
-  for (const group of quoteLinesByRequestLineId.values()) {
-    group.sort((a, b) => a.lineNumber - b.lineNumber);
-  }
-
-  if (requestLines.length > 0) {
-    return [...requestLines]
-      .sort((a, b) => a.lineNumber - b.lineNumber)
-      .flatMap((requestLine) => {
-        const group = quoteLinesByRequestLineId.get(requestLine.id) ?? [];
-        const variantCount = group.length;
-        const canAddVariant =
-          editable && variantCount < MAX_QUOTE_LINE_VARIANTS;
-
-        if (group.length === 0) {
-          return [
-            {
-              id: `empty-${requestLine.id}`,
-              requestLineId: requestLine.id,
-              lineNumber: requestLine.lineNumber,
-              description: requestLine.description,
-              requestedQuantity: requestLine.quantity,
-              unit: requestLine.unit ?? null,
-              quoteLine: null,
-              variantIndex: 0,
-              variantCount: 0,
-              canAddVariant,
-              isLastInGroup: true,
-            } satisfies OfferRow,
-          ];
-        }
-
-        return group.map(
-          (quoteLine, index): OfferRow => ({
-            id: quoteLine.id,
-            requestLineId: requestLine.id,
-            lineNumber: requestLine.lineNumber,
-            description: requestLine.description,
-            requestedQuantity: requestLine.quantity,
-            unit: requestLine.unit ?? null,
-            quoteLine,
-            variantIndex: index + 1,
-            variantCount,
-            canAddVariant,
-            isLastInGroup: index === group.length - 1,
-          }),
-        );
-      });
-  }
-
-  return lines.map((line, index, all) => {
-    const group = quoteLinesByRequestLineId.get(line.requestLineId) ?? [line];
-    const variantIndex = group.findIndex((item) => item.id === line.id) + 1;
-    const variantCount = group.length;
-    return {
-      id: line.id,
-      requestLineId: line.requestLineId,
-      lineNumber: line.lineNumber,
-      description: line.requestLine.description,
-      requestedQuantity: line.requestLine.quantity,
-      unit: line.requestLine.unit ?? null,
-      quoteLine: line,
-      variantIndex,
-      variantCount,
-      canAddVariant: editable && variantCount < MAX_QUOTE_LINE_VARIANTS,
-      isLastInGroup:
-        index === all.length - 1 ||
-        all[index + 1]?.requestLineId !== line.requestLineId,
-    };
-  });
 }
 
 export function QuoteLinesTable({
@@ -163,7 +70,7 @@ export function QuoteLinesTable({
   const [lineToDelete, setLineToDelete] = useState<QuoteLine | null>(null);
   const [actionsMenu, setActionsMenu] = useState<{
     anchor: HTMLElement;
-    row: OfferRow;
+    row: QuoteOfferRow;
   } | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -187,7 +94,7 @@ export function QuoteLinesTable({
   );
 
   const rows = useMemo(
-    () => buildOfferRows(lines, requestLines, editable),
+    () => buildQuoteOfferRows(lines, requestLines, editable),
     [editable, lines, requestLines],
   );
 
@@ -210,8 +117,8 @@ export function QuoteLinesTable({
     [rows, pagination.pageIndex, pagination.pageSize],
   );
 
-  const columns = useMemo<MRT_ColumnDef<OfferRow>[]>(() => {
-    const baseColumns: MRT_ColumnDef<OfferRow>[] = [
+  const columns = useMemo<MRT_ColumnDef<QuoteOfferRow>[]>(() => {
+    const baseColumns: MRT_ColumnDef<QuoteOfferRow>[] = [
       {
         id: 'lineNumber',
         header: t('columns.lineNumber'),
@@ -260,6 +167,18 @@ export function QuoteLinesTable({
           ) : (
             '—'
           ),
+      },
+      {
+        id: 'selectedQuantity',
+        header: t('columns.selectedQuantity'),
+        Cell: ({ row }) => {
+          const selectedQuantity = row.original.quoteLine?.selectedQuantity;
+          return selectedQuantity != null ? (
+            <DecimalDisplay value={selectedQuantity} />
+          ) : (
+            '—'
+          );
+        },
       },
       {
         id: 'lineTotal',

@@ -53,7 +53,7 @@ interface QuoteLineFormDialogProps {
   onClose: () => void;
   companyId: string;
   quoteId: string;
-  materialRequestId: string;
+  materialRequestId?: string;
   currency: string;
   requestLines: RequestLine[];
   quoteLineCountByRequestLineId: Map<string, number>;

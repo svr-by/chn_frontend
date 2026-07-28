@@ -4,6 +4,8 @@ import { Link, Stack, Typography } from '@mui/material';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -12,13 +14,10 @@ import { useGetInboundRequestQuery } from '@/api/endpoints/requestsApi';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { QuoteStatusActions } from '@/features/quotes/components/QuoteStatusActions';
+import { QuoteStatusActions } from '@/features/quotes/components/quoteStatusActions/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import {
-  QuoteCurrencyValidUntilFields,
-  QuoteNotesField,
-} from '../components/QuoteHeaderForm';
-import { QuoteLinesTable } from '../components/QuoteLinesTable';
+import { QuoteHeaderForm } from '@/features/quotes/components/quoteHeaderForm/QuoteHeaderForm';
+import { QuoteLinesTable } from '@/features/quotes/components/quoteLinesTable/QuoteLinesTable';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -33,12 +32,14 @@ export function QuoteDetailPage() {
   );
 
   const quote = quoteQuery.data?.quote;
-  const materialRequestId = quote?.materialRequestId;
+  const materialRequestId = quote?.materialRequest?.id;
+  const materialRequestTitle = quote?.materialRequest?.title;
+
   const isSupplier = Boolean(
-    quote && companyId && quote.supplierCompanyId === companyId,
+    quote && companyId && quote.supplierCompany?.id === companyId,
   );
   const isBuyer = Boolean(
-    quote && companyId && quote.buyerCompanyId === companyId,
+    quote && companyId && quote.buyerCompany?.id === companyId,
   );
 
   const inboundRequestQuery = useGetInboundRequestQuery(
@@ -117,7 +118,7 @@ export function QuoteDetailPage() {
           <QuoteStatusActions
             companyId={companyId}
             quoteId={quote.id}
-            materialRequestId={quote.materialRequestId}
+            materialRequestId={quote.materialRequest?.id}
             status={quote.status}
           />
         ) : null
@@ -137,7 +138,6 @@ export function QuoteDetailPage() {
               <Stack direction="row" spacing={1} alignItems="center">
                 <DescriptionOutlinedIcon fontSize="small" color="action" />
                 <Typography variant="body2" color="text.secondary">
-                  {t('detail.request')}:{' '}
                   <Link
                     component={RouterLink}
                     to={requestLink}
@@ -146,6 +146,8 @@ export function QuoteDetailPage() {
                     {isSupplier
                       ? t('detail.inboundRequest')
                       : t('detail.outboundRequest')}
+                    :{' '}
+                    {materialRequestTitle ?? '—'}
                   </Link>
                 </Typography>
               </Stack>
@@ -160,13 +162,34 @@ export function QuoteDetailPage() {
                 </Typography>
               </Stack>
             ) : null}
+            {quote.validUntil && !canEdit ? (
+              <Stack direction="row" spacing={1} alignItems="center">
+                <EventOutlinedIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {t('form.validUntil')}:{' '}
+                  {new Date(quote.validUntil).toLocaleDateString()}
+                </Typography>
+              </Stack>
+            ) : null}
+            {quote.notes && !canEdit ? (
+              <Stack direction="row" spacing={1} alignItems="flex-start">
+                <NotesOutlinedIcon fontSize="small" color="action" />
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  whiteSpace="pre-wrap"
+                >
+                  {t('form.notes')}: {quote.notes}
+                </Typography>
+              </Stack>
+            ) : null}
           </Stack>
         ) : null
       }
     >
       {quote && (isSupplier || isBuyer) ? (
         <Stack spacing={3}>
-          <QuoteCurrencyValidUntilFields
+          <QuoteHeaderForm
             companyId={companyId}
             quote={quote}
             editable={canEdit}
@@ -180,22 +203,15 @@ export function QuoteDetailPage() {
                 value: 'details',
                 label: t('tabs.details'),
                 panel: (
-                  <Stack spacing={3}>
-                    <QuoteLinesTable
-                      companyId={companyId}
-                      quoteId={quote.id}
-                      materialRequestId={quote.materialRequestId}
-                      currency={quote.currency}
-                      lines={quote.lines}
-                      requestLines={requestLines}
-                      editable={canEdit}
-                    />
-                    <QuoteNotesField
-                      companyId={companyId}
-                      quote={quote}
-                      editable={canEdit}
-                    />
-                  </Stack>
+                  <QuoteLinesTable
+                    companyId={companyId}
+                    quoteId={quote.id}
+                    materialRequestId={quote.materialRequest?.id}
+                    currency={quote.currency}
+                    lines={quote.lines}
+                    requestLines={requestLines}
+                    editable={canEdit}
+                  />
                 ),
               },
             ]}

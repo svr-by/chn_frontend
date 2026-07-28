@@ -1,4 +1,4 @@
-import { QuoteComparisonMatrix } from '@/features/quotes/components/QuoteComparisonMatrix';
+import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 
 interface RequestQuotesMatrixProps {
   companyId: string;

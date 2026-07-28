@@ -342,6 +342,7 @@ export function createQuoteLine(overrides: Partial<QuoteLine> = {}): QuoteLine {
     quantity: '10',
     unitPrice: '5.50',
     lineTotal: '55.00',
+    selectedQuantity: null,
     leadTime: null,
     leadTimeUnit: null,
     notes: null,
@@ -363,10 +364,10 @@ export function createSupplierQuote(
 ): SupplierQuote {
   return {
     id: QUOTE_ID,
-    materialRequestId: REQUEST_ID,
-    buyerCompanyId: BUYER_COMPANY_ID,
-    supplierCompanyId: SUPPLIER_COMPANY_ID,
-    createdByUserId: USER_ID,
+    createdByUser: {
+      id: USER_ID,
+      name: 'Test User',
+    },
     status: 'DRAFT',
     currency: 'USD',
     validUntil: null,
@@ -374,6 +375,11 @@ export function createSupplierQuote(
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    materialRequest: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Corp',
@@ -392,15 +398,17 @@ export function createSupplierQuoteSummary(
 ): SupplierQuoteSummary {
   return {
     id: QUOTE_ID,
-    materialRequestId: REQUEST_ID,
-    buyerCompanyId: BUYER_COMPANY_ID,
-    supplierCompanyId: SUPPLIER_COMPANY_ID,
     status: 'DRAFT',
     currency: 'USD',
     validUntil: null,
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    materialRequest: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Corp',
@@ -628,11 +636,11 @@ export function createSupplierInvoice(
 ): SupplierInvoice {
   return {
     id: INVOICE_ID,
-    materialRequestId: REQUEST_ID,
     purchaseSelectionId: SELECTION_ID,
-    buyerCompanyId: BUYER_COMPANY_ID,
-    supplierCompanyId: SUPPLIER_COMPANY_ID,
-    createdByUserId: USER_ID,
+    createdByUser: {
+      id: USER_ID,
+      name: 'Test User',
+    },
     status: 'DRAFT',
     currency: 'USD',
     invoiceNumber: null,
@@ -644,6 +652,11 @@ export function createSupplierInvoice(
     remainingAmount: '10.00',
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    materialRequest: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Co',
@@ -663,9 +676,6 @@ export function createSupplierInvoiceSummary(
 ): SupplierInvoiceSummary {
   return {
     id: INVOICE_ID,
-    materialRequestId: REQUEST_ID,
-    buyerCompanyId: BUYER_COMPANY_ID,
-    supplierCompanyId: SUPPLIER_COMPANY_ID,
     status: 'DRAFT',
     currency: 'USD',
     invoiceNumber: null,
@@ -673,6 +683,11 @@ export function createSupplierInvoiceSummary(
     confirmedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    materialRequest: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Co',
