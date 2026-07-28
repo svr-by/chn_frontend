@@ -31,6 +31,10 @@ import { useListMembersQuery } from '@/api/endpoints/membersApi';
 import { useUpdateRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { AutosaveTextField } from '@/components/AutosaveTextField';
+import {
+  dateInputToIsoEndOfDay,
+  isoToDateInputValue,
+} from '@/lib/dateInput';
 
 const PRIORITY_OPTIONS = Object.values(MaterialRequestPriority);
 const TITLE_MIN_LENGTH = 3;
@@ -43,27 +47,6 @@ interface RequestHeaderFieldsProps {
 
 function formatMemberName(firstName?: string | null, lastName?: string | null) {
   return [firstName, lastName].filter(Boolean).join(' ').trim();
-}
-
-function toDateInputValue(iso: string | null | undefined): string {
-  if (!iso) {
-    return '';
-  }
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) {
-    return '';
-  }
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-/** Local calendar date → ISO at end of that local day. */
-function toEndOfDayIso(dateInput: string): string {
-  const [year, month, day] = dateInput.split('-').map(Number);
-  const end = new Date(year, month - 1, day, 23, 59, 59, 999);
-  return end.toISOString();
 }
 
 function useRequestHeaderSave(companyId: string, request: MaterialRequest) {
@@ -223,7 +206,7 @@ export function RequestHeaderFields({
     return options;
   }, [members, request.assigneeUserId, request.assigneeUserName]);
 
-  const dueDateValue = toDateInputValue(request.dueDate);
+  const dueDateValue = isoToDateInputValue(request.dueDate);
 
   if (!editable) {
     return (
@@ -338,7 +321,7 @@ export function RequestHeaderFields({
               await save({ dueDate: null });
               return;
             }
-            await save({ dueDate: toEndOfDayIso(next) });
+            await save({ dueDate: dateInputToIsoEndOfDay(next) });
           }}
         />
       </Stack>
