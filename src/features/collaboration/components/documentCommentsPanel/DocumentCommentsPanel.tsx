@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { Box, Button, CircularProgress, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
@@ -65,24 +65,14 @@ export function DocumentCommentsPanel({
     <Stack spacing={3}>
       {error ? <ApiErrorAlert error={error as never} /> : null}
 
-      {hasMore ? (
-        <Box>
-          <Button
-            variant="outlined"
-            onClick={() => void loadMore()}
-            disabled={isLoadingMore}
-            startIcon={
-              isLoadingMore ? (
-                <CircularProgress size={16} color="inherit" />
-              ) : (
-                <KeyboardArrowUpIcon />
-              )
-            }
-          >
-            {isLoadingMore ? t('comments.loadingMore') : t('comments.loadMore')}
-          </Button>
-        </Box>
-      ) : null}
+      <CommentForm
+        companyId={companyId}
+        documentType={documentType}
+        documentId={documentId}
+        onSuccess={() => {
+          void reload();
+        }}
+      />
 
       {items.length === 0 ? (
         <Typography variant="body2" color="text.secondary">
@@ -91,7 +81,7 @@ export function DocumentCommentsPanel({
       ) : (
         <Stack spacing={2}>
           {[...items]
-            .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+            .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
             .map((comment) => (
               <CommentMessageCard
                 key={comment.id}
@@ -102,14 +92,24 @@ export function DocumentCommentsPanel({
         </Stack>
       )}
 
-      <CommentForm
-        companyId={companyId}
-        documentType={documentType}
-        documentId={documentId}
-        onSuccess={() => {
-          void reload();
-        }}
-      />
+      {hasMore ? (
+        <Box display="flex" justifyContent="center">
+          <Button
+            variant="outlined"
+            onClick={() => void loadMore()}
+            disabled={isLoadingMore}
+            startIcon={
+              isLoadingMore ? (
+                <CircularProgress size={16} color="inherit" />
+              ) : (
+                <KeyboardArrowDownIcon />
+              )
+            }
+          >
+            {isLoadingMore ? t('comments.loadingMore') : t('comments.loadMore')}
+          </Button>
+        </Box>
+      ) : null}
     </Stack>
   );
 }

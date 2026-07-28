@@ -80,7 +80,7 @@ export function CommentForm({
         label={t('comments.placeholder')}
         placeholder={t('comments.placeholder')}
         multiline
-        minRows={3}
+        minRows={2}
         fullWidth
         error={Boolean(errors.body)}
         helperText={
@@ -98,7 +98,7 @@ export function CommentForm({
       <Stack direction="row" justifyContent="flex-end">
         <Button
           type="submit"
-          variant="contained"
+          variant="outlined"
           disabled={createState.isLoading}
         >
           {t('comments.submit')}
