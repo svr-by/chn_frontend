@@ -4,6 +4,7 @@ import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 import type { Permission } from '@/types/api';
 
@@ -51,13 +52,13 @@ export const navConfig: NavItem[] = [
   //   phase: 6,
   //   icon: PlaylistAddCheckIcon,
   // },
-  // {
-  //   labelKey: 'invoices',
-  //   path: '/app/invoices',
-  //   permission: 'viewInvoices',
-  //   phase: 7,
-  //   icon: ReceiptLongIcon,
-  // },
+  {
+    labelKey: 'invoices',
+    path: '/app/invoices',
+    permission: 'viewInvoices',
+    phase: 7,
+    icon: ReceiptLongIcon,
+  },
   // {
   //   labelKey: 'payments',
   //   path: '/app/payments',
