@@ -57,7 +57,7 @@ export function InvoiceHeaderForm({
     await updateInvoice({
       companyId,
       invoiceId: invoice.id,
-      materialRequestId: invoice.materialRequestId,
+      materialRequestId: invoice.materialRequest?.id,
       purchaseSelectionId: invoice.purchaseSelectionId,
       invoiceNumber: values.invoiceNumber || null,
       notes: values.notes || null,

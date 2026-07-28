@@ -94,7 +94,10 @@ export function InvoicesPage() {
       {
         id: 'request',
         header: t('columns.request'),
-        Cell: ({ row }) => row.original.materialRequestId.slice(0, 8),
+        Cell: ({ row }) =>
+          row.original.materialRequest?.title ??
+          row.original.materialRequest?.id.slice(0, 8) ??
+          '—',
       },
       {
         accessorKey: 'status',
@@ -149,10 +152,12 @@ export function InvoicesPage() {
         sx={{ mb: 3 }}
       >
         <Box>
-          <Typography variant="h4" gutterBottom>
+          <Typography variant="h5" component="h1">
             {t('title')}
           </Typography>
-          <Typography color="text.secondary">{t('subtitle')}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t('subtitle')}
+          </Typography>
         </Box>
         {direction === 'outbound' ? (
           <PermissionGate permission="manageInvoices">

@@ -4,12 +4,16 @@ import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
+import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
 import { PermissionGate } from '@/components/PermissionGate';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
+import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderForm';
+import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTable';
+import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
@@ -26,6 +30,7 @@ const SHIPPING_ALLOWED_STATUSES = new Set([
 
 export function InvoiceDetailPage() {
   const { t } = useTranslation('invoices');
+  const { t: tCollab } = useTranslation('collaboration');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { invoiceId } = useParams<{ invoiceId: string }>();
@@ -39,7 +44,9 @@ export function InvoiceDetailPage() {
   );
 
   const invoice = invoiceQuery.data?.invoice;
-  const materialRequestId = invoice?.materialRequestId;
+  const materialRequestId = invoice?.materialRequest?.id;
+  const isDraft = invoice?.status === 'DRAFT';
+  const canEdit = isDraft && hasPermission('manageInvoices');
   const canRegisterPayment =
     invoice &&
     PAYMENT_ALLOWED_STATUSES.has(invoice.status) &&
@@ -50,9 +57,18 @@ export function InvoiceDetailPage() {
     hasPermission('manageShippingInvoices');
   const showShippingLink =
     invoice && SHIPPING_ALLOWED_STATUSES.has(invoice.status);
+  const showPayments =
+    invoice &&
+    invoice.status !== 'DRAFT' &&
+    (invoice.payments?.length ?? 0) > 0;
 
   const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
     useCreateShippingInvoiceFromInvoice();
+
+  const billableQuery = useGetBillableLinesQuery(
+    { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
+    { skip: !companyId || !materialRequestId || !canEdit },
+  );
 
   useEffect(() => {
     if (
@@ -89,7 +105,7 @@ export function InvoiceDetailPage() {
             <InvoiceStatusActions
               companyId={companyId}
               invoiceId={invoice.id}
-              materialRequestId={invoice.materialRequestId}
+              materialRequestId={materialRequestId}
               purchaseSelectionId={invoice.purchaseSelectionId}
               status={invoice.status}
             />
@@ -136,7 +152,7 @@ export function InvoiceDetailPage() {
                   to={`/app/requests/${materialRequestId}`}
                   underline="hover"
                 >
-                  {materialRequestId.slice(0, 8)}
+                  {invoice.materialRequest?.title ?? materialRequestId.slice(0, 8)}
                 </Link>
               </Typography>
             ) : null}
@@ -205,32 +221,37 @@ export function InvoiceDetailPage() {
           companyId={companyId}
           documentType="INVOICE"
           documentId={invoice.id}
-          // lineageEntries={invoice.lines.map(mapNestedRequestLineToLineageEntry)}
-          // details={
-          //   <Stack spacing={3}>
-          //     <InvoiceHeaderForm
-          //       companyId={companyId}
-          //       invoice={invoice}
-          //       editable={canEdit}
-          //     />
-          //     <InvoiceLinesTable
-          //       companyId={companyId}
-          //       invoiceId={invoice.id}
-          //       materialRequestId={invoice.materialRequestId}
-          //       purchaseSelectionId={invoice.purchaseSelectionId}
-          //       currency={invoice.currency}
-          //       lines={invoice.lines}
-          //       billableLines={billableQuery.data?.lines ?? []}
-          //       editable={canEdit}
-          //     />
-          //     {showPayments ? (
-          //       <InvoicePaymentsTable
-          //         payments={invoice.payments ?? []}
-          //         currency={invoice.currency}
-          //       />
-          //     ) : null}
-          //   </Stack>
-          // }
+          extraTabs={[
+            {
+              value: 'details',
+              label: tCollab('tabs.details'),
+              panel: (
+                <Stack spacing={3}>
+                  <InvoiceHeaderForm
+                    companyId={companyId}
+                    invoice={invoice}
+                    editable={canEdit}
+                  />
+                  <InvoiceLinesTable
+                    companyId={companyId}
+                    invoiceId={invoice.id}
+                    materialRequestId={materialRequestId ?? ''}
+                    purchaseSelectionId={invoice.purchaseSelectionId}
+                    currency={invoice.currency}
+                    lines={invoice.lines}
+                    billableLines={billableQuery.data?.lines ?? []}
+                    editable={canEdit}
+                  />
+                  {showPayments ? (
+                    <InvoicePaymentsTable
+                      payments={invoice.payments ?? []}
+                      currency={invoice.currency}
+                    />
+                  ) : null}
+                </Stack>
+              ),
+            },
+          ]}
         />
       ) : null}
 

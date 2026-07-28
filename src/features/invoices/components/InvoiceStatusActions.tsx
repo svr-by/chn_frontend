@@ -21,7 +21,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 interface InvoiceStatusActionsProps {
   companyId: string;
   invoiceId: string;
-  materialRequestId: string;
+  materialRequestId?: string;
   purchaseSelectionId: string;
   status: SupplierInvoiceStatus;
 }
