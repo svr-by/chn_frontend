@@ -19,7 +19,6 @@ import {
   MenuItem,
   Stack,
   Toolbar,
-  Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
@@ -79,14 +78,17 @@ export function AppLayout() {
   const drawer = (
     <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <Toolbar>
-        <Typography variant="h6" noWrap component="div">
-          {t('common:app.title')}
-        </Typography>
+        <Box
+          component="img"
+          src="/assets/logo_short.png"
+          alt={t('common:app.title')}
+          sx={{ height: 24, width: 'auto' }}
+        />
       </Toolbar>
       <Divider />
-      <Box sx={{ px: 2, py: 1.5, display: { xs: 'block', md: 'none' } }}>
+      {/* <Box sx={{ px: 2, py: 1.5, display: { xs: 'block', md: 'none' } }}>
         <CompanySwitcher />
-      </Box>
+      </Box> */}
       <Divider sx={{ display: { xs: 'block', md: 'none' } }} />
       <List sx={{ flex: 1, px: 1 }}>
         {/* // TODO: Uncomment this when we have a home page */}
@@ -171,7 +173,7 @@ export function AppLayout() {
             }}
           >
             <Box sx={{ display: { xs: 'none', md: 'block' }, minWidth: 0 }}>
-              <CompanySwitcher />
+              <CompanySwitcher onDark />
             </Box>
           </Box>
           <Stack direction="row" alignItems="center" spacing={0}>

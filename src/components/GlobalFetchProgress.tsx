@@ -3,6 +3,13 @@ import { LinearProgress } from '@mui/material';
 import { baseApi } from '@/api/baseApi';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
+/** Polling / background queries that should not drive the global progress bar. */
+const BACKGROUND_QUERY_ENDPOINTS = new Set([
+  'getUnreadNotificationCount',
+  'getExportJob',
+  'getImportJob',
+]);
+
 export function GlobalFetchProgress() {
   const isFetching = useAppSelector((state) => {
     const apiState = state[baseApi.reducerPath];
@@ -11,7 +18,9 @@ export function GlobalFetchProgress() {
     }
 
     const queriesPending = Object.values(apiState.queries).some(
-      (query) => query?.status === 'pending',
+      (query) =>
+        query?.status === 'pending' &&
+        !BACKGROUND_QUERY_ENDPOINTS.has(query.endpointName),
     );
     const mutationsPending = Object.values(apiState.mutations).some(
       (mutation) => mutation?.status === 'pending',

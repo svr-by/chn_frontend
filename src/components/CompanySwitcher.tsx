@@ -6,6 +6,7 @@ import {
   ListSubheader,
   MenuItem,
   Select,
+  Typography,
 } from '@mui/material';
 import type { SelectChangeEvent } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +22,12 @@ import {
 import { setActiveCompanyId } from '@/store/slices/authSlice';
 import { baseApi } from '@/api/baseApi';
 
-export function CompanySwitcher() {
+type CompanySwitcherProps = {
+  /** White text/icons for use on dark AppBar backgrounds. */
+  onDark?: boolean;
+};
+
+export function CompanySwitcher({ onDark = false }: CompanySwitcherProps) {
   const { t } = useTranslation('common');
   const dispatch = useAppDispatch();
   const activeCompanyId = useAppSelector((state) => state.auth.activeCompanyId);
@@ -68,46 +74,76 @@ export function CompanySwitcher() {
   }
 
   const selectDisabled = switcherMemberships.length <= 1;
+  const companyName = activeMembership?.company?.name;
 
   return (
     <>
-      <FormControl size="small" sx={{ minWidth: selectDisabled ? 180 : 200 }}>
-        {!selectDisabled && (
-          <InputLabel id="company-switcher-label">
+      {selectDisabled ? (
+        <Typography
+          variant="body2"
+          noWrap
+          sx={{
+            minWidth: 180,
+            ...(onDark && { color: '#fff' }),
+          }}
+        >
+          {companyName}
+        </Typography>
+      ) : (
+        <FormControl
+          size="small"
+          sx={{
+            minWidth: 200,
+            ...(onDark && { color: '#fff' }),
+          }}
+        >
+          <InputLabel
+            id="company-switcher-label"
+            sx={onDark ? { color: 'inherit' } : undefined}
+          >
             {t('app.company')}
           </InputLabel>
-        )}
-        <Select
-          labelId="company-switcher-label"
-          value={activeCompanyId ?? ''}
-          label={selectDisabled ? undefined : t('app.company')}
-          variant={selectDisabled ? 'standard' : 'outlined'}
-          disabled={selectDisabled}
-          onChange={handleChange}
-        >
-          {operationalMemberships.map((membership) => (
-            <MenuItem
-              key={membership.company?.id}
-              value={membership.company?.id ?? ''}
-            >
-              {membership.company?.name}
-            </MenuItem>
-          ))}
-          {inactiveOwnerMemberships.length > 0 && [
-            <ListSubheader key="inactive-header">
-              {t('app.inactiveCompanies')}
-            </ListSubheader>,
-            ...inactiveOwnerMemberships.map((membership) => (
+          <Select
+            labelId="company-switcher-label"
+            value={activeCompanyId ?? ''}
+            label={t('app.company')}
+            onChange={handleChange}
+            sx={
+              onDark
+                ? {
+                    color: 'inherit',
+                    '.MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'rgba(255, 255, 255, 0.5)',
+                    },
+                    '.MuiSelect-icon': { color: 'inherit' },
+                  }
+                : undefined
+            }
+          >
+            {operationalMemberships.map((membership) => (
               <MenuItem
                 key={membership.company?.id}
                 value={membership.company?.id ?? ''}
               >
                 {membership.company?.name}
               </MenuItem>
-            )),
-          ]}
-        </Select>
-      </FormControl>
+            ))}
+            {inactiveOwnerMemberships.length > 0 && [
+              <ListSubheader key="inactive-header">
+                {t('app.inactiveCompanies')}
+              </ListSubheader>,
+              ...inactiveOwnerMemberships.map((membership) => (
+                <MenuItem
+                  key={membership.company?.id}
+                  value={membership.company?.id ?? ''}
+                >
+                  {membership.company?.name}
+                </MenuItem>
+              )),
+            ]}
+          </Select>
+        </FormControl>
+      )}
       {isActiveCompanyInactive ? (
         <Alert severity="warning" sx={{ mx: 1, py: 0 }}>
           {t('app.companyDeactivated')}

@@ -73,6 +73,7 @@ function InfoRow({ icon, label, value }: InfoRowProps) {
           )
         }
         slotProps={{
+          primary: { component: 'div' },
           secondary: { component: 'div' },
         }}
       />
