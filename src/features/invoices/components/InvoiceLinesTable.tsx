@@ -26,7 +26,7 @@ interface InvoiceLinesTableProps {
   companyId: string;
   invoiceId: string;
   materialRequestId: string;
-  purchaseSelectionId: string;
+  quoteId?: string;
   currency: string;
   lines: InvoiceLine[];
   billableLines: BillableLine[];
@@ -37,7 +37,7 @@ export function InvoiceLinesTable({
   companyId,
   invoiceId,
   materialRequestId,
-  purchaseSelectionId,
+  quoteId,
   currency,
   lines,
   billableLines,
@@ -142,7 +142,7 @@ export function InvoiceLinesTable({
       invoiceId,
       lineId: lineToDelete.id,
       materialRequestId,
-      purchaseSelectionId,
+      quoteId,
     }).unwrap();
 
     enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
@@ -184,7 +184,7 @@ export function InvoiceLinesTable({
         companyId={companyId}
         invoiceId={invoiceId}
         materialRequestId={materialRequestId}
-        purchaseSelectionId={purchaseSelectionId}
+        quoteId={quoteId}
         billableLines={billableLines}
         existingSelectionLineIds={existingSelectionLineIds}
         line={editingLine}

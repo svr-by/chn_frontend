@@ -25,22 +25,12 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useGetQuoteComparisonQuery: vi.fn(),
-  useListRequestsQuery: vi.fn(),
-  useGetRequestQuery: vi.fn(),
-  useCreateRequestMutation: vi.fn(),
-  useUpdateRequestMutation: vi.fn(),
-  useAddRequestLineMutation: vi.fn(),
-  useUpdateRequestLineMutation: vi.fn(),
-  useDeleteRequestLineMutation: vi.fn(),
-  useListInboundRequestsQuery: vi.fn(),
-  useDistributeRequestMutation: vi.fn(),
 }));
 
-vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
-  useOpenRequestSelection: vi.fn(() => ({
-    openRequestSelection: vi.fn(),
-    isOpening: false,
-    error: null,
+vi.mock('@/features/quotes/hooks/useQuoteLineSelectionMap', () => ({
+  useQuoteLineSelectionMap: vi.fn(() => ({
+    selectionMap: new Map(),
+    isLoading: false,
   })),
 }));
 
@@ -90,19 +80,19 @@ describe('QuoteComparisonPage', () => {
 
     expect(screen.getByText('Bolt M8')).toBeInTheDocument();
     expect(screen.getByText('Nut M8')).toBeInTheDocument();
-    expect(screen.getByText('Supplier A')).toBeInTheDocument();
-    expect(screen.getByText('Supplier B')).toBeInTheDocument();
+    expect(screen.getAllByText('Supplier A').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('Supplier B').length).toBeGreaterThan(0);
     expect(screen.getAllByText(/1\.00/).length).toBeGreaterThan(0);
     expect(screen.getByText(/0\.90/)).toBeInTheDocument();
   });
 
-  it('shows open selection button with manageSelections', () => {
+  it('shows back to request link', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
           memberships: [
             createMembership({
-              effectivePermissions: ['viewRequests', 'manageSelections'],
+              effectivePermissions: ['viewRequests'],
             }),
           ],
         }),
@@ -125,8 +115,6 @@ describe('QuoteComparisonPage', () => {
       },
     );
 
-    expect(
-      screen.getByRole('button', { name: 'Open selection' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Back to request')).toBeInTheDocument();
   });
 });

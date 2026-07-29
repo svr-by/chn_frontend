@@ -41,8 +41,6 @@ export const SCOPE_GROUPS: ScopeGroup[] = [
       CompanyApiKeyScopesItem.manageRequests,
       CompanyApiKeyScopesItem.viewQuotes,
       CompanyApiKeyScopesItem.manageQuotes,
-      CompanyApiKeyScopesItem.viewSelections,
-      CompanyApiKeyScopesItem.manageSelections,
     ],
   },
   {
@@ -80,7 +78,6 @@ export const READ_ONLY_SCOPE_PRESET: Scope[] = [
   CompanyApiKeyScopesItem.viewProducts,
   CompanyApiKeyScopesItem.viewRequests,
   CompanyApiKeyScopesItem.viewQuotes,
-  CompanyApiKeyScopesItem.viewSelections,
   CompanyApiKeyScopesItem.viewInvoices,
   CompanyApiKeyScopesItem.viewPayments,
   CompanyApiKeyScopesItem.viewShippingInvoices,

@@ -9,7 +9,7 @@ import {
   createTestUser,
   INVOICE_ID,
   REQUEST_ID,
-  SELECTION_ID,
+  QUOTE_ID,
 } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 
@@ -61,7 +61,7 @@ describe('InvoiceStatusActions', () => {
         companyId={COMPANY_ID}
         invoiceId={INVOICE_ID}
         materialRequestId={REQUEST_ID}
-        purchaseSelectionId={SELECTION_ID}
+        quoteId={QUOTE_ID}
         status="DRAFT"
       />,
       {
@@ -78,7 +78,7 @@ describe('InvoiceStatusActions', () => {
         companyId={COMPANY_ID}
         invoiceId={INVOICE_ID}
         materialRequestId={REQUEST_ID}
-        purchaseSelectionId={SELECTION_ID}
+        quoteId={QUOTE_ID}
         status="PAID"
       />,
       {

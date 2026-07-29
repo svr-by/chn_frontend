@@ -12,9 +12,6 @@ describe('resolveDocumentPath', () => {
       `/app/requests/${REQUEST_ID}`,
     );
     expect(resolveDocumentPath('SUPPLIER_QUOTE', 'q1')).toBe('/app/quotes/q1');
-    expect(resolveDocumentPath('PURCHASE_SELECTION', 's1')).toBe(
-      '/app/selections/s1',
-    );
     expect(resolveDocumentPath('INVOICE', INVOICE_ID)).toBe(
       `/app/invoices/${INVOICE_ID}`,
     );

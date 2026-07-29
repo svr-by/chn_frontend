@@ -75,12 +75,9 @@
     "viewer": "查看者"
   },
   "activityEventType": {
-    "SELECTION_CREATED": "选择已创建",
-    "SELECTION_LINE_ADDED": "选择行已添加",
-    "SELECTION_LINE_UPDATED": "选择行已更新",
-    "SELECTION_LINE_REMOVED": "选择行已删除",
-    "SELECTION_CONFIRMED": "选择已确认",
-    "SELECTION_CANCELLED": "选择已取消",
+    "QUOTE_LINE_SELECTED": "报价行已选择",
+    "QUOTE_LINE_SELECTION_UPDATED": "报价行选择已更新",
+    "QUOTE_LINE_UNSELECTED": "报价行选择已取消",
     "INVOICE_CREATED": "发票已创建",
     "INVOICE_LINE_ADDED": "发票行已添加",
     "INVOICE_LINE_UPDATED": "发票行已更新",

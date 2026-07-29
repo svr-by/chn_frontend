@@ -75,12 +75,9 @@
     "viewer": "Viewer"
   },
   "activityEventType": {
-    "SELECTION_CREATED": "Selection created",
-    "SELECTION_LINE_ADDED": "Selection line added",
-    "SELECTION_LINE_UPDATED": "Selection line updated",
-    "SELECTION_LINE_REMOVED": "Selection line removed",
-    "SELECTION_CONFIRMED": "Selection confirmed",
-    "SELECTION_CANCELLED": "Selection cancelled",
+    "QUOTE_LINE_SELECTED": "Quote line selected",
+    "QUOTE_LINE_SELECTION_UPDATED": "Quote line selection updated",
+    "QUOTE_LINE_UNSELECTED": "Quote line unselected",
     "INVOICE_CREATED": "Invoice created",
     "INVOICE_LINE_ADDED": "Invoice line added",
     "INVOICE_LINE_UPDATED": "Invoice line updated",

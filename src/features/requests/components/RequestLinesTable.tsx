@@ -5,14 +5,15 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
   Stack,
-  Tooltip,
   Typography,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-import AddIcon from '@mui/icons-material/Add';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -20,10 +21,10 @@ import { useSnackbar } from 'notistack';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
+import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 
 const PAGE_SIZE = 20;
 
@@ -72,101 +73,35 @@ export function RequestLinesTable({
     [lines, pagination.pageIndex, pagination.pageSize],
   );
 
-  const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(() => {
-    const baseColumns: MRT_ColumnDef<RequestLine>[] = [
-      {
-        accessorKey: 'lineNumber',
-        header: t('columns.lineNumber'),
-        size: 10,
-        maxSize: 10,
-        // enableResizing: true,
-        muiTableHeadCellProps: { sx: { width: 20 } },
-        muiTableBodyCellProps: { sx: { width: 20 } },
-      },
-      {
-        accessorKey: 'description',
-        header: t('columns.description'),
-      },
-      {
-        accessorKey: 'quantity',
-        header: t('columns.quantity'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: {
-          align: 'center',
-        },
-        muiTableBodyCellProps: {
-          align: 'center',
-        },
-        Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
-      },
-      {
-        accessorKey: 'unit',
-        header: t('columns.unit'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: {
-          align: 'center',
-        },
-        muiTableBodyCellProps: {
-          align: 'center',
-        },
-        Cell: ({ cell }) => cell.getValue<string | null>() ?? '—',
-      },
-    ];
-
-    if (editable) {
-      baseColumns.push({
-        id: 'actions',
-        header: t('columns.actions'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: {
-          align: 'right',
-        },
-        muiTableBodyCellProps: {
-          align: 'right',
-        },
-        Cell: ({ row }) => (
-          <PermissionGate permission="manageRequests">
-            <Stack
-              direction="row"
-              spacing={0.5}
-              sx={{ justifyContent: 'flex-end' }}
-            >
-              <Tooltip title={t('actions.editLine')}>
-                <IconButton
-                  size="small"
-                  aria-label={t('actions.editLine')}
+  const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(
+    () =>
+      createRequestLineBaseColumns(t, {
+        renderActionExtraItems: editable
+          ? (line) => (
+              <PermissionGate permission="manageRequests">
+                <MenuItem
                   onClick={() => {
-                    setEditingLine(row.original);
+                    setEditingLine(line);
                     setDialogOpen(true);
                   }}
                 >
-                  <EditOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('actions.deleteLine')}>
-                <IconButton
-                  size="small"
-                  color="error"
-                  aria-label={t('actions.deleteLine')}
-                  onClick={() => setLineToDelete(row.original)}
-                >
-                  <DeleteOutlineIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          </PermissionGate>
-        ),
-      });
-    }
-
-    return baseColumns;
-  }, [editable, t]);
+                  <ListItemIcon>
+                    <EditOutlinedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('actions.editLine')}</ListItemText>
+                </MenuItem>
+                <MenuItem onClick={() => setLineToDelete(line)}>
+                  <ListItemIcon>
+                    <DeleteOutlineIcon fontSize="small" color="error" />
+                  </ListItemIcon>
+                  <ListItemText>{t('actions.deleteLine')}</ListItemText>
+                </MenuItem>
+              </PermissionGate>
+            )
+          : undefined,
+      }),
+    [editable, t],
+  );
 
   async function handleDeleteConfirm() {
     if (!lineToDelete) {
@@ -196,6 +131,7 @@ export function RequestLinesTable({
         pagination={pagination}
         onPaginationChange={setPagination}
         getRowId={(row) => row.id}
+        layoutMode="grid"
         renderBottomToolbarCustomActions={
           editable
             ? () => (
@@ -248,7 +184,7 @@ export function RequestLinesTable({
           <Button
             color="error"
             variant="contained"
-            onClick={handleDeleteConfirm}
+            onClick={() => void handleDeleteConfirm()}
             disabled={deleteState.isLoading}
           >
             {t('actions.deleteLine')}

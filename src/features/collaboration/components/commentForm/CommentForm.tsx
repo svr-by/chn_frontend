@@ -96,7 +96,7 @@ export function CommentForm({
         inputProps={{ maxLength: MAX_COMMENT_LENGTH }}
       />
       <Stack direction="row" justifyContent="flex-end">
-        <Button
+        <Button 
           type="submit"
           variant="outlined"
           disabled={createState.isLoading}

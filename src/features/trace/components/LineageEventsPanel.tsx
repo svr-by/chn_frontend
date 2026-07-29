@@ -95,12 +95,18 @@ export function LineageEventsPanel({
                 <HistoryIcon fontSize="small" color="action" />
               </ListItemIcon>
               <ListItemText
+                slotProps={{ primary: { component: 'div' } }}
                 primary={
                   <Stack spacing={0.5}>
-                    <Typography variant="body2">
+                    <Typography variant="body2" component="span" display="block">
                       {getLineageEventLabel(event, t)}
                     </Typography>
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      component="span"
+                      color="text.secondary"
+                      display="block"
+                    >
                       {getLineageEventActorName(event, t)} ·{' '}
                       {dayjs(event.createdAt).fromNow()}
                     </Typography>

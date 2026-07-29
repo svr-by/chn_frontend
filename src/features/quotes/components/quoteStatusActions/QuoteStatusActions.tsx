@@ -19,6 +19,7 @@ import type { SupplierQuoteStatus } from '@/api/generated/models/supplierQuoteSt
 import {
   useDeleteQuoteMutation,
   useSubmitQuoteMutation,
+  useUnsubmitQuoteMutation,
 } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
@@ -28,6 +29,7 @@ interface QuoteStatusActionsProps {
   quoteId: string;
   materialRequestId?: string;
   status: SupplierQuoteStatus;
+  hasSelections?: boolean;
 }
 
 export function QuoteStatusActions({
@@ -35,21 +37,25 @@ export function QuoteStatusActions({
   quoteId,
   materialRequestId,
   status,
+  hasSelections = false,
 }: QuoteStatusActionsProps) {
   const { t } = useTranslation('quotes');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [submitConfirmOpen, setSubmitConfirmOpen] = useState(false);
+  const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const [submitQuote, submitState] = useSubmitQuoteMutation();
+  const [unsubmitQuote, unsubmitState] = useUnsubmitQuoteMutation();
   const [deleteQuote, deleteState] = useDeleteQuoteMutation();
 
   const canSubmit = status === 'DRAFT';
-  const canDelete = status === 'DRAFT' || status === 'SUBMITTED';
-  const isWithdraw = status === 'SUBMITTED';
+  const canUnsubmit = status === 'SUBMITTED' && !hasSelections;
+  const canDelete =
+    status === 'DRAFT' || (status === 'SUBMITTED' && !hasSelections);
 
-  if (!canSubmit && !canDelete) {
+  if (!canSubmit && !canUnsubmit && !canDelete) {
     return null;
   }
 
@@ -59,12 +65,15 @@ export function QuoteStatusActions({
     setSubmitConfirmOpen(false);
   }
 
+  async function handleUnsubmit() {
+    await unsubmitQuote({ companyId, quoteId, materialRequestId }).unwrap();
+    enqueueSnackbar(t('toast.unsubmitted'), { variant: 'success' });
+    setUnsubmitConfirmOpen(false);
+  }
+
   async function handleDelete() {
     await deleteQuote({ companyId, quoteId, materialRequestId }).unwrap();
-    enqueueSnackbar(
-      isWithdraw ? t('toast.withdrawn') : t('toast.deleted'),
-      { variant: 'success' },
-    );
+    enqueueSnackbar(t('toast.deleted'), { variant: 'success' });
     setDeleteConfirmOpen(false);
     navigate('/app/quotes');
   }
@@ -81,16 +90,23 @@ export function QuoteStatusActions({
             {t('actions.submit')}
           </Button>
         ) : null}
+        {canUnsubmit ? (
+          <Button
+            variant="outlined"
+            startIcon={<UndoOutlinedIcon />}
+            onClick={() => setUnsubmitConfirmOpen(true)}
+          >
+            {t('actions.unsubmit')}
+          </Button>
+        ) : null}
         {canDelete ? (
           <Button
             variant="outlined"
             color="error"
-            startIcon={
-              isWithdraw ? <UndoOutlinedIcon /> : <DeleteOutlineOutlinedIcon />
-            }
+            startIcon={<DeleteOutlineOutlinedIcon />}
             onClick={() => setDeleteConfirmOpen(true)}
           >
-            {isWithdraw ? t('actions.withdraw') : t('actions.delete')}
+            {t('actions.delete')}
           </Button>
         ) : null}
       </Stack>
@@ -120,19 +136,37 @@ export function QuoteStatusActions({
       </Dialog>
 
       <Dialog
+        open={unsubmitConfirmOpen}
+        onClose={() => setUnsubmitConfirmOpen(false)}
+      >
+        <DialogTitle>{t('confirm.unsubmitTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={unsubmitState.error} />
+          <Typography>{t('confirm.unsubmitMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUnsubmitConfirmOpen(false)}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<UndoOutlinedIcon />}
+            onClick={() => void handleUnsubmit()}
+            disabled={unsubmitState.isLoading}
+          >
+            {t('actions.unsubmit')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
         open={deleteConfirmOpen}
         onClose={() => setDeleteConfirmOpen(false)}
       >
-        <DialogTitle>
-          {isWithdraw ? t('confirm.withdrawTitle') : t('confirm.deleteTitle')}
-        </DialogTitle>
+        <DialogTitle>{t('confirm.deleteTitle')}</DialogTitle>
         <DialogContent>
           <ApiErrorAlert error={deleteState.error} />
-          <Typography>
-            {isWithdraw
-              ? t('confirm.withdrawMessage')
-              : t('confirm.deleteMessage')}
-          </Typography>
+          <Typography>{t('confirm.deleteMessage')}</Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDeleteConfirmOpen(false)}>
@@ -141,13 +175,11 @@ export function QuoteStatusActions({
           <Button
             color="error"
             variant="contained"
-            startIcon={
-              isWithdraw ? <UndoOutlinedIcon /> : <DeleteOutlineOutlinedIcon />
-            }
+            startIcon={<DeleteOutlineOutlinedIcon />}
             onClick={() => void handleDelete()}
             disabled={deleteState.isLoading}
           >
-            {isWithdraw ? t('actions.withdraw') : t('actions.delete')}
+            {t('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>

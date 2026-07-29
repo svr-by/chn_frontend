@@ -102,6 +102,10 @@ export function NotificationsList({
               }}
             >
               <ListItemText
+                slotProps={{
+                  primary: { component: 'div' },
+                  secondary: { component: 'div' },
+                }}
                 primary={
                   <Stack direction="row" spacing={1} alignItems="center">
                     {isUnread ? (
@@ -117,6 +121,7 @@ export function NotificationsList({
                     ) : null}
                     <Typography
                       variant="subtitle2"
+                      component="span"
                       fontWeight={isUnread ? 600 : 400}
                     >
                       {notification.title}
@@ -126,11 +131,21 @@ export function NotificationsList({
                 secondary={
                   <Stack spacing={0.5} sx={{ mt: 0.5 }}>
                     {notification.body ? (
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography
+                        variant="body2"
+                        component="span"
+                        color="text.secondary"
+                        display="block"
+                      >
                         {notification.body}
                       </Typography>
                     ) : null}
-                    <Typography variant="caption" color="text.secondary">
+                    <Typography
+                      variant="caption"
+                      component="span"
+                      color="text.secondary"
+                      display="block"
+                    >
                       {dayjs(notification.createdAt).fromNow()}
                     </Typography>
                   </Stack>

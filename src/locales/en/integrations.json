@@ -46,8 +46,6 @@
     "manageRequests": "Manage requests",
     "viewQuotes": "View quotes",
     "manageQuotes": "Manage quotes",
-    "viewSelections": "View selections",
-    "manageSelections": "Manage selections",
     "viewInvoices": "View invoices",
     "manageInvoices": "Manage invoices",
     "viewPayments": "View payments",
@@ -150,9 +148,9 @@
     }
   },
   "webhookEventTypes": {
-    "SELECTION_CREATED": "Selection created",
-    "SELECTION_CONFIRMED": "Selection confirmed",
-    "SELECTION_CANCELLED": "Selection cancelled",
+    "QUOTE_LINE_SELECTED": "Quote line selected",
+    "QUOTE_LINE_SELECTION_UPDATED": "Quote line selection updated",
+    "QUOTE_LINE_UNSELECTED": "Quote line unselected",
     "INVOICE_CREATED": "Invoice created",
     "INVOICE_ISSUED": "Invoice issued",
     "INVOICE_CONFIRMED": "Invoice confirmed",

@@ -37,6 +37,7 @@ import {
 } from '@/features/quotes/lib/buildQuoteOfferRows';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
 import { QuoteLineFormDialog } from './QuoteLineFormDialog';
+import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
 
 const PAGE_SIZE = 20;
 
@@ -48,6 +49,8 @@ interface QuoteLinesTableProps {
   lines: QuoteLine[];
   requestLines: RequestLine[];
   editable: boolean;
+  selectionMode?: 'none' | 'buyer' | 'supplier';
+  selectionEnabled?: boolean;
 }
 
 export function QuoteLinesTable({
@@ -58,6 +61,8 @@ export function QuoteLinesTable({
   lines,
   requestLines,
   editable,
+  selectionMode = 'none',
+  selectionEnabled = false,
 }: QuoteLinesTableProps) {
   const { t } = useTranslation(['quotes', 'enums']);
   const { enqueueSnackbar } = useSnackbar();
@@ -120,99 +125,6 @@ export function QuoteLinesTable({
   const columns = useMemo<MRT_ColumnDef<QuoteOfferRow>[]>(() => {
     const baseColumns: MRT_ColumnDef<QuoteOfferRow>[] = [
       {
-        id: 'lineNumber',
-        header: t('columns.lineNumber'),
-        size: 72,
-        Cell: ({ row }) => {
-          const { lineNumber, variantIndex, variantCount } = row.original;
-          if (variantCount > 1) {
-            return `${lineNumber}.${variantIndex}`;
-          }
-          return lineNumber;
-        },
-      },
-      {
-        accessorKey: 'description',
-        header: t('columns.requestLine'),
-      },
-      {
-        id: 'requestedQuantity',
-        header: t('columns.quantity'),
-        Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.requestedQuantity} />
-            {row.original.unit ? ` ${row.original.unit}` : ''}
-          </>
-        ),
-      },
-      {
-        id: 'unitPrice',
-        header: t('columns.unitPrice'),
-        Cell: ({ row }) =>
-          row.original.quoteLine ? (
-            <>
-              <DecimalDisplay value={row.original.quoteLine.unitPrice} />{' '}
-              {currency}
-            </>
-          ) : (
-            '—'
-          ),
-      },
-      {
-        id: 'offerQuantity',
-        header: t('columns.offerQuantity'),
-        Cell: ({ row }) =>
-          row.original.quoteLine ? (
-            <DecimalDisplay value={row.original.quoteLine.quantity} />
-          ) : (
-            '—'
-          ),
-      },
-      {
-        id: 'selectedQuantity',
-        header: t('columns.selectedQuantity'),
-        Cell: ({ row }) => {
-          const selectedQuantity = row.original.quoteLine?.selectedQuantity;
-          return selectedQuantity != null ? (
-            <DecimalDisplay value={selectedQuantity} />
-          ) : (
-            '—'
-          );
-        },
-      },
-      {
-        id: 'lineTotal',
-        header: t('columns.lineTotal'),
-        Cell: ({ row }) =>
-          row.original.quoteLine ? (
-            <>
-              <DecimalDisplay value={row.original.quoteLine.lineTotal} />{' '}
-              {currency}
-            </>
-          ) : (
-            '—'
-          ),
-      },
-      {
-        id: 'leadTime',
-        header: t('columns.leadTime'),
-        Cell: ({ row }) => {
-          const quoteLine = row.original.quoteLine;
-          if (!quoteLine?.leadTime || !quoteLine.leadTimeUnit) {
-            return '—';
-          }
-
-          return `${quoteLine.leadTime} ${t(
-            `enums:leadTimeUnit.${quoteLine.leadTimeUnit.toLowerCase()}`,
-          )}`;
-        },
-      },
-      {
-        id: 'notes',
-        header: t('columns.notes'),
-        Cell: ({ row }) => row.original.quoteLine?.notes ?? '—',
-      },
-      {
         id: 'actions',
         header: t('columns.actions'),
         size: editable ? 96 : 56,
@@ -220,8 +132,10 @@ export function QuoteLinesTable({
         muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => {
           const offer = row.original;
+          const lineEditable =
+            editable && offer.quoteLine?.selectedQuantity == null;
           const showAdd =
-            editable &&
+            lineEditable &&
             (offer.quoteLine
               ? offer.canAddVariant && offer.isLastInGroup
               : true);
@@ -284,10 +198,122 @@ export function QuoteLinesTable({
           );
         },
       },
+      {
+        id: 'lineNumber',
+        header: t('columns.lineNumber'),
+        size: 72,
+        Cell: ({ row }) => {
+          const { lineNumber, variantIndex, variantCount } = row.original;
+          if (variantCount > 1) {
+            return `${lineNumber}.${variantIndex}`;
+          }
+          return lineNumber;
+        },
+      },
+      {
+        accessorKey: 'description',
+        header: t('columns.requestLine'),
+      },
+      {
+        id: 'requestedQuantity',
+        header: t('columns.quantity'),
+        Cell: ({ row }) => (
+          <>
+            <DecimalDisplay value={row.original.requestedQuantity} />
+            {row.original.unit ? ` ${row.original.unit}` : ''}
+          </>
+        ),
+      },
+      {
+        id: 'offerQuantity',
+        header: t('columns.offerQuantity'),
+        Cell: ({ row }) =>
+          row.original.quoteLine ? (
+            <DecimalDisplay value={row.original.quoteLine.quantity} />
+          ) : (
+            '—'
+          ),
+      },
+      {
+        id: 'unitPrice',
+        header: t('columns.unitPrice'),
+        Cell: ({ row }) =>
+          row.original.quoteLine ? (
+            <>
+              <DecimalDisplay value={row.original.quoteLine.unitPrice} />{' '}
+              {currency}
+            </>
+          ) : (
+            '—'
+          ),
+      },
+      {
+        id: 'lineTotal',
+        header: t('columns.lineTotal'),
+        Cell: ({ row }) =>
+          row.original.quoteLine ? (
+            <>
+              <DecimalDisplay value={row.original.quoteLine.lineTotal} />{' '}
+              {currency}
+            </>
+          ) : (
+            '—'
+          ),
+      },
+      {
+        id: 'selectedQuantity',
+        header: t('columns.selectedQuantity'),
+        Cell: ({ row }) => {
+          const quoteLine = row.original.quoteLine;
+          if (!quoteLine) {
+            return '—';
+          }
+
+          if (selectionMode === 'buyer') {
+            return (
+              <QuoteLineSelectionCell
+                companyId={companyId}
+                quoteId={quoteId}
+                lineId={quoteLine.id}
+                maxQuantity={quoteLine.quantity}
+                selectedQuantity={quoteLine.selectedQuantity}
+                materialRequestId={materialRequestId}
+                disabled={!selectionEnabled}
+              />
+            );
+          }
+
+          const selectedQuantity = quoteLine.selectedQuantity;
+          return selectedQuantity != null ? (
+            <DecimalDisplay value={selectedQuantity} />
+          ) : (
+            '—'
+          );
+        },
+      },
+      {
+        id: 'leadTime',
+        header: t('columns.leadTime'),
+        Cell: ({ row }) => {
+          const quoteLine = row.original.quoteLine;
+          if (!quoteLine?.leadTime || !quoteLine.leadTimeUnit) {
+            return '—';
+          }
+
+          return `${quoteLine.leadTime} ${t(
+            `enums:leadTimeUnit.${quoteLine.leadTimeUnit.toLowerCase()}`,
+          )}`;
+        },
+      },
+      {
+        id: 'notes',
+        header: t('columns.notes'),
+        Cell: ({ row }) => row.original.quoteLine?.notes ?? '—',
+      },
     ];
 
     return baseColumns;
-  }, [actionsMenu?.row.id, currency, editable, t]);
+  }, [actionsMenu?.row.id, currency, editable, selectionEnabled, selectionMode, companyId, quoteId, materialRequestId, t]);
 
   function closeActionsMenu() {
     setActionsMenu(null);
@@ -359,7 +385,7 @@ export function QuoteLinesTable({
             <ListItemText>{t('actions.openTrace')}</ListItemText>
           </MenuItem>
         ) : null}
-        {editable && menuQuoteLine ? (
+        {editable && menuQuoteLine && menuQuoteLine.selectedQuantity == null ? (
           <PermissionGate permission="manageQuotes">
             <MenuItem
               onClick={() => {

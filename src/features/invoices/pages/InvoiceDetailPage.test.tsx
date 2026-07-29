@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
+import { useGetQuoteBillableLinesQuery, useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceDetailPage } from '@/features/invoices/pages/InvoiceDetailPage';
 import {
@@ -25,8 +25,9 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
   };
 });
 
-vi.mock('@/api/endpoints/requestsApi', () => ({
-  useGetBillableLinesQuery: vi.fn(),
+vi.mock('@/api/endpoints/quotesApi', () => ({
+  useListQuotesQuery: vi.fn(),
+  useGetQuoteBillableLinesQuery: vi.fn(),
 }));
 
 vi.mock('@/api/endpoints/invoicesApi', () => ({
@@ -95,18 +96,28 @@ vi.mock('@/api/endpoints/commentsApi', () => ({
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetInvoiceQuery = vi.mocked(useGetInvoiceQuery);
-const mockedUseGetBillableLinesQuery = vi.mocked(useGetBillableLinesQuery);
+const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
+const mockedUseGetQuoteBillableLinesQuery = vi.mocked(
+  useGetQuoteBillableLinesQuery,
+);
 
 describe('InvoiceDetailPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    mockedUseGetBillableLinesQuery.mockReturnValue({
+    mockedUseListQuotesQuery.mockReturnValue({
+      data: { quotes: [{ id: '00000000-0000-0000-0000-000000000070' }] },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListQuotesQuery>);
+
+    mockedUseGetQuoteBillableLinesQuery.mockReturnValue({
       data: { lines: [] },
       isLoading: false,
       isFetching: false,
       refetch: vi.fn(),
-    } as ReturnType<typeof useGetBillableLinesQuery>);
+    } as ReturnType<typeof useGetQuoteBillableLinesQuery>);
 
     mockedUseGetMeQuery.mockReturnValue({
       data: {

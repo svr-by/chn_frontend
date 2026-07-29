@@ -37,7 +37,6 @@ export const I18N_NAMESPACES = [
   'requests',
   'imports',
   'quotes',
-  'selections',
   'invoices',
   'payments',
   'shipping',

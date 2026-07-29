@@ -7,7 +7,6 @@ import { DocumentRelationshipsNodesItemDocumentType as DocumentTypeValues } from
 export const RELATIONSHIP_STAGE_ORDER = [
   DocumentTypeValues.MATERIAL_REQUEST,
   DocumentTypeValues.SUPPLIER_QUOTE,
-  DocumentTypeValues.PURCHASE_SELECTION,
   DocumentTypeValues.INVOICE,
   DocumentTypeValues.PAYMENT,
   DocumentTypeValues.SHIPPING_INVOICE,

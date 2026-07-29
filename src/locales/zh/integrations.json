@@ -46,8 +46,6 @@
     "manageRequests": "管理申请",
     "viewQuotes": "查看报价",
     "manageQuotes": "管理报价",
-    "viewSelections": "查看采购选择",
-    "manageSelections": "管理采购选择",
     "viewInvoices": "查看发票",
     "manageInvoices": "管理发票",
     "viewPayments": "查看付款",
@@ -150,9 +148,9 @@
     }
   },
   "webhookEventTypes": {
-    "SELECTION_CREATED": "选择已创建",
-    "SELECTION_CONFIRMED": "选择已确认",
-    "SELECTION_CANCELLED": "选择已取消",
+    "QUOTE_LINE_SELECTED": "报价行已选择",
+    "QUOTE_LINE_SELECTION_UPDATED": "报价行选择已更新",
+    "QUOTE_LINE_UNSELECTED": "报价行选择已取消",
     "INVOICE_CREATED": "发票已创建",
     "INVOICE_ISSUED": "发票已开具",
     "INVOICE_CONFIRMED": "发票已确认",

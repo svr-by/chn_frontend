@@ -57,7 +57,7 @@ interface InvoiceLineFormDialogProps {
   companyId: string;
   invoiceId: string;
   materialRequestId: string;
-  purchaseSelectionId: string;
+  quoteId?: string;
   billableLines: BillableLine[];
   existingSelectionLineIds: string[];
   line?: InvoiceLine | null;
@@ -70,7 +70,7 @@ export function InvoiceLineFormDialog({
   companyId,
   invoiceId,
   materialRequestId,
-  purchaseSelectionId,
+  quoteId,
   billableLines,
   existingSelectionLineIds,
   line,
@@ -170,7 +170,7 @@ export function InvoiceLineFormDialog({
       companyId,
       invoiceId,
       materialRequestId,
-      purchaseSelectionId,
+      quoteId,
       selectionLineId: values.selectionLineId,
       quantity: values.quantity,
       notes: values.notes || undefined,
@@ -199,7 +199,7 @@ export function InvoiceLineFormDialog({
       invoiceId,
       lineId: line.id,
       materialRequestId,
-      purchaseSelectionId,
+      quoteId,
       quantity: values.quantity,
       notes: values.notes || null,
     }).unwrap();

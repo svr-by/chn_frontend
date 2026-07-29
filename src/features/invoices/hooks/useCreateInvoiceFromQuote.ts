@@ -5,24 +5,26 @@ import type { SerializedError } from '@reduxjs/toolkit';
 import { useSnackbar } from 'notistack';
 import { useTranslation } from 'react-i18next';
 
-import { useLazyGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
+import { quotesApi, useLazyGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
 import { useCreateInvoiceMutation } from '@/api/endpoints/invoicesApi';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
-export function useCreateInvoiceFromRequest() {
+export function useCreateInvoiceFromQuote() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const { t } = useTranslation('invoices');
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const [triggerBillableLines] = useLazyGetBillableLinesQuery();
+  const [triggerBillableLines] = useLazyGetQuoteBillableLinesQuery();
   const [createInvoice, createState] = useCreateInvoiceMutation();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<
     FetchBaseQueryError | SerializedError | undefined
   >(undefined);
 
-  const createInvoiceFromRequest = useCallback(
-    async (requestId: string) => {
+  const createInvoiceFromQuote = useCallback(
+    async (materialRequestId: string, quoteId?: string) => {
       if (!companyId) {
         return;
       }
@@ -31,20 +33,40 @@ export function useCreateInvoiceFromRequest() {
       setError(undefined);
 
       try {
+        let resolvedQuoteId = quoteId;
+
+        if (!resolvedQuoteId) {
+          const listResult = await dispatch(
+            quotesApi.endpoints.listQuotes.initiate({
+              companyId,
+              requestId: materialRequestId,
+              direction: 'outbound',
+              limit: 1,
+              offset: 0,
+            }),
+          ).unwrap();
+          resolvedQuoteId = listResult.quotes[0]?.id;
+        }
+
+        if (!resolvedQuoteId) {
+          enqueueSnackbar(t('toast.noBillableLines'), { variant: 'warning' });
+          return;
+        }
+
         const billable = await triggerBillableLines({
           companyId,
-          requestId,
+          quoteId: resolvedQuoteId,
         }).unwrap();
 
         if (billable.lines.length === 0) {
           enqueueSnackbar(t('toast.noBillableLines'), { variant: 'warning' });
-          setIsCreating(false);
           return;
         }
 
         const created = await createInvoice({
           companyId,
-          materialRequestId: requestId,
+          materialRequestId,
+          quoteId: resolvedQuoteId,
         }).unwrap();
 
         navigate(`/app/invoices/${created.invoice.id}`);
@@ -57,6 +79,7 @@ export function useCreateInvoiceFromRequest() {
     [
       companyId,
       createInvoice,
+      dispatch,
       enqueueSnackbar,
       navigate,
       t,
@@ -65,7 +88,7 @@ export function useCreateInvoiceFromRequest() {
   );
 
   return {
-    createInvoiceFromRequest,
+    createInvoiceFromQuote,
     isCreating: isCreating || createState.isLoading,
     error,
   };

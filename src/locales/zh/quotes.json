@@ -16,6 +16,9 @@
     "submittedAt": "已提交",
     "createdAt": "已创建",
     "validUntil": "有效期至",
+    "createdBy": "创建者",
+    "linesCount": "行数",
+    "positionsTotal": "合计",
     "lineNumber": "#",
     "requestLine": "申请行",
     "quantity": "数量",
@@ -48,6 +51,8 @@
     "submit": "提交报价",
     "delete": "删除报价",
     "withdraw": "撤回报价",
+    "unsubmit": "退回草稿",
+    "createInvoice": "创建发票",
     "addLine": "添加行",
     "addOffer": "添加报价",
     "addVariant": "添加方案",
@@ -96,7 +101,9 @@
     "deleteTitle": "删除报价",
     "deleteMessage": "删除此草稿报价？此操作无法撤销。",
     "withdrawTitle": "撤回报价",
-    "withdrawMessage": "撤回已提交的报价？若未被选择引用，此操作无法撤销。",
+    "withdrawMessage": "撤回已提交的报价？若买方已在行上做出选择，此操作无法撤销。",
+    "unsubmitTitle": "退回草稿",
+    "unsubmitMessage": "将此报价退回草稿？退回后可再次编辑并提交。",
     "deleteLineTitle": "删除行",
     "deleteLineMessage": "从报价中移除此行？"
   },
@@ -119,9 +126,13 @@
     "columns": {
       "lineNumber": "#",
       "description": "描述",
-      "lineage": "溯源",
       "quantity": "数量",
-      "unit": "单位"
+      "supplier": "供应商",
+      "quote": "报价",
+      "unitPrice": "单价",
+      "offerQuantity": "数量",
+      "total": "合计",
+      "leadTime": "交货期"
     },
     "cell": {
       "unitPrice": "单价",
@@ -140,6 +151,26 @@
     "lineUpdated": "报价行已更新",
     "lineDeleted": "报价行已删除",
     "notFound": "未找到报价",
-    "notAvailable": "此报价不可用"
+    "notAvailable": "此报价不可用",
+    "unsubmitted": "报价已退回草稿",
+    "selectionSaved": "行已选择",
+    "selectionUpdated": "选择已更新",
+    "selectionRemoved": "选择已移除"
+  },
+  "selection": {
+    "select": "选择",
+    "edit": "编辑选择",
+    "remove": "移除选择",
+    "selectTitle": "选择行",
+    "editTitle": "编辑选择",
+    "removeTitle": "移除选择",
+    "removeMessage": "移除此报价行的选择？",
+    "quantity": "选择数量",
+    "notes": "备注",
+    "maxQuantityHint": "最大：{{quantity}}",
+    "save": "保存选择",
+    "validation": {
+      "quantity": "请输入有效数量"
+    }
   }
 }

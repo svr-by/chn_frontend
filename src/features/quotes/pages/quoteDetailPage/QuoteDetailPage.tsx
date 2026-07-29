@@ -1,16 +1,22 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Link, Stack, Typography } from '@mui/material';
+import { Button, Link, Stack, Typography } from '@mui/material';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetQuoteQuery } from '@/api/endpoints/quotesApi';
-import { useGetInboundRequestQuery } from '@/api/endpoints/requestsApi';
+import { useGetQuoteQuery, useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
+import {
+  useGetInboundRequestQuery,
+  useGetRequestQuery,
+} from '@/api/endpoints/requestsApi';
+import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { PermissionGate } from '@/components/PermissionGate';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
@@ -18,6 +24,12 @@ import { QuoteStatusActions } from '@/features/quotes/components/quoteStatusActi
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { QuoteHeaderForm } from '@/features/quotes/components/quoteHeaderForm/QuoteHeaderForm';
 import { QuoteLinesTable } from '@/features/quotes/components/quoteLinesTable/QuoteLinesTable';
+import {
+  isQuoteLineSelectionAllowed,
+  SUPPLIER_EDITABLE_QUOTE_STATUSES,
+} from '@/features/quotes/lib/quoteSelection';
+import { useCreateInvoiceFromQuote } from '@/features/invoices/hooks/useCreateInvoiceFromQuote';
+import { usePermissions } from '@/hooks/usePermissions';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -25,6 +37,9 @@ export function QuoteDetailPage() {
   const { enqueueSnackbar } = useSnackbar();
   const { quoteId } = useParams<{ quoteId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const { hasPermission } = usePermissions();
+  const { createInvoiceFromQuote, isCreating: isCreatingInvoice, error: createInvoiceError } =
+    useCreateInvoiceFromQuote();
 
   const quoteQuery = useGetQuoteQuery(
     { companyId: companyId ?? '', quoteId: quoteId ?? '' },
@@ -45,6 +60,16 @@ export function QuoteDetailPage() {
   const inboundRequestQuery = useGetInboundRequestQuery(
     { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
     { skip: !companyId || !materialRequestId || !isSupplier },
+  );
+
+  const outboundRequestQuery = useGetRequestQuery(
+    { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
+    { skip: !companyId || !materialRequestId || !isBuyer },
+  );
+
+  const billableQuery = useGetQuoteBillableLinesQuery(
+    { companyId: companyId ?? '', quoteId: quoteId ?? '' },
+    { skip: !companyId || !quoteId || !isSupplier },
   );
 
   useEffect(() => {
@@ -89,9 +114,26 @@ export function QuoteDetailPage() {
   const requestLines = isSupplier
     ? (inboundRequestQuery.data?.request.lines ?? [])
     : [];
+  const requestStatus = isBuyer
+    ? outboundRequestQuery.data?.request.status
+    : undefined;
   const canEdit =
     isSupplier &&
-    (quote?.status === 'DRAFT' || quote?.status === 'SUBMITTED');
+    quote?.status != null &&
+    SUPPLIER_EDITABLE_QUOTE_STATUSES.has(quote.status);
+  const hasSelections = quote?.lines.some(
+    (line) => line.selectedQuantity != null,
+  );
+  const hasBillableLines = (billableQuery.data?.lines.length ?? 0) > 0;
+  const canCreateInvoice =
+    isSupplier &&
+    hasPermission('manageInvoices') &&
+    Boolean(materialRequestId) &&
+    hasBillableLines;
+  const selectionEnabled =
+    isBuyer &&
+    quote?.status != null &&
+    isQuoteLineSelectionAllowed(quote.status, requestStatus);
   const requestLink = materialRequestId
     ? isSupplier
       ? `/app/requests/inbound/${materialRequestId}`
@@ -115,25 +157,34 @@ export function QuoteDetailPage() {
       backFallbackTo="/app/quotes"
       actions={
         quote && isSupplier ? (
-          <QuoteStatusActions
-            companyId={companyId}
-            quoteId={quote.id}
-            materialRequestId={quote.materialRequest?.id}
-            status={quote.status}
-          />
+          <Stack direction="row" spacing={1}>
+            <QuoteStatusActions
+              companyId={companyId}
+              quoteId={quote.id}
+              materialRequestId={quote.materialRequest?.id}
+              status={quote.status}
+              hasSelections={hasSelections}
+            />
+            {canCreateInvoice && materialRequestId ? (
+              <PermissionGate permission="manageInvoices">
+                <Button
+                  variant="outlined"
+                  startIcon={<ReceiptLongOutlinedIcon />}
+                  disabled={isCreatingInvoice}
+                  onClick={() =>
+                    void createInvoiceFromQuote(materialRequestId, quote.id)
+                  }
+                >
+                  {t('actions.createInvoice')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </Stack>
         ) : null
       }
       meta={
         quote ? (
           <Stack spacing={0.75}>
-            {counterpartyName ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <BusinessOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {counterpartyLabel}
-                </Typography>
-              </Stack>
-            ) : null}
             {requestLink ? (
               <Stack direction="row" spacing={1} alignItems="center">
                 <DescriptionOutlinedIcon fontSize="small" color="action" />
@@ -146,9 +197,17 @@ export function QuoteDetailPage() {
                     {isSupplier
                       ? t('detail.inboundRequest')
                       : t('detail.outboundRequest')}
-                    :{' '}
+                    {' '}
                     {materialRequestTitle ?? '—'}
                   </Link>
+                </Typography>
+              </Stack>
+            ) : null}
+            {counterpartyName ? (
+              <Stack direction="row" spacing={1} alignItems="center">
+                <BusinessOutlinedIcon fontSize="small" color="action" />
+                <Typography variant="body2" color="text.secondary">
+                  {counterpartyLabel}
                 </Typography>
               </Stack>
             ) : null}
@@ -189,6 +248,7 @@ export function QuoteDetailPage() {
     >
       {quote && (isSupplier || isBuyer) ? (
         <Stack spacing={3}>
+          <ApiErrorAlert error={createInvoiceError} />
           <QuoteHeaderForm
             companyId={companyId}
             quote={quote}
@@ -211,6 +271,8 @@ export function QuoteDetailPage() {
                     lines={quote.lines}
                     requestLines={requestLines}
                     editable={canEdit}
+                    selectionMode={isBuyer ? 'buyer' : 'supplier'}
+                    selectionEnabled={selectionEnabled}
                   />
                 ),
               },

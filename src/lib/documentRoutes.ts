@@ -6,8 +6,6 @@ export type DocumentDetailTab = 'comments' | 'activity' | 'trace' | 'related';
 const DOCUMENT_PATH_BUILDERS = {
   [DocumentTypeValues.MATERIAL_REQUEST]: (id: string) => `/app/requests/${id}`,
   [DocumentTypeValues.SUPPLIER_QUOTE]: (id: string) => `/app/quotes/${id}`,
-  [DocumentTypeValues.PURCHASE_SELECTION]: (id: string) =>
-    `/app/selections/${id}`,
   [DocumentTypeValues.INVOICE]: (id: string) => `/app/invoices/${id}`,
   [DocumentTypeValues.PAYMENT]: (id: string) => `/app/payments/${id}`,
   [DocumentTypeValues.SHIPPING_INVOICE]: (id: string) =>

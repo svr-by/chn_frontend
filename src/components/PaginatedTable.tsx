@@ -23,6 +23,7 @@ interface PaginatedTableProps<T extends object> {
   isFetching?: boolean;
   onRowClick?: (row: T) => void;
   getRowId?: (row: T) => string;
+  layoutMode?: MRT_TableOptions<T>['layoutMode'];
   enableColumnFilters?: boolean;
   enableRowSelection?: boolean;
   rowSelection?: MRT_RowSelectionState;
@@ -51,6 +52,7 @@ export function PaginatedTable<T extends object>({
   isFetching = false,
   onRowClick,
   getRowId,
+  layoutMode,
   enableColumnFilters,
   enableRowSelection = false,
   rowSelection,
@@ -71,6 +73,7 @@ export function PaginatedTable<T extends object>({
   const table = useAppMaterialReactTable({
     columns,
     data,
+    layoutMode,
     enableBottomToolbar: true,
     enableTopToolbar:
       enableFullScreenToggle ||

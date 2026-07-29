@@ -1,8 +1,9 @@
-import { Box, Paper, Stack, Typography } from '@mui/material';
+import { Paper, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import type { GetCompaniesCompanyIdQuotesDirection } from '@/api/generated/models/getCompaniesCompanyIdQuotesDirection';
 import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 
 interface QuoteCardProps {
@@ -24,13 +25,9 @@ export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
     ? quote.buyerCompany?.name ?? '—'
     : quote.supplierCompany?.name ?? '—';
 
-  const requestLabel =
-    quote.materialRequest?.title ??
-    quote.materialRequest?.id?.slice(0, 8) ??
-    '—';
-
   const createdAtText = formatDateTime(quote.createdAt);
   const validUntilText = formatDateTime(quote.validUntil);
+  const createdByName = quote.createdByUser?.name ?? '—';
 
   return (
     <Paper
@@ -71,18 +68,18 @@ export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
             {counterpartyName}
           </Typography>
 
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {t('columns.createdBy')}: {createdByName}
+          </Typography>
+
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {`${t('columns.positionsTotal')}: ${quote.positionsTotal} ${quote.currency} · ${t('columns.linesCount')}: ${quote.linesCount}`}
+          </Typography>
+
           <Typography variant="body2" color="text.secondary">
             {t('columns.createdAt')}: {createdAtText}
-            {' · '}
+            {' / '}
             {t('columns.validUntil')}: {validUntilText}
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {t('columns.currency')} {quote.currency}
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {t('columns.request')} {requestLabel}
           </Typography>
         </Stack>
 
@@ -91,4 +88,3 @@ export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
     </Paper>
   );
 }
-

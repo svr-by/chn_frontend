@@ -16,6 +16,9 @@
     "submittedAt": "Submitted",
     "createdAt": "Created",
     "validUntil": "Valid until",
+    "createdBy": "Created by",
+    "linesCount": "Lines",
+    "positionsTotal": "Total",
     "lineNumber": "#",
     "requestLine": "Request line",
     "quantity": "Quantity",
@@ -48,6 +51,8 @@
     "submit": "Submit quote",
     "delete": "Delete quote",
     "withdraw": "Withdraw quote",
+    "unsubmit": "Return to draft",
+    "createInvoice": "Create invoice",
     "addLine": "Add line",
     "addOffer": "Add offer",
     "addVariant": "Add variant",
@@ -96,7 +101,9 @@
     "deleteTitle": "Delete quote",
     "deleteMessage": "Delete this draft quote? This cannot be undone.",
     "withdrawTitle": "Withdraw quote",
-    "withdrawMessage": "Withdraw this submitted quote? This cannot be undone if no selections reference it.",
+    "withdrawMessage": "Withdraw this submitted quote? This cannot be undone if buyer selections exist on it.",
+    "unsubmitTitle": "Return to draft",
+    "unsubmitMessage": "Move this quote back to draft? You can edit and submit it again.",
     "deleteLineTitle": "Delete line",
     "deleteLineMessage": "Remove this offer from the quote?"
   },
@@ -119,9 +126,13 @@
     "columns": {
       "lineNumber": "#",
       "description": "Description",
-      "lineage": "Trace",
       "quantity": "Quantity",
-      "unit": "Unit"
+      "supplier": "Supplier",
+      "quote": "Quote",
+      "unitPrice": "Unit price",
+      "offerQuantity": "Qty",
+      "total": "Total",
+      "leadTime": "Lead time"
     },
     "cell": {
       "unitPrice": "Unit price",
@@ -139,7 +150,27 @@
     "lineAdded": "Offer added",
     "lineUpdated": "Offer updated",
     "lineDeleted": "Offer deleted",
+    "unsubmitted": "Quote returned to draft",
+    "selectionSaved": "Line selected",
+    "selectionUpdated": "Selection updated",
+    "selectionRemoved": "Selection removed",
     "notFound": "Quote not found",
     "notAvailable": "This quote is not available"
+  },
+  "selection": {
+    "select": "Select",
+    "edit": "Edit selection",
+    "remove": "Remove selection",
+    "selectTitle": "Select line",
+    "editTitle": "Edit selection",
+    "removeTitle": "Remove selection",
+    "removeMessage": "Remove selection from this quote line?",
+    "quantity": "Selected quantity",
+    "notes": "Notes",
+    "maxQuantityHint": "Max: {{quantity}}",
+    "save": "Save selection",
+    "validation": {
+      "quantity": "Enter a valid quantity"
+    }
   }
 }

@@ -45,13 +45,6 @@ export const navConfig: NavItem[] = [
     phase: 5,
     icon: RequestQuoteIcon,
   },
-  // {
-  //   labelKey: 'selections',
-  //   path: '/app/selections',
-  //   permission: 'viewSelections',
-  //   phase: 6,
-  //   icon: PlaylistAddCheckIcon,
-  // },
   {
     labelKey: 'invoices',
     path: '/app/invoices',

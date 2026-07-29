@@ -102,6 +102,8 @@
     "editLine": "Edit",
     "editTitle": "Edit title",
     "deleteLine": "Delete",
+    "more": "More actions",
+    "openTrace": "Open trace",
     "save": "Save",
     "saveHeader": "Save details",
     "cancel": "Cancel",
@@ -252,6 +254,7 @@
     },
     "actions": {
       "createQuote": "Create quote",
+      "submitOnCreate": "Submit on create",
       "openQuote": "Open quote",
       "reject": "Reject"
     },

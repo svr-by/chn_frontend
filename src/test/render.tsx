@@ -19,7 +19,6 @@ import '@/api/endpoints/partnersApi';
 import '@/api/endpoints/productsApi';
 import '@/api/endpoints/requestsApi';
 import '@/api/endpoints/quotesApi';
-import '@/api/endpoints/selectionsApi';
 import { authReducer } from '@/store/slices/authSlice';
 
 interface ExtendedRenderOptions extends Omit<RenderOptions, 'wrapper'> {

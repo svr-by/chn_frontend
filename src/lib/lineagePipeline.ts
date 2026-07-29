@@ -70,17 +70,25 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
     },
     {
       stage: 'selections',
-      items: trace.selections.map((selection) => ({
-        documentId: selection.selectionId,
-        label: selection.selectionId.slice(0, 8),
-        status: selection.status,
-        link:
-          resolveDocumentPath('PURCHASE_SELECTION', selection.selectionId) ??
-          '#',
-        meta: {
-          quantity: selection.line.quantity,
-        },
-      })),
+      items: trace.selections.map((selection) => {
+        const matchingQuote = trace.quotes.find(
+          (quote) => quote.line.id === selection.line.quoteLineId,
+        );
+        const quoteId = matchingQuote?.quoteId;
+
+        return {
+          documentId: selection.line.id,
+          label: selection.line.quantity,
+          status: 'selected',
+          link: quoteId
+            ? (resolveDocumentPath('SUPPLIER_QUOTE', quoteId) ?? '#')
+            : '#',
+          meta: {
+            quantity: selection.line.quantity,
+            notes: selection.line.notes ?? '',
+          },
+        };
+      }),
     },
     {
       stage: 'invoices',

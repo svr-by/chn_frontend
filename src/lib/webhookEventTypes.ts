@@ -1,9 +1,9 @@
 import { ActivityItemEventType } from '@/api/generated/models/activityItemEventType';
 
 export const WEBHOOK_EVENT_TYPES = [
-  ActivityItemEventType.SELECTION_CREATED,
-  ActivityItemEventType.SELECTION_CONFIRMED,
-  ActivityItemEventType.SELECTION_CANCELLED,
+  ActivityItemEventType.QUOTE_LINE_SELECTED,
+  ActivityItemEventType.QUOTE_LINE_SELECTION_UPDATED,
+  ActivityItemEventType.QUOTE_LINE_UNSELECTED,
   ActivityItemEventType.INVOICE_CREATED,
   ActivityItemEventType.INVOICE_ISSUED,
   ActivityItemEventType.INVOICE_CONFIRMED,

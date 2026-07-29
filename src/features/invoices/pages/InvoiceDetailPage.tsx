@@ -4,7 +4,7 @@ import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetBillableLinesQuery } from '@/api/endpoints/requestsApi';
+import { useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
 import { PermissionGate } from '@/components/PermissionGate';
@@ -15,6 +15,7 @@ import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderF
 import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTable';
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
+import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -65,9 +66,15 @@ export function InvoiceDetailPage() {
   const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
     useCreateShippingInvoiceFromInvoice();
 
-  const billableQuery = useGetBillableLinesQuery(
-    { companyId: companyId ?? '', requestId: materialRequestId ?? '' },
-    { skip: !companyId || !materialRequestId || !canEdit },
+  const { quoteId } = useSupplierQuoteForRequest(
+    companyId ?? '',
+    materialRequestId,
+    canEdit,
+  );
+
+  const billableQuery = useGetQuoteBillableLinesQuery(
+    { companyId: companyId ?? '', quoteId: quoteId ?? '' },
+    { skip: !companyId || !quoteId || !canEdit },
   );
 
   useEffect(() => {
@@ -106,7 +113,7 @@ export function InvoiceDetailPage() {
               companyId={companyId}
               invoiceId={invoice.id}
               materialRequestId={materialRequestId}
-              purchaseSelectionId={invoice.purchaseSelectionId}
+              quoteId={quoteId}
               status={invoice.status}
             />
             {canRegisterPayment ? (
@@ -153,18 +160,6 @@ export function InvoiceDetailPage() {
                   underline="hover"
                 >
                   {invoice.materialRequest?.title ?? materialRequestId.slice(0, 8)}
-                </Link>
-              </Typography>
-            ) : null}
-            {invoice.purchaseSelectionId ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.selection')}:{' '}
-                <Link
-                  component={RouterLink}
-                  to={`/app/selections/${invoice.purchaseSelectionId}`}
-                  underline="hover"
-                >
-                  {invoice.purchaseSelectionId.slice(0, 8)}
                 </Link>
               </Typography>
             ) : null}
@@ -231,12 +226,13 @@ export function InvoiceDetailPage() {
                     companyId={companyId}
                     invoice={invoice}
                     editable={canEdit}
+                    quoteId={quoteId}
                   />
                   <InvoiceLinesTable
                     companyId={companyId}
                     invoiceId={invoice.id}
                     materialRequestId={materialRequestId ?? ''}
-                    purchaseSelectionId={invoice.purchaseSelectionId}
+                    quoteId={quoteId}
                     currency={invoice.currency}
                     lines={invoice.lines}
                     billableLines={billableQuery.data?.lines ?? []}

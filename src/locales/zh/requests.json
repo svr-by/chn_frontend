@@ -102,6 +102,8 @@
     "editLine": "编辑",
     "editTitle": "编辑标题",
     "deleteLine": "删除",
+    "more": "更多操作",
+    "openTrace": "打开溯源",
     "save": "保存",
     "saveHeader": "保存详情",
     "cancel": "取消",
@@ -252,6 +254,7 @@
     },
     "actions": {
       "createQuote": "创建报价",
+      "submitOnCreate": "创建时提交",
       "openQuote": "打开报价",
       "reject": "拒绝"
     },

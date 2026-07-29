@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useListRequestsQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { useCreateInvoiceFromRequest } from '@/features/invoices/hooks/useCreateInvoiceFromRequest';
+import { useCreateInvoiceFromQuote } from '@/features/invoices/hooks/useCreateInvoiceFromQuote';
 
 interface InvoiceCreateDialogProps {
   open: boolean;
@@ -40,8 +40,8 @@ export function InvoiceCreateDialog({
     { skip: !companyId || !open },
   );
 
-  const { createInvoiceFromRequest, isCreating, error } =
-    useCreateInvoiceFromRequest();
+  const { createInvoiceFromQuote, isCreating, error } =
+    useCreateInvoiceFromQuote();
 
   const orderableRequests =
     requestsQuery.data?.requests.filter((request) =>
@@ -53,7 +53,7 @@ export function InvoiceCreateDialog({
       return;
     }
 
-    await createInvoiceFromRequest(requestId);
+    await createInvoiceFromQuote(requestId);
     onClose();
   }
 

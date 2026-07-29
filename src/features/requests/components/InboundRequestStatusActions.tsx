@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   Stack,
   TextField,
   Typography,
@@ -39,6 +41,7 @@ export function InboundRequestStatusActions({
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [submitOnCreate, setSubmitOnCreate] = useState(false);
 
   const quotesQuery = useListQuotesQuery(
     { companyId, requestId, limit: 1, offset: 0, direction: 'outbound' },
@@ -53,7 +56,11 @@ export function InboundRequestStatusActions({
   async function handleCreateQuote() {
     setIsCreating(true);
     try {
-      const result = await createQuote({ companyId, requestId }).unwrap();
+      const result = await createQuote({
+        companyId,
+        requestId,
+        submitOnCreate,
+      }).unwrap();
       enqueueSnackbar(t('inbound.toast.quoteCreated'), { variant: 'success' });
       navigate(`/app/quotes/${result.quote.id}`);
     } finally {
@@ -88,7 +95,16 @@ export function InboundRequestStatusActions({
 
   return (
     <PermissionGate permission="manageQuotes">
-      <Stack direction="row" spacing={1}>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={submitOnCreate}
+              onChange={(event) => setSubmitOnCreate(event.target.checked)}
+            />
+          }
+          label={t('inbound.actions.submitOnCreate')}
+        />
         <Button
           variant="contained"
           startIcon={<RequestQuoteOutlinedIcon />}

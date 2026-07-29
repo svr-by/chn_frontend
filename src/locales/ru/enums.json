@@ -75,12 +75,9 @@
     "viewer": "Наблюдатель"
   },
   "activityEventType": {
-    "SELECTION_CREATED": "Выбор создан",
-    "SELECTION_LINE_ADDED": "Позиция выбора добавлена",
-    "SELECTION_LINE_UPDATED": "Позиция выбора обновлена",
-    "SELECTION_LINE_REMOVED": "Позиция выбора удалена",
-    "SELECTION_CONFIRMED": "Выбор подтверждён",
-    "SELECTION_CANCELLED": "Выбор отменён",
+    "QUOTE_LINE_SELECTED": "Строка котировки выбрана",
+    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки котировки обновлён",
+    "QUOTE_LINE_UNSELECTED": "Выбор строки котировки снят",
     "INVOICE_CREATED": "Счёт создан",
     "INVOICE_LINE_ADDED": "Позиция счёта добавлена",
     "INVOICE_LINE_UPDATED": "Позиция счёта обновлена",

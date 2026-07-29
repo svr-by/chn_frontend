@@ -102,10 +102,18 @@ export function DocumentActivityPanel({
                   <Icon fontSize="small" color="action" />
                 </ListItemIcon>
                 <ListItemText
+                  slotProps={{ primary: { component: 'div' } }}
                   primary={
                     <Stack spacing={0.5}>
-                      <Typography variant="body2">{label}</Typography>
-                      <Typography variant="caption" color="text.secondary">
+                      <Typography variant="body2" component="span" display="block">
+                        {label}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        component="span"
+                        color="text.secondary"
+                        display="block"
+                      >
                         {actorName} · {dayjs(item.createdAt).fromNow()}
                       </Typography>
                     </Stack>

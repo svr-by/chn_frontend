@@ -1,32 +1,38 @@
-import { Button, Stack } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { Link as RouterLink, useParams } from 'react-router-dom';
+import { Link, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
+import type { MaterialRequestStatus } from '@/api/generated/models/materialRequestStatus';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
 import { StatusBadge } from '@/components/StatusBadge';
 import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
-import { useOpenRequestSelection } from '@/features/selections/hooks/useOpenRequestSelection';
+import { useQuoteLineSelectionMap } from '@/features/quotes/hooks/useQuoteLineSelectionMap';
+import { comparisonHasSelectableOffers } from '@/features/quotes/lib/buildQuoteComparisonRows';
+import { SELECTABLE_REQUEST_STATUSES } from '@/features/quotes/lib/quoteSelection';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 
 export function QuoteComparisonPage() {
-  const { t } = useTranslation(['quotes', 'selections']);
+  const { t } = useTranslation('quotes');
   const { requestId } = useParams<{ requestId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const {
-    openRequestSelection,
-    isOpening,
-    error: openSelectionError,
-  } = useOpenRequestSelection();
 
   const comparisonQuery = useGetQuoteComparisonQuery(
     { companyId: companyId ?? '', requestId: requestId ?? '' },
     { skip: !companyId || !requestId },
   );
 
+  const { selectionMap } = useQuoteLineSelectionMap(
+    companyId ?? '',
+    requestId ?? '',
+  );
+
   const request = comparisonQuery.data?.request;
+  const requestStatus = request?.status as MaterialRequestStatus | undefined;
+  const selectionEnabled =
+    requestStatus != null &&
+    SELECTABLE_REQUEST_STATUSES.has(requestStatus) &&
+    comparisonHasSelectableOffers(comparisonQuery.data?.lines ?? []);
 
   if (!companyId || !requestId) {
     return null;
@@ -40,26 +46,25 @@ export function QuoteComparisonPage() {
     <DocumentDetailLayout
       title={title}
       statusBadge={
-        request?.status ? <StatusBadge status={request.status} /> : undefined
+        requestStatus ? <StatusBadge status={requestStatus} /> : undefined
       }
       loading={comparisonQuery.isLoading}
-      actions={
+      backFallbackTo={`/app/requests/${requestId}`}
+      meta={
         requestId ? (
-          <PermissionGate permission="manageSelections">
-            <Button
-              variant="contained"
-              onClick={() => openRequestSelection(requestId)}
-              disabled={isOpening}
-            >
-              {t('selections:actions.openSelection')}
-            </Button>
-          </PermissionGate>
+          <Link component={RouterLink} to={`/app/requests/${requestId}`}>
+            {t('comparison.backToRequest')}
+          </Link>
         ) : null
       }
     >
       <Stack spacing={2}>
-        <ApiErrorAlert error={openSelectionError} />
-        <QuoteComparisonMatrix companyId={companyId} requestId={requestId} />
+        <QuoteComparisonMatrix
+          companyId={companyId}
+          requestId={requestId}
+          selectionEnabled={selectionEnabled}
+          selectionMap={selectionMap}
+        />
       </Stack>
     </DocumentDetailLayout>
   );

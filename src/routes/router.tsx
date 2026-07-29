@@ -18,8 +18,6 @@ import { InboundRequestsPage } from '@/features/requests/pages/InboundRequestsPa
 import { QuoteComparisonPage } from '@/features/quotes/pages/quoteComparisonPage/QuoteComparisonPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
-import { SelectionDetailPage } from '@/features/selections/pages/SelectionDetailPage';
-import { SelectionsPage } from '@/features/selections/pages/SelectionsPage';
 import { InvoicesPage } from '@/features/invoices/pages/InvoicesPage';
 import { InvoiceDetailPage } from '@/features/invoices/pages/InvoiceDetailPage';
 import { PaymentsPage } from '@/features/payments/pages/PaymentsPage';
@@ -56,7 +54,6 @@ const REQUESTS_PATH = '/app/requests';
 const REQUEST_LINES_PATH = '/app/request-lines';
 
 const QUOTES_PATH = '/app/quotes';
-const SELECTIONS_PATH = '/app/selections';
 const INVOICES_PATH = '/app/invoices';
 const PAYMENTS_PATH = '/app/payments';
 const SHIPPING_INVOICES_PATH = '/app/shipping-invoices';
@@ -74,7 +71,6 @@ const stubRoutes = navConfig
         REQUESTS_PATH,
         REQUEST_LINES_PATH,
         QUOTES_PATH,
-        SELECTIONS_PATH,
         INVOICES_PATH,
         PAYMENTS_PATH,
         SHIPPING_INVOICES_PATH,
@@ -164,11 +160,6 @@ export const router = createBrowserRouter([
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'quotes', element: <QuotesPage /> },
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
-              { path: 'selections', element: <SelectionsPage /> },
-              {
-                path: 'selections/:selectionId',
-                element: <SelectionDetailPage />,
-              },
               { path: 'invoices', element: <InvoicesPage /> },
               { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
               { path: 'payments', element: <PaymentsPage /> },

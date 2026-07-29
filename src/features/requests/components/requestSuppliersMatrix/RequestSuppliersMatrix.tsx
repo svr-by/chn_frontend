@@ -28,10 +28,10 @@ import {
   useGetRequestDistributionsQuery,
 } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestDistributeToSupplierDialog } from '@/features/requests/components/requestSuppliersMatrix/RequestDistributeToSupplierDialog';
+import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 import { usePermissions } from '@/hooks/usePermissions';
 
 const PAGE_SIZE = 20;
@@ -256,42 +256,7 @@ export function RequestSuppliersMatrix({
   }
 
   const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(() => {
-    const baseColumns: MRT_ColumnDef<RequestLine>[] = [
-      {
-        id: 'lineNumber',
-        accessorKey: 'lineNumber',
-        header: t('columns.lineNumber'),
-        size: 10,
-        maxSize: 10,
-        muiTableHeadCellProps: { sx: { width: 20 } },
-        muiTableBodyCellProps: { sx: { width: 20 } },
-      },
-      {
-        id: 'description',
-        accessorKey: 'description',
-        header: t('columns.description'),
-      },
-      {
-        id: 'quantity',
-        header: t('columns.quantity'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: { align: 'center' },
-        muiTableBodyCellProps: { align: 'center' },
-        Cell: ({ row }) => <DecimalDisplay value={row.original.quantity} />,
-      },
-      {
-        id: 'unit',
-        header: t('columns.unit'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: { align: 'center' },
-        muiTableBodyCellProps: { align: 'center' },
-        Cell: ({ row }) => row.original.unit ?? '—',
-      },
-    ];
+    const baseColumns = createRequestLineBaseColumns(t);
 
     const supplierColumns: MRT_ColumnDef<RequestLine>[] = distributions.map(
       (distribution) => {
@@ -305,6 +270,7 @@ export function RequestSuppliersMatrix({
           id: `distribution-${distribution.id}`,
           header: distribution.supplierCompany.name,
           size: 160,
+          grow: false,
           muiTableHeadCellProps: { align: 'center' },
           muiTableBodyCellProps: { align: 'center' },
           Header: () => (
@@ -444,6 +410,7 @@ export function RequestSuppliersMatrix({
           pagination={pagination}
           onPaginationChange={setPagination}
           getRowId={(row) => row.id}
+          layoutMode="grid"
           isLoading={distributionsQuery.isLoading}
           isFetching={distributionsQuery.isFetching}
           renderBottomToolbarCustomActions={

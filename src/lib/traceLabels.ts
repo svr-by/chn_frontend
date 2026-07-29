@@ -7,7 +7,6 @@ import type { TraceSearchItemPipelineStatus } from '@/api/generated/models/trace
 const DOCUMENT_STATUS_ENUM_KEYS = {
   MATERIAL_REQUEST: 'materialRequestStatus',
   SUPPLIER_QUOTE: 'supplierQuoteStatus',
-  PURCHASE_SELECTION: 'purchaseSelectionStatus',
   INVOICE: 'supplierInvoiceStatus',
   PAYMENT: 'paymentStatus',
   SHIPPING_INVOICE: 'shippingInvoiceStatus',

@@ -36,8 +36,6 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
       PermissionValues.manageRequests,
       PermissionValues.viewQuotes,
       PermissionValues.manageQuotes,
-      PermissionValues.viewSelections,
-      PermissionValues.manageSelections,
     ],
   },
   {

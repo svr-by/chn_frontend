@@ -22,7 +22,7 @@ interface InvoiceStatusActionsProps {
   companyId: string;
   invoiceId: string;
   materialRequestId?: string;
-  purchaseSelectionId: string;
+  quoteId?: string;
   status: SupplierInvoiceStatus;
 }
 
@@ -30,7 +30,7 @@ export function InvoiceStatusActions({
   companyId,
   invoiceId,
   materialRequestId,
-  purchaseSelectionId,
+  quoteId,
   status,
 }: InvoiceStatusActionsProps) {
   const { t } = useTranslation('invoices');
@@ -50,7 +50,7 @@ export function InvoiceStatusActions({
       companyId,
       invoiceId,
       materialRequestId,
-      purchaseSelectionId,
+      quoteId,
     }).unwrap();
     enqueueSnackbar(t('toast.issued'), { variant: 'success' });
     setIssueOpen(false);
@@ -61,7 +61,7 @@ export function InvoiceStatusActions({
       companyId,
       invoiceId,
       materialRequestId,
-      purchaseSelectionId,
+      quoteId,
     }).unwrap();
     enqueueSnackbar(t('toast.confirmed'), { variant: 'success' });
     setConfirmOpen(false);

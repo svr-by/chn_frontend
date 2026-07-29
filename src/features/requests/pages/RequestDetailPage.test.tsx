@@ -49,9 +49,12 @@ vi.mock('@/api/endpoints/membersApi', () => ({
 vi.mock('@/api/endpoints/requestsApi', () => {
   const emptyDistributions = { distributions: [] as const };
   const emptyQuoteComparison = {
-    request: null,
+    request: {
+      id: '00000000-0000-0000-0000-000000000050',
+      title: 'Empty request',
+      status: 'QUOTING' as const,
+    },
     lines: [] as const,
-    suppliers: [] as const,
   };
 
   return {
@@ -97,12 +100,6 @@ vi.mock('@/api/endpoints/requestsApi', () => {
       isFetching: false,
       refetch: vi.fn(),
     })),
-    useGetRequestSelectionQuery: vi.fn(() => ({
-      data: undefined,
-      isLoading: false,
-      isFetching: false,
-      refetch: vi.fn(),
-    })),
   };
 });
 
@@ -112,14 +109,6 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
     isLoading: false,
     isFetching: false,
     refetch: vi.fn(),
-  })),
-}));
-
-vi.mock('@/features/selections/hooks/useOpenRequestSelection', () => ({
-  useOpenRequestSelection: vi.fn(() => ({
-    openRequestSelection: vi.fn(),
-    isOpening: false,
-    error: null,
   })),
 }));
 

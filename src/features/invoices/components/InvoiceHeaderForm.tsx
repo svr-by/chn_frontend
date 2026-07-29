@@ -21,12 +21,14 @@ interface InvoiceHeaderFormProps {
   companyId: string;
   invoice: SupplierInvoice;
   editable: boolean;
+  quoteId?: string;
 }
 
 export function InvoiceHeaderForm({
   companyId,
   invoice,
   editable,
+  quoteId,
 }: InvoiceHeaderFormProps) {
   const { t } = useTranslation('invoices');
   const { enqueueSnackbar } = useSnackbar();
@@ -58,7 +60,7 @@ export function InvoiceHeaderForm({
       companyId,
       invoiceId: invoice.id,
       materialRequestId: invoice.materialRequest?.id,
-      purchaseSelectionId: invoice.purchaseSelectionId,
+      quoteId,
       invoiceNumber: values.invoiceNumber || null,
       notes: values.notes || null,
     }).unwrap();

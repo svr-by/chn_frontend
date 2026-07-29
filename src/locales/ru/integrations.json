@@ -46,8 +46,6 @@
     "manageRequests": "Управление заявками",
     "viewQuotes": "Просмотр коммерческих предложений",
     "manageQuotes": "Управление коммерческими предложениями",
-    "viewSelections": "Просмотр выбора предложений",
-    "manageSelections": "Управление выбором предложений",
     "viewInvoices": "Просмотр счетов",
     "manageInvoices": "Управление счетами",
     "viewPayments": "Просмотр платежей",
@@ -150,9 +148,9 @@
     }
   },
   "webhookEventTypes": {
-    "SELECTION_CREATED": "Выбор создан",
-    "SELECTION_CONFIRMED": "Выбор подтверждён",
-    "SELECTION_CANCELLED": "Выбор отменён",
+    "QUOTE_LINE_SELECTED": "Строка котировки выбрана",
+    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки котировки обновлён",
+    "QUOTE_LINE_UNSELECTED": "Выбор строки котировки снят",
     "INVOICE_CREATED": "Счёт создан",
     "INVOICE_ISSUED": "Счёт выставлен",
     "INVOICE_CONFIRMED": "Счёт подтверждён",

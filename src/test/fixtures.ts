@@ -10,9 +10,6 @@ import type { MaterialRequest } from '@/api/generated/models/materialRequest';
 import type { MaterialRequestSummary } from '@/api/generated/models/materialRequestSummary';
 import type { PartnerCompany } from '@/api/generated/models/partnerCompany';
 import type { Product } from '@/api/generated/models/product';
-import type { PurchaseSelection } from '@/api/generated/models/purchaseSelection';
-import type { PurchaseSelectionSummary } from '@/api/generated/models/purchaseSelectionSummary';
-import type { SelectionLine } from '@/api/generated/models/selectionLine';
 import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
 import type { SupplierInvoiceSummary } from '@/api/generated/models/supplierInvoiceSummary';
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
@@ -417,6 +414,12 @@ export function createSupplierQuoteSummary(
       id: SUPPLIER_COMPANY_ID,
       name: 'Acme Corp',
     },
+    createdByUser: {
+      id: USER_ID,
+      name: 'Test User',
+    },
+    linesCount: 1,
+    positionsTotal: '55.00',
     ...overrides,
   };
 }
@@ -446,23 +449,11 @@ export function createQuoteComparison(
   const line2Id = '00000000-0000-0000-0000-000000000053';
 
   return {
-    request: createMaterialRequest({ status: 'QUOTING' }),
-    suppliers: [
-      {
-        companyId: supplierAId,
-        name: 'Supplier A',
-        quoteId: '00000000-0000-0000-0000-000000000092',
-        status: 'SUBMITTED',
-        submittedAt: '2026-01-03T00:00:00.000Z',
-      },
-      {
-        companyId: supplierBId,
-        name: 'Supplier B',
-        quoteId: '00000000-0000-0000-0000-000000000093',
-        status: 'SUBMITTED',
-        submittedAt: '2026-01-03T01:00:00.000Z',
-      },
-    ],
+    request: {
+      id: REQUEST_ID,
+      title: 'Office supplies',
+      status: 'QUOTING',
+    },
     lines: [
       {
         requestLine: {
@@ -481,10 +472,12 @@ export function createQuoteComparison(
             quantity: '100',
             unitPrice: '1.00',
             lineTotal: '100.00',
+            selectedQuantity: null,
             leadTime: 2,
             leadTimeUnit: 'WEEK',
             currency: 'USD',
             status: 'SUBMITTED',
+            createdAt: '2026-01-03T00:00:00.000Z',
           },
           {
             quoteId: '00000000-0000-0000-0000-000000000093',
@@ -493,10 +486,12 @@ export function createQuoteComparison(
             quantity: '100',
             unitPrice: '0.90',
             lineTotal: '90.00',
+            selectedQuantity: null,
             leadTime: null,
             leadTimeUnit: null,
             currency: 'USD',
             status: 'SUBMITTED',
+            createdAt: '2026-01-03T01:00:00.000Z',
           },
         ],
       },
@@ -517,89 +512,16 @@ export function createQuoteComparison(
             quantity: '50',
             unitPrice: '0.50',
             lineTotal: '25.00',
+            selectedQuantity: null,
             leadTime: null,
             leadTimeUnit: null,
             currency: 'USD',
             status: 'SUBMITTED',
+            createdAt: '2026-01-03T00:00:00.000Z',
           },
         ],
       },
     ],
-    ...overrides,
-  };
-}
-
-export function createSelectionLine(
-  overrides: Partial<SelectionLine> = {},
-): SelectionLine {
-  return {
-    id: SELECTION_LINE_ID,
-    lineNumber: 1,
-    lineageId: '00000000-0000-0000-0000-000000000102',
-    quantity: '10',
-    notes: null,
-    quoteLine: {
-      id: QUOTE_LINE_ID,
-      quantity: '100',
-      unitPrice: '1.00',
-    },
-    quote: {
-      id: QUOTE_ID,
-      currency: 'USD',
-      supplierCompany: {
-        id: SUPPLIER_COMPANY_ID,
-        name: 'Supplier A',
-      },
-    },
-    requestLine: {
-      id: REQUEST_LINE_ID,
-      description: 'Bolt M8',
-      quantity: '100',
-      unit: 'pcs',
-    },
-    createdAt: '2026-01-01T00:00:00.000Z',
-    updatedAt: '2026-01-01T00:00:00.000Z',
-    ...overrides,
-  };
-}
-
-export function createPurchaseSelection(
-  overrides: Partial<PurchaseSelection> = {},
-): PurchaseSelection {
-  return {
-    id: SELECTION_ID,
-    materialRequestId: REQUEST_ID,
-    buyerCompanyId: COMPANY_ID,
-    createdByUserId: USER_ID,
-    status: 'DRAFT',
-    notes: null,
-    confirmedAt: null,
-    cancelledAt: null,
-    createdAt: '2026-01-01T00:00:00.000Z',
-    updatedAt: '2026-01-01T00:00:00.000Z',
-    materialRequest: {
-      id: REQUEST_ID,
-      title: 'Office supplies',
-      status: 'QUOTING',
-    },
-    lines: [createSelectionLine()],
-    ...overrides,
-  };
-}
-
-export function createPurchaseSelectionSummary(
-  overrides: Partial<PurchaseSelectionSummary> = {},
-): PurchaseSelectionSummary {
-  return {
-    id: SELECTION_ID,
-    materialRequestId: REQUEST_ID,
-    buyerCompanyId: COMPANY_ID,
-    status: 'DRAFT',
-    notes: null,
-    confirmedAt: null,
-    cancelledAt: null,
-    createdAt: '2026-01-01T00:00:00.000Z',
-    updatedAt: '2026-01-01T00:00:00.000Z',
     ...overrides,
   };
 }
@@ -636,7 +558,6 @@ export function createSupplierInvoice(
 ): SupplierInvoice {
   return {
     id: INVOICE_ID,
-    purchaseSelectionId: SELECTION_ID,
     createdByUser: {
       id: USER_ID,
       name: 'Test User',
