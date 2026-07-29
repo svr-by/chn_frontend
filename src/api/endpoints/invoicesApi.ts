@@ -40,22 +40,19 @@ function invoiceDetailTags(
   companyId: string,
   invoiceId: string,
   materialRequestId?: string,
-  purchaseSelectionId?: string,
+  quoteId?: string,
 ) {
   const tags: Array<
-    | { type: 'Invoices'; id: string }
-    | { type: 'Requests'; id: string }
-    | { type: 'Selections'; id: string }
+    { type: 'Invoices'; id: string } | { type: 'Requests'; id: string } | { type: 'Quotes'; id: string }
   > = [
     { type: 'Invoices', id: companyId },
     { type: 'Invoices', id: invoiceId },
   ];
   if (materialRequestId) {
     tags.push({ type: 'Requests', id: materialRequestId });
-    tags.push({ type: 'Invoices', id: `billable-${materialRequestId}` });
   }
-  if (purchaseSelectionId) {
-    tags.push({ type: 'Selections', id: purchaseSelectionId });
+  if (quoteId) {
+    tags.push({ type: 'Quotes', id: `billable-${quoteId}` });
   }
   return tags;
 }
@@ -64,14 +61,9 @@ function invoiceMutationTags(
   companyId: string,
   invoiceId: string,
   materialRequestId?: string,
-  purchaseSelectionId?: string,
+  quoteId?: string,
 ) {
-  return invoiceDetailTags(
-    companyId,
-    invoiceId,
-    materialRequestId,
-    purchaseSelectionId,
-  );
+  return invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId);
 }
 
 export const invoicesApi = baseApi.injectEndpoints({
@@ -101,17 +93,23 @@ export const invoicesApi = baseApi.injectEndpoints({
     }),
     createInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoices201,
-      CompanyScopedArgs<PostCompaniesCompanyIdInvoicesBody>
+      CompanyScopedArgs<PostCompaniesCompanyIdInvoicesBody> & {
+        quoteId?: string;
+      }
     >({
-      query: ({ companyId, ...body }) => ({
+      query: ({ companyId, quoteId: _quoteId, ...body }) => ({
         url: getPostCompaniesCompanyIdInvoicesUrl(companyId),
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { companyId, materialRequestId }) => [
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, materialRequestId, quoteId },
+      ) => [
         ...invoiceListTag(companyId),
         { type: 'Requests', id: materialRequestId },
-        { type: 'Invoices', id: `billable-${materialRequestId}` },
+        ...(quoteId ? [{ type: 'Quotes' as const, id: `billable-${quoteId}` }] : []),
       ],
     }),
     updateInvoice: builder.mutation<
@@ -120,14 +118,14 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       } & PatchCompaniesCompanyIdInvoicesInvoiceIdBody
     >({
       query: ({
         companyId,
         invoiceId,
         materialRequestId: _requestId,
-        purchaseSelectionId: _selectionId,
+        quoteId: _quoteId,
         ...body
       }) => ({
         url: getPatchCompaniesCompanyIdInvoicesInvoiceIdUrl(
@@ -140,14 +138,9 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
-        invoiceDetailTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          purchaseSelectionId,
-        ),
+        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
     }),
     addInvoiceLine: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdLines201,
@@ -155,14 +148,14 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       } & PostCompaniesCompanyIdInvoicesInvoiceIdLinesBody
     >({
       query: ({
         companyId,
         invoiceId,
         materialRequestId: _requestId,
-        purchaseSelectionId: _selectionId,
+        quoteId: _quoteId,
         ...body
       }) => ({
         url: getPostCompaniesCompanyIdInvoicesInvoiceIdLinesUrl(
@@ -175,14 +168,9 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
-        invoiceDetailTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          purchaseSelectionId,
-        ),
+        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
     }),
     updateInvoiceLine: builder.mutation<
       PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineId200,
@@ -191,7 +179,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         invoiceId: string;
         lineId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       } & PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdBody
     >({
       query: ({
@@ -199,7 +187,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         invoiceId,
         lineId,
         materialRequestId: _requestId,
-        purchaseSelectionId: _selectionId,
+        quoteId: _quoteId,
         ...body
       }) => ({
         url: getPatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(
@@ -213,14 +201,9 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
-        invoiceDetailTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          purchaseSelectionId,
-        ),
+        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
     }),
     deleteInvoiceLine: builder.mutation<
       void,
@@ -229,7 +212,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         invoiceId: string;
         lineId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       }
     >({
       query: ({ companyId, invoiceId, lineId }) => ({
@@ -243,14 +226,9 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
-        invoiceDetailTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          purchaseSelectionId,
-        ),
+        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
     }),
     issueInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdIssue200,
@@ -258,7 +236,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       }
     >({
       query: ({ companyId, invoiceId }) => ({
@@ -271,13 +249,13 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
         invoiceMutationTags(
           companyId,
           invoiceId,
           materialRequestId,
-          purchaseSelectionId,
+          quoteId,
         ),
     }),
     getShippableLines: builder.query<
@@ -300,7 +278,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         materialRequestId?: string;
-        purchaseSelectionId?: string;
+        quoteId?: string;
       }
     >({
       query: ({ companyId, invoiceId }) => ({
@@ -313,13 +291,13 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, purchaseSelectionId },
+        { companyId, invoiceId, materialRequestId, quoteId },
       ) =>
         invoiceMutationTags(
           companyId,
           invoiceId,
           materialRequestId,
-          purchaseSelectionId,
+          quoteId,
         ),
     }),
   }),

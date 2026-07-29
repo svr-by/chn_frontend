@@ -132,7 +132,6 @@ export const baseApi = createApi({
     'Requests',
     'Imports',
     'Quotes',
-    'Selections',
     'Invoices',
     'Payments',
     'ShippingInvoices',

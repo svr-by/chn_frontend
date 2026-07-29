@@ -9,7 +9,6 @@ export type LineageEventDocumentType = typeof LineageEventDocumentType[keyof typ
 export const LineageEventDocumentType = {
   MATERIAL_REQUEST: 'MATERIAL_REQUEST',
   SUPPLIER_QUOTE: 'SUPPLIER_QUOTE',
-  PURCHASE_SELECTION: 'PURCHASE_SELECTION',
   INVOICE: 'INVOICE',
   PAYMENT: 'PAYMENT',
   SHIPPING_INVOICE: 'SHIPPING_INVOICE',

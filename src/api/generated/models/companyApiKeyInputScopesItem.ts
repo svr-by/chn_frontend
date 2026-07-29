@@ -19,8 +19,6 @@ export const CompanyApiKeyInputScopesItem = {
   manageRequests: 'manageRequests',
   viewQuotes: 'viewQuotes',
   manageQuotes: 'manageQuotes',
-  viewSelections: 'viewSelections',
-  manageSelections: 'manageSelections',
   viewInvoices: 'viewInvoices',
   manageInvoices: 'manageInvoices',
   viewPayments: 'viewPayments',

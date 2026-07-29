@@ -1,19 +1,24 @@
 import {
+  getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionUrl,
   getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
   getDeleteCompaniesCompanyIdQuotesQuoteIdUrl,
+  getGetCompaniesCompanyIdQuotesQuoteIdBillableLinesUrl,
   getGetCompaniesCompanyIdQuotesQuoteIdUrl,
   getGetCompaniesCompanyIdQuotesUrl,
   getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
   getPatchCompaniesCompanyIdQuotesQuoteIdUrl,
   getPostCompaniesCompanyIdQuotesQuoteIdLinesUrl,
   getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl,
+  getPostCompaniesCompanyIdQuotesQuoteIdUnsubmitUrl,
   getPostCompaniesCompanyIdQuotesUrl,
+  getPutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionUrl,
 } from '@/api/generated/endpoints';
 import type {
   DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
   GetCompaniesCompanyIdQuotes200,
   GetCompaniesCompanyIdQuotesParams,
   GetCompaniesCompanyIdQuotesQuoteId200,
+  GetCompaniesCompanyIdQuotesQuoteIdBillableLines200,
   PatchCompaniesCompanyIdQuotesQuoteId200,
   PatchCompaniesCompanyIdQuotesQuoteIdBody,
   PatchCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
@@ -23,6 +28,9 @@ import type {
   PostCompaniesCompanyIdQuotesQuoteIdLines201,
   PostCompaniesCompanyIdQuotesQuoteIdLinesBody,
   PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
+  PostCompaniesCompanyIdQuotesQuoteIdUnsubmit200,
+  PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200,
+  PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionBody,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -47,6 +55,19 @@ function quoteDetailTags(
   ];
   if (requestId) {
     tags.push({ type: 'Requests', id: requestId });
+  }
+  return tags;
+}
+
+function quoteSelectionTags(
+  companyId: string,
+  quoteId: string,
+  materialRequestId?: string,
+) {
+  const tags = quoteDetailTags(companyId, quoteId, materialRequestId);
+  tags.push({ type: 'Quotes', id: `billable-${quoteId}` });
+  if (materialRequestId) {
+    tags.push({ type: 'Requests', id: `${materialRequestId}-comparison` });
   }
   return tags;
 }
@@ -229,6 +250,91 @@ export const quotesApi = baseApi.injectEndpoints({
         { companyId, quoteId, materialRequestId },
       ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
+    unsubmitQuote: builder.mutation<
+      PostCompaniesCompanyIdQuotesQuoteIdUnsubmit200,
+      {
+        companyId: string;
+        quoteId: string;
+        materialRequestId?: string;
+      }
+    >({
+      query: ({ companyId, quoteId }) => ({
+        url: getPostCompaniesCompanyIdQuotesQuoteIdUnsubmitUrl(companyId, quoteId),
+        method: 'POST',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteDetailTags(companyId, quoteId, materialRequestId),
+    }),
+    putQuoteLineSelection: builder.mutation<
+      PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200,
+      {
+        companyId: string;
+        quoteId: string;
+        lineId: string;
+        materialRequestId?: string;
+      } & PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionBody
+    >({
+      query: ({
+        companyId,
+        quoteId,
+        lineId,
+        materialRequestId: _requestId,
+        ...body
+      }) => ({
+        url: getPutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
+    deleteQuoteLineSelection: builder.mutation<
+      void,
+      {
+        companyId: string;
+        quoteId: string;
+        lineId: string;
+        materialRequestId?: string;
+      }
+    >({
+      query: ({ companyId, quoteId, lineId }) => ({
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
+    getQuoteBillableLines: builder.query<
+      GetCompaniesCompanyIdQuotesQuoteIdBillableLines200,
+      { companyId: string; quoteId: string }
+    >({
+      query: ({ companyId, quoteId }) => ({
+        url: getGetCompaniesCompanyIdQuotesQuoteIdBillableLinesUrl(
+          companyId,
+          quoteId,
+        ),
+      }),
+      providesTags: (_result, _error, { quoteId }) => [
+        { type: 'Quotes', id: `billable-${quoteId}` },
+      ],
+    }),
   }),
 });
 
@@ -242,4 +348,9 @@ export const {
   useDeleteQuoteLineMutation,
   useDeleteQuoteMutation,
   useSubmitQuoteMutation,
+  useUnsubmitQuoteMutation,
+  usePutQuoteLineSelectionMutation,
+  useDeleteQuoteLineSelectionMutation,
+  useGetQuoteBillableLinesQuery,
+  useLazyGetQuoteBillableLinesQuery,
 } = quotesApi;
