@@ -1,11 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
   Box,
-  Link,
   Stack,
   TablePagination,
   Typography,
@@ -13,7 +8,6 @@ import {
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -25,17 +19,20 @@ import { useTranslation } from 'react-i18next';
 import type { MaterialRequestStatus } from '@/api/generated/models/materialRequestStatus';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
-import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import { ComparisonMobileCards } from '@/features/quotes/components/quoteComparisonMatrix/ComparisonMobileCards';
+import { OffersNestedTable } from '@/features/quotes/components/quoteComparisonMatrix/OffersNestedTable';
 import {
   buildQuoteComparisonRows,
   comparisonHasOffers,
   comparisonHasSelectableOffers,
   type QuoteComparisonLineRow,
-  type QuoteComparisonOfferRow,
 } from '@/features/quotes/lib/buildQuoteComparisonRows';
+import {
+  lineIsOverOrdered,
+  sumLineSelectedQuantity,
+} from '@/features/quotes/lib/quoteComparisonSelection';
 import { SELECTABLE_REQUEST_STATUSES } from '@/features/quotes/lib/quoteSelection';
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 import {
@@ -43,387 +40,13 @@ import {
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
-import { isDecimalGte, parseDecimal } from '@/lib/decimal';
 
 const PAGE_SIZE = 20;
 
-interface OfferSelectionProps {
+export interface OfferSelectionProps {
   companyId: string;
   selectionEnabled: boolean;
   materialRequestId: string;
-}
-
-function resolveSelectedQuantity(
-  offer: QuoteComparisonOfferRow['offer'],
-): string | null {
-  return offer.selectedQuantity ?? null;
-}
-
-function hasSelectedQuantity(
-  offer: QuoteComparisonOfferRow['offer'],
-): boolean {
-  return resolveSelectedQuantity(offer) != null;
-}
-
-function sumLineSelectedQuantity(line: QuoteComparisonLineRow): string | null {
-  let hasSelection = false;
-  let total = parseDecimal('0');
-
-  for (const offerRow of line.offers) {
-    const selected = resolveSelectedQuantity(offerRow.offer);
-    if (selected == null) {
-      continue;
-    }
-    hasSelection = true;
-    total = total.plus(parseDecimal(selected));
-  }
-
-  return hasSelection ? total.toString() : null;
-}
-
-function lineIsOverOrdered(line: QuoteComparisonLineRow): boolean {
-  const selectedTotal = sumLineSelectedQuantity(line);
-  if (selectedTotal == null) {
-    return false;
-  }
-  return isDecimalGte(selectedTotal, line.requestLine.quantity);
-}
-
-function formatQuoteDate(value: string): string {
-  return new Date(value).toLocaleDateString();
-}
-
-function OffersNestedTable({
-  offers,
-  companyId,
-  selectionEnabled,
-  materialRequestId,
-}: { offers: QuoteComparisonOfferRow[] } & OfferSelectionProps) {
-  const theme = useTheme();
-  const { t } = useTranslation(['quotes', 'enums']);
-  const selectedRowBg = alpha(theme.palette.success.main, 0.12);
-
-  const columns = useMemo<MRT_ColumnDef<QuoteComparisonOfferRow>[]>(
-    () => [
-      {
-        id: 'supplier',
-        header: t('comparison.columns.supplier'),
-        Cell: ({ row }) => (
-          <Stack spacing={0.5}>
-            <Typography variant="body2">
-              {row.original.offer.supplierCompany.name}
-            </Typography>
-            {row.original.variantIndex != null ? (
-              <Typography variant="caption" color="text.secondary">
-                {t('comparison.cell.variant', {
-                  index: row.original.variantIndex,
-                })}
-              </Typography>
-            ) : null}
-          </Stack>
-        ),
-      },
-      {
-        id: 'quote',
-        header: t('comparison.columns.quote'),
-        Cell: ({ row }) => (
-          <Link
-            component={RouterLink}
-            to={`/app/quotes/${row.original.offer.quoteId}`}
-            underline="hover"
-            variant="body2"
-          >
-            {formatQuoteDate(row.original.offer.createdAt)}
-          </Link>
-        ),
-      },
-      {
-        id: 'unitPrice',
-        header: t('comparison.columns.unitPrice'),
-        Cell: ({ row }) => (
-          <DecimalWithSuffix
-            value={row.original.offer.unitPrice}
-            suffix={row.original.offer.currency}
-          />
-        ),
-      },
-      {
-        id: 'offerQuantity',
-        header: t('comparison.columns.offerQuantity'),
-        Cell: ({ row }) => (
-          <DecimalDisplay value={row.original.offer.quantity} />
-        ),
-      },
-      {
-        id: 'total',
-        header: t('comparison.columns.total'),
-        Cell: ({ row }) => (
-          <DecimalWithSuffix
-            value={row.original.offer.lineTotal}
-            suffix={row.original.offer.currency}
-          />
-        ),
-      },
-      {
-        id: 'leadTime',
-        header: t('comparison.columns.leadTime'),
-        Cell: ({ row }) => {
-          const { leadTime, leadTimeUnit } = row.original.offer;
-          if (leadTime == null || !leadTimeUnit) {
-            return '—';
-          }
-
-          return (
-            <>
-              {leadTime}{' '}
-              {t(`enums:leadTimeUnit.${leadTimeUnit.toLowerCase()}`)}
-            </>
-          );
-        },
-      },
-      {
-        id: 'selection',
-        header: t('columns.selectedQuantity'),
-        Cell: ({ row }) => (
-          <QuoteLineSelectionCell
-            companyId={companyId}
-            quoteId={row.original.offer.quoteId}
-            lineId={row.original.offer.quoteLineId}
-            maxQuantity={row.original.offer.quantity}
-            selectedQuantity={resolveSelectedQuantity(row.original.offer)}
-            materialRequestId={materialRequestId}
-            disabled={!selectionEnabled}
-          />
-        ),
-      },
-    ],
-    [companyId, materialRequestId, selectionEnabled, t],
-  );
-
-  const table = useAppMaterialReactTable({
-    columns,
-    data: offers,
-    getRowId: (row) => row.id,
-    enablePagination: false,
-    enableBottomToolbar: false,
-    enableTopToolbar: false,
-    muiTablePaperProps: {
-      elevation: 0,
-      sx: {
-        border: 0,
-        boxShadow: 'none',
-        bgcolor: 'transparent',
-      },
-    },
-    muiTableBodyRowProps: ({ row }) => {
-      const isSelected = hasSelectedQuantity(row.original.offer);
-      return {
-        sx: {
-          bgcolor: isSelected ? selectedRowBg : 'transparent',
-        },
-      };
-    },
-    muiTableHeadCellProps: {
-      sx: {
-        bgcolor: 'transparent',
-      },
-    },
-    muiTableBodyCellProps: ({ row }) => {
-      const isSelected = hasSelectedQuantity(row.original.offer);
-      return {
-        sx: {
-          bgcolor: isSelected ? selectedRowBg : 'transparent',
-        },
-      };
-    },
-  });
-
-  if (offers.length === 0) {
-    return (
-      <Typography variant="body2" color="text.secondary" sx={{ py: 1, px: 2 }}>
-        —
-      </Typography>
-    );
-  }
-
-  return <MaterialReactTable table={table} />;
-}
-
-function OfferCardDetails({
-  row,
-  companyId,
-  selectionEnabled,
-  materialRequestId,
-}: { row: QuoteComparisonOfferRow } & OfferSelectionProps) {
-  const { t } = useTranslation(['quotes', 'enums']);
-  const { offer } = row;
-
-  return (
-    <Stack spacing={0.25}>
-      {row.variantIndex != null ? (
-        <Typography variant="caption" color="text.secondary">
-          {t('comparison.cell.variant', { index: row.variantIndex })}
-        </Typography>
-      ) : null}
-      <Typography variant="body2">
-        <Link
-          component={RouterLink}
-          to={`/app/quotes/${offer.quoteId}`}
-          underline="hover"
-        >
-          {formatQuoteDate(offer.createdAt)}
-        </Link>
-      </Typography>
-      <Typography variant="body2">
-        {t('comparison.columns.unitPrice')}:{' '}
-        <DecimalWithSuffix value={offer.unitPrice} suffix={offer.currency} />
-      </Typography>
-      <Typography variant="body2">
-        {t('comparison.columns.offerQuantity')}:{' '}
-        <DecimalDisplay value={offer.quantity} />
-      </Typography>
-      <Typography variant="body2">
-        {t('comparison.columns.total')}:{' '}
-        <DecimalWithSuffix value={offer.lineTotal} suffix={offer.currency} />
-      </Typography>
-      {offer.leadTime != null && offer.leadTimeUnit ? (
-        <Typography variant="body2">
-          {t('comparison.columns.leadTime')}: {offer.leadTime}{' '}
-          {t(`enums:leadTimeUnit.${offer.leadTimeUnit.toLowerCase()}`)}
-        </Typography>
-      ) : null}
-      <QuoteLineSelectionCell
-        companyId={companyId}
-        quoteId={offer.quoteId}
-        lineId={offer.quoteLineId}
-        maxQuantity={offer.quantity}
-        selectedQuantity={resolveSelectedQuantity(offer)}
-        materialRequestId={materialRequestId}
-        disabled={!selectionEnabled}
-      />
-    </Stack>
-  );
-}
-
-function ComparisonMobileCards({
-  rows,
-  companyId,
-  selectionEnabled,
-  materialRequestId,
-}: { rows: QuoteComparisonLineRow[] } & OfferSelectionProps) {
-  const { t } = useTranslation('quotes');
-
-  return (
-    <Stack spacing={1}>
-      {rows.map((lineRow) => {
-        const hasLineOffers = lineRow.offers.length > 0;
-        const selectedTotal = sumLineSelectedQuantity(lineRow);
-        const header = (
-          <Stack spacing={0.5} sx={{ width: '100%', pr: 1 }}>
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              flexWrap="wrap"
-            >
-              <LineRowActionsMenu
-                lineageId={lineRow.requestLine.lineageId}
-                moreLabel={t('actions.more')}
-                openTraceLabel={t('actions.openTrace')}
-              />
-              <Typography variant="subtitle2">
-                #{lineRow.requestLine.lineNumber}
-              </Typography>
-              <Typography variant="body1" sx={{ flex: 1 }}>
-                {lineRow.requestLine.description}
-              </Typography>
-            </Stack>
-            <Typography variant="body2" color="text.secondary">
-              {t('comparison.columns.quantity')}:{' '}
-              <DecimalWithSuffix
-                value={lineRow.requestLine.quantity}
-                suffix={lineRow.requestLine.unit ?? '—'}
-              />
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('columns.selectedQuantity')}:{' '}
-              <DecimalWithSuffix
-                value={selectedTotal}
-                suffix={lineRow.requestLine.unit ?? '—'}
-              />
-            </Typography>
-          </Stack>
-        );
-
-        if (!hasLineOffers) {
-          return (
-            <Box
-              key={lineRow.id}
-              sx={{
-                px: 2,
-                py: 1.5,
-                border: 1,
-                borderColor: 'divider',
-                borderRadius: 1,
-              }}
-            >
-              {header}
-            </Box>
-          );
-        }
-
-        return (
-          <Accordion
-            key={lineRow.id}
-            defaultExpanded
-            sx={
-              lineIsOverOrdered(lineRow)
-                ? {
-                    bgcolor: (theme) =>
-                      alpha(theme.palette.success.main, 0.08),
-                  }
-                : undefined
-            }
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-              {header}
-            </AccordionSummary>
-            <AccordionDetails sx={{ bgcolor: 'action.hover' }}>
-              <Stack spacing={1.5}>
-                {lineRow.offers.map((offerRow) => {
-                  const isSelected = hasSelectedQuantity(offerRow.offer);
-                  return (
-                    <Box
-                      key={offerRow.id}
-                      sx={{
-                        p: 1,
-                        borderRadius: 1,
-                        bgcolor: isSelected
-                          ? (theme) => alpha(theme.palette.success.main, 0.12)
-                          : 'transparent',
-                      }}
-                    >
-                      <Stack spacing={0.5}>
-                        <Typography variant="subtitle2">
-                          {offerRow.offer.supplierCompany.name}
-                        </Typography>
-                        <OfferCardDetails
-                          row={offerRow}
-                          companyId={companyId}
-                          selectionEnabled={selectionEnabled}
-                          materialRequestId={materialRequestId}
-                        />
-                      </Stack>
-                    </Box>
-                  );
-                })}
-              </Stack>
-            </AccordionDetails>
-          </Accordion>
-        );
-      })}
-    </Stack>
-  );
 }
 
 interface QuoteComparisonMatrixProps {
