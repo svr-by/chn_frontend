@@ -92,8 +92,16 @@ export const quotesApi = baseApi.injectEndpoints({
       query: ({ companyId, quoteId }) => ({
         url: getGetCompaniesCompanyIdQuotesQuoteIdUrl(companyId, quoteId),
       }),
-      providesTags: (_result, _error, { quoteId }) => [
+      providesTags: (result, _error, { quoteId }) => [
         { type: 'Quotes', id: quoteId },
+        ...(result?.quote.materialRequest?.id
+          ? [
+              {
+                type: 'Quotes' as const,
+                id: `request-${result.quote.materialRequest.id}`,
+              },
+            ]
+          : []),
       ],
     }),
     createQuote: builder.mutation<
@@ -323,7 +331,7 @@ export const quotesApi = baseApi.injectEndpoints({
     }),
     getQuoteBillableLines: builder.query<
       GetCompaniesCompanyIdQuotesQuoteIdBillableLines200,
-      { companyId: string; quoteId: string }
+      { companyId: string; quoteId: string; materialRequestId?: string }
     >({
       query: ({ companyId, quoteId }) => ({
         url: getGetCompaniesCompanyIdQuotesQuoteIdBillableLinesUrl(
@@ -331,8 +339,11 @@ export const quotesApi = baseApi.injectEndpoints({
           quoteId,
         ),
       }),
-      providesTags: (_result, _error, { quoteId }) => [
+      providesTags: (_result, _error, { quoteId, materialRequestId }) => [
         { type: 'Quotes', id: `billable-${quoteId}` },
+        ...(materialRequestId
+          ? [{ type: 'Quotes' as const, id: `request-${materialRequestId}` }]
+          : []),
       ],
     }),
   }),

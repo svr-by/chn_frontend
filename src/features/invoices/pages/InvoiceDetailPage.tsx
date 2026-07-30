@@ -73,7 +73,11 @@ export function InvoiceDetailPage() {
   );
 
   const billableQuery = useGetQuoteBillableLinesQuery(
-    { companyId: companyId ?? '', quoteId: quoteId ?? '' },
+    {
+      companyId: companyId ?? '',
+      quoteId: quoteId ?? '',
+      materialRequestId,
+    },
     { skip: !companyId || !quoteId || !canEdit },
   );
 

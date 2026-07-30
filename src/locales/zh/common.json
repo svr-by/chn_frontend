@@ -27,5 +27,8 @@
   },
   "lineage": {
     "open": "打开溯源"
+  },
+  "requestLine": {
+    "cancelledOnRequest": "已在申请中取消"
   }
 }

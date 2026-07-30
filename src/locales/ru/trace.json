@@ -41,12 +41,20 @@
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "Транспорт: {{mode}}",
     "consolidationViaShipping": "Через транспортную накладную",
+    "itemLabel": {
+      "request": "Заявка: {{label}} · строка {{lineNumber}}",
+      "quotes": "Поставщик: {{label}}",
+      "selections": "Кол-во: {{label}}",
+      "invoices": "Счёт: {{label}}",
+      "shipments": "Отгрузка: {{label}}",
+      "consolidations": "Консолидация: {{label}}"
+    },
     "stages": {
-      "request": "Заявка на материалы",
-      "quotes": "Предложения поставщиков",
-      "selections": "Закупочный выбор",
+      "request": "Заявка",
+      "quotes": "Предложения",
+      "selections": "Выбор",
       "invoices": "Счета",
-      "shipments": "Транспортные накладные",
+      "shipments": "Доставка",
       "consolidations": "Консолидации"
     }
   },

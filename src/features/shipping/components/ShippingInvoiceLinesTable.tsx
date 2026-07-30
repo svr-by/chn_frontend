@@ -19,6 +19,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PermissionGate } from '@/components/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { SimpleTable } from '@/components/SimpleTable';
 import { ShippingInvoiceLineFormDialog } from '@/features/shipping/components/ShippingInvoiceLineFormDialog';
 
@@ -68,7 +69,14 @@ export function ShippingInvoiceLinesTable({
       {
         id: 'requestLine',
         header: t('columns.requestLine'),
-        Cell: ({ row }) => row.original.requestLine?.description ?? '—',
+        Cell: ({ row }) => (
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+            <span>{row.original.requestLine?.description ?? '—'}</span>
+            <RequestLineCancelledBadge
+              cancelledAt={row.original.requestLine?.cancelledAt}
+            />
+          </Stack>
+        ),
       },
       {
         accessorKey: 'quantity',

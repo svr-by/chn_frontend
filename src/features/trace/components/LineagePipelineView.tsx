@@ -16,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LineageTrace } from '@/api/generated/models/lineageTrace';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { buildLineagePipeline } from '@/lib/lineagePipeline';
 
 interface LineagePipelineViewProps {
@@ -46,9 +47,9 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
               </Typography>
             ) : (
               <Stack spacing={1.5} sx={{ pb: 2 }}>
-                {step.items.map((item) => (
+                {step.items.map((item, index) => (
                   <Card
-                    key={`${step.stage}-${item.documentId}`}
+                    key={`${step.stage}-${item.documentId}-${index}`}
                     variant="outlined"
                   >
                     <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
@@ -66,7 +67,14 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
                             underline="hover"
                             fontWeight={600}
                           >
-                            {item.label}
+                            {step.stage === 'request'
+                              ? t('pipeline.itemLabel.request', {
+                                  label: item.label,
+                                  lineNumber: item.meta?.lineNumber ?? '',
+                                })
+                              : t(`pipeline.itemLabel.${step.stage}`, {
+                                  label: item.label,
+                                })}
                           </Link>
                           <Chip
                             label={item.status}
@@ -77,9 +85,22 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
 
                         {step.stage === 'request' && item.meta ? (
                           <Box>
-                            <Typography variant="body2" color="text.secondary">
-                              {item.meta.description}
-                            </Typography>
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              alignItems="center"
+                              flexWrap="wrap"
+                            >
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {item.meta.description}
+                              </Typography>
+                              <RequestLineCancelledBadge
+                                cancelledAt={item.meta.cancelledAt}
+                              />
+                            </Stack>
                             <Typography variant="body2">
                               <DecimalDisplay
                                 value={item.meta.quantity}

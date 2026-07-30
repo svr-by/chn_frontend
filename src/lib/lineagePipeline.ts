@@ -50,6 +50,9 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             description: trace.requestLine.description,
             quantity: trace.requestLine.quantity,
             unit: trace.requestLine.unit ?? '',
+            ...(trace.requestLine.cancelledAt
+              ? { cancelledAt: trace.requestLine.cancelledAt }
+              : {}),
           },
         },
       ],

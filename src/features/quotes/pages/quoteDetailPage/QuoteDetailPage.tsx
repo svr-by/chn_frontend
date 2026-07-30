@@ -68,7 +68,11 @@ export function QuoteDetailPage() {
   );
 
   const billableQuery = useGetQuoteBillableLinesQuery(
-    { companyId: companyId ?? '', quoteId: quoteId ?? '' },
+    {
+      companyId: companyId ?? '',
+      quoteId: quoteId ?? '',
+      materialRequestId: materialRequestId,
+    },
     { skip: !companyId || !quoteId || !isSupplier },
   );
 

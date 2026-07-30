@@ -8,10 +8,11 @@ import { useGetLineageTraceQuery } from '@/api/endpoints/traceApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PermissionGate } from '@/components/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { LineageEventsPanel } from '@/features/trace/components/LineageEventsPanel';
 import { LineagePipelineView } from '@/features/trace/components/LineagePipelineView';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { resolveDocumentPath } from '@/lib/documentRoutes';
+import { BackLink } from '@/components/BackLink';
 
 export function TraceDetailPage() {
   const { t } = useTranslation('trace');
@@ -42,13 +43,10 @@ export function TraceDetailPage() {
     return null;
   }
 
-  const requestPath = trace
-    ? resolveDocumentPath('MATERIAL_REQUEST', trace.request.id)
-    : null;
-
   return (
     <PermissionGate permission="viewTrace">
       <Stack spacing={4}>
+        <BackLink to="/app" />
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -66,9 +64,6 @@ export function TraceDetailPage() {
               {lineageId}
             </Typography>
           </Box>
-          <Button component={RouterLink} to="/app/trace" variant="outlined">
-            {t('detail.backToSearch')}
-          </Button>
         </Stack>
 
         <ApiErrorAlert error={traceQuery.error} />
@@ -80,32 +75,23 @@ export function TraceDetailPage() {
         {trace ? (
           <>
             <Stack spacing={1}>
-              <Typography variant="subtitle1">
-                {t('detail.requestLine')}
-              </Typography>
-              <Typography variant="body1">
-                {trace.requestLine.description}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                <DecimalDisplay
-                  value={trace.requestLine.quantity}
-                  component="span"
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                flexWrap="wrap"
+              >
+                <Typography variant="body1">
+                  {trace.requestLine.description}
+                </Typography>
+                <RequestLineCancelledBadge
+                  cancelledAt={trace.requestLine.cancelledAt}
                 />
-                {trace.requestLine.unit ? ` ${trace.requestLine.unit}` : ''}
-              </Typography>
-              {requestPath ? (
-                <Link component={RouterLink} to={requestPath} underline="hover">
-                  {t('detail.openRequest', {
-                    title:
-                      trace.request.title ??
-                      trace.request.reference ??
-                      trace.request.id.slice(0, 8),
-                  })}
-                </Link>
-              ) : null}
+              </Stack>
             </Stack>
 
             <LineagePipelineView trace={trace} />
+
             <LineageEventsPanel companyId={companyId} lineageId={lineageId} />
           </>
         ) : null}

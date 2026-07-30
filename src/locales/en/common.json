@@ -28,5 +28,8 @@
   },
   "lineage": {
     "open": "Open trace"
+  },
+  "requestLine": {
+    "cancelledOnRequest": "Cancelled on request"
   }
 }

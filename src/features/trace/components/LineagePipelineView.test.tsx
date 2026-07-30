@@ -11,8 +11,10 @@ describe('LineagePipelineView', () => {
 
     expect(screen.getByText('Material request')).toBeInTheDocument();
     expect(screen.getByText('Supplier quotes')).toBeInTheDocument();
-    expect(screen.getByText('Office supplies')).toBeInTheDocument();
-    expect(screen.getByText('Supplier Ltd')).toBeInTheDocument();
+    expect(
+      screen.getByText('Request: Office supplies · line 1'),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Supplier: Supplier Ltd')).toBeInTheDocument();
     expect(screen.getAllByText('Not reached yet').length).toBeGreaterThan(0);
   });
 });

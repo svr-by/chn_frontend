@@ -9,12 +9,36 @@ export type QuoteOfferRow = {
   description: string;
   requestedQuantity: string;
   unit: string | null;
+  cancelledAt: string | null;
   quoteLine: QuoteLine | null;
   variantIndex: number;
   variantCount: number;
   canAddVariant: boolean;
   isLastInGroup: boolean;
 };
+
+function rowsFromQuoteLineGroup(
+  group: QuoteLine[],
+  options: { canAddVariant: boolean },
+): QuoteOfferRow[] {
+  const sorted = [...group].sort((a, b) => a.lineNumber - b.lineNumber);
+  const variantCount = sorted.length;
+
+  return sorted.map((quoteLine, index): QuoteOfferRow => ({
+    id: quoteLine.id,
+    requestLineId: quoteLine.requestLineId,
+    lineNumber: quoteLine.requestLine.lineNumber,
+    description: quoteLine.requestLine.description,
+    requestedQuantity: quoteLine.requestLine.quantity,
+    unit: quoteLine.requestLine.unit ?? null,
+    cancelledAt: quoteLine.requestLine.cancelledAt,
+    quoteLine,
+    variantIndex: index + 1,
+    variantCount,
+    canAddVariant: options.canAddVariant,
+    isLastInGroup: index === sorted.length - 1,
+  }));
+}
 
 export function buildQuoteOfferRows(
   lines: QuoteLine[],
@@ -33,7 +57,9 @@ export function buildQuoteOfferRows(
   }
 
   if (requestLines.length > 0) {
-    return [...requestLines]
+    const activeRequestLineIds = new Set(requestLines.map((line) => line.id));
+
+    const activeRows = [...requestLines]
       .sort((a, b) => a.lineNumber - b.lineNumber)
       .flatMap((requestLine) => {
         const group = quoteLinesByRequestLineId.get(requestLine.id) ?? [];
@@ -50,6 +76,7 @@ export function buildQuoteOfferRows(
               description: requestLine.description,
               requestedQuantity: requestLine.quantity,
               unit: requestLine.unit ?? null,
+              cancelledAt: requestLine.cancelledAt,
               quoteLine: null,
               variantIndex: 0,
               variantCount: 0,
@@ -67,6 +94,7 @@ export function buildQuoteOfferRows(
             description: requestLine.description,
             requestedQuantity: requestLine.quantity,
             unit: requestLine.unit ?? null,
+            cancelledAt: requestLine.cancelledAt,
             quoteLine,
             variantIndex: index + 1,
             variantCount,
@@ -75,6 +103,19 @@ export function buildQuoteOfferRows(
           }),
         );
       });
+
+    const cancelledOfferRows = [...quoteLinesByRequestLineId.entries()]
+      .filter(([requestLineId]) => !activeRequestLineIds.has(requestLineId))
+      .sort(([, groupA], [, groupB]) => {
+        const lineNumberA = groupA[0]?.requestLine.lineNumber ?? 0;
+        const lineNumberB = groupB[0]?.requestLine.lineNumber ?? 0;
+        return lineNumberA - lineNumberB;
+      })
+      .flatMap(([, group]) =>
+        rowsFromQuoteLineGroup(group, { canAddVariant: false }),
+      );
+
+    return [...activeRows, ...cancelledOfferRows];
   }
 
   return lines.map((line, index, all) => {
@@ -84,10 +125,11 @@ export function buildQuoteOfferRows(
     return {
       id: line.id,
       requestLineId: line.requestLineId,
-      lineNumber: line.lineNumber,
+      lineNumber: line.requestLine.lineNumber,
       description: line.requestLine.description,
       requestedQuantity: line.requestLine.quantity,
       unit: line.requestLine.unit ?? null,
+      cancelledAt: line.requestLine.cancelledAt,
       quoteLine: line,
       variantIndex,
       variantCount,

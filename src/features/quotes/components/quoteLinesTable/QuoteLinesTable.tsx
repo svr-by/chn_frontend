@@ -31,6 +31,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import {
   buildQuoteOfferRows,
   type QuoteOfferRow,
@@ -213,6 +214,14 @@ export function QuoteLinesTable({
       {
         accessorKey: 'description',
         header: t('columns.requestLine'),
+        Cell: ({ row }) => (
+          <Stack direction="row" spacing={1} flexWrap="wrap">
+            <span>{row.original.description}</span>
+            <RequestLineCancelledBadge
+              cancelledAt={row.original.cancelledAt}
+            />
+          </Stack>
+        ),
       },
       {
         id: 'requestedQuantity',

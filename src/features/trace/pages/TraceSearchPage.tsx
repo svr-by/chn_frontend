@@ -25,6 +25,7 @@ import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineageLink } from '@/components/LineageLink';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { getPipelineStatusLabel } from '@/lib/traceLabels';
 
@@ -102,6 +103,12 @@ export function TraceSearchPage() {
       {
         accessorKey: 'description',
         header: t('columns.description'),
+        Cell: ({ row }) => (
+          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+            <span>{row.original.description}</span>
+            <RequestLineCancelledBadge cancelledAt={row.original.cancelledAt} />
+          </Stack>
+        ),
       },
       {
         id: 'quantity',

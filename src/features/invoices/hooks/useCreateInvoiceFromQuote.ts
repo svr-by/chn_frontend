@@ -56,6 +56,7 @@ export function useCreateInvoiceFromQuote() {
         const billable = await triggerBillableLines({
           companyId,
           quoteId: resolvedQuoteId,
+          materialRequestId,
         }).unwrap();
 
         if (billable.lines.length === 0) {

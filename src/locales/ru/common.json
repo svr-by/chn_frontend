@@ -27,5 +27,8 @@
   },
   "lineage": {
     "open": "Открыть трассировку"
+  },
+  "requestLine": {
+    "cancelledOnRequest": "Отменена в заявке"
   }
 }

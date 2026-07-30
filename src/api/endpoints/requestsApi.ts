@@ -70,6 +70,16 @@ function inboundTags(companyId: string) {
   ];
 }
 
+function requestLineMutationTags(companyId: string, requestId: string) {
+  return [
+    ...requestDetailTags(companyId, requestId),
+    { type: 'Requests' as const, id: `${requestId}-comparison` },
+    ...inboundTags(companyId),
+    { type: 'Requests' as const, id: `${requestId}-inbound` },
+    { type: 'Quotes' as const, id: `request-${requestId}` },
+  ];
+}
+
 export const requestsApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: (builder) => ({
@@ -179,7 +189,7 @@ export const requestsApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: (_result, _error, { companyId, requestId }) =>
-        requestDetailTags(companyId, requestId),
+        requestLineMutationTags(companyId, requestId),
     }),
     updateRequestLine: builder.mutation<
       PatchCompaniesCompanyIdRequestsRequestIdLinesLineId200,
@@ -199,7 +209,7 @@ export const requestsApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: (_result, _error, { companyId, requestId }) =>
-        requestDetailTags(companyId, requestId),
+        requestLineMutationTags(companyId, requestId),
     }),
     deleteRequestLine: builder.mutation<
       DeleteCompaniesCompanyIdRequestsRequestIdLinesLineId200,
@@ -214,7 +224,7 @@ export const requestsApi = baseApi.injectEndpoints({
         method: 'DELETE',
       }),
       invalidatesTags: (_result, _error, { companyId, requestId }) =>
-        requestDetailTags(companyId, requestId),
+        requestLineMutationTags(companyId, requestId),
     }),
     deleteRequest: builder.mutation<
       void,

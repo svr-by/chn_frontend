@@ -28,6 +28,7 @@ import {
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { DecimalInput } from '@/components/DecimalInput';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { isDecimalLte, isValidDecimal } from '@/lib/decimal';
 
 function createLineSchema(maxQuantity: string) {
@@ -226,12 +227,17 @@ export function InvoiceLineFormDialog({
             sx={{ pt: 1 }}
           >
             <Stack spacing={2}>
-              <TextField
-                label={t('form.requestLine')}
-                value={line.requestLine?.description ?? '—'}
-                fullWidth
-                disabled
-              />
+              <Stack spacing={1}>
+                <TextField
+                  label={t('form.requestLine')}
+                  value={line.requestLine?.description ?? '—'}
+                  fullWidth
+                  disabled
+                />
+                <RequestLineCancelledBadge
+                  cancelledAt={line.requestLine?.cancelledAt}
+                />
+              </Stack>
               <TextField
                 label={t('form.maxQuantity')}
                 value={maxQuantity}
@@ -286,13 +292,25 @@ export function InvoiceLineFormDialog({
                           key={billable.selectionLineId}
                           value={billable.selectionLineId}
                         >
-                          {t('form.billableLineOption', {
-                            description:
-                              billable.requestLine?.description ?? '—',
-                            quantity: billable.quantity,
-                            price: billable.unitPrice,
-                            total: billable.lineTotal,
-                          })}
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            flexWrap="wrap"
+                          >
+                            <span>
+                              {t('form.billableLineOption', {
+                                description:
+                                  billable.requestLine?.description ?? '—',
+                                quantity: billable.quantity,
+                                price: billable.unitPrice,
+                                total: billable.lineTotal,
+                              })}
+                            </span>
+                            <RequestLineCancelledBadge
+                              cancelledAt={billable.requestLine?.cancelledAt}
+                            />
+                          </Stack>
                         </MenuItem>
                       ))}
                     </Select>

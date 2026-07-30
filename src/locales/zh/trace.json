@@ -41,6 +41,14 @@
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "运输：{{mode}}",
     "consolidationViaShipping": "通过运输发票",
+    "itemLabel": {
+      "request": "申请：{{label}} · 行 {{lineNumber}}",
+      "quotes": "供应商：{{label}}",
+      "selections": "数量：{{label}}",
+      "invoices": "发票：{{label}}",
+      "shipments": "发运：{{label}}",
+      "consolidations": "集运：{{label}}"
+    },
     "stages": {
       "request": "物料申请",
       "quotes": "供应商报价",

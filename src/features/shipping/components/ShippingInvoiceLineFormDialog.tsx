@@ -28,6 +28,7 @@ import {
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { DecimalInput } from '@/components/DecimalInput';
+import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { isDecimalLte, isValidDecimal, parseDecimal } from '@/lib/decimal';
 
 function createLineSchema(maxQuantity: string) {
@@ -236,12 +237,17 @@ export function ShippingInvoiceLineFormDialog({
             sx={{ pt: 1 }}
           >
             <Stack spacing={2}>
-              <TextField
-                label={t('form.requestLine')}
-                value={line.requestLine?.description ?? '—'}
-                fullWidth
-                disabled
-              />
+              <Stack spacing={1}>
+                <TextField
+                  label={t('form.requestLine')}
+                  value={line.requestLine?.description ?? '—'}
+                  fullWidth
+                  disabled
+                />
+                <RequestLineCancelledBadge
+                  cancelledAt={line.requestLine?.cancelledAt}
+                />
+              </Stack>
               <TextField
                 label={t('form.maxQuantity')}
                 value={editMaxQuantity}
@@ -296,13 +302,25 @@ export function ShippingInvoiceLineFormDialog({
                           key={shippable.invoiceLineId}
                           value={shippable.invoiceLineId}
                         >
-                          {t('form.shippableLineOption', {
-                            description:
-                              shippable.requestLine?.description ?? '—',
-                            remaining: shippable.remainingQuantity,
-                            invoice: shippable.invoiceQuantity,
-                            shipped: shippable.shippedQuantity,
-                          })}
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            flexWrap="wrap"
+                          >
+                            <span>
+                              {t('form.shippableLineOption', {
+                                description:
+                                  shippable.requestLine?.description ?? '—',
+                                remaining: shippable.remainingQuantity,
+                                invoice: shippable.invoiceQuantity,
+                                shipped: shippable.shippedQuantity,
+                              })}
+                            </span>
+                            <RequestLineCancelledBadge
+                              cancelledAt={shippable.requestLine?.cancelledAt}
+                            />
+                          </Stack>
                         </MenuItem>
                       ))}
                     </Select>

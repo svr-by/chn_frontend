@@ -41,6 +41,14 @@
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "Transport: {{mode}}",
     "consolidationViaShipping": "Via shipping invoice",
+    "itemLabel": {
+      "request": "Request: {{label}} · line {{lineNumber}}",
+      "quotes": "Supplier: {{label}}",
+      "selections": "Quantity: {{label}}",
+      "invoices": "Invoice: {{label}}",
+      "shipments": "Shipment: {{label}}",
+      "consolidations": "Consolidation: {{label}}"
+    },
     "stages": {
       "request": "Material request",
       "quotes": "Supplier quotes",
