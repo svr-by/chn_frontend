@@ -116,6 +116,13 @@
     "ordered": "已下单",
     "closed": "已关闭"
   },
+  "filters": {
+    "title": "筛选",
+    "open": "筛选",
+    "apply": "应用",
+    "reset": "重置",
+    "closeAriaLabel": "关闭筛选"
+  },
   "empty": {
     "list": "未找到申请。",
     "lines": "暂无行。请添加一行或从文件导入。"

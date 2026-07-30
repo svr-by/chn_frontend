@@ -3,6 +3,7 @@ import type { GetAuthMe200User } from '@/api/generated/models/getAuthMe200User';
 import type { GetAuthMe200UserMembershipsItem } from '@/api/generated/models/getAuthMe200UserMembershipsItem';
 import type { GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200 } from '@/api/generated/models/getCompaniesCompanyIdRequestsRequestIdQuotesComparison200';
 import type { InboundMaterialRequest } from '@/api/generated/models/inboundMaterialRequest';
+import type { InboundMaterialRequestSummary } from '@/api/generated/models/inboundMaterialRequestSummary';
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { SupplierQuote } from '@/api/generated/models/supplierQuote';
 import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
@@ -217,6 +218,24 @@ export function createMaterialRequestSummary(
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createInboundMaterialRequestSummary(
+  overrides: Partial<InboundMaterialRequestSummary> = {},
+): InboundMaterialRequestSummary {
+  return {
+    ...createMaterialRequestSummary({
+      status: 'QUOTING',
+      submittedAt: '2026-01-01T00:00:00.000Z',
+    }),
+    buyerCompany: {
+      id: BUYER_COMPANY_ID,
+      name: 'Buyer Corp',
+    },
+    distributedAt: '2026-01-02T00:00:00.000Z',
+    lineCount: 3,
     ...overrides,
   };
 }

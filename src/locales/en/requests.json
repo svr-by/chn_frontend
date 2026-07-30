@@ -116,6 +116,13 @@
     "ordered": "Ordered",
     "closed": "Closed"
   },
+  "filters": {
+    "title": "Filters",
+    "open": "Filters",
+    "apply": "Apply",
+    "reset": "Reset",
+    "closeAriaLabel": "Close filters"
+  },
   "empty": {
     "list": "No requests found.",
     "lines": "No lines yet. Add a line or import from a file."
