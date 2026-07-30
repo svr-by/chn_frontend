@@ -118,25 +118,15 @@ export function buildQuoteOfferRows(
     return [...activeRows, ...cancelledOfferRows];
   }
 
-  return lines.map((line, index, all) => {
-    const group = quoteLinesByRequestLineId.get(line.requestLineId) ?? [line];
-    const variantIndex = group.findIndex((item) => item.id === line.id) + 1;
-    const variantCount = group.length;
-    return {
-      id: line.id,
-      requestLineId: line.requestLineId,
-      lineNumber: line.requestLine.lineNumber,
-      description: line.requestLine.description,
-      requestedQuantity: line.requestLine.quantity,
-      unit: line.requestLine.unit ?? null,
-      cancelledAt: line.requestLine.cancelledAt,
-      quoteLine: line,
-      variantIndex,
-      variantCount,
-      canAddVariant: editable && variantCount < MAX_QUOTE_LINE_VARIANTS,
-      isLastInGroup:
-        index === all.length - 1 ||
-        all[index + 1]?.requestLineId !== line.requestLineId,
-    };
-  });
+  return [...quoteLinesByRequestLineId.entries()]
+    .sort(([, groupA], [, groupB]) => {
+      const lineNumberA = groupA[0]?.requestLine.lineNumber ?? 0;
+      const lineNumberB = groupB[0]?.requestLine.lineNumber ?? 0;
+      return lineNumberA - lineNumberB;
+    })
+    .flatMap(([, group]) =>
+      rowsFromQuoteLineGroup(group, {
+        canAddVariant: editable && group.length < MAX_QUOTE_LINE_VARIANTS,
+      }),
+    );
 }

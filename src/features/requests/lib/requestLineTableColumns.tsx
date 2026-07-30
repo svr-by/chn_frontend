@@ -3,7 +3,7 @@ import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
 
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
 import {
   MRT_NARROW_ACTIONS_SIZE,
@@ -64,10 +64,10 @@ export function createRequestLineQuantityColumn(
     size: 120,
     grow: false,
     Cell: ({ row }) => (
-      <>
-        <DecimalDisplay value={row.original.quantity} />{' '}
-        {row.original.unit ?? '—'}
-      </>
+      <DecimalWithSuffix
+        value={row.original.quantity}
+        suffix={row.original.unit ?? '—'}
+      />
     ),
   };
 }

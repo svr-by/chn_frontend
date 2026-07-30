@@ -16,9 +16,9 @@ import {
   RequestTitleEditButton,
 } from '@/features/requests/components/RequestHeaderForm';
 import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
-import { RequestQuotesMatrix } from '@/features/requests/components/requestQuotesMatrix/RequestQuotesMatrix';
 import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
 import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
+import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 
@@ -161,7 +161,7 @@ export function RequestDetailPage() {
                 value: 'quotes',
                 label: t('tabs.quotes'),
                 panel: (
-                  <RequestQuotesMatrix
+                  <QuoteComparisonMatrix
                     companyId={companyId}
                     requestId={request.id}
                   />

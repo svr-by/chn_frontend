@@ -7,6 +7,7 @@ import {
   Box,
   Link,
   Stack,
+  TablePagination,
   Typography,
   useMediaQuery,
   useTheme,
@@ -17,57 +18,75 @@ import {
   MaterialReactTable,
   type MRT_ColumnDef,
   type MRT_ExpandedState,
+  type MRT_PaginationState,
 } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
+import type { MaterialRequestStatus } from '@/api/generated/models/materialRequestStatus';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
+import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
 import {
   buildQuoteComparisonRows,
   comparisonHasOffers,
+  comparisonHasSelectableOffers,
   type QuoteComparisonLineRow,
   type QuoteComparisonOfferRow,
 } from '@/features/quotes/lib/buildQuoteComparisonRows';
-import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import { SELECTABLE_REQUEST_STATUSES } from '@/features/quotes/lib/quoteSelection';
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
+import { isDecimalGte, parseDecimal } from '@/lib/decimal';
+
+const PAGE_SIZE = 20;
 
 interface OfferSelectionProps {
   companyId: string;
   selectionEnabled: boolean;
-  selectionMap: Map<string, string>;
   materialRequestId: string;
 }
 
 function resolveSelectedQuantity(
   offer: QuoteComparisonOfferRow['offer'],
-  selectionMap: Map<string, string>,
 ): string | null {
-  return (
-    selectionMap.get(offer.quoteLineId) ?? offer.selectedQuantity ?? null
-  );
+  return offer.selectedQuantity ?? null;
 }
 
 function hasSelectedQuantity(
   offer: QuoteComparisonOfferRow['offer'],
-  selectionMap: Map<string, string>,
 ): boolean {
-  return resolveSelectedQuantity(offer, selectionMap) != null;
+  return resolveSelectedQuantity(offer) != null;
 }
 
-function lineHasSelectedQuantity(
-  line: QuoteComparisonLineRow,
-  selectionMap: Map<string, string>,
-): boolean {
-  return line.offers.some((offerRow) =>
-    hasSelectedQuantity(offerRow.offer, selectionMap),
-  );
+function sumLineSelectedQuantity(line: QuoteComparisonLineRow): string | null {
+  let hasSelection = false;
+  let total = parseDecimal('0');
+
+  for (const offerRow of line.offers) {
+    const selected = resolveSelectedQuantity(offerRow.offer);
+    if (selected == null) {
+      continue;
+    }
+    hasSelection = true;
+    total = total.plus(parseDecimal(selected));
+  }
+
+  return hasSelection ? total.toString() : null;
+}
+
+function lineIsOverOrdered(line: QuoteComparisonLineRow): boolean {
+  const selectedTotal = sumLineSelectedQuantity(line);
+  if (selectedTotal == null) {
+    return false;
+  }
+  return isDecimalGte(selectedTotal, line.requestLine.quantity);
 }
 
 function formatQuoteDate(value: string): string {
@@ -78,7 +97,6 @@ function OffersNestedTable({
   offers,
   companyId,
   selectionEnabled,
-  selectionMap,
   materialRequestId,
 }: { offers: QuoteComparisonOfferRow[] } & OfferSelectionProps) {
   const theme = useTheme();
@@ -123,10 +141,10 @@ function OffersNestedTable({
         id: 'unitPrice',
         header: t('comparison.columns.unitPrice'),
         Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.offer.unitPrice} />{' '}
-            {row.original.offer.currency}
-          </>
+          <DecimalWithSuffix
+            value={row.original.offer.unitPrice}
+            suffix={row.original.offer.currency}
+          />
         ),
       },
       {
@@ -140,10 +158,10 @@ function OffersNestedTable({
         id: 'total',
         header: t('comparison.columns.total'),
         Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.offer.lineTotal} />{' '}
-            {row.original.offer.currency}
-          </>
+          <DecimalWithSuffix
+            value={row.original.offer.lineTotal}
+            suffix={row.original.offer.currency}
+          />
         ),
       },
       {
@@ -172,17 +190,14 @@ function OffersNestedTable({
             quoteId={row.original.offer.quoteId}
             lineId={row.original.offer.quoteLineId}
             maxQuantity={row.original.offer.quantity}
-            selectedQuantity={resolveSelectedQuantity(
-              row.original.offer,
-              selectionMap,
-            )}
+            selectedQuantity={resolveSelectedQuantity(row.original.offer)}
             materialRequestId={materialRequestId}
             disabled={!selectionEnabled}
           />
         ),
       },
     ],
-    [companyId, materialRequestId, selectionEnabled, selectionMap, t],
+    [companyId, materialRequestId, selectionEnabled, t],
   );
 
   const table = useAppMaterialReactTable({
@@ -201,7 +216,7 @@ function OffersNestedTable({
       },
     },
     muiTableBodyRowProps: ({ row }) => {
-      const isSelected = hasSelectedQuantity(row.original.offer, selectionMap);
+      const isSelected = hasSelectedQuantity(row.original.offer);
       return {
         sx: {
           bgcolor: isSelected ? selectedRowBg : 'transparent',
@@ -214,7 +229,7 @@ function OffersNestedTable({
       },
     },
     muiTableBodyCellProps: ({ row }) => {
-      const isSelected = hasSelectedQuantity(row.original.offer, selectionMap);
+      const isSelected = hasSelectedQuantity(row.original.offer);
       return {
         sx: {
           bgcolor: isSelected ? selectedRowBg : 'transparent',
@@ -238,7 +253,6 @@ function OfferCardDetails({
   row,
   companyId,
   selectionEnabled,
-  selectionMap,
   materialRequestId,
 }: { row: QuoteComparisonOfferRow } & OfferSelectionProps) {
   const { t } = useTranslation(['quotes', 'enums']);
@@ -262,7 +276,7 @@ function OfferCardDetails({
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.unitPrice')}:{' '}
-        <DecimalDisplay value={offer.unitPrice} /> {offer.currency}
+        <DecimalWithSuffix value={offer.unitPrice} suffix={offer.currency} />
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.offerQuantity')}:{' '}
@@ -270,7 +284,7 @@ function OfferCardDetails({
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.total')}:{' '}
-        <DecimalDisplay value={offer.lineTotal} /> {offer.currency}
+        <DecimalWithSuffix value={offer.lineTotal} suffix={offer.currency} />
       </Typography>
       {offer.leadTime != null && offer.leadTimeUnit ? (
         <Typography variant="body2">
@@ -283,7 +297,7 @@ function OfferCardDetails({
         quoteId={offer.quoteId}
         lineId={offer.quoteLineId}
         maxQuantity={offer.quantity}
-        selectedQuantity={resolveSelectedQuantity(offer, selectionMap)}
+        selectedQuantity={resolveSelectedQuantity(offer)}
         materialRequestId={materialRequestId}
         disabled={!selectionEnabled}
       />
@@ -295,7 +309,6 @@ function ComparisonMobileCards({
   rows,
   companyId,
   selectionEnabled,
-  selectionMap,
   materialRequestId,
 }: { rows: QuoteComparisonLineRow[] } & OfferSelectionProps) {
   const { t } = useTranslation('quotes');
@@ -304,6 +317,7 @@ function ComparisonMobileCards({
     <Stack spacing={1}>
       {rows.map((lineRow) => {
         const hasLineOffers = lineRow.offers.length > 0;
+        const selectedTotal = sumLineSelectedQuantity(lineRow);
         const header = (
           <Stack spacing={0.5} sx={{ width: '100%', pr: 1 }}>
             <Stack
@@ -326,8 +340,17 @@ function ComparisonMobileCards({
             </Stack>
             <Typography variant="body2" color="text.secondary">
               {t('comparison.columns.quantity')}:{' '}
-              <DecimalDisplay value={lineRow.requestLine.quantity} />{' '}
-              {lineRow.requestLine.unit ?? '—'}
+              <DecimalWithSuffix
+                value={lineRow.requestLine.quantity}
+                suffix={lineRow.requestLine.unit ?? '—'}
+              />
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('columns.selectedQuantity')}:{' '}
+              <DecimalWithSuffix
+                value={selectedTotal}
+                suffix={lineRow.requestLine.unit ?? '—'}
+              />
             </Typography>
           </Stack>
         );
@@ -354,7 +377,7 @@ function ComparisonMobileCards({
             key={lineRow.id}
             defaultExpanded
             sx={
-              lineHasSelectedQuantity(lineRow, selectionMap)
+              lineIsOverOrdered(lineRow)
                 ? {
                     bgcolor: (theme) =>
                       alpha(theme.palette.success.main, 0.08),
@@ -368,10 +391,7 @@ function ComparisonMobileCards({
             <AccordionDetails sx={{ bgcolor: 'action.hover' }}>
               <Stack spacing={1.5}>
                 {lineRow.offers.map((offerRow) => {
-                  const isSelected = hasSelectedQuantity(
-                    offerRow.offer,
-                    selectionMap,
-                  );
+                  const isSelected = hasSelectedQuantity(offerRow.offer);
                   return (
                     <Box
                       key={offerRow.id}
@@ -391,7 +411,6 @@ function ComparisonMobileCards({
                           row={offerRow}
                           companyId={companyId}
                           selectionEnabled={selectionEnabled}
-                          selectionMap={selectionMap}
                           materialRequestId={materialRequestId}
                         />
                       </Stack>
@@ -410,15 +429,11 @@ function ComparisonMobileCards({
 interface QuoteComparisonMatrixProps {
   companyId: string;
   requestId: string;
-  selectionEnabled?: boolean;
-  selectionMap?: Map<string, string>;
 }
 
 export function QuoteComparisonMatrix({
   companyId,
   requestId,
-  selectionEnabled = false,
-  selectionMap = new Map(),
 }: QuoteComparisonMatrixProps) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -434,8 +449,38 @@ export function QuoteComparisonMatrix({
     [comparisonQuery.data?.lines],
   );
   const hasOffers = useMemo(() => comparisonHasOffers(lines), [lines]);
+  const requestStatus = comparisonQuery.data?.request
+    ?.status as MaterialRequestStatus | undefined;
+  const selectionEnabled =
+    requestStatus != null &&
+    SELECTABLE_REQUEST_STATUSES.has(requestStatus) &&
+    comparisonHasSelectableOffers(lines);
 
   const tableData = useMemo(() => buildQuoteComparisonRows(lines), [lines]);
+
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: 0,
+    pageSize: PAGE_SIZE,
+  });
+
+  useEffect(() => {
+    const maxPageIndex = Math.max(
+      0,
+      Math.ceil(tableData.length / pagination.pageSize) - 1,
+    );
+    if (pagination.pageIndex > maxPageIndex) {
+      setPagination((current) => ({ ...current, pageIndex: maxPageIndex }));
+    }
+  }, [tableData.length, pagination.pageIndex, pagination.pageSize]);
+
+  const pagedTableData = useMemo(
+    () =>
+      tableData.slice(
+        pagination.pageIndex * pagination.pageSize,
+        pagination.pageIndex * pagination.pageSize + pagination.pageSize,
+      ),
+    [tableData, pagination.pageIndex, pagination.pageSize],
+  );
 
   const columns = useMemo<MRT_ColumnDef<QuoteComparisonLineRow>[]>(
     () => [
@@ -469,10 +514,22 @@ export function QuoteComparisonMatrix({
         size: 120,
         grow: false,
         Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.requestLine.quantity} />{' '}
-            {row.original.requestLine.unit ?? '—'}
-          </>
+          <DecimalWithSuffix
+            value={row.original.requestLine.quantity}
+            suffix={row.original.requestLine.unit ?? '—'}
+          />
+        ),
+      },
+      {
+        id: 'selectedQuantity',
+        header: t('columns.selectedQuantity'),
+        size: 120,
+        grow: false,
+        Cell: ({ row }) => (
+          <DecimalWithSuffix
+            value={sumLineSelectedQuantity(row.original)}
+            suffix={row.original.requestLine.unit ?? '—'}
+          />
         ),
       },
     ],
@@ -484,24 +541,31 @@ export function QuoteComparisonMatrix({
   useEffect(() => {
     setExpanded(
       Object.fromEntries(
-        tableData
+        pagedTableData
           .filter((row) => row.offers.length > 0)
           .map((row) => [row.id, true]),
       ),
     );
-  }, [tableData]);
+  }, [pagedTableData]);
 
   const table = useAppMaterialReactTable({
     columns,
-    data: tableData,
+    data: pagedTableData,
     getRowId: (row) => row.id,
     layoutMode: 'grid',
     enableColumnResizing: false,
-    enablePagination: false,
-    enableBottomToolbar: false,
+    manualPagination: true,
+    rowCount: tableData.length,
+    onPaginationChange: setPagination,
+    enableBottomToolbar: true,
     enableExpandAll: true,
     getRowCanExpand: (row) => row.original.offers.length > 0,
-    state: { expanded },
+    state: {
+      expanded,
+      pagination,
+      isLoading: comparisonQuery.isLoading,
+      showProgressBars: comparisonQuery.isFetching,
+    },
     onExpandedChange: setExpanded,
     displayColumnDefOptions: {
       'mrt-row-expand': {
@@ -518,10 +582,10 @@ export function QuoteComparisonMatrix({
             sx: { p: 0.25, visibility: 'hidden' },
           },
     muiTableBodyRowProps: ({ row }) => {
-      const isSelected = lineHasSelectedQuantity(row.original, selectionMap);
+      const isOverOrdered = lineIsOverOrdered(row.original);
       return {
         sx: {
-          bgcolor: isSelected
+          bgcolor: isOverOrdered
             ? alpha(theme.palette.success.main, 0.08)
             : undefined,
         },
@@ -546,7 +610,6 @@ export function QuoteComparisonMatrix({
             offers={row.original.offers}
             companyId={companyId}
             selectionEnabled={selectionEnabled}
-            selectionMap={selectionMap}
             materialRequestId={requestId}
           />
         </Box>
@@ -565,13 +628,28 @@ export function QuoteComparisonMatrix({
       ) : !hasOffers ? (
         <Typography color="text.secondary">{t('comparison.empty')}</Typography>
       ) : isMobile ? (
-        <ComparisonMobileCards
-          rows={tableData}
-          companyId={companyId}
-          selectionEnabled={selectionEnabled}
-          selectionMap={selectionMap}
-          materialRequestId={requestId}
-        />
+        <Stack spacing={1}>
+          <ComparisonMobileCards
+            rows={pagedTableData}
+            companyId={companyId}
+            selectionEnabled={selectionEnabled}
+            materialRequestId={requestId}
+          />
+          <TablePagination
+            component="div"
+            count={tableData.length}
+            page={pagination.pageIndex}
+            onPageChange={(_event, nextPage) =>
+              setPagination((current) => ({
+                ...current,
+                pageIndex: nextPage,
+              }))
+            }
+            rowsPerPage={pagination.pageSize}
+            rowsPerPageOptions={[PAGE_SIZE]}
+            onRowsPerPageChange={() => undefined}
+          />
+        </Stack>
       ) : (
         <Box>
           <MaterialReactTable table={table} />

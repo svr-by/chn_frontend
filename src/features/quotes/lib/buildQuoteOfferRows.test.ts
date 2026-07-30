@@ -61,4 +61,38 @@ describe('buildQuoteOfferRows', () => {
     expect(rows).toHaveLength(1);
     expect(rows[0]?.cancelledAt).toBe('2026-07-20T12:00:00.000Z');
   });
+
+  it('sorts buyer rows by request line number regardless of API order', () => {
+    const lineTwo = createQuoteLine({
+      id: '00000000-0000-0000-0000-000000000002',
+      requestLineId: '00000000-0000-0000-0000-000000000012',
+      lineNumber: 1,
+      requestLine: {
+        id: '00000000-0000-0000-0000-000000000012',
+        lineNumber: 2,
+        description: 'Second',
+        quantity: '2',
+        unit: 'pcs',
+        cancelledAt: null,
+      },
+    });
+    const lineOne = createQuoteLine({
+      id: '00000000-0000-0000-0000-000000000001',
+      requestLineId: '00000000-0000-0000-0000-000000000011',
+      lineNumber: 1,
+      requestLine: {
+        id: '00000000-0000-0000-0000-000000000011',
+        lineNumber: 1,
+        description: 'First',
+        quantity: '1',
+        unit: 'pcs',
+        cancelledAt: null,
+      },
+    });
+
+    const rows = buildQuoteOfferRows([lineTwo, lineOne], [], false);
+
+    expect(rows.map((row) => row.lineNumber)).toEqual([1, 2]);
+    expect(rows.map((row) => row.description)).toEqual(['First', 'Second']);
+  });
 });

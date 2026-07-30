@@ -15,7 +15,6 @@ import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
 import { InboundRequestDetailPage } from '@/features/requests/pages/InboundRequestDetailPage';
 import { InboundRequestsPage } from '@/features/requests/pages/InboundRequestsPage';
-import { QuoteComparisonPage } from '@/features/quotes/pages/quoteComparisonPage/QuoteComparisonPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import { InvoicesPage } from '@/features/invoices/pages/InvoicesPage';
@@ -152,10 +151,6 @@ export const router = createBrowserRouter([
               {
                 path: 'requests/inbound/:requestId',
                 element: <InboundRequestDetailPage />,
-              },
-              {
-                path: 'requests/:requestId/compare',
-                element: <QuoteComparisonPage />,
               },
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'quotes', element: <QuotesPage /> },

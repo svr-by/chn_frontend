@@ -39,8 +39,26 @@ import {
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
 import { QuoteLineFormDialog } from './QuoteLineFormDialog';
 import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import {
+  MRT_NARROW_ACTIONS_SIZE,
+  MRT_NARROW_LINE_NUMBER_SIZE,
+  mrtFixedSizeColumnProps,
+} from '@/lib/mrtNarrowColumns';
 
 const PAGE_SIZE = 20;
+
+function canAddOfferOrVariant(
+  offer: QuoteOfferRow,
+  editable: boolean,
+): boolean {
+  if (!editable || offer.quoteLine?.selectedQuantity != null) {
+    return false;
+  }
+  if (offer.quoteLine) {
+    return offer.canAddVariant && offer.isLastInGroup;
+  }
+  return true;
+}
 
 interface QuoteLinesTableProps {
   companyId: string;
@@ -127,82 +145,43 @@ export function QuoteLinesTable({
     const baseColumns: MRT_ColumnDef<QuoteOfferRow>[] = [
       {
         id: 'actions',
-        header: t('columns.actions'),
-        size: editable ? 96 : 56,
-        muiTableHeadCellProps: { align: 'right' },
-        muiTableBodyCellProps: { align: 'right' },
+        header: '',
+        ...mrtFixedSizeColumnProps(MRT_NARROW_ACTIONS_SIZE),
         Cell: ({ row }) => {
           const offer = row.original;
-          const lineEditable =
-            editable && offer.quoteLine?.selectedQuantity == null;
-          const showAdd =
-            lineEditable &&
-            (offer.quoteLine
-              ? offer.canAddVariant && offer.isLastInGroup
-              : true);
+          const showMenu =
+            Boolean(offer.quoteLine) || canAddOfferOrVariant(offer, editable);
+
+          if (!showMenu) {
+            return null;
+          }
 
           return (
-            <Stack
-              direction="row"
-              spacing={0.5}
-              sx={{ justifyContent: 'flex-end', alignItems: 'center' }}
-            >
-              {showAdd ? (
-                <PermissionGate permission="manageQuotes">
-                  <Tooltip
-                    title={
-                      offer.quoteLine
-                        ? t('actions.addVariant')
-                        : t('actions.addOffer')
-                    }
-                  >
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      aria-label={
-                        offer.quoteLine
-                          ? t('actions.addVariant')
-                          : t('actions.addOffer')
-                      }
-                      onClick={() => {
-                        setEditingLine(null);
-                        setInitialRequestLineId(offer.requestLineId);
-                        setDialogOpen(true);
-                      }}
-                    >
-                      <AddIcon fontSize="small" />
-                    </IconButton>
-                  </Tooltip>
-                </PermissionGate>
-              ) : null}
-              {offer.quoteLine ? (
-                <Tooltip title={t('actions.more')}>
-                  <IconButton
-                    size="small"
-                    aria-label={t('actions.more')}
-                    aria-haspopup="menu"
-                    aria-expanded={
-                      actionsMenu?.row.id === offer.id ? 'true' : undefined
-                    }
-                    onClick={(event) => {
-                      setActionsMenu({
-                        anchor: event.currentTarget,
-                        row: offer,
-                      });
-                    }}
-                  >
-                    <MoreVertIcon fontSize="small" />
-                  </IconButton>
-                </Tooltip>
-              ) : null}
-            </Stack>
+            <Tooltip title={t('actions.more')}>
+              <IconButton
+                size="small"
+                aria-label={t('actions.more')}
+                aria-haspopup="menu"
+                aria-expanded={
+                  actionsMenu?.row.id === offer.id ? 'true' : undefined
+                }
+                onClick={(event) => {
+                  setActionsMenu({
+                    anchor: event.currentTarget,
+                    row: offer,
+                  });
+                }}
+              >
+                <MoreVertIcon fontSize="small" />
+              </IconButton>
+            </Tooltip>
           );
         },
       },
       {
         id: 'lineNumber',
         header: t('columns.lineNumber'),
-        size: 72,
+        ...mrtFixedSizeColumnProps(MRT_NARROW_LINE_NUMBER_SIZE),
         Cell: ({ row }) => {
           const { lineNumber, variantIndex, variantCount } = row.original;
           if (variantCount > 1) {
@@ -329,6 +308,9 @@ export function QuoteLinesTable({
   }
 
   const menuQuoteLine = actionsMenu?.row.quoteLine ?? null;
+  const menuCanAdd = actionsMenu
+    ? canAddOfferOrVariant(actionsMenu.row, editable)
+    : false;
 
   async function handleDeleteConfirm() {
     if (!lineToDelete) {
@@ -394,6 +376,27 @@ export function QuoteLinesTable({
             <ListItemText>{t('actions.openTrace')}</ListItemText>
           </MenuItem>
         ) : null}
+        {menuCanAdd ? (
+          <PermissionGate permission="manageQuotes">
+            <MenuItem
+              onClick={() => {
+                setEditingLine(null);
+                setInitialRequestLineId(actionsMenu?.row.requestLineId ?? null);
+                setDialogOpen(true);
+                closeActionsMenu();
+              }}
+            >
+              <ListItemIcon>
+                <AddIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>
+                {menuQuoteLine
+                  ? t('actions.addVariant')
+                  : t('actions.addOffer')}
+              </ListItemText>
+            </MenuItem>
+          </PermissionGate>
+        ) : null}
         {editable && menuQuoteLine && menuQuoteLine.selectedQuantity == null ? (
           <PermissionGate permission="manageQuotes">
             <MenuItem
@@ -434,6 +437,7 @@ export function QuoteLinesTable({
           pagination={pagination}
           onPaginationChange={setPagination}
           getRowId={(row) => row.id}
+          layoutMode="grid"
         />
       )}
 

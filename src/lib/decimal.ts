@@ -18,6 +18,10 @@ export function isDecimalLte(a: string, b: string): boolean {
   return parseDecimal(a).lte(parseDecimal(b));
 }
 
+export function isDecimalGte(a: string, b: string): boolean {
+  return parseDecimal(a).gte(parseDecimal(b));
+}
+
 export interface FormatDecimalOptions {
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;

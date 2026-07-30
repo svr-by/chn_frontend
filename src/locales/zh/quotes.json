@@ -118,9 +118,6 @@
     "submittedAt": "已提交 {{date}}"
   },
   "comparison": {
-    "fallbackTitle": "比较报价 — {{id}}",
-    "reference": "参考号：{{reference}}",
-    "backToRequest": "返回申请",
     "empty": "暂无可比较的供应商报价。",
     "loading": "正在加载报价比较…",
     "columns": {

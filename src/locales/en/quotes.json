@@ -118,9 +118,6 @@
     "submittedAt": "Submitted {{date}}"
   },
   "comparison": {
-    "fallbackTitle": "Compare quotes — {{id}}",
-    "reference": "Reference: {{reference}}",
-    "backToRequest": "Back to request",
     "empty": "No supplier quotes to compare yet.",
     "loading": "Loading quote comparison…",
     "columns": {
