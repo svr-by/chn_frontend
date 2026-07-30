@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useGetQuoteBillableLinesQuery, useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
-import { InvoiceDetailPage } from '@/features/invoices/pages/InvoiceDetailPage';
+import { InvoiceDetailPage } from '@/features/invoices/pages/invoiceDetailPage/InvoiceDetailPage';
 import {
   COMPANY_ID,
   createMembership,

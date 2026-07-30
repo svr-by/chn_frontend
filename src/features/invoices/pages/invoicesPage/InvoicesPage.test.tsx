@@ -4,10 +4,12 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useListInvoicesQuery } from '@/api/endpoints/invoicesApi';
-import { InvoicesPage } from '@/features/invoices/pages/InvoicesPage';
+import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
+import { InvoicesPage } from '@/features/invoices/pages/invoicesPage/InvoicesPage';
 import {
   COMPANY_ID,
   createSupplierInvoiceSummary,
+  createTradingPartner,
   REQUEST_ID,
 } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
@@ -38,11 +40,17 @@ vi.mock('@/api/endpoints/invoicesApi', async (importOriginal) => {
   };
 });
 
+vi.mock('@/api/endpoints/partnersApi', () => ({
+  useListPartnersQuery: vi.fn(),
+}));
+
 const mockedUseListInvoicesQuery = vi.mocked(useListInvoicesQuery);
+const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
 
 describe('InvoicesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+
     mockedUseListInvoicesQuery.mockReturnValue({
       data: {
         invoices: [createSupplierInvoiceSummary()],
@@ -52,6 +60,15 @@ describe('InvoicesPage', () => {
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useListInvoicesQuery>);
+
+    mockedUseListPartnersQuery.mockReturnValue({
+      data: {
+        partners: [createTradingPartner({ status: 'ACTIVE' })],
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListPartnersQuery>);
   });
 
   it('renders inbound tab by default', () => {
@@ -66,7 +83,13 @@ describe('InvoicesPage', () => {
     );
 
     expect(screen.getByText('Invoices')).toBeInTheDocument();
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
     expect(screen.getByText('Supplier A')).toBeInTheDocument();
+    expect(screen.getByText('Draft')).toBeInTheDocument();
+    expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ direction: 'inbound' }),
+      expect.anything(),
+    );
   });
 
   it('applies requestId filter from URL', () => {
@@ -83,6 +106,10 @@ describe('InvoicesPage', () => {
     expect(
       screen.getByText(`Filtered by request ${REQUEST_ID.slice(0, 8)}`),
     ).toBeInTheDocument();
+    expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ requestId: REQUEST_ID }),
+      expect.anything(),
+    );
   });
 
   it('switches to outbound tab', async () => {
@@ -100,8 +127,63 @@ describe('InvoicesPage', () => {
 
     await user.click(screen.getByRole('tab', { name: 'Outbound' }));
 
+    expect(await screen.findByLabelText('Buyer')).toBeInTheDocument();
     expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'outbound' }),
+      expect.anything(),
+    );
+  });
+
+  it('applies status filter only after Apply', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/invoices" element={<InvoicesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/invoices',
+      },
+    );
+
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled();
+
+    await user.click(screen.getByLabelText('Status'));
+    await user.click(await screen.findByRole('option', { name: 'Issued' }));
+
+    expect(screen.getByRole('button', { name: 'Apply' })).toBeEnabled();
+    expect(mockedUseListInvoicesQuery).not.toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'ISSUED' }),
+      expect.anything(),
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ status: 'ISSUED' }),
+      expect.anything(),
+    );
+  });
+
+  it('applies invoiceNumber filter after Apply', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/invoices" element={<InvoicesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/invoices',
+      },
+    );
+
+    await user.type(screen.getByLabelText('Invoice #'), 'INV-100');
+    await user.click(screen.getByRole('button', { name: 'Apply' }));
+
+    expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ invoiceNumber: 'INV-100' }),
       expect.anything(),
     );
   });

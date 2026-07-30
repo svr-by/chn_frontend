@@ -58,6 +58,24 @@
     "paid": "Оплачено",
     "confirmed": "Подтверждено"
   },
+  "filters": {
+    "title": "Фильтры",
+    "open": "Фильтры",
+    "apply": "Применить",
+    "reset": "Сбросить",
+    "closeAriaLabel": "Закрыть фильтры",
+    "supplier": "Поставщик",
+    "buyer": "Покупатель",
+    "currency": "Валюта",
+    "invoiceNumber": "Счёт №",
+    "createdFrom": "Создано с",
+    "createdTo": "Создано по",
+    "placeholders": {
+      "company": "Выберите компанию",
+      "currency": "Любая валюта",
+      "invoiceNumber": "Поиск по номеру"
+    }
+  },
   "filter": {
     "request": "Отфильтровано по заявке {{id}}",
     "clearRequest": "Сбросить фильтр"

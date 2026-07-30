@@ -58,6 +58,24 @@
     "paid": "已付款",
     "confirmed": "已确认"
   },
+  "filters": {
+    "title": "筛选",
+    "open": "筛选",
+    "apply": "应用",
+    "reset": "重置",
+    "closeAriaLabel": "关闭筛选",
+    "supplier": "供应商",
+    "buyer": "买方",
+    "currency": "货币",
+    "invoiceNumber": "发票 #",
+    "createdFrom": "创建自",
+    "createdTo": "创建至",
+    "placeholders": {
+      "company": "选择公司",
+      "currency": "任意货币",
+      "invoiceNumber": "按号码搜索"
+    }
+  },
   "filter": {
     "request": "按申请 {{id}} 筛选",
     "clearRequest": "清除筛选"

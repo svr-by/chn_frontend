@@ -58,6 +58,24 @@
     "paid": "Paid",
     "confirmed": "Confirmed"
   },
+  "filters": {
+    "title": "Filters",
+    "open": "Filters",
+    "apply": "Apply",
+    "reset": "Reset",
+    "closeAriaLabel": "Close filters",
+    "supplier": "Supplier",
+    "buyer": "Buyer",
+    "currency": "Currency",
+    "invoiceNumber": "Invoice #",
+    "createdFrom": "Created from",
+    "createdTo": "Created to",
+    "placeholders": {
+      "company": "Select company",
+      "currency": "Any currency",
+      "invoiceNumber": "Search by number"
+    }
+  },
   "filter": {
     "request": "Filtered by request {{id}}",
     "clearRequest": "Clear filter"
