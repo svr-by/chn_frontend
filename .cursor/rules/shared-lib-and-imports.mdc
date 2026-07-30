@@ -1,0 +1,42 @@
+---
+description: Shared src/lib utilities and import conventions
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Shared lib and imports
+
+## `src/lib/` — cross-feature utilities
+
+Put reusable, domain-agnostic helpers here:
+
+- `dateInput.ts` — `<input type="date">` ↔ ISO conversions
+- `decimal.ts`, `currencies.ts`, `permissions.ts`, `navConfig.ts`
+
+**Do not** duplicate these inside a feature. If a helper is used by 2+ features, move it to `src/lib/`.
+
+## `features/<domain>/lib/` — domain-only logic
+
+Feature-specific builders and types stay local:
+
+- `features/quotes/lib/quotesFilters.ts`
+- `features/quotes/lib/buildQuoteOfferRows.ts`
+
+## Imports
+
+- Use `@/` path alias (`@/features/...`, `@/lib/...`, `@/components/...`).
+- Prefer absolute imports over `../` across feature boundaries.
+- Within a component group, relative imports are fine (`./QuoteLineFormDialog`).
+
+```typescript
+// ✅ GOOD
+import { isoToDateInputValue } from '@/lib/dateInput';
+import { QuoteCard } from '@/features/quotes/components/quoteCard/QuoteCard';
+
+// ❌ BAD — duplicating date helpers in a component file
+function toDateInputValue(iso: string) { ... }
+```
+
+## Generated code
+
+Never edit `src/api/generated/`. Run `npm run codegen` after OpenAPI changes.

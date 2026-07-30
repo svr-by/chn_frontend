@@ -1,0 +1,40 @@
+---
+description: React patterns for feature UI (forms, tables, i18n)
+globs: src/features/**/*.tsx
+alwaysApply: false
+---
+
+# React feature UI patterns
+
+## i18n
+
+- UI strings: `useTranslation('<namespace>')` + JSON in `src/locales/{en,ru,zh}/`.
+- Add keys to **all three** locale files when introducing new copy.
+
+## Forms and saves
+
+- Header fields with autosave: hook in `features/<domain>/hooks/` + `AutosaveTextField`.
+- Dialog forms with submit button: `react-hook-form` + `zod` (see `QuoteLineFormDialog`).
+- Show API errors with `ApiErrorAlert`; success with `enqueueSnackbar(t('toast.updated'))`.
+
+## Lists and tables
+
+- Offset pagination for document lists; use `PaginatedTable` or MRT via `useAppMaterialReactTable`.
+- Extract non-trivial row-building logic to `features/<domain>/lib/`, not inline in the table component.
+
+## Permissions and guards
+
+- Wrap destructive or write actions in `PermissionGate` with the correct permission key.
+- Gate by document status in the page, pass `editable` boolean to child components.
+
+## Optional chaining
+
+Watch null-safe access before method calls:
+
+```typescript
+// ❌ BAD — .slice runs on undefined when materialRequest is null
+quote.materialRequest?.id.slice(0, 8)
+
+// ✅ GOOD
+quote.materialRequest?.id?.slice(0, 8)
+```

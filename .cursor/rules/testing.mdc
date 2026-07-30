@@ -1,0 +1,61 @@
+---
+description: Vitest and Testing Library conventions
+globs: src/**/*.test.{ts,tsx}
+alwaysApply: false
+---
+
+# Testing conventions
+
+## Stack
+
+- **Vitest** + **Testing Library** + `userEvent`
+- Render via `renderWithProviders` from `@/test/render`
+- Fixtures from `@/test/fixtures` (`createTestUser`, `COMPANY_ID`, domain factories)
+
+## File placement
+
+- Colocate with the unit under test: `QuotesPage.test.tsx` next to `QuotesPage.tsx`
+- Page tests: `features/<domain>/pages/<pageGroup>/`
+- Component tests: beside the component (or in the same `<group>/` folder)
+
+## Mocking RTK Query
+
+Mock endpoint modules with `vi.mock('@/api/endpoints/...')`. Cast mocks with `vi.mocked()` and `ReturnType<typeof useXxxQuery>`.
+
+```typescript
+vi.mock('@/api/endpoints/quotesApi', () => ({
+  useListQuotesQuery: vi.fn(),
+}));
+
+const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  mockedUseListQuotesQuery.mockReturnValue({
+    data: { quotes: [createSupplierQuoteSummary()], pagination: { total: 1, limit: 20, offset: 0 } },
+    isLoading: false,
+    isFetching: false,
+    refetch: vi.fn(),
+  } as ReturnType<typeof useListQuotesQuery>);
+});
+```
+
+## Auth / permissions in tests
+
+Mock `useGetMeQuery` with `createTestUser` + `createMembership({ effectivePermissions: [...] })`.
+Set `preloadedState: { auth: { activeCompanyId: COMPANY_ID } }` in `renderWithProviders`.
+
+## Routing in page tests
+
+Wrap in `<Routes><Route path="..." element={<Page />} /></Routes>` and pass matching `route` option.
+
+## What to test
+
+- User-visible behavior (labels, tabs, buttons, empty states)
+- That filters/actions call hooks with expected args
+- Avoid testing implementation details or trivial renders
+
+## What not to do
+
+- Do not hit the real API in unit tests
+- Do not add tests that only assert a component mounts without behavior

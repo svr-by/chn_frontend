@@ -1,0 +1,17 @@
+---
+description: Core project constraints for every agent session
+alwaysApply: true
+---
+
+# CHN frontend — core constraints
+
+- **Stack**: React 19, TypeScript (strict), RTK Query, MUI 6, Vitest.
+- **Path alias**: `@/` → `src/`.
+- **Never edit** `src/api/generated/` — run `npm run codegen` after OpenAPI changes.
+- **Permissions**: gate UI with `effectivePermissions`, not role names.
+- **API money/qty**: decimal strings; use `@/lib/decimal` for display/math.
+- **Server state**: RTK Query cache — do not duplicate lists in Redux.
+- **Scope**: minimal diffs; match existing conventions in the touched feature.
+- **Commits**: only when the user explicitly asks.
+- **Feature layout template**: `src/features/quotes/` (see `feature-module-structure` rule).
+- **Human docs**: `docs/developer-guide.md` · **Agent entry**: `AGENTS.md`

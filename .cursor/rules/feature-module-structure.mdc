@@ -1,0 +1,44 @@
+---
+description: Feature module folder layout (pages, components, hooks, lib)
+globs: src/features/**/*
+alwaysApply: false
+---
+
+# Feature module structure
+
+Each domain lives under `src/features/<domain>/`. Reference: `src/features/quotes/`.
+
+## Layout
+
+```text
+features/<domain>/
+├── pages/<pageGroup>/     # Page + colocated *.test.tsx
+├── components/<group>/    # UI grouped by concern (camelCase folder names)
+├── hooks/                 # Domain-specific hooks (mutations, workflows)
+└── lib/                   # Pure domain logic (filters, row builders, constants)
+```
+
+## Components
+
+- Group related UI in `components/<group>/` (e.g. `quoteHeaderForm/`, `quotesFilters/`, `quoteLinesTable/`).
+- One main export per file; file name matches the export (`QuoteCard.tsx` → `QuoteCard`).
+- **No barrel files** in `components/` root unless a group has many public exports.
+- Import directly: `@/features/quotes/components/quoteCard/QuoteCard`
+- Shared props types: export from the primary component in the group; siblings import with `import type`.
+
+## Pages
+
+- Prefer `pages/<pageGroup>/<PageName>.tsx` with test beside it (`QuotesPage.test.tsx`).
+- Pages compose feature components; keep data-fetching and routing here, not in leaf components when possible.
+
+## Hooks vs lib
+
+| Put in | Examples |
+|--------|----------|
+| `hooks/` | RTK mutation wrappers, snackbar + save flows (`useQuoteHeaderSave`) |
+| `lib/` | Filter builders, row mappers, constants (`quotesFilters.ts`, `buildQuoteOfferRows.ts`) |
+
+## When refactoring
+
+- Match conventions in the target feature; use `quotes` as the template for new structure.
+- Legacy flat files (e.g. `components/InvoiceHeaderForm.tsx`) may remain until touched—then migrate to grouped folders.
