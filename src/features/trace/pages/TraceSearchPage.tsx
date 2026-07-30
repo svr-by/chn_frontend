@@ -28,6 +28,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { getPipelineStatusLabel } from '@/lib/traceLabels';
+import { PageShell } from '@/layouts/PageShell';
 
 dayjs.extend(relativeTime);
 
@@ -104,7 +105,12 @@ export function TraceSearchPage() {
         accessorKey: 'description',
         header: t('columns.description'),
         Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            flexWrap="wrap"
+          >
             <span>{row.original.description}</span>
             <RequestLineCancelledBadge cancelledAt={row.original.cancelledAt} />
           </Stack>
@@ -167,89 +173,91 @@ export function TraceSearchPage() {
   const rowCount = searchQuery.data?.pagination.total ?? 0;
 
   return (
-    <PermissionGate permission="viewTrace">
-      <Stack spacing={3}>
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('subtitle')}
-          </Typography>
-        </Box>
+    <PageShell maxWidth="xl">
+      <PermissionGate permission="viewTrace">
+        <Stack spacing={3}>
+          <Box>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('subtitle')}
+            </Typography>
+          </Box>
 
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={2}
-          alignItems={{ md: 'flex-end' }}
-        >
-          <TextField
-            label={t('search.placeholder')}
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                applyFilters();
-              }
-            }}
-            fullWidth
-          />
-          <FormControl sx={{ minWidth: 180 }}>
-            <InputLabel id="trace-status-filter">
-              {t('search.statusFilter')}
-            </InputLabel>
-            <Select
-              labelId="trace-status-filter"
-              label={t('search.statusFilter')}
-              value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(event.target.value as StatusFilter)
-              }
-            >
-              <MenuItem value="ALL">{t('search.statusAll')}</MenuItem>
-              {Object.values(GetCompaniesCompanyIdTraceSearchStatus).map(
-                (status) => (
-                  <MenuItem key={status} value={status}>
-                    {getPipelineStatusLabel(status, t)}
-                  </MenuItem>
-                ),
-              )}
-            </Select>
-          </FormControl>
-          <TextField
-            label={t('search.requestFilter')}
-            value={requestIdFilter}
-            onChange={(event) => setRequestIdFilter(event.target.value)}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                applyFilters();
-              }
-            }}
-            sx={{ minWidth: 280 }}
-          />
-          <Button variant="contained" onClick={applyFilters}>
-            {t('search.apply')}
-          </Button>
+          <Stack
+            direction={{ xs: 'column', md: 'row' }}
+            spacing={2}
+            alignItems={{ md: 'flex-end' }}
+          >
+            <TextField
+              label={t('search.placeholder')}
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  applyFilters();
+                }
+              }}
+              fullWidth
+            />
+            <FormControl sx={{ minWidth: 180 }}>
+              <InputLabel id="trace-status-filter">
+                {t('search.statusFilter')}
+              </InputLabel>
+              <Select
+                labelId="trace-status-filter"
+                label={t('search.statusFilter')}
+                value={statusFilter}
+                onChange={(event) =>
+                  setStatusFilter(event.target.value as StatusFilter)
+                }
+              >
+                <MenuItem value="ALL">{t('search.statusAll')}</MenuItem>
+                {Object.values(GetCompaniesCompanyIdTraceSearchStatus).map(
+                  (status) => (
+                    <MenuItem key={status} value={status}>
+                      {getPipelineStatusLabel(status, t)}
+                    </MenuItem>
+                  ),
+                )}
+              </Select>
+            </FormControl>
+            <TextField
+              label={t('search.requestFilter')}
+              value={requestIdFilter}
+              onChange={(event) => setRequestIdFilter(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  applyFilters();
+                }
+              }}
+              sx={{ minWidth: 280 }}
+            />
+            <Button variant="contained" onClick={applyFilters}>
+              {t('search.apply')}
+            </Button>
+          </Stack>
+
+          <ApiErrorAlert error={searchQuery.error} />
+
+          {items.length === 0 && !searchQuery.isLoading ? (
+            <Typography color="text.secondary">{t('search.empty')}</Typography>
+          ) : (
+            <PaginatedTable
+              columns={columns}
+              data={items}
+              rowCount={rowCount}
+              pagination={pagination}
+              onPaginationChange={setPagination}
+              isLoading={searchQuery.isLoading}
+              isFetching={searchQuery.isFetching}
+              onRowClick={(row) => navigate(`/app/trace/${row.lineageId}`)}
+              getRowId={(row) => row.lineageId}
+            />
+          )}
         </Stack>
-
-        <ApiErrorAlert error={searchQuery.error} />
-
-        {items.length === 0 && !searchQuery.isLoading ? (
-          <Typography color="text.secondary">{t('search.empty')}</Typography>
-        ) : (
-          <PaginatedTable
-            columns={columns}
-            data={items}
-            rowCount={rowCount}
-            pagination={pagination}
-            onPaginationChange={setPagination}
-            isLoading={searchQuery.isLoading}
-            isFetching={searchQuery.isFetching}
-            onRowClick={(row) => navigate(`/app/trace/${row.lineageId}`)}
-            getRowId={(row) => row.lineageId}
-          />
-        )}
-      </Stack>
-    </PermissionGate>
+      </PermissionGate>
+    </PageShell>
   );
 }

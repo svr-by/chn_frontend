@@ -99,6 +99,7 @@ export function MemberAccessPage() {
   if (!canAccess) {
     return (
       <DocumentDetailLayout
+        maxWidth="lg"
         title={t('team:accessTitle')}
         backFallbackTo={TEAM_PATH}
       >
@@ -110,6 +111,7 @@ export function MemberAccessPage() {
   if (!membersQuery.isLoading && !member) {
     return (
       <DocumentDetailLayout
+        maxWidth="lg"
         title={t('team:accessTitle')}
         backFallbackTo={TEAM_PATH}
       >
@@ -186,6 +188,7 @@ export function MemberAccessPage() {
 
   return (
     <DocumentDetailLayout
+      maxWidth="lg"
       title={displayName}
       subtitle={member?.user?.email}
       loading={membersQuery.isLoading}

@@ -19,6 +19,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { resolveNotificationPath } from '@/lib/notificationRoutes';
+import { PageShell } from '@/layouts/PageShell';
 
 export function NotificationsPage() {
   const { t } = useTranslation('notifications');
@@ -71,55 +72,57 @@ export function NotificationsPage() {
   }
 
   return (
-    <PermissionGate
-      permission="viewNotifications"
-      fallback={
-        <Typography variant="body1" color="text.secondary">
-          {t('noPermission')}
-        </Typography>
-      }
-    >
-      <Stack spacing={3}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems={{ xs: 'stretch', sm: 'center' }}
-          spacing={2}
-        >
-          <Typography variant="h5" component="h1">
-            {t('title')}
+    <PageShell maxWidth="lg">
+      <PermissionGate
+        permission="viewNotifications"
+        fallback={
+          <Typography variant="body1" color="text.secondary">
+            {t('noPermission')}
           </Typography>
-          <Button
-            variant="outlined"
-            onClick={() => void handleMarkAllRead()}
-            disabled={markAllState.isLoading}
+        }
+      >
+        <Stack spacing={3}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'stretch', sm: 'center' }}
+            spacing={2}
           >
-            {t('markAllRead')}
-          </Button>
-        </Stack>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Button
+              variant="outlined"
+              onClick={() => void handleMarkAllRead()}
+              disabled={markAllState.isLoading}
+            >
+              {t('markAllRead')}
+            </Button>
+          </Stack>
 
-        <ToggleButtonGroup
-          exclusive
-          size="small"
-          value={filter}
-          onChange={(_event, value: 'all' | 'unread' | null) => {
-            if (value) {
-              setFilter(value);
+          <ToggleButtonGroup
+            exclusive
+            size="small"
+            value={filter}
+            onChange={(_event, value: 'all' | 'unread' | null) => {
+              if (value) {
+                setFilter(value);
+              }
+            }}
+          >
+            <ToggleButton value="all">{t('all')}</ToggleButton>
+            <ToggleButton value="unread">{t('unreadOnly')}</ToggleButton>
+          </ToggleButtonGroup>
+
+          <NotificationsList
+            companyId={companyId}
+            unreadOnly={filter === 'unread'}
+            onNotificationClick={(notification) =>
+              void handleNotificationClick(notification)
             }
-          }}
-        >
-          <ToggleButton value="all">{t('all')}</ToggleButton>
-          <ToggleButton value="unread">{t('unreadOnly')}</ToggleButton>
-        </ToggleButtonGroup>
-
-        <NotificationsList
-          companyId={companyId}
-          unreadOnly={filter === 'unread'}
-          onNotificationClick={(notification) =>
-            void handleNotificationClick(notification)
-          }
-        />
-      </Stack>
-    </PermissionGate>
+          />
+        </Stack>
+      </PermissionGate>
+    </PageShell>
   );
 }

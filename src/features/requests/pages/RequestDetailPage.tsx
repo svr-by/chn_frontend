@@ -59,6 +59,7 @@ export function RequestDetailPage() {
 
   return (
     <DocumentDetailLayout
+      maxWidth="fluid"
       title={t('detail.title', { title })}
       titleAction={
         request && canEdit ? (

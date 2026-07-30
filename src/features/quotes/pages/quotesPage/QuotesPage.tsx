@@ -30,6 +30,7 @@ import {
   buildQuotesListQueryArgs,
   type QuotesFiltersValue,
 } from '@/features/quotes/lib/quotesFilters';
+import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
 
@@ -65,7 +66,9 @@ export function QuotesPage() {
     setAppliedFilters((prev) =>
       clearCounterpartyOnDirectionChange(direction, prev),
     );
-    setDraftFilters((prev) => clearCounterpartyOnDirectionChange(direction, prev));
+    setDraftFilters((prev) =>
+      clearCounterpartyOnDirectionChange(direction, prev),
+    );
   }, [direction]);
 
   useEffect(() => {
@@ -78,7 +81,10 @@ export function QuotesPage() {
   );
 
   const activePartners = useMemo(
-    () => (partnersQuery.data?.partners ?? []).filter((p) => p.status === TradingPartnerStatus.ACTIVE),
+    () =>
+      (partnersQuery.data?.partners ?? []).filter(
+        (p) => p.status === TradingPartnerStatus.ACTIVE,
+      ),
     [partnersQuery.data?.partners],
   );
 
@@ -108,98 +114,100 @@ export function QuotesPage() {
   const total = listQuery.data?.pagination.total ?? 0;
 
   return (
-    <Stack spacing={3} sx={{ minHeight: '100%' }}>
-      <Box>
-        <Typography variant="h5" component="h1">
-          {t('title')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t('subtitle')}
-        </Typography>
-      </Box>
-
-      <Stack direction="row" alignItems="center" spacing={1}>
-        <Tabs
-          value={tabIndex}
-          onChange={handleTabChange}
-          sx={{ flex: 1, minWidth: 0 }}
-        >
-          <Tab label={t('tabs.inbound')} />
-          <Tab label={t('tabs.outbound')} />
-        </Tabs>
-        {isMobile ? (
-          <IconButton
-            aria-label={t('filters.open')}
-            onClick={() => setFiltersOpen(true)}
-            sx={{ flexShrink: 0 }}
-          >
-            <FilterListOutlinedIcon />
-          </IconButton>
-        ) : null}
-      </Stack>
-
-      <ApiErrorAlert error={listQuery.error} />
-
-      <QuotesFiltersPanel
-        direction={direction}
-        draftFilters={draftFilters}
-        appliedFilters={appliedFilters}
-        partners={activePartners}
-        partnersLoading={partnersQuery.isLoading || partnersQuery.isFetching}
-        inline={!isMobile}
-        drawerOpen={filtersOpen}
-        onDrawerOpenChange={setFiltersOpen}
-        onDraftChange={setDraftFilters}
-        onApply={() => setAppliedFilters(draftFilters)}
-        onReset={() => {
-          setDraftFilters({ ...DEFAULT_QUOTES_FILTERS });
-          setAppliedFilters({ ...DEFAULT_QUOTES_FILTERS });
-        }}
-      />
-
-      {listQuery.isLoading ? (
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
-          <CircularProgress />
+    <PageShell maxWidth="xl">
+      <Stack spacing={3} sx={{ minHeight: '100%' }}>
+        <Box>
+          <Typography variant="h5" component="h1">
+            {t('title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t('subtitle')}
+          </Typography>
         </Box>
-      ) : quotes.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
-      ) : (
-        <Stack spacing={0} sx={{ flex: 1, minHeight: 0 }}>
-          <Stack
-            spacing={1.5}
-            sx={{
-              flex: 1,
-              opacity: listQuery.isFetching ? 0.6 : 1,
-              transition: 'opacity 120ms ease',
-            }}
-          >
-            {quotes.map((quote) => (
-              <QuoteCard
-                key={quote.id}
-                quote={quote}
-                direction={direction}
-                onClick={() => navigate(`/app/quotes/${quote.id}`)}
-              />
-            ))}
-          </Stack>
 
-          <TablePagination
-            component="div"
-            count={total}
-            page={pageIndex}
-            onPageChange={(_event, nextPage) => setPageIndex(nextPage)}
-            rowsPerPage={PAGE_SIZE}
-            rowsPerPageOptions={[PAGE_SIZE]}
-            onRowsPerPageChange={() => undefined}
-            sx={{
-              mt: 'auto',
-              borderTop: 1,
-              borderColor: 'divider',
-              '.MuiToolbar-root': { px: 0 },
-            }}
-          />
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Tabs
+            value={tabIndex}
+            onChange={handleTabChange}
+            sx={{ flex: 1, minWidth: 0 }}
+          >
+            <Tab label={t('tabs.inbound')} />
+            <Tab label={t('tabs.outbound')} />
+          </Tabs>
+          {isMobile ? (
+            <IconButton
+              aria-label={t('filters.open')}
+              onClick={() => setFiltersOpen(true)}
+              sx={{ flexShrink: 0 }}
+            >
+              <FilterListOutlinedIcon />
+            </IconButton>
+          ) : null}
         </Stack>
-      )}
-    </Stack>
+
+        <ApiErrorAlert error={listQuery.error} />
+
+        <QuotesFiltersPanel
+          direction={direction}
+          draftFilters={draftFilters}
+          appliedFilters={appliedFilters}
+          partners={activePartners}
+          partnersLoading={partnersQuery.isLoading || partnersQuery.isFetching}
+          inline={!isMobile}
+          drawerOpen={filtersOpen}
+          onDrawerOpenChange={setFiltersOpen}
+          onDraftChange={setDraftFilters}
+          onApply={() => setAppliedFilters(draftFilters)}
+          onReset={() => {
+            setDraftFilters({ ...DEFAULT_QUOTES_FILTERS });
+            setAppliedFilters({ ...DEFAULT_QUOTES_FILTERS });
+          }}
+        />
+
+        {listQuery.isLoading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+            <CircularProgress />
+          </Box>
+        ) : quotes.length === 0 ? (
+          <Typography color="text.secondary">{t('empty.list')}</Typography>
+        ) : (
+          <Stack spacing={0} sx={{ flex: 1, minHeight: 0 }}>
+            <Stack
+              spacing={1.5}
+              sx={{
+                flex: 1,
+                opacity: listQuery.isFetching ? 0.6 : 1,
+                transition: 'opacity 120ms ease',
+              }}
+            >
+              {quotes.map((quote) => (
+                <QuoteCard
+                  key={quote.id}
+                  quote={quote}
+                  direction={direction}
+                  onClick={() => navigate(`/app/quotes/${quote.id}`)}
+                />
+              ))}
+            </Stack>
+
+            <TablePagination
+              component="div"
+              count={total}
+              page={pageIndex}
+              onPageChange={(_event, nextPage) => setPageIndex(nextPage)}
+              rowsPerPage={PAGE_SIZE}
+              rowsPerPageOptions={[PAGE_SIZE]}
+              onRowsPerPageChange={() => undefined}
+              sx={{
+                mt: 'auto',
+                borderTop: 1,
+                borderColor: 'divider',
+                '.MuiToolbar-root': { px: 0 },
+              }}
+            />
+          </Stack>
+        )}
+      </Stack>
+    </PageShell>
   );
 }

@@ -34,6 +34,7 @@ import {
 } from '@/features/requests/lib/draftRequestLine';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { PageShell } from '@/layouts/PageShell';
 
 type FormTab = 'lines' | 'notes';
 
@@ -171,184 +172,186 @@ export function RequestNewPage() {
   }
 
   return (
-    <Stack spacing={3} maxWidth={960} sx={{ width: '100%', mx: 'auto' }}>
-      <Stack spacing={1}>
-        <BackLink to="/app/requests" />
-        <Typography variant="h5" component="h1">
-          {t('form.newTitle')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {t('form.newSubtitle')}
-        </Typography>
-      </Stack>
-
-      <ApiErrorAlert error={createState.error} />
-
-      <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Stack spacing={3}>
-          <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
-            <TextField
-              label={t('form.number')}
-              fullWidth
-              error={Boolean(errors.title)}
-              helperText={errors.title?.message}
-              {...register('title')}
-            />
-            <Controller
-              name="date"
-              control={control}
-              render={({ field, fieldState }) => (
-                <DatePicker
-                  label={t('form.date')}
-                  value={field.value}
-                  onChange={(value) => field.onChange(value ?? dayjs())}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: Boolean(fieldState.error),
-                      helperText: fieldState.error?.message,
-                    },
-                  }}
-                />
-              )}
-            />
-          </Stack>
-
-          <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
-            <Controller
-              name="priority"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="new-request-priority-label">
-                    {t('form.priority')}
-                  </InputLabel>
-                  <Select
-                    labelId="new-request-priority-label"
-                    label={t('form.priority')}
-                    value={field.value}
-                    onChange={field.onChange}
-                  >
-                    {PRIORITY_OPTIONS.map((priority) => (
-                      <MenuItem key={priority} value={priority}>
-                        {t(
-                          `enums:materialRequestPriority.${priority.toLowerCase()}`,
-                        )}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
-            />
-            <Controller
-              name="assigneeUserId"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth>
-                  <InputLabel id="new-request-assignee-label">
-                    {t('form.assignee')}
-                  </InputLabel>
-                  <Select
-                    labelId="new-request-assignee-label"
-                    label={t('form.assignee')}
-                    value={field.value}
-                    onChange={field.onChange}
-                  >
-                    <MenuItem value="">
-                      <em>{t('form.assigneeDefault')}</em>
-                    </MenuItem>
-                    {members.map((member) => {
-                      const user = member.user!;
-                      const name =
-                        formatMemberName(user.firstName, user.lastName) ||
-                        user.email;
-                      return (
-                        <MenuItem key={user.id} value={user.id}>
-                          {name}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              )}
-            />
-            <Controller
-              name="dueDate"
-              control={control}
-              render={({ field, fieldState }) => (
-                <DatePicker
-                  label={t('form.dueDate')}
-                  value={field.value}
-                  onChange={(value) => field.onChange(value)}
-                  slotProps={{
-                    textField: {
-                      fullWidth: true,
-                      error: Boolean(fieldState.error),
-                      helperText: fieldState.error?.message,
-                    },
-                    field: { clearable: true },
-                  }}
-                />
-              )}
-            />
-          </Stack>
-
-          <Box>
-            <Tabs value={tab} onChange={handleTabChange}>
-              <Tab label={t('tabs.lines')} value="lines" />
-              <Tab label={t('tabs.notes')} value="notes" />
-            </Tabs>
-
-            <Box sx={{ pt: 2 }}>
-              {tab === 'lines' ? (
-                <RequestDraftLinesSection
-                  companyId={companyId}
-                  lines={lines}
-                  onImportClick={() => setImportOpen(true)}
-                  onChange={(nextLines) => {
-                    setLines(nextLines);
-                    if (nextLines.length > 0) {
-                      setLinesError(undefined);
-                    }
-                  }}
-                  errorMessage={linesError}
-                />
-              ) : (
-                <TextField
-                  label={t('form.notes')}
-                  fullWidth
-                  multiline
-                  minRows={6}
-                  error={Boolean(errors.notes)}
-                  helperText={errors.notes?.message}
-                  {...register('notes')}
-                />
-              )}
-            </Box>
-          </Box>
-
-          <Stack direction="row" spacing={2} justifyContent="center">
-            <Button
-              type="submit"
-              variant="contained"
-              disabled={createState.isLoading}
-            >
-              {t('actions.create')}
-            </Button>
-            <Button component={RouterLink} to="/app/requests">
-              {t('actions.cancel')}
-            </Button>
-          </Stack>
+    <PageShell maxWidth="md">
+      <Stack spacing={3}>
+        <Stack spacing={1}>
+          <BackLink to="/app/requests" />
+          <Typography variant="h5" component="h1">
+            {t('form.newTitle')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {t('form.newSubtitle')}
+          </Typography>
         </Stack>
-      </Box>
 
-      <RequestLinesImportDialog
-        open={importOpen}
-        onClose={() => setImportOpen(false)}
-        companyId={companyId}
-        hasExistingLines={lines.length > 0}
-        onApply={setLines}
-      />
-    </Stack>
+        <ApiErrorAlert error={createState.error} />
+
+        <Box component="form" onSubmit={handleSubmit(onSubmit)}>
+          <Stack spacing={3}>
+            <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+              <TextField
+                label={t('form.number')}
+                fullWidth
+                error={Boolean(errors.title)}
+                helperText={errors.title?.message}
+                {...register('title')}
+              />
+              <Controller
+                name="date"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <DatePicker
+                    label={t('form.date')}
+                    value={field.value}
+                    onChange={(value) => field.onChange(value ?? dayjs())}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: Boolean(fieldState.error),
+                        helperText: fieldState.error?.message,
+                      },
+                    }}
+                  />
+                )}
+              />
+            </Stack>
+
+            <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+              <Controller
+                name="priority"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="new-request-priority-label">
+                      {t('form.priority')}
+                    </InputLabel>
+                    <Select
+                      labelId="new-request-priority-label"
+                      label={t('form.priority')}
+                      value={field.value}
+                      onChange={field.onChange}
+                    >
+                      {PRIORITY_OPTIONS.map((priority) => (
+                        <MenuItem key={priority} value={priority}>
+                          {t(
+                            `enums:materialRequestPriority.${priority.toLowerCase()}`,
+                          )}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
+              />
+              <Controller
+                name="assigneeUserId"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth>
+                    <InputLabel id="new-request-assignee-label">
+                      {t('form.assignee')}
+                    </InputLabel>
+                    <Select
+                      labelId="new-request-assignee-label"
+                      label={t('form.assignee')}
+                      value={field.value}
+                      onChange={field.onChange}
+                    >
+                      <MenuItem value="">
+                        <em>{t('form.assigneeDefault')}</em>
+                      </MenuItem>
+                      {members.map((member) => {
+                        const user = member.user!;
+                        const name =
+                          formatMemberName(user.firstName, user.lastName) ||
+                          user.email;
+                        return (
+                          <MenuItem key={user.id} value={user.id}>
+                            {name}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                )}
+              />
+              <Controller
+                name="dueDate"
+                control={control}
+                render={({ field, fieldState }) => (
+                  <DatePicker
+                    label={t('form.dueDate')}
+                    value={field.value}
+                    onChange={(value) => field.onChange(value)}
+                    slotProps={{
+                      textField: {
+                        fullWidth: true,
+                        error: Boolean(fieldState.error),
+                        helperText: fieldState.error?.message,
+                      },
+                      field: { clearable: true },
+                    }}
+                  />
+                )}
+              />
+            </Stack>
+
+            <Box>
+              <Tabs value={tab} onChange={handleTabChange}>
+                <Tab label={t('tabs.lines')} value="lines" />
+                <Tab label={t('tabs.notes')} value="notes" />
+              </Tabs>
+
+              <Box sx={{ pt: 2 }}>
+                {tab === 'lines' ? (
+                  <RequestDraftLinesSection
+                    companyId={companyId}
+                    lines={lines}
+                    onImportClick={() => setImportOpen(true)}
+                    onChange={(nextLines) => {
+                      setLines(nextLines);
+                      if (nextLines.length > 0) {
+                        setLinesError(undefined);
+                      }
+                    }}
+                    errorMessage={linesError}
+                  />
+                ) : (
+                  <TextField
+                    label={t('form.notes')}
+                    fullWidth
+                    multiline
+                    minRows={6}
+                    error={Boolean(errors.notes)}
+                    helperText={errors.notes?.message}
+                    {...register('notes')}
+                  />
+                )}
+              </Box>
+            </Box>
+
+            <Stack direction="row" spacing={2} justifyContent="center">
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={createState.isLoading}
+              >
+                {t('actions.create')}
+              </Button>
+              <Button component={RouterLink} to="/app/requests">
+                {t('actions.cancel')}
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+
+        <RequestLinesImportDialog
+          open={importOpen}
+          onClose={() => setImportOpen(false)}
+          companyId={companyId}
+          hasExistingLines={lines.length > 0}
+          onApply={setLines}
+        />
+      </Stack>
+    </PageShell>
   );
 }

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { InboundRequestLinesPanel } from '@/features/requests/components/InboundRequestLinesPanel';
 import { OutboundRequestLinesPanel } from '@/features/requests/components/OutboundRequestLinesPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 type RequestLinesTab = 'outbound' | 'inbound';
 
@@ -39,28 +40,30 @@ export function RequestLinesPage() {
   }
 
   return (
-    <Stack spacing={3}>
-      <Box>
-        <Typography variant="h5" component="h1">
-          {t('requestLines.title')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {tab === 'outbound'
-            ? t('requestLines.subtitle')
-            : t('requestLines.inbound.subtitle')}
-        </Typography>
-      </Box>
+    <PageShell maxWidth="xl">
+      <Stack spacing={3}>
+        <Box>
+          <Typography variant="h5" component="h1">
+            {t('requestLines.title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {tab === 'outbound'
+              ? t('requestLines.subtitle')
+              : t('requestLines.inbound.subtitle')}
+          </Typography>
+        </Box>
 
-      <Tabs value={tab} onChange={handleTabChange}>
-        <Tab label={t('tabs.outbound')} value="outbound" />
-        <Tab label={t('tabs.inbound')} value="inbound" />
-      </Tabs>
+        <Tabs value={tab} onChange={handleTabChange}>
+          <Tab label={t('tabs.outbound')} value="outbound" />
+          <Tab label={t('tabs.inbound')} value="inbound" />
+        </Tabs>
 
-      {tab === 'outbound' ? (
-        <OutboundRequestLinesPanel companyId={companyId} />
-      ) : (
-        <InboundRequestLinesPanel companyId={companyId} />
-      )}
-    </Stack>
+        {tab === 'outbound' ? (
+          <OutboundRequestLinesPanel companyId={companyId} />
+        ) : (
+          <InboundRequestLinesPanel companyId={companyId} />
+        )}
+      </Stack>
+    </PageShell>
   );
 }

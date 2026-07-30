@@ -19,6 +19,7 @@ import { ActivePartnersTable } from '@/features/partners/components/ActivePartne
 import { PartnerInviteDialog } from '@/features/partners/components/PartnerInviteDialog';
 import { PartnerInvitationsTable } from '@/features/partners/components/PartnerInvitationsTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 type PartnersTab = 'partners' | 'invitations';
 
@@ -88,7 +89,10 @@ export function PartnersPage() {
 
   async function handleCancel(partnerId: string) {
     try {
-      await cancelInvitation({ companyId: activeCompanyId, partnerId }).unwrap();
+      await cancelInvitation({
+        companyId: activeCompanyId,
+        partnerId,
+      }).unwrap();
       enqueueSnackbar(t('toast.cancelled'), { variant: 'success' });
     } catch {
       // ApiErrorAlert
@@ -119,74 +123,82 @@ export function PartnersPage() {
     unlinkState.isLoading;
 
   return (
-    <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        sx={{ mb: 1 }}
-      >
-        <Box>
-          <Typography variant="h5">{t('title')}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('subtitle')}
-          </Typography>
-        </Box>
-        <PermissionGate permission="managePartners">
-          <Button
-            variant="contained"
-            startIcon={<PersonAddAlt1OutlinedIcon />}
-            onClick={() => setInviteDialogOpen(true)}
-          >
-            {t('actions.invite')}
-          </Button>
-        </PermissionGate>
-      </Stack>
+    <PageShell maxWidth="xl">
+      <Box>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ mb: 1 }}
+        >
+          <Box>
+            <Typography variant="h5">{t('title')}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('subtitle')}
+            </Typography>
+          </Box>
+          <PermissionGate permission="managePartners">
+            <Button
+              variant="contained"
+              startIcon={<PersonAddAlt1OutlinedIcon />}
+              onClick={() => setInviteDialogOpen(true)}
+            >
+              {t('actions.invite')}
+            </Button>
+          </PermissionGate>
+        </Stack>
 
-      <ApiErrorAlert error={pageError} />
+        <ApiErrorAlert error={pageError} />
 
-      <Tabs
-        value={tab}
-        onChange={(_event, value: PartnersTab) => setTab(value)}
-        sx={{ mb: 3 }}
-      >
-        <Tab label={t('tabs.partners', {
-          count: partnersQuery.data?.partners.length ?? 0,
-        })} value="partners" />
-        <Tab label={t('tabs.invitations', {
-          count: invitationsQuery.data?.partners.length ?? 0,
-        })} value="invitations" />
-      </Tabs>
+        <Tabs
+          value={tab}
+          onChange={(_event, value: PartnersTab) => setTab(value)}
+          sx={{ mb: 3 }}
+        >
+          <Tab
+            label={t('tabs.partners', {
+              count: partnersQuery.data?.partners.length ?? 0,
+            })}
+            value="partners"
+          />
+          <Tab
+            label={t('tabs.invitations', {
+              count: invitationsQuery.data?.partners.length ?? 0,
+            })}
+            value="invitations"
+          />
+        </Tabs>
 
-      {tab === 'partners' && (
-        <ActivePartnersTable
-          partners={partnersQuery.data?.partners ?? []}
-          isLoading={partnersQuery.isLoading}
-          isFetching={partnersQuery.isFetching}
-          onUnlink={(partnerId) => void handleUnlink(partnerId)}
-          actionsDisabled={actionsDisabled}
+        {tab === 'partners' && (
+          <ActivePartnersTable
+            partners={partnersQuery.data?.partners ?? []}
+            isLoading={partnersQuery.isLoading}
+            isFetching={partnersQuery.isFetching}
+            onUnlink={(partnerId) => void handleUnlink(partnerId)}
+            actionsDisabled={actionsDisabled}
+          />
+        )}
+
+        {tab === 'invitations' && (
+          <PartnerInvitationsTable
+            partners={invitationsQuery.data?.partners ?? []}
+            isLoading={invitationsQuery.isLoading}
+            isFetching={invitationsQuery.isFetching}
+            onAccept={(linkId) => void handleAccept(linkId)}
+            onReject={(linkId) => void handleReject(linkId)}
+            onCancel={(linkId) => void handleCancel(linkId)}
+            actionsDisabled={actionsDisabled}
+            highlightLinkId={highlightLinkId}
+          />
+        )}
+
+        <PartnerInviteDialog
+          open={inviteDialogOpen}
+          companyId={activeCompanyId}
+          onClose={() => setInviteDialogOpen(false)}
+          onInvited={() => setTab('invitations')}
         />
-      )}
-
-      {tab === 'invitations' && (
-        <PartnerInvitationsTable
-          partners={invitationsQuery.data?.partners ?? []}
-          isLoading={invitationsQuery.isLoading}
-          isFetching={invitationsQuery.isFetching}
-          onAccept={(linkId) => void handleAccept(linkId)}
-          onReject={(linkId) => void handleReject(linkId)}
-          onCancel={(linkId) => void handleCancel(linkId)}
-          actionsDisabled={actionsDisabled}
-          highlightLinkId={highlightLinkId}
-        />
-      )}
-
-      <PartnerInviteDialog
-        open={inviteDialogOpen}
-        companyId={activeCompanyId}
-        onClose={() => setInviteDialogOpen(false)}
-        onInvited={() => setTab('invitations')}
-      />
-    </Box>
+      </Box>
+    </PageShell>
   );
 }

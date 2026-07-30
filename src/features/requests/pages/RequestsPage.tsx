@@ -8,6 +8,7 @@ import { InboundRequestsPanel } from '@/features/requests/components/InboundRequ
 import { OutboundRequestsPanel } from '@/features/requests/components/OutboundRequestsPanel';
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 type RequestsTab = 'outbound' | 'inbound';
 
@@ -41,47 +42,49 @@ export function RequestsPage() {
   }
 
   return (
-    <Stack spacing={3}>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        justifyContent="space-between"
-        alignItems={{ xs: 'stretch', sm: 'center' }}
-        spacing={2}
-      >
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {tab === 'outbound' ? t('subtitle') : t('inbound.subtitle')}
-          </Typography>
-        </Box>
+    <PageShell maxWidth="xl">
+      <Stack spacing={3}>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
+          alignItems={{ xs: 'stretch', sm: 'center' }}
+          spacing={2}
+        >
+          <Box>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {tab === 'outbound' ? t('subtitle') : t('inbound.subtitle')}
+            </Typography>
+          </Box>
+          {tab === 'outbound' ? (
+            <PermissionGate permission="manageRequests">
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="contained"
+                  component={RouterLink}
+                  to="/app/requests/new"
+                  startIcon={<AddIcon />}
+                >
+                  {t('actions.new')}
+                </Button>
+              </Stack>
+            </PermissionGate>
+          ) : null}
+        </Stack>
+
+        <Tabs value={tab} onChange={handleTabChange}>
+          <Tab label={t('tabs.outbound')} value="outbound" />
+          <Tab label={t('tabs.inbound')} value="inbound" />
+        </Tabs>
+
         {tab === 'outbound' ? (
-          <PermissionGate permission="manageRequests">
-            <Stack direction="row" spacing={1}>
-              <Button
-                variant="contained"
-                component={RouterLink}
-                to="/app/requests/new"
-                startIcon={<AddIcon />}
-              >
-                {t('actions.new')}
-              </Button>
-            </Stack>
-          </PermissionGate>
-        ) : null}
+          <OutboundRequestsPanel companyId={companyId} />
+        ) : (
+          <InboundRequestsPanel companyId={companyId} />
+        )}
       </Stack>
-
-      <Tabs value={tab} onChange={handleTabChange}>
-        <Tab label={t('tabs.outbound')} value="outbound" />
-        <Tab label={t('tabs.inbound')} value="inbound" />
-      </Tabs>
-
-      {tab === 'outbound' ? (
-        <OutboundRequestsPanel companyId={companyId} />
-      ) : (
-        <InboundRequestsPanel companyId={companyId} />
-      )}
-    </Stack>
+    </PageShell>
   );
 }

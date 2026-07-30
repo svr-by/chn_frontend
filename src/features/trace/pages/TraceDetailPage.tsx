@@ -13,6 +13,7 @@ import { LineageEventsPanel } from '@/features/trace/components/LineageEventsPan
 import { LineagePipelineView } from '@/features/trace/components/LineagePipelineView';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { BackLink } from '@/components/BackLink';
+import { PageShell } from '@/layouts/PageShell';
 
 export function TraceDetailPage() {
   const { t } = useTranslation('trace');
@@ -44,58 +45,62 @@ export function TraceDetailPage() {
   }
 
   return (
-    <PermissionGate permission="viewTrace">
-      <Stack spacing={4}>
-        <BackLink to="/app" />
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-        >
-          <Box>
-            <Typography variant="h5" component="h1">
-              {t('detail.title')}
-            </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontFamily: 'monospace', mt: 0.5 }}
-            >
-              {lineageId}
-            </Typography>
-          </Box>
-        </Stack>
-
-        <ApiErrorAlert error={traceQuery.error} />
-
-        {traceQuery.isLoading ? (
-          <Typography color="text.secondary">{t('detail.loading')}</Typography>
-        ) : null}
-
-        {trace ? (
-          <>
-            <Stack spacing={1}>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                flexWrap="wrap"
+    <PageShell maxWidth="lg">
+      <PermissionGate permission="viewTrace">
+        <Stack spacing={4}>
+          <BackLink to="/app" />
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
+          >
+            <Box>
+              <Typography variant="h5" component="h1">
+                {t('detail.title')}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ fontFamily: 'monospace', mt: 0.5 }}
               >
-                <Typography variant="body1">
-                  {trace.requestLine.description}
-                </Typography>
-                <RequestLineCancelledBadge
-                  cancelledAt={trace.requestLine.cancelledAt}
-                />
+                {lineageId}
+              </Typography>
+            </Box>
+          </Stack>
+
+          <ApiErrorAlert error={traceQuery.error} />
+
+          {traceQuery.isLoading ? (
+            <Typography color="text.secondary">
+              {t('detail.loading')}
+            </Typography>
+          ) : null}
+
+          {trace ? (
+            <>
+              <Stack spacing={1}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  flexWrap="wrap"
+                >
+                  <Typography variant="body1">
+                    {trace.requestLine.description}
+                  </Typography>
+                  <RequestLineCancelledBadge
+                    cancelledAt={trace.requestLine.cancelledAt}
+                  />
+                </Stack>
               </Stack>
-            </Stack>
 
-            <LineagePipelineView trace={trace} />
+              <LineagePipelineView trace={trace} />
 
-            <LineageEventsPanel companyId={companyId} lineageId={lineageId} />
-          </>
-        ) : null}
-      </Stack>
-    </PermissionGate>
+              <LineageEventsPanel companyId={companyId} lineageId={lineageId} />
+            </>
+          ) : null}
+        </Stack>
+      </PermissionGate>
+    </PageShell>
   );
 }

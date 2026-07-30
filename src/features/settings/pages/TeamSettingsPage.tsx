@@ -15,6 +15,7 @@ import { InvitationsTable } from '@/features/settings/components/InvitationsTabl
 import { MembersTable } from '@/features/settings/components/MembersTable';
 import { RemoveMemberDialog } from '@/features/settings/components/RemoveMemberDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const TAB_KEYS = ['members', 'invitations'] as const;
 type TabKey = (typeof TAB_KEYS)[number];
@@ -55,77 +56,79 @@ export function TeamSettingsPage() {
   }
 
   return (
-    <Box>
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        justifyContent="space-between"
-        alignItems={{ xs: 'stretch', sm: 'flex-start' }}
-        spacing={2}
-        sx={{ mb: 3 }}
-      >
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-            {t('subtitle')}
-          </Typography>
-        </Box>
-        <PermissionGate permission="manageMembers">
-          <Button
-            variant="contained"
-            startIcon={<PersonAddAlt1OutlinedIcon />}
-            onClick={() => setInviteOpen(true)}
-            sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' } }}
-          >
-            {t('inviteMember')}
-          </Button>
-        </PermissionGate>
-      </Stack>
+    <PageShell maxWidth="lg">
+      <Box>
+        <Stack
+          direction={{ xs: 'column', sm: 'row' }}
+          justifyContent="space-between"
+          alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+          spacing={2}
+          sx={{ mb: 3 }}
+        >
+          <Box>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+              {t('subtitle')}
+            </Typography>
+          </Box>
+          <PermissionGate permission="manageMembers">
+            <Button
+              variant="contained"
+              startIcon={<PersonAddAlt1OutlinedIcon />}
+              onClick={() => setInviteOpen(true)}
+              sx={{ alignSelf: { xs: 'stretch', sm: 'flex-start' } }}
+            >
+              {t('inviteMember')}
+            </Button>
+          </PermissionGate>
+        </Stack>
 
-      <ApiErrorAlert error={pageError} />
+        <ApiErrorAlert error={pageError} />
 
-      <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
-        <Tab
-          label={t('tabs.members', {
-            count: membersQuery.data?.members.length ?? 0,
-          })}
-        />
-        <Tab
-          label={t('tabs.invitations', {
-            count: invitationsQuery.data?.invitations.length ?? 0,
-          })}
-        />
-      </Tabs>
+        <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
+          <Tab
+            label={t('tabs.members', {
+              count: membersQuery.data?.members.length ?? 0,
+            })}
+          />
+          <Tab
+            label={t('tabs.invitations', {
+              count: invitationsQuery.data?.invitations.length ?? 0,
+            })}
+          />
+        </Tabs>
 
-      {activeTab === 'members' ? (
-        <MembersTable
-          members={membersQuery.data?.members ?? []}
-          isLoading={membersQuery.isLoading}
-          isFetching={membersQuery.isFetching}
-          onRemove={setMemberToRemove}
-        />
-      ) : (
-        <InvitationsTable
+        {activeTab === 'members' ? (
+          <MembersTable
+            members={membersQuery.data?.members ?? []}
+            isLoading={membersQuery.isLoading}
+            isFetching={membersQuery.isFetching}
+            onRemove={setMemberToRemove}
+          />
+        ) : (
+          <InvitationsTable
+            companyId={companyId}
+            invitations={invitationsQuery.data?.invitations ?? []}
+            isLoading={invitationsQuery.isLoading}
+            isFetching={invitationsQuery.isFetching}
+          />
+        )}
+
+        <InviteMemberDialog
+          open={inviteOpen}
           companyId={companyId}
-          invitations={invitationsQuery.data?.invitations ?? []}
-          isLoading={invitationsQuery.isLoading}
-          isFetching={invitationsQuery.isFetching}
+          onClose={() => setInviteOpen(false)}
         />
-      )}
 
-      <InviteMemberDialog
-        open={inviteOpen}
-        companyId={companyId}
-        onClose={() => setInviteOpen(false)}
-      />
-
-      <RemoveMemberDialog
-        open={Boolean(memberToRemove)}
-        companyId={companyId}
-        memberId={memberToRemove}
-        onClose={() => setMemberToRemove(null)}
-      />
-    </Box>
+        <RemoveMemberDialog
+          open={Boolean(memberToRemove)}
+          companyId={companyId}
+          memberId={memberToRemove}
+          onClose={() => setMemberToRemove(null)}
+        />
+      </Box>
+    </PageShell>
   );
 }

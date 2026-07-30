@@ -25,6 +25,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
 import { ShippingInvoiceCreateDialog } from '@/features/shipping/components/ShippingInvoiceCreateDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
 
@@ -168,127 +169,129 @@ export function ShippingInvoicesPage() {
   }
 
   return (
-    <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        sx={{ mb: 3 }}
-      >
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            {t('title')}
-          </Typography>
-          <Typography color="text.secondary">{t('subtitle')}</Typography>
-        </Box>
-        {direction === 'outbound' ? (
-          <PermissionGate permission="manageShippingInvoices">
-            <Button variant="contained" onClick={() => setCreateOpen(true)}>
-              {t('actions.create')}
-            </Button>
-          </PermissionGate>
+    <PageShell maxWidth="xl">
+      <Box>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mb: 3 }}
+        >
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              {t('title')}
+            </Typography>
+            <Typography color="text.secondary">{t('subtitle')}</Typography>
+          </Box>
+          {direction === 'outbound' ? (
+            <PermissionGate permission="manageShippingInvoices">
+              <Button variant="contained" onClick={() => setCreateOpen(true)}>
+                {t('actions.create')}
+              </Button>
+            </PermissionGate>
+          ) : null}
+        </Stack>
+
+        <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
+          <Tab label={t('tabs.inbound')} />
+          <Tab label={t('tabs.outbound')} />
+        </Tabs>
+
+        {supplierInvoiceIdFilter ? (
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              {t('filter.supplierInvoice', {
+                id: supplierInvoiceIdFilter.slice(0, 8),
+              })}
+            </Typography>
+            <Typography
+              component="button"
+              variant="body2"
+              onClick={clearSupplierInvoiceFilter}
+              sx={{
+                cursor: 'pointer',
+                border: 'none',
+                background: 'none',
+                color: 'primary.main',
+              }}
+            >
+              {t('filter.clearSupplierInvoice')}
+            </Typography>
+          </Stack>
         ) : null}
-      </Stack>
 
-      <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
-        <Tab label={t('tabs.inbound')} />
-        <Tab label={t('tabs.outbound')} />
-      </Tabs>
+        {requestIdFilter ? (
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
+            </Typography>
+            <Typography
+              component="button"
+              variant="body2"
+              onClick={clearRequestFilter}
+              sx={{
+                cursor: 'pointer',
+                border: 'none',
+                background: 'none',
+                color: 'primary.main',
+              }}
+            >
+              {t('filter.clearRequest')}
+            </Typography>
+          </Stack>
+        ) : null}
 
-      {supplierInvoiceIdFilter ? (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {t('filter.supplierInvoice', {
-              id: supplierInvoiceIdFilter.slice(0, 8),
-            })}
-          </Typography>
-          <Typography
-            component="button"
-            variant="body2"
-            onClick={clearSupplierInvoiceFilter}
-            sx={{
-              cursor: 'pointer',
-              border: 'none',
-              background: 'none',
-              color: 'primary.main',
-            }}
-          >
-            {t('filter.clearSupplierInvoice')}
-          </Typography>
+        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="shipping-status-filter">
+              {t('statusFilter.label')}
+            </InputLabel>
+            <Select
+              labelId="shipping-status-filter"
+              label={t('statusFilter.label')}
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(
+                  event.target.value as ShippingInvoiceSummaryStatus | 'ALL',
+                )
+              }
+            >
+              {STATUS_OPTIONS.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status === 'ALL'
+                    ? t('statusFilter.all')
+                    : t(`statusFilter.${status.toLowerCase()}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
-      ) : null}
 
-      {requestIdFilter ? (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
-          </Typography>
-          <Typography
-            component="button"
-            variant="body2"
-            onClick={clearRequestFilter}
-            sx={{
-              cursor: 'pointer',
-              border: 'none',
-              background: 'none',
-              color: 'primary.main',
-            }}
-          >
-            {t('filter.clearRequest')}
-          </Typography>
-        </Stack>
-      ) : null}
+        <ApiErrorAlert error={listQuery.error} />
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel id="shipping-status-filter">
-            {t('statusFilter.label')}
-          </InputLabel>
-          <Select
-            labelId="shipping-status-filter"
-            label={t('statusFilter.label')}
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value as ShippingInvoiceSummaryStatus | 'ALL',
-              )
-            }
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status === 'ALL'
-                  ? t('statusFilter.all')
-                  : t(`statusFilter.${status.toLowerCase()}`)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
+        {!listQuery.isLoading &&
+        (listQuery.data?.shippingInvoices.length ?? 0) === 0 ? (
+          <Typography color="text.secondary">{t('empty.list')}</Typography>
+        ) : (
+          <PaginatedTable<ShippingInvoiceSummary>
+            columns={columns}
+            data={listQuery.data?.shippingInvoices ?? []}
+            rowCount={listQuery.data?.pagination.total ?? 0}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            isLoading={listQuery.isLoading}
+            isFetching={listQuery.isFetching}
+            onRowClick={(row) => navigate(`/app/shipping-invoices/${row.id}`)}
+            getRowId={(row) => row.id}
+          />
+        )}
 
-      <ApiErrorAlert error={listQuery.error} />
-
-      {!listQuery.isLoading &&
-      (listQuery.data?.shippingInvoices.length ?? 0) === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
-      ) : (
-        <PaginatedTable<ShippingInvoiceSummary>
-          columns={columns}
-          data={listQuery.data?.shippingInvoices ?? []}
-          rowCount={listQuery.data?.pagination.total ?? 0}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          onRowClick={(row) => navigate(`/app/shipping-invoices/${row.id}`)}
-          getRowId={(row) => row.id}
+        <ShippingInvoiceCreateDialog
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          initialSupplierInvoiceId={supplierInvoiceIdFilter}
         />
-      )}
-
-      <ShippingInvoiceCreateDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        initialSupplierInvoiceId={supplierInvoiceIdFilter}
-      />
-    </Box>
+      </Box>
+    </PageShell>
   );
 }

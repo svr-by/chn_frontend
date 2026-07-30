@@ -30,6 +30,7 @@ import { useImportJobPolling } from '@/hooks/useImportJobPolling';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { buildImportFormData } from '@/lib/buildImportFormData';
 import { ImportJobStatus } from '@/api/generated/models/importJobStatus';
+import { PageShell } from '@/layouts/PageShell';
 
 const DEFAULT_FORMAT: ImportFormatValues = {
   fieldDelimiter: ',',
@@ -196,88 +197,94 @@ export function RequestImportPage() {
   }
 
   return (
-    <PermissionGate
-      permission="manageRequests"
-      fallback={
-        <Typography color="text.secondary">
-          {t('imports:noPermission')}
-        </Typography>
-      }
-    >
-      <Stack spacing={3}>
-        <Stack spacing={1}>
-          <BackLink to="/app/requests" />
-          <Typography variant="h5" component="h1">
-            {t('imports:title')}
+    <PageShell maxWidth="md">
+      <PermissionGate
+        permission="manageRequests"
+        fallback={
+          <Typography color="text.secondary">
+            {t('imports:noPermission')}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('imports:subtitle')}
-          </Typography>
+        }
+      >
+        <Stack spacing={3}>
+          <Stack spacing={1}>
+            <BackLink to="/app/requests" />
+            <Typography variant="h5" component="h1">
+              {t('imports:title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('imports:subtitle')}
+            </Typography>
+          </Stack>
+
+          <Alert severity="info">{t('imports:workerHint')}</Alert>
+
+          <FileUploadZone
+            file={file}
+            onFileChange={(nextFile) => {
+              setFile(nextFile);
+              setPreview(null);
+              setJobId(null);
+              setPollJob(false);
+              confirmStartedRef.current = false;
+            }}
+            disabled={isBusy}
+          />
+
+          <ImportFormatOptions
+            values={formatValues}
+            onChange={setFormatValues}
+            disabled={isBusy}
+          />
+
+          <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
+            <Button
+              variant="outlined"
+              onClick={() => void handlePreview()}
+              disabled={!canPreview}
+            >
+              {t('imports:actions.preview')}
+            </Button>
+            <Button
+              variant="contained"
+              onClick={() => void handleImport()}
+              disabled={!canImport}
+            >
+              {t('imports:actions.import')}
+            </Button>
+          </Stack>
+
+          <ApiErrorAlert
+            error={
+              previewState.error ??
+              uploadState.error ??
+              confirmState.error ??
+              jobPolling.error
+            }
+          />
+
+          {isBusy ? (
+            <Box>
+              <LinearProgress />
+              {jobPolling.isPolling && jobPolling.status ? (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mt: 1 }}
+                >
+                  {t('imports:status.parsing', { status: jobPolling.status })}
+                </Typography>
+              ) : null}
+            </Box>
+          ) : null}
+
+          {jobPolling.isFailed && jobPolling.job?.errorMessage ? (
+            <Alert severity="error">{jobPolling.job.errorMessage}</Alert>
+          ) : null}
+
+          {preview ? <ImportPreviewTable preview={preview} /> : null}
         </Stack>
-
-        <Alert severity="info">{t('imports:workerHint')}</Alert>
-
-        <FileUploadZone
-          file={file}
-          onFileChange={(nextFile) => {
-            setFile(nextFile);
-            setPreview(null);
-            setJobId(null);
-            setPollJob(false);
-            confirmStartedRef.current = false;
-          }}
-          disabled={isBusy}
-        />
-
-        <ImportFormatOptions
-          values={formatValues}
-          onChange={setFormatValues}
-          disabled={isBusy}
-        />
-
-        <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
-          <Button
-            variant="outlined"
-            onClick={() => void handlePreview()}
-            disabled={!canPreview}
-          >
-            {t('imports:actions.preview')}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => void handleImport()}
-            disabled={!canImport}
-          >
-            {t('imports:actions.import')}
-          </Button>
-        </Stack>
-
-        <ApiErrorAlert
-          error={
-            previewState.error ??
-            uploadState.error ??
-            confirmState.error ??
-            jobPolling.error
-          }
-        />
-
-        {isBusy ? (
-          <Box>
-            <LinearProgress />
-            {jobPolling.isPolling && jobPolling.status ? (
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                {t('imports:status.parsing', { status: jobPolling.status })}
-              </Typography>
-            ) : null}
-          </Box>
-        ) : null}
-
-        {jobPolling.isFailed && jobPolling.job?.errorMessage ? (
-          <Alert severity="error">{jobPolling.job.errorMessage}</Alert>
-        ) : null}
-
-        {preview ? <ImportPreviewTable preview={preview} /> : null}
-      </Stack>
-    </PermissionGate>
+      </PermissionGate>
+    </PageShell>
   );
 }

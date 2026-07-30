@@ -22,6 +22,7 @@ import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { ConsolidationCreateDialog } from '@/features/consolidations/components/ConsolidationCreateDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
 
@@ -133,75 +134,77 @@ export function ConsolidationsPage() {
   );
 
   return (
-    <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        sx={{ mb: 3 }}
-      >
-        <Box>
-          <Typography variant="h4" gutterBottom>
-            {t('title')}
-          </Typography>
-          <Typography color="text.secondary">{t('subtitle')}</Typography>
-        </Box>
-        <PermissionGate permission="manageConsolidations">
-          <Button variant="contained" onClick={() => setCreateOpen(true)}>
-            {t('actions.create')}
-          </Button>
-        </PermissionGate>
-      </Stack>
+    <PageShell maxWidth="xl">
+      <Box>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mb: 3 }}
+        >
+          <Box>
+            <Typography variant="h4" gutterBottom>
+              {t('title')}
+            </Typography>
+            <Typography color="text.secondary">{t('subtitle')}</Typography>
+          </Box>
+          <PermissionGate permission="manageConsolidations">
+            <Button variant="contained" onClick={() => setCreateOpen(true)}>
+              {t('actions.create')}
+            </Button>
+          </PermissionGate>
+        </Stack>
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel id="consolidation-status-filter">
-            {t('statusFilter.label')}
-          </InputLabel>
-          <Select
-            labelId="consolidation-status-filter"
-            label={t('statusFilter.label')}
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value as ConsolidationSummaryStatus | 'ALL',
-              )
-            }
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status === 'ALL'
-                  ? t('statusFilter.all')
-                  : t(`statusFilter.${status.toLowerCase()}`)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
+        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="consolidation-status-filter">
+              {t('statusFilter.label')}
+            </InputLabel>
+            <Select
+              labelId="consolidation-status-filter"
+              label={t('statusFilter.label')}
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(
+                  event.target.value as ConsolidationSummaryStatus | 'ALL',
+                )
+              }
+            >
+              {STATUS_OPTIONS.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status === 'ALL'
+                    ? t('statusFilter.all')
+                    : t(`statusFilter.${status.toLowerCase()}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
 
-      <ApiErrorAlert error={listQuery.error} />
+        <ApiErrorAlert error={listQuery.error} />
 
-      {!listQuery.isLoading &&
-      (listQuery.data?.consolidations.length ?? 0) === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
-      ) : (
-        <PaginatedTable<ConsolidationSummary>
-          columns={columns}
-          data={listQuery.data?.consolidations ?? []}
-          rowCount={listQuery.data?.pagination.total ?? 0}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          onRowClick={(row) => navigate(`/app/consolidations/${row.id}`)}
-          getRowId={(row) => row.id}
+        {!listQuery.isLoading &&
+        (listQuery.data?.consolidations.length ?? 0) === 0 ? (
+          <Typography color="text.secondary">{t('empty.list')}</Typography>
+        ) : (
+          <PaginatedTable<ConsolidationSummary>
+            columns={columns}
+            data={listQuery.data?.consolidations ?? []}
+            rowCount={listQuery.data?.pagination.total ?? 0}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            isLoading={listQuery.isLoading}
+            isFetching={listQuery.isFetching}
+            onRowClick={(row) => navigate(`/app/consolidations/${row.id}`)}
+            getRowId={(row) => row.id}
+          />
+        )}
+
+        <ConsolidationCreateDialog
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
         />
-      )}
-
-      <ConsolidationCreateDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-      />
-    </Box>
+      </Box>
+    </PageShell>
   );
 }

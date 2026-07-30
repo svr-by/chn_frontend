@@ -25,6 +25,7 @@ import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { InvoiceCreateDialog } from '@/features/invoices/components/InvoiceCreateDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
 
@@ -144,105 +145,108 @@ export function InvoicesPage() {
   }
 
   return (
-    <Box>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
-        sx={{ mb: 3 }}
-      >
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('subtitle')}
-          </Typography>
-        </Box>
-        {direction === 'outbound' ? (
-          <PermissionGate permission="manageInvoices">
-            <Button variant="contained" onClick={() => setCreateOpen(true)}>
-              {t('actions.create')}
-            </Button>
-          </PermissionGate>
-        ) : null}
-      </Stack>
-
-      <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
-        <Tab label={t('tabs.inbound')} />
-        <Tab label={t('tabs.outbound')} />
-      </Tabs>
-
-      {requestIdFilter ? (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
-          </Typography>
-          <Typography
-            component="button"
-            variant="body2"
-            onClick={clearRequestFilter}
-            sx={{
-              cursor: 'pointer',
-              border: 'none',
-              background: 'none',
-              color: 'primary.main',
-            }}
-          >
-            {t('filter.clearRequest')}
-          </Typography>
+    <PageShell maxWidth="xl">
+      <Box>
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          sx={{ mb: 3 }}
+        >
+          <Box>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('subtitle')}
+            </Typography>
+          </Box>
+          {direction === 'outbound' ? (
+            <PermissionGate permission="manageInvoices">
+              <Button variant="contained" onClick={() => setCreateOpen(true)}>
+                {t('actions.create')}
+              </Button>
+            </PermissionGate>
+          ) : null}
         </Stack>
-      ) : null}
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel id="invoice-status-filter">
-            {t('statusFilter.label')}
-          </InputLabel>
-          <Select
-            labelId="invoice-status-filter"
-            label={t('statusFilter.label')}
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value as SupplierInvoiceSummaryStatus | 'ALL',
-              )
-            }
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status === 'ALL'
-                  ? t('statusFilter.all')
-                  : t(`statusFilter.${status.toLowerCase()}`)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
+        <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
+          <Tab label={t('tabs.inbound')} />
+          <Tab label={t('tabs.outbound')} />
+        </Tabs>
 
-      <ApiErrorAlert error={listQuery.error} />
+        {requestIdFilter ? (
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
+            </Typography>
+            <Typography
+              component="button"
+              variant="body2"
+              onClick={clearRequestFilter}
+              sx={{
+                cursor: 'pointer',
+                border: 'none',
+                background: 'none',
+                color: 'primary.main',
+              }}
+            >
+              {t('filter.clearRequest')}
+            </Typography>
+          </Stack>
+        ) : null}
 
-      {!listQuery.isLoading && (listQuery.data?.invoices.length ?? 0) === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
-      ) : (
-        <PaginatedTable<SupplierInvoiceSummary>
-          columns={columns}
-          data={listQuery.data?.invoices ?? []}
-          rowCount={listQuery.data?.pagination.total ?? 0}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          onRowClick={(row) => navigate(`/app/invoices/${row.id}`)}
-          getRowId={(row) => row.id}
+        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="invoice-status-filter">
+              {t('statusFilter.label')}
+            </InputLabel>
+            <Select
+              labelId="invoice-status-filter"
+              label={t('statusFilter.label')}
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(
+                  event.target.value as SupplierInvoiceSummaryStatus | 'ALL',
+                )
+              }
+            >
+              {STATUS_OPTIONS.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status === 'ALL'
+                    ? t('statusFilter.all')
+                    : t(`statusFilter.${status.toLowerCase()}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
+
+        <ApiErrorAlert error={listQuery.error} />
+
+        {!listQuery.isLoading &&
+        (listQuery.data?.invoices.length ?? 0) === 0 ? (
+          <Typography color="text.secondary">{t('empty.list')}</Typography>
+        ) : (
+          <PaginatedTable<SupplierInvoiceSummary>
+            columns={columns}
+            data={listQuery.data?.invoices ?? []}
+            rowCount={listQuery.data?.pagination.total ?? 0}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            isLoading={listQuery.isLoading}
+            isFetching={listQuery.isFetching}
+            onRowClick={(row) => navigate(`/app/invoices/${row.id}`)}
+            getRowId={(row) => row.id}
+          />
+        )}
+
+        <InvoiceCreateDialog
+          open={createOpen}
+          onClose={() => setCreateOpen(false)}
+          initialRequestId={requestIdFilter}
         />
-      )}
-
-      <InvoiceCreateDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        initialRequestId={requestIdFilter}
-      />
-    </Box>
+      </Box>
+    </PageShell>
   );
 }

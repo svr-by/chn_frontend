@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 
 import { navConfig } from '@/lib/navConfig';
+import { PageShell } from '@/layouts/PageShell';
 
 interface PlaceholderPageProps {
   path: string;
@@ -12,13 +13,15 @@ export function PlaceholderPage({ path }: PlaceholderPageProps) {
   const navItem = navConfig.find((item) => item.path === path);
 
   return (
-    <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        {navItem ? t(`nav:${navItem.labelKey}`) : path}
-      </Typography>
-      <Typography color="text.secondary">
-        {t('common:app.comingSoon', { phase: navItem?.phase ?? '?' })}
-      </Typography>
-    </Box>
+    <PageShell maxWidth="lg">
+      <Box>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {navItem ? t(`nav:${navItem.labelKey}`) : path}
+        </Typography>
+        <Typography color="text.secondary">
+          {t('common:app.comingSoon', { phase: navItem?.phase ?? '?' })}
+        </Typography>
+      </Box>
+    </PageShell>
   );
 }

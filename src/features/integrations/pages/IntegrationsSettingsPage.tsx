@@ -8,6 +8,7 @@ import { ExportsPanel } from '@/features/integrations/components/ExportsPanel';
 import { MappingsPanel } from '@/features/integrations/components/MappingsPanel';
 import { WebhooksPanel } from '@/features/integrations/components/WebhooksPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const TAB_KEYS = ['api-keys', 'mappings', 'webhooks', 'exports'] as const;
 type TabKey = (typeof TAB_KEYS)[number];
@@ -33,32 +34,34 @@ export function IntegrationsSettingsPage() {
   }
 
   return (
-    <PermissionGate
-      permission="manageIntegrations"
-      fallback={
-        <Typography color="text.secondary">{t('noPermission')}</Typography>
-      }
-    >
-      <Box>
-        <Typography variant="h5" sx={{ mb: 1 }}>
-          {t('title')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-          {t('subtitle')}
-        </Typography>
+    <PageShell maxWidth="lg">
+      <PermissionGate
+        permission="manageIntegrations"
+        fallback={
+          <Typography color="text.secondary">{t('noPermission')}</Typography>
+        }
+      >
+        <Box>
+          <Typography variant="h5" sx={{ mb: 1 }}>
+            {t('title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            {t('subtitle')}
+          </Typography>
 
-        <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
-          <Tab label={t('tabs.apiKeys')} />
-          <Tab label={t('tabs.mappings')} />
-          <Tab label={t('tabs.webhooks')} />
-          <Tab label={t('tabs.exports')} />
-        </Tabs>
+          <Tabs value={tabIndex} onChange={handleTabChange} sx={{ mb: 3 }}>
+            <Tab label={t('tabs.apiKeys')} />
+            <Tab label={t('tabs.mappings')} />
+            <Tab label={t('tabs.webhooks')} />
+            <Tab label={t('tabs.exports')} />
+          </Tabs>
 
-        {tabIndex === 0 ? <ApiKeysPanel companyId={companyId} /> : null}
-        {tabIndex === 1 ? <MappingsPanel companyId={companyId} /> : null}
-        {tabIndex === 2 ? <WebhooksPanel companyId={companyId} /> : null}
-        {tabIndex === 3 ? <ExportsPanel companyId={companyId} /> : null}
-      </Box>
-    </PermissionGate>
+          {tabIndex === 0 ? <ApiKeysPanel companyId={companyId} /> : null}
+          {tabIndex === 1 ? <MappingsPanel companyId={companyId} /> : null}
+          {tabIndex === 2 ? <WebhooksPanel companyId={companyId} /> : null}
+          {tabIndex === 3 ? <ExportsPanel companyId={companyId} /> : null}
+        </Box>
+      </PermissionGate>
+    </PageShell>
   );
 }

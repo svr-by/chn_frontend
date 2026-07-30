@@ -20,6 +20,7 @@ import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
 
@@ -102,78 +103,81 @@ export function PaymentsPage() {
   }
 
   return (
-    <Box>
-      <Typography variant="h4" gutterBottom>
-        {t('title')}
-      </Typography>
-      <Typography color="text.secondary" sx={{ mb: 3 }}>
-        {t('subtitle')}
-      </Typography>
+    <PageShell maxWidth="xl">
+      <Box>
+        <Typography variant="h4" gutterBottom>
+          {t('title')}
+        </Typography>
+        <Typography color="text.secondary" sx={{ mb: 3 }}>
+          {t('subtitle')}
+        </Typography>
 
-      {invoiceIdFilter ? (
-        <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
-          <Typography variant="body2" color="text.secondary">
-            {t('filter.invoice', { id: invoiceIdFilter.slice(0, 8) })}
-          </Typography>
-          <Typography
-            component="button"
-            variant="body2"
-            onClick={clearInvoiceFilter}
-            sx={{
-              cursor: 'pointer',
-              border: 'none',
-              background: 'none',
-              color: 'primary.main',
-            }}
-          >
-            {t('filter.clearInvoice')}
-          </Typography>
+        {invoiceIdFilter ? (
+          <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: 2 }}>
+            <Typography variant="body2" color="text.secondary">
+              {t('filter.invoice', { id: invoiceIdFilter.slice(0, 8) })}
+            </Typography>
+            <Typography
+              component="button"
+              variant="body2"
+              onClick={clearInvoiceFilter}
+              sx={{
+                cursor: 'pointer',
+                border: 'none',
+                background: 'none',
+                color: 'primary.main',
+              }}
+            >
+              {t('filter.clearInvoice')}
+            </Typography>
+          </Stack>
+        ) : null}
+
+        <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="payment-status-filter">
+              {t('statusFilter.label')}
+            </InputLabel>
+            <Select
+              labelId="payment-status-filter"
+              label={t('statusFilter.label')}
+              value={statusFilter}
+              onChange={(event) =>
+                setStatusFilter(
+                  event.target.value as PaymentSummaryStatus | 'ALL',
+                )
+              }
+            >
+              {STATUS_OPTIONS.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status === 'ALL'
+                    ? t('statusFilter.all')
+                    : t(`statusFilter.${status.toLowerCase()}`)}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
-      ) : null}
 
-      <Stack direction="row" spacing={2} sx={{ mb: 2 }}>
-        <FormControl size="small" sx={{ minWidth: 180 }}>
-          <InputLabel id="payment-status-filter">
-            {t('statusFilter.label')}
-          </InputLabel>
-          <Select
-            labelId="payment-status-filter"
-            label={t('statusFilter.label')}
-            value={statusFilter}
-            onChange={(event) =>
-              setStatusFilter(
-                event.target.value as PaymentSummaryStatus | 'ALL',
-              )
-            }
-          >
-            {STATUS_OPTIONS.map((status) => (
-              <MenuItem key={status} value={status}>
-                {status === 'ALL'
-                  ? t('statusFilter.all')
-                  : t(`statusFilter.${status.toLowerCase()}`)}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Stack>
+        <ApiErrorAlert error={listQuery.error} />
 
-      <ApiErrorAlert error={listQuery.error} />
-
-      {!listQuery.isLoading && (listQuery.data?.payments.length ?? 0) === 0 ? (
-        <Typography color="text.secondary">{t('empty.list')}</Typography>
-      ) : (
-        <PaginatedTable<PaymentSummary>
-          columns={columns}
-          data={listQuery.data?.payments ?? []}
-          rowCount={listQuery.data?.pagination.total ?? 0}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          isLoading={listQuery.isLoading}
-          isFetching={listQuery.isFetching}
-          onRowClick={(row) => navigate(`/app/payments/${row.id}`)}
-          getRowId={(row) => row.id}
-        />
-      )}
-    </Box>
+        {!listQuery.isLoading &&
+        (listQuery.data?.payments.length ?? 0) === 0 ? (
+          <Typography color="text.secondary">{t('empty.list')}</Typography>
+        ) : (
+          <PaginatedTable<PaymentSummary>
+            columns={columns}
+            data={listQuery.data?.payments ?? []}
+            rowCount={listQuery.data?.pagination.total ?? 0}
+            pagination={pagination}
+            onPaginationChange={setPagination}
+            isLoading={listQuery.isLoading}
+            isFetching={listQuery.isFetching}
+            onRowClick={(row) => navigate(`/app/payments/${row.id}`)}
+            getRowId={(row) => row.id}
+          />
+        )}
+      </Box>
+    </PageShell>
   );
 }

@@ -26,6 +26,7 @@ import { CompanyStatusPanel } from '@/features/settings/components/CompanyStatus
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 import { usePermissions } from '@/hooks/usePermissions';
 import { isCompanyOperational } from '@/lib/permissions';
+import { PageShell } from '@/layouts/PageShell';
 
 interface InfoRowProps {
   icon: ReactNode;
@@ -133,144 +134,159 @@ export function ProfilePage() {
   const companyActive = company ? isCompanyOperational(company) : false;
 
   return (
-    <Stack spacing={{ xs: 2.5, sm: 3 }}>
-      <Box>
-        <Typography variant="h5" component="h1">
-          {t('profile:title')}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
-          {t('profile:subtitle')}
-        </Typography>
-      </Box>
+    <PageShell maxWidth="lg">
+      <Stack spacing={{ xs: 2.5, sm: 3 }}>
+        <Box>
+          <Typography variant="h5" component="h1">
+            {t('profile:title')}
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+            {t('profile:subtitle')}
+          </Typography>
+        </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          gap: { xs: 2, sm: 2.5 },
-          gridTemplateColumns: {
-            xs: '1fr',
-            md: 'minmax(0, 1fr) minmax(0, 1fr)',
-          },
-          alignItems: 'stretch',
-        }}
-      >
-        <InfoSection
-          title={t('profile:sections.account')}
-          hint={t('profile:sections.accountHint')}
+        <Box
+          sx={{
+            display: 'grid',
+            gap: { xs: 2, sm: 2.5 },
+            gridTemplateColumns: {
+              xs: '1fr',
+              md: 'minmax(0, 1fr) minmax(0, 1fr)',
+            },
+            alignItems: 'stretch',
+          }}
         >
-          <List disablePadding>
-            <InfoRow
-              icon={<PersonOutlinedIcon fontSize="small" color="action" />}
-              label={t('profile:fields.name')}
-              value={displayName}
-            />
-            <InfoRow
-              icon={<EmailOutlinedIcon fontSize="small" color="action" />}
-              label={t('profile:fields.email')}
-              value={user.email}
-            />
-            <InfoRow
-              icon={
-                user.emailVerified ? (
-                  <CheckCircleOutlineIcon fontSize="small" color="success" />
-                ) : (
-                  <MarkEmailUnreadOutlinedIcon
-                    fontSize="small"
-                    color="warning"
-                  />
-                )
-              }
-              label={t('profile:fields.emailStatus')}
-              value={
-                <Chip
-                  size="small"
-                  color={user.emailVerified ? 'success' : 'warning'}
-                  variant="outlined"
-                  label={
-                    user.emailVerified
-                      ? t('profile:emailVerified')
-                      : t('profile:emailNotVerified')
-                  }
-                />
-              }
-            />
-          </List>
-        </InfoSection>
-
-        <InfoSection
-          title={t('profile:sections.company')}
-          hint={t('profile:sections.companyHint')}
-        >
-          {company && membership ? (
+          <InfoSection
+            title={t('profile:sections.account')}
+            hint={t('profile:sections.accountHint')}
+          >
             <List disablePadding>
               <InfoRow
-                icon={<BusinessOutlinedIcon fontSize="small" color="action" />}
-                label={t('profile:fields.companyName')}
-                value={company.name}
+                icon={<PersonOutlinedIcon fontSize="small" color="action" />}
+                label={t('profile:fields.name')}
+                value={displayName}
               />
               <InfoRow
-                icon={<PublicOutlinedIcon fontSize="small" color="action" />}
-                label={t('profile:fields.country')}
-                value={company.country ?? '—'}
-              />
-              <InfoRow
-                icon={<BadgeOutlinedIcon fontSize="small" color="action" />}
-                label={t('profile:fields.taxId')}
-                value={company.taxId ?? '—'}
-              />
-              <InfoRow
-                icon={<ShieldOutlinedIcon fontSize="small" color="action" />}
-                label={t('profile:fields.role')}
-                value={
-                  <Chip
-                    size="small"
-                    color={membership.role === 'OWNER' ? 'primary' : 'default'}
-                    variant={
-                      membership.role === 'OWNER' ? 'filled' : 'outlined'
-                    }
-                    label={formatMemberRole(t, membership.role)}
-                  />
-                }
+                icon={<EmailOutlinedIcon fontSize="small" color="action" />}
+                label={t('profile:fields.email')}
+                value={user.email}
               />
               <InfoRow
                 icon={
-                  companyActive ? (
+                  user.emailVerified ? (
                     <CheckCircleOutlineIcon fontSize="small" color="success" />
                   ) : (
-                    <PauseCircleOutlineIcon fontSize="small" color="warning" />
+                    <MarkEmailUnreadOutlinedIcon
+                      fontSize="small"
+                      color="warning"
+                    />
                   )
                 }
-                label={t('profile:fields.companyStatus')}
+                label={t('profile:fields.emailStatus')}
                 value={
                   <Chip
                     size="small"
-                    color={companyActive ? 'success' : 'warning'}
+                    color={user.emailVerified ? 'success' : 'warning'}
                     variant="outlined"
                     label={
-                      companyActive
-                        ? t('profile:companyActive')
-                        : t('profile:companyInactive')
+                      user.emailVerified
+                        ? t('profile:emailVerified')
+                        : t('profile:emailNotVerified')
                     }
                   />
                 }
               />
-              <InfoRow
-                icon={
-                  <CalendarMonthOutlinedIcon fontSize="small" color="action" />
-                }
-                label={t('profile:fields.joinedAt')}
-                value={formatDate(membership.joinedAt)}
-              />
             </List>
-          ) : (
-            <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
-              {t('profile:noActiveCompany')}
-            </Typography>
-          )}
-        </InfoSection>
-      </Box>
+          </InfoSection>
 
-      <CompanyStatusPanel />
-    </Stack>
+          <InfoSection
+            title={t('profile:sections.company')}
+            hint={t('profile:sections.companyHint')}
+          >
+            {company && membership ? (
+              <List disablePadding>
+                <InfoRow
+                  icon={
+                    <BusinessOutlinedIcon fontSize="small" color="action" />
+                  }
+                  label={t('profile:fields.companyName')}
+                  value={company.name}
+                />
+                <InfoRow
+                  icon={<PublicOutlinedIcon fontSize="small" color="action" />}
+                  label={t('profile:fields.country')}
+                  value={company.country ?? '—'}
+                />
+                <InfoRow
+                  icon={<BadgeOutlinedIcon fontSize="small" color="action" />}
+                  label={t('profile:fields.taxId')}
+                  value={company.taxId ?? '—'}
+                />
+                <InfoRow
+                  icon={<ShieldOutlinedIcon fontSize="small" color="action" />}
+                  label={t('profile:fields.role')}
+                  value={
+                    <Chip
+                      size="small"
+                      color={
+                        membership.role === 'OWNER' ? 'primary' : 'default'
+                      }
+                      variant={
+                        membership.role === 'OWNER' ? 'filled' : 'outlined'
+                      }
+                      label={formatMemberRole(t, membership.role)}
+                    />
+                  }
+                />
+                <InfoRow
+                  icon={
+                    companyActive ? (
+                      <CheckCircleOutlineIcon
+                        fontSize="small"
+                        color="success"
+                      />
+                    ) : (
+                      <PauseCircleOutlineIcon
+                        fontSize="small"
+                        color="warning"
+                      />
+                    )
+                  }
+                  label={t('profile:fields.companyStatus')}
+                  value={
+                    <Chip
+                      size="small"
+                      color={companyActive ? 'success' : 'warning'}
+                      variant="outlined"
+                      label={
+                        companyActive
+                          ? t('profile:companyActive')
+                          : t('profile:companyInactive')
+                      }
+                    />
+                  }
+                />
+                <InfoRow
+                  icon={
+                    <CalendarMonthOutlinedIcon
+                      fontSize="small"
+                      color="action"
+                    />
+                  }
+                  label={t('profile:fields.joinedAt')}
+                  value={formatDate(membership.joinedAt)}
+                />
+              </List>
+            ) : (
+              <Typography variant="body2" color="text.secondary" sx={{ py: 1 }}>
+                {t('profile:noActiveCompany')}
+              </Typography>
+            )}
+          </InfoSection>
+        </Box>
+
+        <CompanyStatusPanel />
+      </Stack>
+    </PageShell>
   );
 }
