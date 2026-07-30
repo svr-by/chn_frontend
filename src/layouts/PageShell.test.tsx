@@ -29,4 +29,15 @@ describe('PageShell', () => {
     expect(shell).toHaveAttribute('data-max-width', 'fluid');
     expect(shell).not.toHaveStyle({ maxWidth: '1440px' });
   });
+
+  it('fills viewport height when fillViewport is set', () => {
+    renderWithProviders(
+      <PageShell fillViewport>
+        <div>List content</div>
+      </PageShell>,
+    );
+
+    const shell = screen.getByTestId('page-shell');
+    expect(shell).toHaveStyle({ display: 'flex' });
+  });
 });

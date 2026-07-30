@@ -22,10 +22,21 @@ export interface PageShellProps {
    * - `fluid` — wide matrices / unconstrained tables
    */
   maxWidth?: PageShellMaxWidth;
+  /**
+   * Stretch to the remaining viewport below the fixed app bar
+   * (matches AppLayout toolbar + main padding). Useful for list pages
+   * that pin footer controls with `mt: 'auto'`.
+   */
+  fillViewport?: boolean;
   sx?: BoxProps['sx'];
 }
 
-export function PageShell({ children, maxWidth = 'xl', sx }: PageShellProps) {
+export function PageShell({
+  children,
+  maxWidth = 'xl',
+  fillViewport = false,
+  sx,
+}: PageShellProps) {
   const resolvedMaxWidth = PAGE_SHELL_MAX_WIDTH[maxWidth];
 
   return (
@@ -37,6 +48,17 @@ export function PageShell({ children, maxWidth = 'xl', sx }: PageShellProps) {
         ...(resolvedMaxWidth === false
           ? {}
           : { maxWidth: resolvedMaxWidth, mx: 'auto' }),
+        ...(fillViewport
+          ? {
+              display: 'flex',
+              flexDirection: 'column',
+              // AppBar: 56/64px; main padding: theme spacing 2/3 on each side
+              minHeight: {
+                xs: 'calc(100vh - 56px - 32px)',
+                sm: 'calc(100vh - 64px - 48px)',
+              },
+            }
+          : {}),
         ...sx,
       }}
     >

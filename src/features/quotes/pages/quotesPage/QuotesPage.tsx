@@ -3,11 +3,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Box,
   CircularProgress,
-  Divider,
   IconButton,
   Stack,
   Tab,
-  TablePagination,
   Tabs,
   Typography,
   useMediaQuery,
@@ -21,6 +19,7 @@ import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatu
 import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ListPagination } from '@/components/ListPagination';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { QuoteCard } from '@/features/quotes/components/quoteCard/QuoteCard';
 import { QuotesFiltersPanel } from '@/features/quotes/components/quotesFilters/QuotesFiltersPanel';
@@ -114,8 +113,8 @@ export function QuotesPage() {
   const total = listQuery.data?.pagination.total ?? 0;
 
   return (
-    <PageShell maxWidth="xl">
-      <Stack spacing={3} sx={{ minHeight: '100%' }}>
+    <PageShell maxWidth="xl" fillViewport>
+      <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
         <Box>
           <Typography variant="h5" component="h1">
             {t('title')}
@@ -190,20 +189,11 @@ export function QuotesPage() {
               ))}
             </Stack>
 
-            <TablePagination
-              component="div"
+            <ListPagination
               count={total}
               page={pageIndex}
-              onPageChange={(_event, nextPage) => setPageIndex(nextPage)}
+              onPageChange={setPageIndex}
               rowsPerPage={PAGE_SIZE}
-              rowsPerPageOptions={[PAGE_SIZE]}
-              onRowsPerPageChange={() => undefined}
-              sx={{
-                mt: 'auto',
-                borderTop: 1,
-                borderColor: 'divider',
-                '.MuiToolbar-root': { px: 0 },
-              }}
             />
           </Stack>
         )}
