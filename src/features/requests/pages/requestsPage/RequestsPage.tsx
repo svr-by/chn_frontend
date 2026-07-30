@@ -1,5 +1,5 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
-import { Link as RouterLink, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -35,23 +35,22 @@ import {
   type RequestsTab,
 } from '@/features/requests/lib/requestsFilters';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';
 
 const PAGE_SIZE = 20;
-
-function parseTab(value: string | null): RequestsTab {
-  return value === 'inbound' ? 'inbound' : 'outbound';
-}
 
 export function RequestsPage() {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const [searchParams, setSearchParams] = useSearchParams();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-  const tab = parseTab(searchParams.get('tab'));
+  const { direction: tab, setDirection } = usePreferredListDirection({
+    paramName: 'tab',
+    absentMeans: 'outbound',
+    family: 'requests',
+  });
 
   const [pageIndex, setPageIndex] = useState(0);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -98,11 +97,7 @@ export function RequestsPage() {
   }
 
   function handleTabChange(_event: SyntheticEvent, value: RequestsTab) {
-    if (value === 'outbound') {
-      setSearchParams({});
-    } else {
-      setSearchParams({ tab: value });
-    }
+    setDirection(value);
   }
 
   const requests = listQuery.data?.requests ?? [];

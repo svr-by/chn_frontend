@@ -1,4 +1,5 @@
 import type { PostAuthForgotPasswordBodyLocale } from '@/api/generated/models/postAuthForgotPasswordBodyLocale';
+import { getStoredItem, setStoredItem } from '@/lib/browserStorage';
 import {
   normalizeUiLocale,
   UI_LOCALE_STORAGE_KEY,
@@ -10,11 +11,7 @@ function readStoredLocale(): string | null {
     return null;
   }
 
-  return (
-    localStorage.getItem(UI_LOCALE_STORAGE_KEY) ??
-    document.documentElement.lang ??
-    null
-  );
+  return getStoredItem(UI_LOCALE_STORAGE_KEY) ?? document.documentElement.lang ?? null;
 }
 
 export function getUiLocale(): UiLocale {
@@ -22,11 +19,7 @@ export function getUiLocale(): UiLocale {
 }
 
 export function setUiLocale(locale: UiLocale): void {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  localStorage.setItem(UI_LOCALE_STORAGE_KEY, locale);
+  setStoredItem(UI_LOCALE_STORAGE_KEY, locale);
 }
 
 /** Email/API body locale — OpenAPI supports en|ru only; zh falls back to en. */

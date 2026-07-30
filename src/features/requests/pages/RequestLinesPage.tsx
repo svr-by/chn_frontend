@@ -1,42 +1,29 @@
-import { useEffect, useState, type SyntheticEvent } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { type SyntheticEvent } from 'react';
 import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { InboundRequestLinesPanel } from '@/features/requests/components/InboundRequestLinesPanel';
 import { OutboundRequestLinesPanel } from '@/features/requests/components/OutboundRequestLinesPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';
-
-type RequestLinesTab = 'outbound' | 'inbound';
-
-function parseTab(value: string | null): RequestLinesTab {
-  return value === 'inbound' ? 'inbound' : 'outbound';
-}
+import type { ListDirection } from '@/lib/preferredDirection';
 
 export function RequestLinesPage() {
   const { t } = useTranslation('requests');
-  const [searchParams, setSearchParams] = useSearchParams();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const [tab, setTab] = useState<RequestLinesTab>(() =>
-    parseTab(searchParams.get('tab')),
-  );
-
-  useEffect(() => {
-    setTab(parseTab(searchParams.get('tab')));
-  }, [searchParams]);
+  const { direction: tab, setDirection } = usePreferredListDirection({
+    paramName: 'tab',
+    absentMeans: 'outbound',
+    family: 'requests',
+  });
 
   if (!companyId) {
     return null;
   }
 
-  function handleTabChange(_event: SyntheticEvent, value: RequestLinesTab) {
-    setTab(value);
-    if (value === 'outbound') {
-      setSearchParams({});
-    } else {
-      setSearchParams({ tab: value });
-    }
+  function handleTabChange(_event: SyntheticEvent, value: ListDirection) {
+    setDirection(value);
   }
 
   return (

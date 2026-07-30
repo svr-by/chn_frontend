@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   CircularProgress,
@@ -14,13 +14,13 @@ import { useTheme } from '@mui/material/styles';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
-import type { GetCompaniesCompanyIdQuotesDirection } from '@/api/generated/models/getCompaniesCompanyIdQuotesDirection';
 import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
 import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ListPagination } from '@/components/ListPagination';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { QuoteCard } from '@/features/quotes/components/quoteCard/QuoteCard';
 import { QuotesFiltersPanel } from '@/features/quotes/components/quotesFilters/QuotesFiltersPanel';
 import {
@@ -30,23 +30,21 @@ import {
   type QuotesFiltersValue,
 } from '@/features/quotes/lib/quotesFilters';
 import { PageShell } from '@/layouts/PageShell';
+import type { ListDirection } from '@/lib/preferredDirection';
 
 const PAGE_SIZE = 20;
 
-const DIRECTION_TABS: GetCompaniesCompanyIdQuotesDirection[] = [
-  'inbound',
-  'outbound',
-];
+const DIRECTION_TABS: ListDirection[] = ['inbound', 'outbound'];
 
 export function QuotesPage() {
   const { t } = useTranslation('quotes');
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-
-  const directionParam = searchParams.get('direction');
-  const direction: GetCompaniesCompanyIdQuotesDirection =
-    directionParam === 'outbound' ? 'outbound' : 'inbound';
+  const { direction, setDirection } = usePreferredListDirection({
+    paramName: 'direction',
+    absentMeans: 'inbound',
+    family: 'documents',
+  });
 
   const tabIndex = direction === 'outbound' ? 1 : 0;
   const theme = useTheme();
@@ -99,10 +97,7 @@ export function QuotesPage() {
   );
 
   function handleTabChange(_event: React.SyntheticEvent, value: number) {
-    const nextDirection = DIRECTION_TABS[value];
-    const params = new URLSearchParams(searchParams);
-    params.set('direction', nextDirection);
-    setSearchParams(params);
+    setDirection(DIRECTION_TABS[value]);
   }
 
   if (!companyId) {

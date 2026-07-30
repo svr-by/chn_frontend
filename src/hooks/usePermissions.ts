@@ -1,5 +1,6 @@
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { authStorage } from '@/lib/authStorage';
 import {
   getActiveMembership,
   hasPermission,
@@ -9,9 +10,7 @@ import type { Permission } from '@/types/api';
 
 export function usePermissions() {
   const activeCompanyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const hasRefreshToken = Boolean(
-    typeof window !== 'undefined' && localStorage.getItem('chn_refresh_token'),
-  );
+  const hasRefreshToken = Boolean(authStorage.getRefreshToken());
   const { data, isLoading, isFetching } = useGetMeQuery(undefined, {
     skip: !hasRefreshToken,
   });

@@ -15,7 +15,6 @@ import {
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import type { GetCompaniesCompanyIdShippingInvoicesDirection } from '@/api/generated/models/getCompaniesCompanyIdShippingInvoicesDirection';
 import type { ShippingInvoiceSummary } from '@/api/generated/models/shippingInvoiceSummary';
 import type { ShippingInvoiceSummaryStatus } from '@/api/generated/models/shippingInvoiceSummaryStatus';
 import { useListShippingInvoicesQuery } from '@/api/endpoints/shippingInvoicesApi';
@@ -25,7 +24,9 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
 import { ShippingInvoiceCreateDialog } from '@/features/shipping/components/ShippingInvoiceCreateDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';
+import type { ListDirection } from '@/lib/preferredDirection';
 
 const PAGE_SIZE = 20;
 
@@ -37,20 +38,18 @@ const STATUS_OPTIONS: Array<ShippingInvoiceSummaryStatus | 'ALL'> = [
   'DELIVERED',
 ];
 
-const DIRECTION_TABS: GetCompaniesCompanyIdShippingInvoicesDirection[] = [
-  'inbound',
-  'outbound',
-];
+const DIRECTION_TABS: ListDirection[] = ['inbound', 'outbound'];
 
 export function ShippingInvoicesPage() {
   const { t } = useTranslation('shipping');
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-
-  const directionParam = searchParams.get('direction');
-  const direction: GetCompaniesCompanyIdShippingInvoicesDirection =
-    directionParam === 'outbound' ? 'outbound' : 'inbound';
+  const { direction, setDirection } = usePreferredListDirection({
+    paramName: 'direction',
+    absentMeans: 'inbound',
+    family: 'documents',
+  });
   const supplierInvoiceIdFilter =
     searchParams.get('supplierInvoiceId') ?? undefined;
   const requestIdFilter = searchParams.get('requestId') ?? undefined;
@@ -150,10 +149,7 @@ export function ShippingInvoicesPage() {
   );
 
   function handleTabChange(_event: React.SyntheticEvent, value: number) {
-    const nextDirection = DIRECTION_TABS[value];
-    const params = new URLSearchParams(searchParams);
-    params.set('direction', nextDirection);
-    setSearchParams(params);
+    setDirection(DIRECTION_TABS[value]);
   }
 
   function clearSupplierInvoiceFilter() {

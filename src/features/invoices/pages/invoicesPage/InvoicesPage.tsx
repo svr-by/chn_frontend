@@ -15,7 +15,6 @@ import { useTheme } from '@mui/material/styles';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
-import type { GetCompaniesCompanyIdInvoicesDirection } from '@/api/generated/models/getCompaniesCompanyIdInvoicesDirection';
 import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
 import { useListInvoicesQuery } from '@/api/endpoints/invoicesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
@@ -32,24 +31,24 @@ import {
   type InvoicesFiltersValue,
 } from '@/features/invoices/lib/invoicesFilters';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';
+import type { ListDirection } from '@/lib/preferredDirection';
 
 const PAGE_SIZE = 20;
 
-const DIRECTION_TABS: GetCompaniesCompanyIdInvoicesDirection[] = [
-  'inbound',
-  'outbound',
-];
+const DIRECTION_TABS: ListDirection[] = ['inbound', 'outbound'];
 
 export function InvoicesPage() {
   const { t } = useTranslation('invoices');
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-
-  const directionParam = searchParams.get('direction');
-  const direction: GetCompaniesCompanyIdInvoicesDirection =
-    directionParam === 'outbound' ? 'outbound' : 'inbound';
+  const { direction, setDirection } = usePreferredListDirection({
+    paramName: 'direction',
+    absentMeans: 'inbound',
+    family: 'documents',
+  });
   const requestIdFilter = searchParams.get('requestId') ?? undefined;
 
   const tabIndex = direction === 'outbound' ? 1 : 0;
@@ -105,10 +104,7 @@ export function InvoicesPage() {
   );
 
   function handleTabChange(_event: React.SyntheticEvent, value: number) {
-    const nextDirection = DIRECTION_TABS[value];
-    const params = new URLSearchParams(searchParams);
-    params.set('direction', nextDirection);
-    setSearchParams(params);
+    setDirection(DIRECTION_TABS[value]);
   }
 
   function clearRequestFilter() {

@@ -8,6 +8,11 @@ import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import {
+  PREFERRED_TRADING_ROLE_STORAGE_KEY,
+  readPreferredTradingRole,
+  writePreferredTradingRole,
+} from '@/lib/preferredDirection';
+import {
   COMPANY_ID,
   createMembership,
   createSupplierQuoteSummary,
@@ -47,6 +52,7 @@ const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
 describe('QuotesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.removeItem(PREFERRED_TRADING_ROLE_STORAGE_KEY);
 
     mockedUseGetMeQuery.mockReturnValue({
       data: {
@@ -103,6 +109,66 @@ describe('QuotesPage', () => {
     );
   });
 
+  it('opens outbound tab when preferred supplier role is stored', () => {
+    writePreferredTradingRole('supplier');
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/quotes" element={<QuotesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/quotes',
+      },
+    );
+
+    expect(screen.getByLabelText('Buyer')).toBeInTheDocument();
+    expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ direction: 'outbound' }),
+      expect.anything(),
+    );
+  });
+
+  it('opens inbound tab when preferred buyer role is stored', () => {
+    writePreferredTradingRole('buyer');
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/quotes" element={<QuotesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/quotes',
+      },
+    );
+
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
+    expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ direction: 'inbound' }),
+      expect.anything(),
+    );
+  });
+
+  it('keeps URL direction over stored preference', () => {
+    writePreferredTradingRole('supplier');
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/quotes" element={<QuotesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/quotes?direction=inbound',
+      },
+    );
+
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
+    expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
+      expect.objectContaining({ direction: 'inbound' }),
+      expect.anything(),
+    );
+  });
+
   it('switches to outbound tab', async () => {
     const user = userEvent.setup();
 
@@ -123,6 +189,7 @@ describe('QuotesPage', () => {
       expect.objectContaining({ direction: 'outbound' }),
       expect.anything(),
     );
+    expect(readPreferredTradingRole()).toBe('supplier');
   });
 
   it('applies status filter only after Apply', async () => {

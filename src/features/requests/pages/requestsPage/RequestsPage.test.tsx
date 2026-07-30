@@ -10,6 +10,10 @@ import {
 } from '@/api/endpoints/requestsApi';
 import { RequestsPage } from '@/features/requests/pages/requestsPage/RequestsPage';
 import {
+  PREFERRED_TRADING_ROLE_STORAGE_KEY,
+  readPreferredTradingRole,
+} from '@/lib/preferredDirection';
+import {
   COMPANY_ID,
   createInboundMaterialRequestSummary,
   createMaterialRequestSummary,
@@ -81,6 +85,7 @@ function mockViewOnlyUser() {
 describe('RequestsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.removeItem(PREFERRED_TRADING_ROLE_STORAGE_KEY);
 
     mockedUseListRequestsQuery.mockReturnValue({
       data: {
@@ -156,6 +161,7 @@ describe('RequestsPage', () => {
       expect.objectContaining({ companyId: COMPANY_ID }),
       expect.objectContaining({ skip: false }),
     );
+    expect(readPreferredTradingRole()).toBe('supplier');
   });
 
   it('applies status filter only after Apply', async () => {
