@@ -13,7 +13,7 @@ import {
   useCreateQuoteMutation,
   useListQuotesQuery,
 } from '@/api/endpoints/quotesApi';
-import { InboundRequestDetailPage } from '@/features/requests/pages/InboundRequestDetailPage';
+import { InboundRequestDetailPage } from '@/features/requests/pages/inboundRequestDetailPage/InboundRequestDetailPage';
 import {
   COMPANY_ID,
   createInboundMaterialRequest,

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
-import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
+import { RequestLineFormDialog } from '@/features/requests/components/requestLineFormDialog/RequestLineFormDialog';
 import {
   createEmptyDraftLine,
   updateDraftLine,

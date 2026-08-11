@@ -14,10 +14,10 @@ import {
   RequestHeaderFields,
   RequestNotesField,
   RequestTitleEditButton,
-} from '@/features/requests/components/RequestHeaderForm';
-import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
+} from '@/features/requests/components/requestHeaderForm/RequestHeaderForm';
+import { RequestLinesTable } from '@/features/requests/components/requestLinesTable/RequestLinesTable';
 import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
-import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
+import { RequestStatusActions } from '@/features/requests/components/requestStatusActions/RequestStatusActions';
 import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';

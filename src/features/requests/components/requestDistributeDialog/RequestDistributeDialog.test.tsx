@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
-import { RequestDistributeDialog } from '@/features/requests/components/RequestDistributeDialog';
+import { RequestDistributeDialog } from '@/features/requests/components/requestDistributeDialog/RequestDistributeDialog';
 import {
   COMPANY_ID,
   createRequestLine,

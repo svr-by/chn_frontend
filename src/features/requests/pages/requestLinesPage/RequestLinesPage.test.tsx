@@ -8,7 +8,7 @@ import {
   useListRequestLinesQuery,
 } from '@/api/endpoints/requestsApi';
 import { useListMembersQuery } from '@/api/endpoints/membersApi';
-import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
+import { RequestLinesPage } from '@/features/requests/pages/requestLinesPage/RequestLinesPage';
 import { COMPANY_ID, createRequestLineListItem } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 

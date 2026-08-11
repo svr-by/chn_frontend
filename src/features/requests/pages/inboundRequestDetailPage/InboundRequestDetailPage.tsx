@@ -8,8 +8,8 @@ import { useGetInboundRequestQuery } from '@/api/endpoints/requestsApi';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
 import { StatusBadge } from '@/components/StatusBadge';
-import { InboundRequestStatusActions } from '@/features/requests/components/InboundRequestStatusActions';
-import { RequestLinesTable } from '@/features/requests/components/RequestLinesTable';
+import { InboundRequestStatusActions } from '@/features/requests/components/inboundRequestStatusActions/InboundRequestStatusActions';
+import { RequestLinesTable } from '@/features/requests/components/requestLinesTable/RequestLinesTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 export function InboundRequestDetailPage() {

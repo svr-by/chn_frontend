@@ -26,8 +26,8 @@ import { useListMembersQuery } from '@/api/endpoints/membersApi';
 import { useCreateRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { BackLink } from '@/components/BackLink';
-import { RequestDraftLinesSection } from '@/features/requests/components/RequestDraftLinesSection';
-import { RequestLinesImportDialog } from '@/features/requests/components/RequestLinesImportDialog';
+import { RequestDraftLinesSection } from '@/features/requests/components/requestDraftLinesSection/RequestDraftLinesSection';
+import { RequestLinesImportDialog } from '@/features/requests/components/requestLinesImportDialog/RequestLinesImportDialog';
 import {
   draftLinesToCreatePayload,
   type DraftRequestLine,

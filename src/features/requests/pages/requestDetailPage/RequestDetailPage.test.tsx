@@ -9,7 +9,7 @@ import {
   useGetRequestQuery,
   useUpdateRequestMutation,
 } from '@/api/endpoints/requestsApi';
-import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
+import { RequestDetailPage } from '@/features/requests/pages/requestDetailPage/RequestDetailPage';
 import {
   COMPANY_ID,
   createMaterialRequest,

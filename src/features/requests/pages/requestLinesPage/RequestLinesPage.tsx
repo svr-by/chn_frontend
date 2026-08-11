@@ -2,8 +2,8 @@ import { type SyntheticEvent } from 'react';
 import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { InboundRequestLinesPanel } from '@/features/requests/components/InboundRequestLinesPanel';
-import { OutboundRequestLinesPanel } from '@/features/requests/components/OutboundRequestLinesPanel';
+import { InboundRequestLinesPanel } from '@/features/requests/components/inboundRequestLinesPanel/InboundRequestLinesPanel';
+import { OutboundRequestLinesPanel } from '@/features/requests/components/outboundRequestLinesPanel/OutboundRequestLinesPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';

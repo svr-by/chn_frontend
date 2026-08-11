@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
@@ -47,6 +47,12 @@ const mockedUseListRequestsQuery = vi.mocked(useListRequestsQuery);
 const mockedUseListInboundRequestsQuery = vi.mocked(
   useListInboundRequestsQuery,
 );
+
+async function openFilters(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<void> {
+  await user.click(screen.getByRole('button', { name: 'Filters' }));
+}
 
 function mockManageUser() {
   mockedUseGetMeQuery.mockReturnValue({
@@ -124,6 +130,7 @@ describe('RequestsPage', () => {
     expect(screen.getByText('Office supplies')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Outbound' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Inbound' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument();
     expect(
       screen.getByRole('link', { name: 'New request' }),
     ).toBeInTheDocument();
@@ -178,6 +185,8 @@ describe('RequestsPage', () => {
       },
     );
 
+    await openFilters(user);
+
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled();
 
     await user.click(screen.getByLabelText('Status'));
@@ -195,6 +204,9 @@ describe('RequestsPage', () => {
       expect.objectContaining({ status: 'QUOTING' }),
       expect.anything(),
     );
+    expect(
+      within(screen.getByRole('button', { name: 'Filters' })).getByText('1'),
+    ).toBeInTheDocument();
   });
 
   it('hides new request button without manageRequests', () => {

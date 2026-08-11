@@ -63,10 +63,16 @@ export function createRequestLineQuantityColumn(
     header: t('columns.quantity'),
     size: 120,
     grow: false,
+    muiTableBodyCellProps: {
+      align: 'right',
+    },
+    muiTableHeadCellProps: {
+      align: 'right',
+    },
     Cell: ({ row }) => (
       <DecimalWithSuffix
         value={row.original.quantity}
-        suffix={row.original.unit ?? '—'}
+        suffix={row.original.unit ?? ''}
       />
     ),
   };

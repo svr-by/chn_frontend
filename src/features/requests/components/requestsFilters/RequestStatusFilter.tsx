@@ -17,7 +17,7 @@ export function RequestStatusFilter({
   const { t } = useTranslation('requests');
 
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
+    <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
       <InputLabel id="request-status-filter">{t('statusFilter.label')}</InputLabel>
       <Select
         labelId="request-status-filter"

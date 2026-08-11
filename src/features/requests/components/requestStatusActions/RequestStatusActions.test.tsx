@@ -6,7 +6,7 @@ import {
   useCloseRequestMutation,
   useDeleteRequestMutation,
 } from '@/api/endpoints/requestsApi';
-import { RequestStatusActions } from '@/features/requests/components/RequestStatusActions';
+import { RequestStatusActions } from '@/features/requests/components/requestStatusActions/RequestStatusActions';
 import {
   COMPANY_ID,
   createMembership,

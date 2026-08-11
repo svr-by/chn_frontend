@@ -17,7 +17,7 @@ import { useListRequestLinesQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
-import { RequestLinePipelineIcons } from '@/features/requests/components/RequestLinePipelineIcons';
+import { RequestLinePipelineIcons } from '@/features/requests/components/outboundRequestLinesPanel/RequestLinePipelineIcons';
 import { StatusBadge } from '@/components/StatusBadge';
 import type { MaterialRequestStatus } from '@/types/api';
 

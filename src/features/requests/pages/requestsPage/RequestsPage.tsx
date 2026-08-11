@@ -1,6 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
+  Badge,
   Box,
   Button,
   CircularProgress,
@@ -9,9 +10,7 @@ import {
   Tab,
   Tabs,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
@@ -30,11 +29,13 @@ import {
   buildInboundRequestsQueryArgs,
   buildOutboundRequestsQueryArgs,
   clearFiltersOnTabChange,
+  countActiveRequestsFilters,
   requestStatusOptionsForTab,
   type RequestsFiltersValue,
   type RequestsTab,
 } from '@/features/requests/lib/requestsFilters';
 import { useAppSelector } from '@/hooks/useAppSelector';
+import { usePermissions } from '@/hooks/usePermissions';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/PageShell';
 
@@ -44,8 +45,7 @@ export function RequestsPage() {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user } = usePermissions();
   const { direction: tab, setDirection } = usePreferredListDirection({
     paramName: 'tab',
     absentMeans: 'outbound',
@@ -76,6 +76,7 @@ export function RequestsPage() {
       limit: PAGE_SIZE,
       offset: pageIndex * PAGE_SIZE,
       filters: appliedFilters,
+      currentUserId: user?.id,
     }),
     { skip: !companyId || tab !== 'outbound' },
   );
@@ -103,56 +104,63 @@ export function RequestsPage() {
   const requests = listQuery.data?.requests ?? [];
   const total = listQuery.data?.pagination.total ?? 0;
   const statusOptions = requestStatusOptionsForTab(tab);
+  const activeFiltersCount = countActiveRequestsFilters(appliedFilters, tab);
 
   return (
     <PageShell maxWidth="xl" fillViewport>
       <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
-        <Stack
-          direction={{ xs: 'column', sm: 'row' }}
-          justifyContent="space-between"
-          alignItems={{ xs: 'stretch', sm: 'flex-start' }}
-          spacing={2}
-        >
-          <Box>
-            <Typography variant="h5" component="h1">
-              {t('title')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {tab === 'outbound' ? t('subtitle') : t('inbound.subtitle')}
-            </Typography>
-          </Box>
-          {tab === 'outbound' ? (
-            <PermissionGate permission="manageRequests">
-              <Button
-                variant="contained"
-                component={RouterLink}
-                to="/app/requests/new"
-                startIcon={<AddIcon />}
-              >
-                {t('actions.new')}
-              </Button>
-            </PermissionGate>
-          ) : null}
-        </Stack>
-
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Tabs
-            value={tab}
-            onChange={handleTabChange}
-            sx={{ flex: 1, minWidth: 0 }}
+        <Stack spacing={0}>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+            spacing={2}
           >
-            <Tab label={t('tabs.outbound')} value="outbound" />
-            <Tab label={t('tabs.inbound')} value="inbound" />
-          </Tabs>
-          {isMobile ? (
+            <Box>
+              <Typography variant="h5" component="h1">
+                {t('title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {tab === 'outbound' ? t('subtitle') : t('inbound.subtitle')}
+              </Typography>
+            </Box>
+            {tab === 'outbound' ? (
+              <PermissionGate permission="manageRequests">
+                <Button
+                  variant="contained"
+                  component={RouterLink}
+                  to="/app/requests/new"
+                  startIcon={<AddIcon />}
+                >
+                  {t('actions.new')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Tabs
+              value={tab}
+              onChange={handleTabChange}
+              sx={{ flex: 1, minWidth: 0 }}
+            >
+              <Tab label={t('tabs.outbound')} value="outbound" />
+              <Tab label={t('tabs.inbound')} value="inbound" />
+            </Tabs>
             <IconButton
               aria-label={t('filters.open')}
               onClick={() => setFiltersOpen(true)}
               sx={{ flexShrink: 0 }}
             >
-              <FilterListOutlinedIcon />
+              <Badge
+                badgeContent={activeFiltersCount}
+                color="primary"
+                invisible={activeFiltersCount === 0}
+              >
+                <FilterListOutlinedIcon />
+              </Badge>
             </IconButton>
-          ) : null}
+          </Stack>
         </Stack>
 
         <ApiErrorAlert error={listQuery.error} />
@@ -161,7 +169,7 @@ export function RequestsPage() {
           draftFilters={draftFilters}
           appliedFilters={appliedFilters}
           statusOptions={statusOptions}
-          inline={!isMobile}
+          showExtendedFilters={tab === 'outbound'}
           drawerOpen={filtersOpen}
           onDrawerOpenChange={setFiltersOpen}
           onDraftChange={setDraftFilters}

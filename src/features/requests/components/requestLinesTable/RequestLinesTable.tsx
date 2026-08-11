@@ -23,7 +23,7 @@ import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineFormDialog } from '@/features/requests/components/RequestLineFormDialog';
+import { RequestLineFormDialog } from '@/features/requests/components/requestLineFormDialog/RequestLineFormDialog';
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 
 const PAGE_SIZE = 20;
