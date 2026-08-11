@@ -3,7 +3,6 @@
  */
 import type { CompanySummary } from './companySummary';
 import type { LineageTraceInvoicesItemStatus } from './lineageTraceInvoicesItemStatus';
-import type { LineageTraceInvoicesItemInvoiceNumber } from './lineageTraceInvoicesItemInvoiceNumber';
 import type { LineageTraceInvoicesItemLine } from './lineageTraceInvoicesItemLine';
 import type { LineageTraceInvoicesItemPaymentsItem } from './lineageTraceInvoicesItemPaymentsItem';
 
@@ -13,7 +12,7 @@ export type LineageTraceInvoicesItem = {
   supplierCompany: CompanySummary;
   status: LineageTraceInvoicesItemStatus;
   currency: string;
-  invoiceNumber: LineageTraceInvoicesItemInvoiceNumber;
+  number: string;
   line: LineageTraceInvoicesItemLine;
   payments: LineageTraceInvoicesItemPaymentsItem[];
 };

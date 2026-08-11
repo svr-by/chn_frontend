@@ -37,7 +37,7 @@ currency?: string;
 /**
  * @minLength 1
  */
-invoiceNumber?: string;
+number?: string;
 createdFrom?: unknown;
 createdTo?: unknown;
 };

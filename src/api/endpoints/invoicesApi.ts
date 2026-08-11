@@ -25,6 +25,7 @@ import type {
   PostCompaniesCompanyIdInvoicesInvoiceIdIssue200,
   PostCompaniesCompanyIdInvoicesInvoiceIdLines201,
   PostCompaniesCompanyIdInvoicesInvoiceIdLinesBody,
+  SupplierInvoice,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -32,38 +33,51 @@ type CompanyScopedArgs<T = void> = T extends void
   ? { companyId: string }
   : { companyId: string } & T;
 
+type InvoiceCacheMeta = {
+  requestIds?: string[];
+  quoteIds?: string[];
+};
+
 function invoiceListTag(companyId: string) {
   return [{ type: 'Invoices' as const, id: companyId }];
 }
 
-function invoiceDetailTags(
-  companyId: string,
-  invoiceId: string,
-  materialRequestId?: string,
-  quoteId?: string,
-) {
+function requestAndQuoteTags(meta?: InvoiceCacheMeta) {
   const tags: Array<
-    { type: 'Invoices'; id: string } | { type: 'Requests'; id: string } | { type: 'Quotes'; id: string }
-  > = [
-    { type: 'Invoices', id: companyId },
-    { type: 'Invoices', id: invoiceId },
-  ];
-  if (materialRequestId) {
-    tags.push({ type: 'Requests', id: materialRequestId });
+    { type: 'Requests'; id: string } | { type: 'Quotes'; id: string }
+  > = [];
+  for (const requestId of meta?.requestIds ?? []) {
+    tags.push({ type: 'Requests', id: requestId });
   }
-  if (quoteId) {
+  for (const quoteId of meta?.quoteIds ?? []) {
     tags.push({ type: 'Quotes', id: `billable-${quoteId}` });
   }
   return tags;
 }
 
-function invoiceMutationTags(
+function requestIdsFromInvoice(invoice: SupplierInvoice | undefined): string[] {
+  if (!invoice) {
+    return [];
+  }
+  return [
+    ...new Set(
+      invoice.lines
+        .map((line) => line.requestLine?.requestId)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+}
+
+function invoiceDetailTags(
   companyId: string,
   invoiceId: string,
-  materialRequestId?: string,
-  quoteId?: string,
+  meta?: InvoiceCacheMeta,
 ) {
-  return invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId);
+  return [
+    { type: 'Invoices' as const, id: companyId },
+    { type: 'Invoices' as const, id: invoiceId },
+    ...requestAndQuoteTags(meta),
+  ];
 }
 
 export const invoicesApi = baseApi.injectEndpoints({
@@ -93,23 +107,22 @@ export const invoicesApi = baseApi.injectEndpoints({
     }),
     createInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoices201,
-      CompanyScopedArgs<PostCompaniesCompanyIdInvoicesBody> & {
-        quoteId?: string;
-      }
+      CompanyScopedArgs<PostCompaniesCompanyIdInvoicesBody> & InvoiceCacheMeta
     >({
-      query: ({ companyId, quoteId: _quoteId, ...body }) => ({
+      query: ({ companyId, quoteIds: _quoteIds, requestIds: _requestIds, ...body }) => ({
         url: getPostCompaniesCompanyIdInvoicesUrl(companyId),
         method: 'POST',
         body,
       }),
-      invalidatesTags: (
-        _result,
-        _error,
-        { companyId, materialRequestId, quoteId },
-      ) => [
+      invalidatesTags: (result, _error, { companyId, quoteIds, requestIds }) => [
         ...invoiceListTag(companyId),
-        { type: 'Requests', id: materialRequestId },
-        ...(quoteId ? [{ type: 'Quotes' as const, id: `billable-${quoteId}` }] : []),
+        ...(result?.invoice
+          ? [{ type: 'Invoices' as const, id: result.invoice.id }]
+          : []),
+        ...requestAndQuoteTags({
+          quoteIds,
+          requestIds: requestIds ?? requestIdsFromInvoice(result?.invoice),
+        }),
       ],
     }),
     updateInvoice: builder.mutation<
@@ -117,15 +130,14 @@ export const invoicesApi = baseApi.injectEndpoints({
       {
         companyId: string;
         invoiceId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      } & PatchCompaniesCompanyIdInvoicesInvoiceIdBody
+      } & InvoiceCacheMeta &
+        PatchCompaniesCompanyIdInvoicesInvoiceIdBody
     >({
       query: ({
         companyId,
         invoiceId,
-        materialRequestId: _requestId,
-        quoteId: _quoteId,
+        requestIds: _requestIds,
+        quoteIds: _quoteIds,
         ...body
       }) => ({
         url: getPatchCompaniesCompanyIdInvoicesInvoiceIdUrl(
@@ -138,24 +150,22 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
     addInvoiceLine: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdLines201,
       {
         companyId: string;
         invoiceId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      } & PostCompaniesCompanyIdInvoicesInvoiceIdLinesBody
+      } & InvoiceCacheMeta &
+        PostCompaniesCompanyIdInvoicesInvoiceIdLinesBody
     >({
       query: ({
         companyId,
         invoiceId,
-        materialRequestId: _requestId,
-        quoteId: _quoteId,
+        requestIds: _requestIds,
+        quoteIds: _quoteIds,
         ...body
       }) => ({
         url: getPostCompaniesCompanyIdInvoicesInvoiceIdLinesUrl(
@@ -168,9 +178,8 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
     updateInvoiceLine: builder.mutation<
       PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineId200,
@@ -178,16 +187,15 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         lineId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      } & PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdBody
+      } & InvoiceCacheMeta &
+        PatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdBody
     >({
       query: ({
         companyId,
         invoiceId,
         lineId,
-        materialRequestId: _requestId,
-        quoteId: _quoteId,
+        requestIds: _requestIds,
+        quoteIds: _quoteIds,
         ...body
       }) => ({
         url: getPatchCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(
@@ -201,9 +209,8 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
     deleteInvoiceLine: builder.mutation<
       void,
@@ -211,9 +218,7 @@ export const invoicesApi = baseApi.injectEndpoints({
         companyId: string;
         invoiceId: string;
         lineId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      }
+      } & InvoiceCacheMeta
     >({
       query: ({ companyId, invoiceId, lineId }) => ({
         url: getDeleteCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl(
@@ -226,18 +231,15 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceDetailTags(companyId, invoiceId, materialRequestId, quoteId),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
     issueInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdIssue200,
       {
         companyId: string;
         invoiceId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      }
+      } & InvoiceCacheMeta
     >({
       query: ({ companyId, invoiceId }) => ({
         url: getPostCompaniesCompanyIdInvoicesInvoiceIdIssueUrl(
@@ -249,14 +251,8 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceMutationTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          quoteId,
-        ),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
     getShippableLines: builder.query<
       GetCompaniesCompanyIdInvoicesInvoiceIdShippableLines200,
@@ -277,9 +273,7 @@ export const invoicesApi = baseApi.injectEndpoints({
       {
         companyId: string;
         invoiceId: string;
-        materialRequestId?: string;
-        quoteId?: string;
-      }
+      } & InvoiceCacheMeta
     >({
       query: ({ companyId, invoiceId }) => ({
         url: getPostCompaniesCompanyIdInvoicesInvoiceIdConfirmUrl(
@@ -291,14 +285,8 @@ export const invoicesApi = baseApi.injectEndpoints({
       invalidatesTags: (
         _result,
         _error,
-        { companyId, invoiceId, materialRequestId, quoteId },
-      ) =>
-        invoiceMutationTags(
-          companyId,
-          invoiceId,
-          materialRequestId,
-          quoteId,
-        ),
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
   }),
 });

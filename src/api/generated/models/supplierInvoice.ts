@@ -3,11 +3,9 @@
  */
 import type { SupplierInvoiceCreatedByUser } from './supplierInvoiceCreatedByUser';
 import type { SupplierInvoiceStatus } from './supplierInvoiceStatus';
-import type { SupplierInvoiceInvoiceNumber } from './supplierInvoiceInvoiceNumber';
 import type { SupplierInvoiceNotes } from './supplierInvoiceNotes';
 import type { SupplierInvoiceIssuedAt } from './supplierInvoiceIssuedAt';
 import type { SupplierInvoiceConfirmedAt } from './supplierInvoiceConfirmedAt';
-import type { SupplierInvoiceMaterialRequest } from './supplierInvoiceMaterialRequest';
 import type { SupplierInvoiceBuyerCompany } from './supplierInvoiceBuyerCompany';
 import type { SupplierInvoiceSupplierCompany } from './supplierInvoiceSupplierCompany';
 import type { InvoiceLine } from './invoiceLine';
@@ -19,7 +17,7 @@ export interface SupplierInvoice {
   createdByUser: SupplierInvoiceCreatedByUser;
   status: SupplierInvoiceStatus;
   currency: string;
-  invoiceNumber: SupplierInvoiceInvoiceNumber;
+  number: string;
   notes: SupplierInvoiceNotes;
   issuedAt: SupplierInvoiceIssuedAt;
   confirmedAt: SupplierInvoiceConfirmedAt;
@@ -30,7 +28,6 @@ export interface SupplierInvoice {
   createdAt: string;
   /** @pattern ^(?:(?:\d\d[2468][048]|\d\d[13579][26]|\d\d0[48]|[02468][048]00|[13579][26]00)-02-29|\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|(?:02)-(?:0[1-9]|1\d|2[0-8])))T(?:(?:[01]\d|2[0-3]):[0-5]\d(?::[0-5]\d(?:\.\d+)?)?(?:Z))$ */
   updatedAt: string;
-  materialRequest: SupplierInvoiceMaterialRequest;
   buyerCompany: SupplierInvoiceBuyerCompany;
   supplierCompany: SupplierInvoiceSupplierCompany;
   lines: InvoiceLine[];
