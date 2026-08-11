@@ -93,6 +93,7 @@
     "buyer": "Buyer: {{name}}",
     "supplierInvoice": "Invoice",
     "request": "Request",
+    "requests": "Requests",
     "trackingNumber": "Tracking: {{value}}",
     "carrier": "Carrier: {{value}}",
     "issuedAt": "Issued {{date}}",

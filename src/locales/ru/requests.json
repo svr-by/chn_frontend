@@ -121,7 +121,22 @@
     "open": "Фильтры",
     "apply": "Применить",
     "reset": "Сбросить",
-    "closeAriaLabel": "Закрыть фильтры"
+    "closeAriaLabel": "Закрыть фильтры",
+    "q": "Поиск",
+    "priority": "Приоритет",
+    "priorityAll": "Все приоритеты",
+    "createdFrom": "Создано с",
+    "createdTo": "Создано по",
+    "sortBy": "Сортировка",
+    "sortOrder": "Порядок",
+    "sortDefault": "По умолчанию",
+    "sortCreatedAt": "Дата создания",
+    "sortUpdatedAt": "Дата обновления",
+    "sortAsc": "По возрастанию",
+    "sortDesc": "По убыванию",
+    "queueAll": "Все",
+    "queueCreatedByMe": "Созданные мной",
+    "queueAssignedToMe": "Назначенные мне"
   },
   "empty": {
     "list": "Заявки не найдены.",

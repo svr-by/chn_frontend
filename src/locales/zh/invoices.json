@@ -42,6 +42,7 @@
     "editLine": "编辑",
     "deleteLine": "删除",
     "save": "保存",
+    "cancel": "取消",
     "saveHeader": "保存详情",
     "dismiss": "关闭",
     "backToList": "返回发票",
@@ -78,15 +79,18 @@
   },
   "filter": {
     "request": "按申请 {{id}} 筛选",
+    "requestHint": "显示包含与此申请关联行的发票。",
     "clearRequest": "清除筛选"
   },
   "empty": {
     "list": "未找到发票。",
     "lines": "暂无行。请添加一行以继续。",
-    "billableLines": "暂无可开票行。"
+    "billableLines": "暂无可开票行。",
+    "quotesForCurrency": "未找到该货币的已接受报价。"
   },
   "form": {
     "invoiceNumber": "发票号码",
+    "currency": "货币",
     "notes": "备注",
     "requestLine": "申请行",
     "maxQuantity": "最大数量",
@@ -98,7 +102,11 @@
   },
   "create": {
     "title": "创建发票",
-    "request": "物料申请"
+    "subtitle": "输入发票号码和货币，从已接受报价添加可开票行，然后保存草稿。",
+    "quote": "报价"
+  },
+  "validation": {
+    "minLines": "保存前请至少添加一行。"
   },
   "confirm": {
     "issueTitle": "开具发票",
@@ -114,6 +122,9 @@
     "supplier": "供应商：{{name}}",
     "buyer": "买方：{{name}}",
     "request": "申请",
+    "requests": "申请",
+    "requestGroup": "申请 {{id}}",
+    "viewRequest": "打开申请",
     "selection": "选择",
     "issuedAt": "已开具 {{date}}",
     "confirmedAt": "已确认 {{date}}",
@@ -123,6 +134,7 @@
     "viewShipping": "查看运输发票"
   },
   "toast": {
+    "created": "发票草稿已创建",
     "updated": "发票已更新",
     "issued": "发票已开具",
     "confirmed": "发票已确认",
@@ -130,6 +142,10 @@
     "lineUpdated": "行已更新",
     "lineDeleted": "行已删除",
     "notFound": "未找到发票",
-    "noBillableLines": "此申请暂无可开票行。"
+    "noBillableLines": "此申请暂无可开票行。",
+    "mixedBuyer": "所有行必须属于同一买方。",
+    "mixedCurrency": "所有行必须使用同一货币。",
+    "currencyClearedLines": "因货币变更，行项目已清空。",
+    "linesInvalid": "请检查数量并移除重复行。"
   }
 }

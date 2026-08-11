@@ -121,7 +121,22 @@
     "open": "Filters",
     "apply": "Apply",
     "reset": "Reset",
-    "closeAriaLabel": "Close filters"
+    "closeAriaLabel": "Close filters",
+    "q": "Search",
+    "priority": "Priority",
+    "priorityAll": "All priorities",
+    "createdFrom": "Created from",
+    "createdTo": "Created to",
+    "sortBy": "Sort by",
+    "sortOrder": "Order",
+    "sortDefault": "Default",
+    "sortCreatedAt": "Created date",
+    "sortUpdatedAt": "Updated date",
+    "sortAsc": "Ascending",
+    "sortDesc": "Descending",
+    "queueAll": "All",
+    "queueCreatedByMe": "Created by me",
+    "queueAssignedToMe": "Assigned to me"
   },
   "empty": {
     "list": "No requests found.",

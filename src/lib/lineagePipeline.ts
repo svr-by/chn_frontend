@@ -97,7 +97,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
       stage: 'invoices',
       items: trace.invoices.map((invoice) => ({
         documentId: invoice.invoiceId,
-        label: invoice.invoiceNumber ?? invoice.invoiceId.slice(0, 8),
+        label: invoice.number || invoice.invoiceId.slice(0, 8),
         status: invoice.status,
         link: resolveDocumentPath('INVOICE', invoice.invoiceId) ?? '#',
         meta: {

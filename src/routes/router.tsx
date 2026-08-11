@@ -12,12 +12,15 @@ import { VerifyEmailPage } from '@/features/auth/VerifyEmailPage';
 import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
-import { RequestDetailPage } from '@/features/requests/pages/RequestDetailPage';
-import { InboundRequestDetailPage } from '@/features/requests/pages/InboundRequestDetailPage';
-import { InboundRequestsPage } from '@/features/requests/pages/InboundRequestsPage';
+import { RequestDetailPage } from '@/features/requests/pages/requestDetailPage/RequestDetailPage';
+import {
+  InboundRequestDetailPage,
+} from '@/features/requests/pages/inboundRequestDetailPage/InboundRequestDetailPage';
+import { InboundRequestsPage } from '@/features/requests/pages/inboundRequestsPage/InboundRequestsPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import { InvoicesPage } from '@/features/invoices/pages/invoicesPage/InvoicesPage';
+import { InvoiceCreatePage } from '@/features/invoices/pages/invoiceCreatePage/InvoiceCreatePage';
 import { InvoiceDetailPage } from '@/features/invoices/pages/invoiceDetailPage/InvoiceDetailPage';
 import { PaymentsPage } from '@/features/payments/pages/PaymentsPage';
 import { PaymentDetailPage } from '@/features/payments/pages/PaymentDetailPage';
@@ -29,8 +32,8 @@ import { NotificationsPage } from '@/features/notifications/pages/NotificationsP
 import { TraceDetailPage } from '@/features/trace/pages/TraceDetailPage';
 import { TraceSearchPage } from '@/features/trace/pages/TraceSearchPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
-import { RequestLinesPage } from '@/features/requests/pages/RequestLinesPage';
-import { RequestNewPage } from '@/features/requests/pages/RequestNewPage';
+import { RequestLinesPage } from '@/features/requests/pages/requestLinesPage/RequestLinesPage';
+import { RequestNewPage } from '@/features/requests/pages/requestNewPage/RequestNewPage';
 import { RequestsPage } from '@/features/requests/pages/requestsPage/RequestsPage';
 import { MemberAccessPage } from '@/features/settings/pages/MemberAccessPage';
 import { TeamSettingsPage } from '@/features/settings/pages/TeamSettingsPage';
@@ -156,6 +159,7 @@ export const router = createBrowserRouter([
               { path: 'quotes', element: <QuotesPage /> },
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
               { path: 'invoices', element: <InvoicesPage /> },
+              { path: 'invoices/new', element: <InvoiceCreatePage /> },
               { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
               { path: 'payments', element: <PaymentsPage /> },
               { path: 'payments/:paymentId', element: <PaymentDetailPage /> },

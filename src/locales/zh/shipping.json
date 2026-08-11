@@ -93,6 +93,7 @@
     "buyer": "买方：{{name}}",
     "supplierInvoice": "发票",
     "request": "申请",
+    "requests": "申请",
     "trackingNumber": "跟踪：{{value}}",
     "carrier": "承运商：{{value}}",
     "issuedAt": "已开具 {{date}}",

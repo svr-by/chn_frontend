@@ -47,7 +47,7 @@ describe('buildLineagePipeline', () => {
           },
           status: 'ISSUED',
           currency: 'USD',
-          invoiceNumber: 'INV-001',
+          number: 'INV-001',
           line: {
             id: '00000000-0000-0000-0000-000000000111',
             lineNumber: 1,

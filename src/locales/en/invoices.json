@@ -42,6 +42,7 @@
     "editLine": "Edit",
     "deleteLine": "Delete",
     "save": "Save",
+    "cancel": "Cancel",
     "saveHeader": "Save details",
     "dismiss": "Dismiss",
     "backToList": "Back to invoices",
@@ -78,15 +79,18 @@
   },
   "filter": {
     "request": "Filtered by request {{id}}",
+    "requestHint": "Shows invoices that include any line linked to this request.",
     "clearRequest": "Clear filter"
   },
   "empty": {
     "list": "No invoices found.",
     "lines": "No lines yet. Add a line to continue.",
-    "billableLines": "No billable lines available."
+    "billableLines": "No billable lines available.",
+    "quotesForCurrency": "No accepted quotes found for this currency."
   },
   "form": {
     "invoiceNumber": "Invoice number",
+    "currency": "Currency",
     "notes": "Notes",
     "requestLine": "Request line",
     "maxQuantity": "Max quantity",
@@ -98,7 +102,11 @@
   },
   "create": {
     "title": "Create invoice",
-    "request": "Material request"
+    "subtitle": "Enter the invoice number and currency, add billable lines from accepted quotes, then save the draft.",
+    "quote": "Quote"
+  },
+  "validation": {
+    "minLines": "Add at least one line before saving."
   },
   "confirm": {
     "issueTitle": "Issue invoice",
@@ -114,6 +122,9 @@
     "supplier": "Supplier: {{name}}",
     "buyer": "Buyer: {{name}}",
     "request": "Request",
+    "requests": "Requests",
+    "requestGroup": "Request {{id}}",
+    "viewRequest": "Open request",
     "selection": "Selection",
     "issuedAt": "Issued {{date}}",
     "confirmedAt": "Confirmed {{date}}",
@@ -123,6 +134,7 @@
     "viewShipping": "View shipping invoices"
   },
   "toast": {
+    "created": "Invoice draft created",
     "updated": "Invoice updated",
     "issued": "Invoice issued",
     "confirmed": "Invoice confirmed",
@@ -130,6 +142,10 @@
     "lineUpdated": "Line updated",
     "lineDeleted": "Line deleted",
     "notFound": "Invoice not found",
-    "noBillableLines": "No billable lines available for this request."
+    "noBillableLines": "No billable lines available for this request.",
+    "mixedBuyer": "All lines must belong to the same buyer.",
+    "mixedCurrency": "All lines must use the same currency.",
+    "currencyClearedLines": "Lines were cleared because the currency changed.",
+    "linesInvalid": "Check line quantities and remove duplicates."
   }
 }

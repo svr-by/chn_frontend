@@ -121,7 +121,22 @@
     "open": "筛选",
     "apply": "应用",
     "reset": "重置",
-    "closeAriaLabel": "关闭筛选"
+    "closeAriaLabel": "关闭筛选",
+    "q": "搜索",
+    "priority": "优先级",
+    "priorityAll": "全部优先级",
+    "createdFrom": "创建自",
+    "createdTo": "创建至",
+    "sortBy": "排序",
+    "sortOrder": "顺序",
+    "sortDefault": "默认",
+    "sortCreatedAt": "创建日期",
+    "sortUpdatedAt": "更新日期",
+    "sortAsc": "升序",
+    "sortDesc": "降序",
+    "queueAll": "全部",
+    "queueCreatedByMe": "我创建的",
+    "queueAssignedToMe": "分配给我"
   },
   "empty": {
     "list": "未找到申请。",

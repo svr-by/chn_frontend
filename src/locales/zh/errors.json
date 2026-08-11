@@ -54,6 +54,8 @@
   "INVOICE_NOT_DRAFT": "此发票已非草稿状态。",
   "INVOICE_HAS_NO_LINES": "开具前请至少添加一行。",
   "INVOICE_LINE_QUANTITY_EXCEEDS_BILLABLE": "发票行数量超过可开票数量。",
+  "INVOICE_LINES_NOT_BILLABLE": "一行或多行不可开票（买方/货币不一致、数量无效或已开票）。",
+  "INVOICE_NUMBER_DUPLICATE_TODAY": "今天已使用过此发票号码。",
   "PAYMENT_AMOUNT_EXCEEDS_REMAINING": "付款金额超过发票剩余余额。",
   "PAYMENT_NOT_UPLOADED": "确认前请上传付款凭证。",
   "PAYMENT_ALREADY_CONFIRMED": "此付款已确认。",

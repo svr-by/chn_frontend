@@ -93,6 +93,7 @@
     "buyer": "Покупатель: {{name}}",
     "supplierInvoice": "Счёт",
     "request": "Заявка",
+    "requests": "Заявки",
     "trackingNumber": "Отслеживание: {{value}}",
     "carrier": "Перевозчик: {{value}}",
     "issuedAt": "Выставлен {{date}}",
