@@ -37,7 +37,7 @@ export function InvoiceCounterpartyAutocomplete({
       isOptionEqualToValue={(option, v) => option.company.id === v.company.id}
       loading={loading}
       clearOnEscape
-      sx={{ minWidth: 220 }}
+      sx={{ width: '100%', minWidth: 0 }}
       renderInput={(params) => (
         <TextField
           {...params}

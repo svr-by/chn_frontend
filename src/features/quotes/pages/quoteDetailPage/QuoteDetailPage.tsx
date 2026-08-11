@@ -15,7 +15,6 @@ import {
   useGetInboundRequestQuery,
   useGetRequestQuery,
 } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PermissionGate } from '@/components/PermissionGate';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
@@ -28,7 +27,6 @@ import {
   isQuoteLineSelectionAllowed,
   SUPPLIER_EDITABLE_QUOTE_STATUSES,
 } from '@/features/quotes/lib/quoteSelection';
-import { useCreateInvoiceFromQuote } from '@/features/invoices/hooks/useCreateInvoiceFromQuote';
 import { usePermissions } from '@/hooks/usePermissions';
 
 export function QuoteDetailPage() {
@@ -38,8 +36,6 @@ export function QuoteDetailPage() {
   const { quoteId } = useParams<{ quoteId: string }>();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const { hasPermission } = usePermissions();
-  const { createInvoiceFromQuote, isCreating: isCreatingInvoice, error: createInvoiceError } =
-    useCreateInvoiceFromQuote();
 
   const quoteQuery = useGetQuoteQuery(
     { companyId: companyId ?? '', quoteId: quoteId ?? '' },
@@ -169,14 +165,19 @@ export function QuoteDetailPage() {
               status={quote.status}
               hasSelections={hasSelections}
             />
-            {canCreateInvoice && materialRequestId ? (
+            {canCreateInvoice ? (
               <PermissionGate permission="manageInvoices">
                 <Button
                   variant="outlined"
                   startIcon={<ReceiptLongOutlinedIcon />}
-                  disabled={isCreatingInvoice}
                   onClick={() =>
-                    void createInvoiceFromQuote(materialRequestId, quote.id)
+                    navigate(
+                      `/app/invoices/new?quoteId=${quote.id}${
+                        materialRequestId
+                          ? `&requestId=${materialRequestId}`
+                          : ''
+                      }`,
+                    )
                   }
                 >
                   {t('actions.createInvoice')}
@@ -252,7 +253,6 @@ export function QuoteDetailPage() {
     >
       {quote && (isSupplier || isBuyer) ? (
         <Stack spacing={3}>
-          <ApiErrorAlert error={createInvoiceError} />
           <QuoteHeaderForm
             companyId={companyId}
             quote={quote}

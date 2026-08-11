@@ -4,6 +4,7 @@ import {
   buildInvoicesListQueryArgs,
   DEFAULT_INVOICES_FILTERS,
   clearCounterpartyOnDirectionChange,
+  countActiveInvoicesFilters,
 } from '@/features/invoices/lib/invoicesFilters';
 import {
   dateInputToIsoEndOfDay,
@@ -77,5 +78,38 @@ describe('invoicesFilters', () => {
 
     expect(next.counterpartyCompanyId).toBeNull();
     expect(next.status).toBe('ISSUED');
+  });
+
+  it('counts active filters', () => {
+    expect(countActiveInvoicesFilters(DEFAULT_INVOICES_FILTERS)).toBe(0);
+    expect(
+      countActiveInvoicesFilters({
+        ...DEFAULT_INVOICES_FILTERS,
+        status: 'ISSUED',
+        currency: 'USD',
+        number: ' INV-1 ',
+        createdFrom: '2026-01-01',
+      }),
+    ).toBe(4);
+  });
+
+  it('maps number filter to API number param', () => {
+    const args = buildInvoicesListQueryArgs({
+      companyId: 'company-1',
+      direction: 'inbound',
+      limit: 20,
+      offset: 0,
+      filters: {
+        ...DEFAULT_INVOICES_FILTERS,
+        number: ' INV-100 ',
+      },
+    });
+
+    expect(args).toEqual(
+      expect.objectContaining({
+        number: 'INV-100',
+      }),
+    );
+    expect(args).not.toHaveProperty('invoiceNumber');
   });
 });

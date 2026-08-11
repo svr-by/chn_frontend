@@ -24,12 +24,7 @@ export function QuotesFiltersForm({
   onChange,
 }: QuotesFiltersFormProps) {
   return (
-    <Stack
-      spacing={2}
-      direction={{ xs: 'column', sm: 'row' }}
-      alignItems={{ xs: 'stretch', sm: 'flex-end' }}
-      flexWrap="wrap"
-    >
+    <Stack spacing={2}>
       <QuoteStatusFilter
         value={filters.status}
         onChange={(status) => onChange({ ...filters, status })}

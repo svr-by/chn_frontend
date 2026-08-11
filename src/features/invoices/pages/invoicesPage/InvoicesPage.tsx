@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
+  Badge,
   Box,
   Button,
   CircularProgress,
+  Divider,
   IconButton,
   Stack,
   Tab,
   Tabs,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
@@ -21,13 +21,13 @@ import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ListPagination } from '@/components/ListPagination';
 import { PermissionGate } from '@/components/PermissionGate';
-import { InvoiceCreateDialog } from '@/features/invoices/components/InvoiceCreateDialog';
 import { InvoiceCard } from '@/features/invoices/components/invoiceCard/InvoiceCard';
 import { InvoicesFiltersPanel } from '@/features/invoices/components/invoicesFilters/InvoicesFiltersPanel';
 import {
   DEFAULT_INVOICES_FILTERS,
   clearCounterpartyOnDirectionChange,
   buildInvoicesListQueryArgs,
+  countActiveInvoicesFilters,
   type InvoicesFiltersValue,
 } from '@/features/invoices/lib/invoicesFilters';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -52,12 +52,9 @@ export function InvoicesPage() {
   const requestIdFilter = searchParams.get('requestId') ?? undefined;
 
   const tabIndex = direction === 'outbound' ? 1 : 0;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [pageIndex, setPageIndex] = useState(0);
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<InvoicesFiltersValue>({
     ...DEFAULT_INVOICES_FILTERS,
   });
@@ -119,69 +116,90 @@ export function InvoicesPage() {
 
   const invoices = listQuery.data?.invoices ?? [];
   const total = listQuery.data?.pagination.total ?? 0;
+  const activeFiltersCount = countActiveInvoicesFilters(appliedFilters);
 
   return (
     <PageShell maxWidth="xl" fillViewport>
       <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-        >
-          <Box>
-            <Typography variant="h5" component="h1">
-              {t('title')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('subtitle')}
-            </Typography>
-          </Box>
-          {direction === 'outbound' ? (
-            <PermissionGate permission="manageInvoices">
-              <Button variant="contained" onClick={() => setCreateOpen(true)}>
-                {t('actions.create')}
-              </Button>
-            </PermissionGate>
-          ) : null}
-        </Stack>
-
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            sx={{ flex: 1, minWidth: 0 }}
+        <Stack spacing={0}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
           >
-            <Tab label={t('tabs.inbound')} />
-            <Tab label={t('tabs.outbound')} />
-          </Tabs>
-          {isMobile ? (
+            <Box>
+              <Typography variant="h5" component="h1">
+                {t('title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('subtitle')}
+              </Typography>
+            </Box>
+            {direction === 'outbound' ? (
+              <PermissionGate permission="manageInvoices">
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    navigate(
+                      requestIdFilter
+                        ? `/app/invoices/new?requestId=${requestIdFilter}`
+                        : '/app/invoices/new',
+                    )
+                  }
+                >
+                  {t('actions.create')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </Stack>
+
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleTabChange}
+              sx={{ flex: 1, minWidth: 0 }}
+            >
+              <Tab label={t('tabs.inbound')} />
+              <Tab label={t('tabs.outbound')} />
+            </Tabs>
             <IconButton
               aria-label={t('filters.open')}
               onClick={() => setFiltersOpen(true)}
               sx={{ flexShrink: 0 }}
             >
-              <FilterListOutlinedIcon />
+              <Badge
+                badgeContent={activeFiltersCount}
+                color="primary"
+                invisible={activeFiltersCount === 0}
+              >
+                <FilterListOutlinedIcon />
+              </Badge>
             </IconButton>
-          ) : null}
+          </Stack>
         </Stack>
 
         {requestIdFilter ? (
-          <Stack direction="row" spacing={1} alignItems="center">
-            <Typography variant="body2" color="text.secondary">
-              {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
-            </Typography>
-            <Typography
-              component="button"
-              variant="body2"
-              onClick={clearRequestFilter}
-              sx={{
-                cursor: 'pointer',
-                border: 'none',
-                background: 'none',
-                color: 'primary.main',
-              }}
-            >
-              {t('filter.clearRequest')}
+          <Stack spacing={0.5}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Typography variant="body2" color="text.secondary">
+                {t('filter.request', { id: requestIdFilter.slice(0, 8) })}
+              </Typography>
+              <Typography
+                component="button"
+                variant="body2"
+                onClick={clearRequestFilter}
+                sx={{
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: 'none',
+                  color: 'primary.main',
+                }}
+              >
+                {t('filter.clearRequest')}
+              </Typography>
+            </Stack>
+            <Typography variant="caption" color="text.secondary">
+              {t('filter.requestHint')}
             </Typography>
           </Stack>
         ) : null}
@@ -194,7 +212,6 @@ export function InvoicesPage() {
           appliedFilters={appliedFilters}
           partners={activePartners}
           partnersLoading={partnersQuery.isLoading || partnersQuery.isFetching}
-          inline={!isMobile}
           drawerOpen={filtersOpen}
           onDrawerOpenChange={setFiltersOpen}
           onDraftChange={setDraftFilters}
@@ -204,6 +221,8 @@ export function InvoicesPage() {
             setAppliedFilters({ ...DEFAULT_INVOICES_FILTERS });
           }}
         />
+
+        <Divider />
 
         {listQuery.isLoading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
@@ -239,12 +258,6 @@ export function InvoicesPage() {
             />
           </Stack>
         )}
-
-        <InvoiceCreateDialog
-          open={createOpen}
-          onClose={() => setCreateOpen(false)}
-          initialRequestId={requestIdFilter}
-        />
       </Stack>
     </PageShell>
   );

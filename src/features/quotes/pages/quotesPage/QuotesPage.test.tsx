@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
@@ -49,6 +49,12 @@ const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
 const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
 
+async function openFilters(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<void> {
+  await user.click(screen.getByRole('button', { name: 'Filters' }));
+}
+
 describe('QuotesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -89,7 +95,9 @@ describe('QuotesPage', () => {
     } as ReturnType<typeof useListPartnersQuery>);
   });
 
-  it('renders inbound tab by default', () => {
+  it('renders inbound tab by default', async () => {
+    const user = userEvent.setup();
+
     renderWithProviders(
       <Routes>
         <Route path="/app/quotes" element={<QuotesPage />} />
@@ -100,16 +108,20 @@ describe('QuotesPage', () => {
       },
     );
 
-    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument();
     expect(screen.getByText('Acme Corp')).toBeInTheDocument();
     expect(screen.getByText('Draft')).toBeInTheDocument();
+
+    await openFilters(user);
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
     expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'inbound' }),
       expect.anything(),
     );
   });
 
-  it('opens outbound tab when preferred supplier role is stored', () => {
+  it('opens outbound tab when preferred supplier role is stored', async () => {
+    const user = userEvent.setup();
     writePreferredTradingRole('supplier');
 
     renderWithProviders(
@@ -122,14 +134,16 @@ describe('QuotesPage', () => {
       },
     );
 
-    expect(screen.getByLabelText('Buyer')).toBeInTheDocument();
     expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'outbound' }),
       expect.anything(),
     );
+    await openFilters(user);
+    expect(screen.getByLabelText('Buyer')).toBeInTheDocument();
   });
 
-  it('opens inbound tab when preferred buyer role is stored', () => {
+  it('opens inbound tab when preferred buyer role is stored', async () => {
+    const user = userEvent.setup();
     writePreferredTradingRole('buyer');
 
     renderWithProviders(
@@ -142,14 +156,16 @@ describe('QuotesPage', () => {
       },
     );
 
-    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
     expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'inbound' }),
       expect.anything(),
     );
+    await openFilters(user);
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
   });
 
-  it('keeps URL direction over stored preference', () => {
+  it('keeps URL direction over stored preference', async () => {
+    const user = userEvent.setup();
     writePreferredTradingRole('supplier');
 
     renderWithProviders(
@@ -162,11 +178,12 @@ describe('QuotesPage', () => {
       },
     );
 
-    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
     expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'inbound' }),
       expect.anything(),
     );
+    await openFilters(user);
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
   });
 
   it('switches to outbound tab', async () => {
@@ -183,6 +200,7 @@ describe('QuotesPage', () => {
     );
 
     await user.click(screen.getByRole('tab', { name: 'Outbound' }));
+    await openFilters(user);
 
     expect(await screen.findByLabelText('Buyer')).toBeInTheDocument();
     expect(mockedUseListQuotesQuery).toHaveBeenCalledWith(
@@ -205,6 +223,8 @@ describe('QuotesPage', () => {
       },
     );
 
+    await openFilters(user);
+
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled();
 
     await user.click(screen.getByLabelText('Status'));
@@ -222,5 +242,8 @@ describe('QuotesPage', () => {
       expect.objectContaining({ status: 'SUBMITTED' }),
       expect.anything(),
     );
+    expect(
+      within(screen.getByRole('button', { name: 'Filters' })).getByText('1'),
+    ).toBeInTheDocument();
   });
 });

@@ -57,8 +57,8 @@ interface InvoiceLineFormDialogProps {
   onClose: () => void;
   companyId: string;
   invoiceId: string;
-  materialRequestId: string;
-  quoteId?: string;
+  requestIds?: string[];
+  quoteIds?: string[];
   billableLines: BillableLine[];
   existingSelectionLineIds: string[];
   line?: InvoiceLine | null;
@@ -70,8 +70,8 @@ export function InvoiceLineFormDialog({
   onClose,
   companyId,
   invoiceId,
-  materialRequestId,
-  quoteId,
+  requestIds,
+  quoteIds,
   billableLines,
   existingSelectionLineIds,
   line,
@@ -170,8 +170,8 @@ export function InvoiceLineFormDialog({
     await addLine({
       companyId,
       invoiceId,
-      materialRequestId,
-      quoteId,
+      requestIds,
+      quoteIds,
       selectionLineId: values.selectionLineId,
       quantity: values.quantity,
       notes: values.notes || undefined,
@@ -199,8 +199,8 @@ export function InvoiceLineFormDialog({
       companyId,
       invoiceId,
       lineId: line.id,
-      materialRequestId,
-      quoteId,
+      requestIds,
+      quoteIds,
       quantity: values.quantity,
       notes: values.notes || null,
     }).unwrap();

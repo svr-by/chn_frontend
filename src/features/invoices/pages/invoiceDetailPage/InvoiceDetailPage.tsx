@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
 import { Button, Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,7 @@ import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTa
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
 import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
+import { requestIdsFromInvoiceLines } from '@/features/invoices/lib/invoicesFilters';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -45,7 +46,11 @@ export function InvoiceDetailPage() {
   );
 
   const invoice = invoiceQuery.data?.invoice;
-  const materialRequestId = invoice?.materialRequest?.id;
+  const requestIds = useMemo(
+    () => requestIdsFromInvoiceLines(invoice?.lines ?? []),
+    [invoice?.lines],
+  );
+  const primaryRequestId = requestIds[0];
   const isDraft = invoice?.status === 'DRAFT';
   const canEdit = isDraft && hasPermission('manageInvoices');
   const canRegisterPayment =
@@ -68,15 +73,16 @@ export function InvoiceDetailPage() {
 
   const { quoteId } = useSupplierQuoteForRequest(
     companyId ?? '',
-    materialRequestId,
+    primaryRequestId,
     canEdit,
   );
+  const quoteIds = quoteId ? [quoteId] : undefined;
 
   const billableQuery = useGetQuoteBillableLinesQuery(
     {
       companyId: companyId ?? '',
       quoteId: quoteId ?? '',
-      materialRequestId,
+      materialRequestId: primaryRequestId,
     },
     { skip: !companyId || !quoteId || !canEdit },
   );
@@ -96,8 +102,8 @@ export function InvoiceDetailPage() {
     return null;
   }
 
-  const title = invoice?.invoiceNumber
-    ? t('detail.titleWithNumber', { number: invoice.invoiceNumber })
+  const title = invoice?.number
+    ? t('detail.titleWithNumber', { number: invoice.number })
     : t('detail.fallbackTitle', { id: invoiceId.slice(0, 8) });
 
   return (
@@ -116,8 +122,8 @@ export function InvoiceDetailPage() {
             <InvoiceStatusActions
               companyId={companyId}
               invoiceId={invoice.id}
-              materialRequestId={materialRequestId}
-              quoteId={quoteId}
+              requestIds={requestIds}
+              quoteIds={quoteIds}
               status={invoice.status}
             />
             {canRegisterPayment ? (
@@ -155,16 +161,21 @@ export function InvoiceDetailPage() {
             <Typography variant="body2" color="text.secondary">
               {t('detail.buyer', { name: invoice.buyerCompany?.name ?? '—' })}
             </Typography>
-            {materialRequestId ? (
+            {requestIds.length > 0 ? (
               <Typography variant="body2" color="text.secondary">
-                {t('detail.request')}:{' '}
-                <Link
-                  component={RouterLink}
-                  to={`/app/requests/${materialRequestId}`}
-                  underline="hover"
-                >
-                  {invoice.materialRequest?.title ?? materialRequestId.slice(0, 8)}
-                </Link>
+                {t('detail.requests')}:{' '}
+                {requestIds.map((requestId, index) => (
+                  <span key={requestId}>
+                    {index > 0 ? ', ' : null}
+                    <Link
+                      component={RouterLink}
+                      to={`/app/requests/${requestId}`}
+                      underline="hover"
+                    >
+                      {requestId.slice(0, 8)}
+                    </Link>
+                  </span>
+                ))}
               </Typography>
             ) : null}
             <InvoiceAmountSummary
@@ -230,13 +241,13 @@ export function InvoiceDetailPage() {
                     companyId={companyId}
                     invoice={invoice}
                     editable={canEdit}
-                    quoteId={quoteId}
+                    quoteIds={quoteIds}
                   />
                   <InvoiceLinesTable
                     companyId={companyId}
                     invoiceId={invoice.id}
-                    materialRequestId={materialRequestId ?? ''}
-                    quoteId={quoteId}
+                    requestIds={requestIds}
+                    quoteIds={quoteIds}
                     currency={invoice.currency}
                     lines={invoice.lines}
                     billableLines={billableQuery.data?.lines ?? []}

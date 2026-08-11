@@ -16,7 +16,7 @@ export function InvoiceCurrencyFilter({
   const currencyOptions = currencySelectOptions(value);
 
   return (
-    <FormControl size="small" sx={{ minWidth: 160 }}>
+    <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
       <InputLabel id="invoice-currency-filter">{t('filters.currency')}</InputLabel>
       <Select
         labelId="invoice-currency-filter"

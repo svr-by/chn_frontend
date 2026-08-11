@@ -9,9 +9,10 @@ import { z } from 'zod';
 import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
 import { useUpdateInvoiceMutation } from '@/api/endpoints/invoicesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { requestIdsFromInvoiceLines } from '@/features/invoices/lib/invoicesFilters';
 
 const headerSchema = z.object({
-  invoiceNumber: z.string().trim().optional(),
+  number: z.string().trim().min(1),
   notes: z.string().trim().optional(),
 });
 
@@ -21,14 +22,14 @@ interface InvoiceHeaderFormProps {
   companyId: string;
   invoice: SupplierInvoice;
   editable: boolean;
-  quoteId?: string;
+  quoteIds?: string[];
 }
 
 export function InvoiceHeaderForm({
   companyId,
   invoice,
   editable,
-  quoteId,
+  quoteIds,
 }: InvoiceHeaderFormProps) {
   const { t } = useTranslation('invoices');
   const { enqueueSnackbar } = useSnackbar();
@@ -39,18 +40,18 @@ export function InvoiceHeaderForm({
     register,
     handleSubmit,
     reset,
-    formState: { isDirty },
+    formState: { isDirty, errors },
   } = useForm<HeaderFormValues>({
     resolver: zodResolver(headerSchema),
     defaultValues: {
-      invoiceNumber: invoice.invoiceNumber ?? '',
+      number: invoice.number ?? '',
       notes: invoice.notes ?? '',
     },
   });
 
   useEffect(() => {
     reset({
-      invoiceNumber: invoice.invoiceNumber ?? '',
+      number: invoice.number ?? '',
       notes: invoice.notes ?? '',
     });
   }, [invoice, reset]);
@@ -59,9 +60,9 @@ export function InvoiceHeaderForm({
     await updateInvoice({
       companyId,
       invoiceId: invoice.id,
-      materialRequestId: invoice.materialRequest?.id,
-      quoteId,
-      invoiceNumber: values.invoiceNumber || null,
+      requestIds: requestIdsFromInvoiceLines(invoice.lines),
+      quoteIds,
+      number: values.number,
       notes: values.notes || null,
     }).unwrap();
 
@@ -71,11 +72,9 @@ export function InvoiceHeaderForm({
   if (!editable) {
     return (
       <Stack spacing={1}>
-        {invoice.invoiceNumber ? (
-          <Box>
-            <strong>{t('form.invoiceNumber')}:</strong> {invoice.invoiceNumber}
-          </Box>
-        ) : null}
+        <Box>
+          <strong>{t('form.invoiceNumber')}:</strong> {invoice.number}
+        </Box>
         {invoice.notes ? (
           <Box>
             <strong>{t('form.notes')}:</strong> {invoice.notes}
@@ -92,7 +91,9 @@ export function InvoiceHeaderForm({
         <TextField
           label={t('form.invoiceNumber')}
           fullWidth
-          {...register('invoiceNumber')}
+          error={Boolean(errors.number)}
+          helperText={errors.number?.message}
+          {...register('number')}
         />
         <TextField
           label={t('form.notes')}

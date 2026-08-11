@@ -25,12 +25,7 @@ export function InvoicesFiltersForm({
   onChange,
 }: InvoicesFiltersFormProps) {
   return (
-    <Stack
-      spacing={2}
-      direction={{ xs: 'column', sm: 'row' }}
-      alignItems={{ xs: 'stretch', sm: 'flex-end' }}
-      flexWrap="wrap"
-    >
+    <Stack spacing={2}>
       <InvoiceStatusFilter
         value={filters.status}
         onChange={(status) => onChange({ ...filters, status })}
@@ -52,8 +47,8 @@ export function InvoicesFiltersForm({
       />
 
       <InvoiceNumberFilter
-        value={filters.invoiceNumber}
-        onChange={(invoiceNumber) => onChange({ ...filters, invoiceNumber })}
+        value={filters.number}
+        onChange={(number) => onChange({ ...filters, number })}
       />
 
       <InvoiceCreatedDateRangeFilter

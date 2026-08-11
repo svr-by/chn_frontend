@@ -21,16 +21,16 @@ import { PermissionGate } from '@/components/PermissionGate';
 interface InvoiceStatusActionsProps {
   companyId: string;
   invoiceId: string;
-  materialRequestId?: string;
-  quoteId?: string;
+  requestIds?: string[];
+  quoteIds?: string[];
   status: SupplierInvoiceStatus;
 }
 
 export function InvoiceStatusActions({
   companyId,
   invoiceId,
-  materialRequestId,
-  quoteId,
+  requestIds,
+  quoteIds,
   status,
 }: InvoiceStatusActionsProps) {
   const { t } = useTranslation('invoices');
@@ -49,8 +49,8 @@ export function InvoiceStatusActions({
     await issueInvoice({
       companyId,
       invoiceId,
-      materialRequestId,
-      quoteId,
+      requestIds,
+      quoteIds,
     }).unwrap();
     enqueueSnackbar(t('toast.issued'), { variant: 'success' });
     setIssueOpen(false);
@@ -60,8 +60,8 @@ export function InvoiceStatusActions({
     await confirmInvoice({
       companyId,
       invoiceId,
-      materialRequestId,
-      quoteId,
+      requestIds,
+      quoteIds,
     }).unwrap();
     enqueueSnackbar(t('toast.confirmed'), { variant: 'success' });
     setConfirmOpen(false);

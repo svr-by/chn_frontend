@@ -60,8 +60,8 @@ describe('InvoiceStatusActions', () => {
       <InvoiceStatusActions
         companyId={COMPANY_ID}
         invoiceId={INVOICE_ID}
-        materialRequestId={REQUEST_ID}
-        quoteId={QUOTE_ID}
+        requestIds={[REQUEST_ID]}
+        quoteIds={[QUOTE_ID]}
         status="DRAFT"
       />,
       {
@@ -77,8 +77,8 @@ describe('InvoiceStatusActions', () => {
       <InvoiceStatusActions
         companyId={COMPANY_ID}
         invoiceId={INVOICE_ID}
-        materialRequestId={REQUEST_ID}
-        quoteId={QUOTE_ID}
+        requestIds={[REQUEST_ID]}
+        quoteIds={[QUOTE_ID]}
         status="PAID"
       />,
       {

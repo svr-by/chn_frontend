@@ -19,8 +19,12 @@ export function InvoiceNumberFilter({
       placeholder={t('filters.placeholders.invoiceNumber')}
       value={value}
       onChange={(event) => onChange(event.target.value)}
-      sx={{ minWidth: 180 }}
-      inputProps={{ autoComplete: 'off' }}
+      sx={{ width: '100%', minWidth: 0 }}
+      slotProps={{
+        input: {
+          autoComplete: 'off',
+        },
+      }}
     />
   );
 }

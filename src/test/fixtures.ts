@@ -563,6 +563,7 @@ export function createInvoiceLine(
     },
     requestLine: {
       id: REQUEST_LINE_ID,
+      requestId: REQUEST_ID,
       description: 'Bolt M8',
       quantity: '100',
       unit: 'pcs',
@@ -585,7 +586,7 @@ export function createSupplierInvoice(
     },
     status: 'DRAFT',
     currency: 'USD',
-    invoiceNumber: null,
+    number: 'INV-001',
     notes: null,
     issuedAt: null,
     confirmedAt: null,
@@ -594,11 +595,6 @@ export function createSupplierInvoice(
     remainingAmount: '10.00',
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
-    materialRequest: {
-      id: REQUEST_ID,
-      title: 'Office supplies',
-      status: 'QUOTING',
-    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Co',
@@ -620,16 +616,11 @@ export function createSupplierInvoiceSummary(
     id: INVOICE_ID,
     status: 'DRAFT',
     currency: 'USD',
-    invoiceNumber: null,
+    number: 'INV-001',
     issuedAt: null,
     confirmedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
-    materialRequest: {
-      id: REQUEST_ID,
-      title: 'Office supplies',
-      status: 'QUOTING',
-    },
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Co',
@@ -723,6 +714,7 @@ export function createShippableLine(
     remainingQuantity: '10',
     requestLine: {
       id: REQUEST_LINE_ID,
+      requestId: REQUEST_ID,
       description: 'Bolt M8',
       quantity: '100',
       unit: 'pcs',
@@ -749,6 +741,7 @@ export function createShippingLine(
     },
     requestLine: {
       id: REQUEST_LINE_ID,
+      requestId: REQUEST_ID,
       description: 'Bolt M8',
       quantity: '100',
       unit: 'pcs',
@@ -766,7 +759,6 @@ export function createShippingInvoice(
   return {
     id: SHIPPING_INVOICE_ID,
     supplierInvoiceId: INVOICE_ID,
-    materialRequestId: REQUEST_ID,
     buyerCompanyId: BUYER_COMPANY_ID,
     supplierCompanyId: SUPPLIER_COMPANY_ID,
     managedByCompanyId: SUPPLIER_COMPANY_ID,
@@ -795,7 +787,7 @@ export function createShippingInvoice(
     supplierInvoice: {
       id: INVOICE_ID,
       status: 'ISSUED',
-      invoiceNumber: 'INV-001',
+      number: 'INV-001',
     },
     lines: [createShippingLine()],
     ...overrides,
@@ -809,7 +801,6 @@ export function createShippingInvoiceSummary(
     id: SHIPPING_INVOICE_ID,
     status: 'DRAFT',
     supplierInvoiceId: INVOICE_ID,
-    materialRequestId: REQUEST_ID,
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Co',
@@ -848,7 +839,6 @@ export function createConsolidationShippingInvoiceEntry(
     shippingInvoice: {
       id: shippingInvoice.id,
       status: shippingInvoice.status,
-      materialRequestId: shippingInvoice.materialRequestId,
       supplierCompanyId: shippingInvoice.supplierCompanyId,
       supplierCompany: shippingInvoice.supplierCompany,
       trackingNumber: shippingInvoice.trackingNumber,

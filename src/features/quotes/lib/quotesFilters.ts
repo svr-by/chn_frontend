@@ -94,3 +94,13 @@ export function areQuotesFiltersEqual(
   );
 }
 
+export function countActiveQuotesFilters(filters: QuotesFiltersValue): number {
+  let count = 0;
+  if (filters.status !== DEFAULT_QUOTES_FILTERS.status) count += 1;
+  if (filters.counterpartyCompanyId != null) count += 1;
+  if (filters.currency != null) count += 1;
+  if (filters.createdFrom !== '') count += 1;
+  if (filters.createdTo !== '') count += 1;
+  return count;
+}
+

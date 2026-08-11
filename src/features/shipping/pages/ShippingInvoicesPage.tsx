@@ -101,11 +101,6 @@ export function ShippingInvoicesPage() {
         Cell: ({ row }) => row.original.supplierInvoiceId.slice(0, 8),
       },
       {
-        id: 'request',
-        header: t('columns.request'),
-        Cell: ({ row }) => row.original.materialRequestId.slice(0, 8),
-      },
-      {
         accessorKey: 'status',
         header: t('columns.status'),
         Cell: ({ cell }) => (

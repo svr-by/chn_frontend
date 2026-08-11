@@ -127,19 +127,39 @@ export function ShippingInvoiceDetailPage() {
                 to={`/app/invoices/${shippingInvoice.supplierInvoiceId}`}
                 underline="hover"
               >
-                {shippingInvoice.supplierInvoiceId.slice(0, 8)}
+                {shippingInvoice.supplierInvoice?.number ??
+                  shippingInvoice.supplierInvoiceId.slice(0, 8)}
               </Link>
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('detail.request')}:{' '}
-              <Link
-                component={RouterLink}
-                to={`/app/requests/${shippingInvoice.materialRequestId}`}
-                underline="hover"
-              >
-                {shippingInvoice.materialRequestId.slice(0, 8)}
-              </Link>
-            </Typography>
+            {(() => {
+              const requestIds = [
+                ...new Set(
+                  shippingInvoice.lines
+                    .map((line) => line.requestLine?.requestId)
+                    .filter((id): id is string => Boolean(id)),
+                ),
+              ];
+              if (requestIds.length === 0) {
+                return null;
+              }
+              return (
+                <Typography variant="body2" color="text.secondary">
+                  {t('detail.requests')}:{' '}
+                  {requestIds.map((requestId, index) => (
+                    <span key={requestId}>
+                      {index > 0 ? ', ' : null}
+                      <Link
+                        component={RouterLink}
+                        to={`/app/requests/${requestId}`}
+                        underline="hover"
+                      >
+                        {requestId.slice(0, 8)}
+                      </Link>
+                    </span>
+                  ))}
+                </Typography>
+              );
+            })()}
             {shippingInvoice.trackingNumber ? (
               <Typography variant="body2" color="text.secondary">
                 {t('detail.trackingNumber', {

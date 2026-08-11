@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
+  Badge,
   Box,
   CircularProgress,
   IconButton,
@@ -8,9 +9,7 @@ import {
   Tab,
   Tabs,
   Typography,
-  useMediaQuery,
 } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +26,7 @@ import {
   DEFAULT_QUOTES_FILTERS,
   clearCounterpartyOnDirectionChange,
   buildQuotesListQueryArgs,
+  countActiveQuotesFilters,
   type QuotesFiltersValue,
 } from '@/features/quotes/lib/quotesFilters';
 import { PageShell } from '@/layouts/PageShell';
@@ -47,8 +47,6 @@ export function QuotesPage() {
   });
 
   const tabIndex = direction === 'outbound' ? 1 : 0;
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const [pageIndex, setPageIndex] = useState(0);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -106,37 +104,44 @@ export function QuotesPage() {
 
   const quotes = listQuery.data?.quotes ?? [];
   const total = listQuery.data?.pagination.total ?? 0;
+  const activeFiltersCount = countActiveQuotesFilters(appliedFilters);
 
   return (
     <PageShell maxWidth="xl" fillViewport>
       <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
-        <Box>
-          <Typography variant="h5" component="h1">
-            {t('title')}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {t('subtitle')}
-          </Typography>
-        </Box>
+        <Stack spacing={0}>
+          <Box>
+            <Typography variant="h5" component="h1">
+              {t('title')}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {t('subtitle')}
+            </Typography>
+          </Box>
 
-        <Stack direction="row" alignItems="center" spacing={1}>
-          <Tabs
-            value={tabIndex}
-            onChange={handleTabChange}
-            sx={{ flex: 1, minWidth: 0 }}
-          >
-            <Tab label={t('tabs.inbound')} />
-            <Tab label={t('tabs.outbound')} />
-          </Tabs>
-          {isMobile ? (
+          <Stack direction="row" alignItems="center" spacing={1}>
+            <Tabs
+              value={tabIndex}
+              onChange={handleTabChange}
+              sx={{ flex: 1, minWidth: 0 }}
+            >
+              <Tab label={t('tabs.inbound')} />
+              <Tab label={t('tabs.outbound')} />
+            </Tabs>
             <IconButton
               aria-label={t('filters.open')}
               onClick={() => setFiltersOpen(true)}
               sx={{ flexShrink: 0 }}
             >
-              <FilterListOutlinedIcon />
+              <Badge
+                badgeContent={activeFiltersCount}
+                color="primary"
+                invisible={activeFiltersCount === 0}
+              >
+                <FilterListOutlinedIcon />
+              </Badge>
             </IconButton>
-          ) : null}
+          </Stack>
         </Stack>
 
         <ApiErrorAlert error={listQuery.error} />
@@ -147,7 +152,6 @@ export function QuotesPage() {
           appliedFilters={appliedFilters}
           partners={activePartners}
           partnersLoading={partnersQuery.isLoading || partnersQuery.isFetching}
-          inline={!isMobile}
           drawerOpen={filtersOpen}
           onDrawerOpenChange={setFiltersOpen}
           onDraftChange={setDraftFilters}

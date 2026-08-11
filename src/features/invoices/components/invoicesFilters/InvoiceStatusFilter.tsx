@@ -16,7 +16,7 @@ export function InvoiceStatusFilter({
   const { t } = useTranslation('invoices');
 
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
+    <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
       <InputLabel id="invoice-status-filter">{t('statusFilter.label')}</InputLabel>
       <Select
         labelId="invoice-status-filter"

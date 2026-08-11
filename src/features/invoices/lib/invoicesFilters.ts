@@ -15,7 +15,8 @@ export type InvoicesFiltersValue = {
    */
   counterpartyCompanyId: string | null;
   currency: string | null;
-  invoiceNumber: string;
+  /** Document number filter (API query param `number`). */
+  number: string;
   /**
    * Local date input values in format: YYYY-MM-DD
    * (empty string means "not set").
@@ -28,7 +29,7 @@ export const DEFAULT_INVOICES_FILTERS: InvoicesFiltersValue = {
   status: 'ALL',
   counterpartyCompanyId: null,
   currency: null,
-  invoiceNumber: '',
+  number: '',
   createdFrom: '',
   createdTo: '',
 };
@@ -52,7 +53,7 @@ export function buildInvoicesListQueryArgs({
   filters: InvoicesFiltersValue;
   requestId?: string;
 }): { companyId: string } & GetCompaniesCompanyIdInvoicesParams {
-  const trimmedInvoiceNumber = filters.invoiceNumber.trim();
+  const trimmedNumber = filters.number.trim();
 
   const params: GetCompaniesCompanyIdInvoicesParams = {
     limit,
@@ -66,7 +67,7 @@ export function buildInvoicesListQueryArgs({
         : { buyerCompanyId: filters.counterpartyCompanyId }
       : {}),
     ...(filters.currency ? { currency: filters.currency } : {}),
-    ...(trimmedInvoiceNumber ? { invoiceNumber: trimmedInvoiceNumber } : {}),
+    ...(trimmedNumber ? { number: trimmedNumber } : {}),
     ...(filters.createdFrom
       ? { createdFrom: dateInputToIsoStartOfDay(filters.createdFrom) }
       : {}),
@@ -94,8 +95,33 @@ export function areInvoicesFiltersEqual(
     a.status === b.status &&
     a.counterpartyCompanyId === b.counterpartyCompanyId &&
     a.currency === b.currency &&
-    a.invoiceNumber === b.invoiceNumber &&
+    a.number === b.number &&
     a.createdFrom === b.createdFrom &&
     a.createdTo === b.createdTo
   );
+}
+
+export function countActiveInvoicesFilters(
+  filters: InvoicesFiltersValue,
+): number {
+  let count = 0;
+  if (filters.status !== DEFAULT_INVOICES_FILTERS.status) count += 1;
+  if (filters.counterpartyCompanyId != null) count += 1;
+  if (filters.currency != null) count += 1;
+  if (filters.number.trim() !== '') count += 1;
+  if (filters.createdFrom !== '') count += 1;
+  if (filters.createdTo !== '') count += 1;
+  return count;
+}
+
+export function requestIdsFromInvoiceLines(
+  lines: Array<{ requestLine?: { requestId?: string } | null }>,
+): string[] {
+  return [
+    ...new Set(
+      lines
+        .map((line) => line.requestLine?.requestId)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
 }

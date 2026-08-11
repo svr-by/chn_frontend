@@ -86,7 +86,7 @@ export function ShippingInvoiceCreateDialog({
             >
               {shippableInvoices.map((invoice) => (
                 <MenuItem key={invoice.id} value={invoice.id}>
-                  {invoice.invoiceNumber ??
+                  {invoice.number ||
                     `${t('create.invoiceFallback', { id: invoice.id.slice(0, 8) })}`}
                 </MenuItem>
               ))}

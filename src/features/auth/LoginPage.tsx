@@ -54,9 +54,9 @@ export function LoginPage() {
       );
       dispatch(setActiveCompanyId(resolvedCompanyId));
 
-      if (!isEmailVerified(me.user)) {
-        enqueueSnackbar(t('loginUnverified'), { variant: 'warning' });
-      }
+      // if (!isEmailVerified(me.user)) {
+      //   enqueueSnackbar(t('loginUnverified'), { variant: 'warning' });
+      // }
 
       enqueueSnackbar(t('loginSuccess'), { variant: 'success' });
       navigate(resolveAuthenticatedRedirect(me.user));

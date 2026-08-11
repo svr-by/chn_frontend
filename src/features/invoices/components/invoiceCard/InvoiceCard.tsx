@@ -24,11 +24,7 @@ export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
     ? (invoice.buyerCompany?.name ?? '—')
     : (invoice.supplierCompany?.name ?? '—');
 
-  const invoiceNumberText = invoice.invoiceNumber ?? '—';
-  const requestText =
-    invoice.materialRequest?.title ??
-    invoice.materialRequest?.id?.slice(0, 8) ??
-    '—';
+  const numberText = invoice.number || '—';
   const createdAtText = formatDateTime(invoice.createdAt);
   const issuedAtText = formatDateTime(invoice.issuedAt);
 
@@ -72,11 +68,7 @@ export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
           </Typography>
 
           <Typography variant="body2" color="text.secondary" noWrap>
-            {`${t('columns.invoiceNumber')}: ${invoiceNumberText} · ${invoice.currency}`}
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {t('columns.request')}: {requestText}
+            {`${t('columns.invoiceNumber')}: ${numberText} · ${invoice.currency}`}
           </Typography>
 
           <Typography variant="body2" color="text.secondary">

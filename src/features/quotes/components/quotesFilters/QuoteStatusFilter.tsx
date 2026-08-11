@@ -16,7 +16,7 @@ export function QuoteStatusFilter({
   const { t } = useTranslation('quotes');
 
   return (
-    <FormControl size="small" sx={{ minWidth: 200 }}>
+    <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
       <InputLabel id="quote-status-filter">{t('statusFilter.label')}</InputLabel>
       <Select
         labelId="quote-status-filter"

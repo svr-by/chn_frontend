@@ -15,7 +15,13 @@ export function InvoiceCreatedDateRangeFilter({
   const { t } = useTranslation('invoices');
 
   return (
-    <Stack direction="row" spacing={1} alignItems="center">
+    <Stack
+      direction="row"
+      spacing={1}
+      alignItems="center"
+      useFlexGap
+      sx={{ width: '100%', flexWrap: 'nowrap', minWidth: 0 }}
+    >
       <TextField
         label={t('filters.createdFrom')}
         type="date"
@@ -25,7 +31,7 @@ export function InvoiceCreatedDateRangeFilter({
         onChange={(event) => {
           onChange({ createdFrom: event.target.value, createdTo });
         }}
-        sx={{ width: 160 }}
+        sx={{ flex: 1, minWidth: 0 }}
       />
       <TextField
         label={t('filters.createdTo')}
@@ -36,7 +42,7 @@ export function InvoiceCreatedDateRangeFilter({
         onChange={(event) => {
           onChange({ createdFrom, createdTo: event.target.value });
         }}
-        sx={{ width: 160 }}
+        sx={{ flex: 1, minWidth: 0 }}
       />
     </Stack>
   );

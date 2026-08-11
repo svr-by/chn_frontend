@@ -21,6 +21,7 @@ export interface FiltersDrawerProps {
   onReset: () => void;
   children: ReactNode;
   width?: { xs?: string | number; sm?: string | number };
+  applyDisabled?: boolean;
 }
 
 export function FiltersDrawer({
@@ -34,6 +35,7 @@ export function FiltersDrawer({
   onReset,
   children,
   width = { xs: '100%', sm: 420 },
+  applyDisabled = false,
 }: FiltersDrawerProps) {
   return (
     <Drawer
@@ -64,7 +66,11 @@ export function FiltersDrawer({
         <Box sx={{ flex: 1 }} />
         <Stack direction="row" spacing={1} justifyContent="flex-end">
           <Button onClick={onReset}>{resetLabel}</Button>
-          <Button variant="contained" onClick={onApply}>
+          <Button
+            variant="contained"
+            onClick={onApply}
+            disabled={applyDisabled}
+          >
             {applyLabel}
           </Button>
         </Stack>

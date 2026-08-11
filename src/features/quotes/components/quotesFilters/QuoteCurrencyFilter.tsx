@@ -16,7 +16,7 @@ export function QuoteCurrencyFilter({
   const currencyOptions = currencySelectOptions(value);
 
   return (
-    <FormControl size="small" sx={{ minWidth: 160 }}>
+    <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
       <InputLabel id="quote-currency-filter">{t('filters.currency')}</InputLabel>
       <Select
         labelId="quote-currency-filter"

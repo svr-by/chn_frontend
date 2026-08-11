@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
@@ -47,6 +47,12 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
 const mockedUseListInvoicesQuery = vi.mocked(useListInvoicesQuery);
 const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
 
+async function openFilters(
+  user: ReturnType<typeof userEvent.setup>,
+): Promise<void> {
+  await user.click(screen.getByRole('button', { name: 'Filters' }));
+}
+
 describe('InvoicesPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -71,7 +77,9 @@ describe('InvoicesPage', () => {
     } as ReturnType<typeof useListPartnersQuery>);
   });
 
-  it('renders inbound tab by default', () => {
+  it('renders inbound tab by default', async () => {
+    const user = userEvent.setup();
+
     renderWithProviders(
       <Routes>
         <Route path="/app/invoices" element={<InvoicesPage />} />
@@ -83,9 +91,12 @@ describe('InvoicesPage', () => {
     );
 
     expect(screen.getByText('Invoices')).toBeInTheDocument();
-    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument();
     expect(screen.getByText('Supplier A')).toBeInTheDocument();
     expect(screen.getByText('Draft')).toBeInTheDocument();
+
+    await openFilters(user);
+    expect(screen.getByLabelText('Supplier')).toBeInTheDocument();
     expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
       expect.objectContaining({ direction: 'inbound' }),
       expect.anything(),
@@ -126,6 +137,7 @@ describe('InvoicesPage', () => {
     );
 
     await user.click(screen.getByRole('tab', { name: 'Outbound' }));
+    await openFilters(user);
 
     expect(await screen.findByLabelText('Buyer')).toBeInTheDocument();
     expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
@@ -147,6 +159,8 @@ describe('InvoicesPage', () => {
       },
     );
 
+    await openFilters(user);
+
     expect(screen.getByRole('button', { name: 'Apply' })).toBeDisabled();
 
     await user.click(screen.getByLabelText('Status'));
@@ -164,9 +178,12 @@ describe('InvoicesPage', () => {
       expect.objectContaining({ status: 'ISSUED' }),
       expect.anything(),
     );
+    expect(
+      within(screen.getByRole('button', { name: 'Filters' })).getByText('1'),
+    ).toBeInTheDocument();
   });
 
-  it('applies invoiceNumber filter after Apply', async () => {
+  it('applies number filter after Apply', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(
@@ -179,11 +196,12 @@ describe('InvoicesPage', () => {
       },
     );
 
+    await openFilters(user);
     await user.type(screen.getByLabelText('Invoice #'), 'INV-100');
     await user.click(screen.getByRole('button', { name: 'Apply' }));
 
     expect(mockedUseListInvoicesQuery).toHaveBeenCalledWith(
-      expect.objectContaining({ invoiceNumber: 'INV-100' }),
+      expect.objectContaining({ number: 'INV-100' }),
       expect.anything(),
     );
   });

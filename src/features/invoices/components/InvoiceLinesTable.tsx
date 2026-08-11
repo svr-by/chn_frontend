@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import {
   Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
+  Link,
   Stack,
   Typography,
 } from '@mui/material';
@@ -26,8 +28,8 @@ import { InvoiceLineFormDialog } from '@/features/invoices/components/InvoiceLin
 interface InvoiceLinesTableProps {
   companyId: string;
   invoiceId: string;
-  materialRequestId: string;
-  quoteId?: string;
+  requestIds?: string[];
+  quoteIds?: string[];
   currency: string;
   lines: InvoiceLine[];
   billableLines: BillableLine[];
@@ -37,8 +39,8 @@ interface InvoiceLinesTableProps {
 export function InvoiceLinesTable({
   companyId,
   invoiceId,
-  materialRequestId,
-  quoteId,
+  requestIds,
+  quoteIds,
   currency,
   lines,
   billableLines,
@@ -66,6 +68,26 @@ export function InvoiceLinesTable({
         accessorKey: 'lineNumber',
         header: t('columns.lineNumber'),
         size: 60,
+      },
+      {
+        id: 'request',
+        header: t('columns.request'),
+        Cell: ({ row }) => {
+          const requestId = row.original.requestLine?.requestId;
+          if (!requestId) {
+            return '—';
+          }
+          return (
+            <Link
+              component={RouterLink}
+              to={`/app/requests/${requestId}`}
+              underline="hover"
+            >
+              {requestId.slice(0, 8)}
+            </Link>
+          );
+        },
+        size: 100,
       },
       {
         id: 'requestLine',
@@ -149,8 +171,8 @@ export function InvoiceLinesTable({
       companyId,
       invoiceId,
       lineId: lineToDelete.id,
-      materialRequestId,
-      quoteId,
+      requestIds,
+      quoteIds,
     }).unwrap();
 
     enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
@@ -191,8 +213,8 @@ export function InvoiceLinesTable({
         }}
         companyId={companyId}
         invoiceId={invoiceId}
-        materialRequestId={materialRequestId}
-        quoteId={quoteId}
+        requestIds={requestIds}
+        quoteIds={quoteIds}
         billableLines={billableLines}
         existingSelectionLineIds={existingSelectionLineIds}
         line={editingLine}
