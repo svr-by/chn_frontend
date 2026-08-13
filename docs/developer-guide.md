@@ -96,7 +96,7 @@ chn_frontend/
 │   ├── components/            # Shared UI
 │   ├── features/              # Pages by domain
 │   ├── hooks/
-│   ├── layouts/               # AuthLayout, AppLayout
+│   ├── layouts/               # appLayout, authLayout, pageShell, documentDetailLayout
 │   ├── lib/                   # Utilities
 │   ├── routes/                # Guards, AuthBootstrap
 │   ├── store/slices/          # authSlice, etc.

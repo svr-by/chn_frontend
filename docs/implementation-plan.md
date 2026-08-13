@@ -73,7 +73,7 @@ src/
 ├── api/           # baseApi, generated/, endpoints/
 ├── app/           # store, router, theme, i18n
 ├── features/      # pages by domain
-├── layouts/       # AuthLayout, AppLayout, DocumentDetailLayout
+├── layouts/       # appLayout, authLayout, pageShell, documentDetailLayout
 ├── components/    # shared UI
 ├── lib/           # decimal, authStorage, permissions, navConfig
 ├── routes/        # guards, AuthBootstrap
