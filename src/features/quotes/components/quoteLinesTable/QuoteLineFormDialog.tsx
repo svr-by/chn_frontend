@@ -205,8 +205,8 @@ export function QuoteLineFormDialog({
       leadTime:
         line?.leadTime != null && line.leadTimeUnit
           ? String(line.leadTime)
-          : '',
-      leadTimeUnit: line?.leadTimeUnit ?? '',
+          : '1',
+      leadTimeUnit: line?.leadTimeUnit ?? PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.WEEK,
       notes: line?.notes ?? '',
     });
   }, [

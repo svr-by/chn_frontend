@@ -31,5 +31,9 @@ export function useQuoteHeaderSave(companyId: string, quote: SupplierQuote) {
     ],
   );
 
-  return { save, error: updateState.error };
+  return {
+    save,
+    error: updateState.error,
+    isLoading: updateState.isLoading,
+  };
 }

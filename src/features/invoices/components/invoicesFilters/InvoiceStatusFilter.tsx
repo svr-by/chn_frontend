@@ -1,19 +1,23 @@
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import type { GetCompaniesCompanyIdInvoicesDirection } from '@/api/generated/models/getCompaniesCompanyIdInvoicesDirection';
 import type { SupplierInvoiceSummaryStatus } from '@/api/generated/models/supplierInvoiceSummaryStatus';
 import { useTranslation } from 'react-i18next';
 
-import { INVOICE_STATUS_OPTIONS } from '@/features/invoices/lib/invoicesFilters';
+import { getInvoiceStatusOptions } from '@/features/invoices/lib/invoicesFilters';
 
 interface InvoiceStatusFilterProps {
+  direction: GetCompaniesCompanyIdInvoicesDirection;
   value: SupplierInvoiceSummaryStatus | 'ALL';
   onChange: (next: SupplierInvoiceSummaryStatus | 'ALL') => void;
 }
 
 export function InvoiceStatusFilter({
+  direction,
   value,
   onChange,
 }: InvoiceStatusFilterProps) {
   const { t } = useTranslation('invoices');
+  const statusOptions = getInvoiceStatusOptions(direction);
 
   return (
     <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
@@ -26,7 +30,7 @@ export function InvoiceStatusFilter({
           onChange(event.target.value as SupplierInvoiceSummaryStatus | 'ALL');
         }}
       >
-        {INVOICE_STATUS_OPTIONS.map((status) => (
+        {statusOptions.map((status) => (
           <MenuItem key={status} value={status}>
             {status === 'ALL'
               ? t('statusFilter.all')

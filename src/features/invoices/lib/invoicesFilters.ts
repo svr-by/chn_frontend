@@ -38,6 +38,15 @@ export const INVOICE_STATUS_OPTIONS: Array<
   SupplierInvoiceSummaryStatus | 'ALL'
 > = ['ALL', 'DRAFT', 'ISSUED', 'PARTIALLY_PAID', 'PAID', 'CONFIRMED'];
 
+export function getInvoiceStatusOptions(
+  direction: GetCompaniesCompanyIdInvoicesDirection,
+): Array<SupplierInvoiceSummaryStatus | 'ALL'> {
+  if (direction === 'inbound') {
+    return INVOICE_STATUS_OPTIONS.filter((status) => status !== 'DRAFT');
+  }
+  return INVOICE_STATUS_OPTIONS;
+}
+
 export function buildInvoicesListQueryArgs({
   companyId,
   direction,
@@ -83,8 +92,14 @@ export function clearCounterpartyOnDirectionChange(
   nextDirection: GetCompaniesCompanyIdInvoicesDirection,
   prev: InvoicesFiltersValue,
 ): InvoicesFiltersValue {
-  void nextDirection;
-  return { ...prev, counterpartyCompanyId: null };
+  const next: InvoicesFiltersValue = {
+    ...prev,
+    counterpartyCompanyId: null,
+  };
+  if (nextDirection === 'inbound' && next.status === 'DRAFT') {
+    next.status = 'ALL';
+  }
+  return next;
 }
 
 export function areInvoicesFiltersEqual(

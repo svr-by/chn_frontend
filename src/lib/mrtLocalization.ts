@@ -11,5 +11,9 @@ const MRT_LOCALIZATION_BY_LANG: Record<string, MRT_Localization> = {
 
 export function getMrtLocalization(language: string): MRT_Localization {
   const normalized = language.split('-')[0]?.toLowerCase() ?? 'en';
-  return MRT_LOCALIZATION_BY_LANG[normalized] ?? MRT_Localization_EN;
+  const base = MRT_LOCALIZATION_BY_LANG[normalized] ?? MRT_Localization_EN;
+  return {
+    ...base,
+    rowsPerPage: '',
+  };
 }

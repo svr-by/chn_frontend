@@ -2,17 +2,20 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
   Box,
-  Button,
   Chip,
   FormControl,
   FormControlLabel,
   InputLabel,
+  ListItemIcon,
+  ListItemText,
   MenuItem,
   Select,
   Stack,
   Switch,
   Typography,
 } from '@mui/material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -23,6 +26,7 @@ import {
   useUpdateMemberMutation,
   useUpdateMemberPermissionsMutation,
 } from '@/api/endpoints/membersApi';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { MemberPermissionsEditor } from '@/features/settings/components/MemberPermissionsEditor';
 import { ASSIGNABLE_ROLES } from '@/features/settings/lib/assignableRoles';
 import {
@@ -31,7 +35,7 @@ import {
 } from '@/features/settings/lib/memberDisplay';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import type { MemberRole, Permission } from '@/types/api';
 
 const TEAM_PATH = '/app/settings/team';
@@ -203,14 +207,19 @@ export function MemberAccessPage() {
           />
         ) : null
       }
-      actions={
+      actionMenuItems={
         !isOwner ? (
-          <Stack direction="row" spacing={1}>
-            <Button onClick={() => navigate(TEAM_PATH)} disabled={isSaving}>
-              {t('team:cancel')}
-            </Button>
-            <Button
-              variant="contained"
+          <>
+            <DocumentActionMenuItem
+              onClick={() => navigate(TEAM_PATH)}
+              disabled={isSaving}
+            >
+              <ListItemIcon>
+                <CloseOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('team:cancel')}</ListItemText>
+            </DocumentActionMenuItem>
+            <DocumentActionMenuItem
               disabled={
                 isSaving ||
                 (!roleChanged && !permissionsChanged && !statusChanged) ||
@@ -218,9 +227,12 @@ export function MemberAccessPage() {
               }
               onClick={() => void handleSave()}
             >
-              {t('team:save')}
-            </Button>
-          </Stack>
+              <ListItemIcon>
+                <SaveOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('team:save')}</ListItemText>
+            </DocumentActionMenuItem>
+          </>
         ) : null
       }
     >

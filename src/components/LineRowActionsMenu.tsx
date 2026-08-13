@@ -1,4 +1,11 @@
-import { useState, type ReactNode } from 'react';
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  useState,
+  type ReactElement,
+  type ReactNode,
+} from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import {
   IconButton,
@@ -43,6 +50,21 @@ interface LineRowActionsMenuProps {
   children?: ReactNode;
 }
 
+/** React 19 Children.toArray no longer flattens Fragments; MUI Menu rejects them. */
+function flattenMenuChildren(children: ReactNode): ReactElement[] {
+  return Children.toArray(children).flatMap((child) => {
+    if (!isValidElement(child)) {
+      return [];
+    }
+    if (child.type === Fragment) {
+      return flattenMenuChildren(
+        (child.props as { children?: ReactNode }).children,
+      );
+    }
+    return [child];
+  });
+}
+
 /** Per-row ⋮ menu with Open trace, plus optional extra items. */
 export function LineRowActionsMenu({
   lineageId,
@@ -77,7 +99,7 @@ export function LineRowActionsMenu({
           label={openTraceLabel}
           onClick={() => setAnchorEl(null)}
         />
-        {children}
+        {flattenMenuChildren(children)}
       </Menu>
     </>
   );

@@ -27,6 +27,7 @@ export function InvoicesFiltersForm({
   return (
     <Stack spacing={2}>
       <InvoiceStatusFilter
+        direction={direction}
         value={filters.status}
         onChange={(status) => onChange({ ...filters, status })}
       />

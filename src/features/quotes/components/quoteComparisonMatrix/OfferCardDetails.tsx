@@ -59,6 +59,11 @@ export function OfferCardDetails({
           {t(`enums:leadTimeUnit.${offer.leadTimeUnit.toLowerCase()}`)}
         </Typography>
       ) : null}
+      {offer.notes?.trim() ? (
+        <Typography variant="body2">
+          {t('comparison.columns.notes')}: {offer.notes.trim()}
+        </Typography>
+      ) : null}
       <QuoteLineSelectionCell
         companyId={companyId}
         quoteId={offer.quoteId}

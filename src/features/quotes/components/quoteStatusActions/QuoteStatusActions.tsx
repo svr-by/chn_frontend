@@ -6,7 +6,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -22,6 +23,7 @@ import {
   useUnsubmitQuoteMutation,
 } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 
 interface QuoteStatusActionsProps {
@@ -80,36 +82,33 @@ export function QuoteStatusActions({
 
   return (
     <PermissionGate permission="manageQuotes">
-      <Stack direction="row" spacing={1}>
-        {canSubmit ? (
-          <Button
-            variant="contained"
-            startIcon={<SendOutlinedIcon />}
-            onClick={() => setSubmitConfirmOpen(true)}
-          >
-            {t('actions.submit')}
-          </Button>
-        ) : null}
-        {canUnsubmit ? (
-          <Button
-            variant="outlined"
-            startIcon={<UndoOutlinedIcon />}
-            onClick={() => setUnsubmitConfirmOpen(true)}
-          >
-            {t('actions.unsubmit')}
-          </Button>
-        ) : null}
-        {canDelete ? (
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteOutlineOutlinedIcon />}
-            onClick={() => setDeleteConfirmOpen(true)}
-          >
-            {t('actions.delete')}
-          </Button>
-        ) : null}
-      </Stack>
+      {canSubmit ? (
+        <DocumentActionMenuItem onClick={() => setSubmitConfirmOpen(true)}>
+          <ListItemIcon>
+            <SendOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.submit')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+      {canUnsubmit ? (
+        <DocumentActionMenuItem onClick={() => setUnsubmitConfirmOpen(true)}>
+          <ListItemIcon>
+            <UndoOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.unsubmit')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+      {canDelete ? (
+        <DocumentActionMenuItem
+          onClick={() => setDeleteConfirmOpen(true)}
+          sx={{ color: 'error.main' }}
+        >
+          <ListItemIcon sx={{ color: 'inherit' }}>
+            <DeleteOutlineOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.delete')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
 
       <Dialog
         open={submitConfirmOpen}

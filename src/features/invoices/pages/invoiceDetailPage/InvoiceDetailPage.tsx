@@ -1,18 +1,32 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Button, Link, Stack, Typography } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ListItemIcon, ListItemText, Stack } from '@mui/material';
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
+import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
 import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
-import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
+import {
+  DocumentDetailMeta,
+  DocumentDetailMetaItem,
+  DocumentDetailMetaRow,
+} from '@/layouts/documentDetailLayout/DocumentDetailMeta';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
 import { PermissionGate } from '@/components/PermissionGate';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
-import { InvoiceHeaderForm } from '@/features/invoices/components/InvoiceHeaderForm';
-import { InvoiceLinesTable } from '@/features/invoices/components/InvoiceLinesTable';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
+import {
+  InvoiceNotesEditButton,
+  InvoiceNumberEditButton,
+} from '@/features/invoices/components/invoiceHeaderForm/InvoiceHeaderForm';
+import { InvoiceLinesTable } from '@/features/invoices/components/invoiceLinesTable/InvoiceLinesTable';
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
 import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
@@ -21,6 +35,7 @@ import { PaymentRegisterDialog } from '@/features/payments/components/PaymentReg
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { SUPPLIER_INVOICE_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 const PAYMENT_ALLOWED_STATUSES = new Set(['ISSUED', 'PARTIALLY_PAID']);
 const SHIPPING_ALLOWED_STATUSES = new Set([
@@ -61,8 +76,6 @@ export function InvoiceDetailPage() {
     invoice &&
     SHIPPING_ALLOWED_STATUSES.has(invoice.status) &&
     hasPermission('manageShippingInvoices');
-  const showShippingLink =
-    invoice && SHIPPING_ALLOWED_STATUSES.has(invoice.status);
   const showPayments =
     invoice &&
     invoice.status !== 'DRAFT' &&
@@ -109,16 +122,30 @@ export function InvoiceDetailPage() {
   return (
     <DocumentDetailLayout
       title={title}
+      titleAction={
+        invoice && canEdit ? (
+          <InvoiceNumberEditButton
+            companyId={companyId}
+            invoice={invoice}
+            quoteIds={quoteIds}
+          />
+        ) : null
+      }
       statusBadge={
         invoice?.status ? (
-          <InvoiceStatusBadge status={invoice.status} />
+          <DocumentStatusProgress
+            currentStatus={invoice.status}
+            steps={SUPPLIER_INVOICE_STATUS_FLOW.steps}
+            enumKey={SUPPLIER_INVOICE_STATUS_FLOW.enumKey}
+          />
         ) : undefined
       }
       loading={invoiceQuery.isLoading}
       error={invoiceQuery.error}
-      actions={
+      backFallbackTo="/app/invoices"
+      actionMenuItems={
         invoice ? (
-          <Stack direction="row" spacing={1}>
+          <>
             <InvoiceStatusActions
               companyId={companyId}
               invoiceId={invoice.id}
@@ -128,101 +155,113 @@ export function InvoiceDetailPage() {
             />
             {canRegisterPayment ? (
               <PermissionGate permission="managePayments">
-                <Button
-                  variant="outlined"
+                <DocumentActionMenuItem 
+                  disabled={true}
                   onClick={() => setRegisterOpen(true)}
                 >
-                  {t('actions.registerPayment')}
-                </Button>
+                  <ListItemIcon>
+                    <PaymentsOutlinedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('actions.registerPayment')}</ListItemText>
+                </DocumentActionMenuItem>
               </PermissionGate>
             ) : null}
             {canCreateShipping ? (
               <PermissionGate permission="manageShippingInvoices">
-                <Button
-                  variant="outlined"
-                  disabled={isCreatingShipping}
+                <DocumentActionMenuItem
+                  // disabled={isCreatingShipping}
+                  disabled={true}
                   onClick={() => createShippingInvoiceFromInvoice(invoice.id)}
                 >
-                  {t('actions.createShippingInvoice')}
-                </Button>
+                  <ListItemIcon>
+                    <LocalShippingOutlinedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {t('actions.createShippingInvoice')}
+                  </ListItemText>
+                </DocumentActionMenuItem>
               </PermissionGate>
             ) : null}
-          </Stack>
+          </>
         ) : null
       }
       meta={
         invoice ? (
-          <Stack spacing={0.5}>
-            <Typography variant="body2" color="text.secondary">
-              {t('detail.supplier', {
-                name: invoice.supplierCompany?.name ?? '—',
-              })}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('detail.buyer', { name: invoice.buyerCompany?.name ?? '—' })}
-            </Typography>
-            {requestIds.length > 0 ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.requests')}:{' '}
-                {requestIds.map((requestId, index) => (
-                  <span key={requestId}>
-                    {index > 0 ? ', ' : null}
+          <DocumentDetailMeta>
+            <DocumentDetailMetaRow spacing={1.5}>
+              <DocumentDetailMetaItem
+                icon={<StorefrontOutlinedIcon />}
+                value={t('detail.supplier', {
+                  name: invoice.supplierCompany?.name ?? '—',
+                })}
+              />
+              <DocumentDetailMetaItem
+                icon={<BusinessOutlinedIcon />}
+                value={t('detail.buyer', {
+                  name: invoice.buyerCompany?.name ?? '—',
+                })}
+              />
+
+              {invoice.issuedAt ? (
+                <DocumentDetailMetaItem
+                  icon={<ScheduleOutlinedIcon />}
+                  value={t('detail.issuedAt', {
+                    date: new Date(invoice.issuedAt).toLocaleDateString(),
+                  })}
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+
+            <DocumentDetailMetaRow>
+              {/* {showShippingLink ? (
+                <DocumentDetailMetaItem
+                  icon={<LocalShippingOutlinedIcon />}
+                  label={t('detail.shipping')}
+                  value={
                     <Link
                       component={RouterLink}
-                      to={`/app/requests/${requestId}`}
+                      to={`/app/shipping-invoices?supplierInvoiceId=${invoice.id}`}
                       underline="hover"
                     >
-                      {requestId.slice(0, 8)}
+                      {t('detail.viewShipping')}
                     </Link>
-                  </span>
-                ))}
-              </Typography>
-            ) : null}
-            <InvoiceAmountSummary
-              totalAmount={invoice.totalAmount}
-              confirmedPaidAmount={invoice.confirmedPaidAmount}
-              remainingAmount={invoice.remainingAmount}
-              currency={invoice.currency}
-            />
-            {invoice.issuedAt ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.issuedAt', {
-                  date: new Date(invoice.issuedAt).toLocaleString(),
-                })}
-              </Typography>
-            ) : null}
-            {invoice.confirmedAt ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.confirmedAt', {
-                  date: new Date(invoice.confirmedAt).toLocaleString(),
-                })}
-              </Typography>
-            ) : null}
-            {showShippingLink ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.shipping')}:{' '}
-                <Link
-                  component={RouterLink}
-                  to={`/app/shipping-invoices?supplierInvoiceId=${invoice.id}`}
-                  underline="hover"
-                >
-                  {t('detail.viewShipping')}
-                </Link>
-              </Typography>
-            ) : null}
-            {invoice.status !== 'DRAFT' ? (
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.payments')}:{' '}
-                <Link
-                  component={RouterLink}
-                  to={`/app/payments?invoiceId=${invoice.id}`}
-                  underline="hover"
-                >
-                  {t('detail.viewPayments')}
-                </Link>
-              </Typography>
-            ) : null}
-          </Stack>
+                  }
+                />
+              ) : null} */}
+              {/* {invoice.status !== 'DRAFT' ? (
+                <DocumentDetailMetaItem
+                  icon={<PaymentsOutlinedIcon />}
+                  label={t('detail.payments')}
+                  value={
+                    <Link
+                      component={RouterLink}
+                      to={`/app/payments?invoiceId=${invoice.id}`}
+                      underline="hover"
+                    >
+                      {t('detail.viewPayments')}
+                    </Link>
+                  }
+                />
+              ) : null} */}
+              {Boolean(invoice.notes) || canEdit ? (
+                <DocumentDetailMetaItem
+                  icon={<NotesOutlinedIcon />}
+                  label={t('form.notes')}
+                  value={invoice.notes ?? undefined}
+                  valueClampLines={invoice.notes ? 2 : undefined}
+                  action={
+                    canEdit ? (
+                      <InvoiceNotesEditButton
+                        companyId={companyId}
+                        invoice={invoice}
+                        quoteIds={quoteIds}
+                      />
+                    ) : null
+                  }
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+          </DocumentDetailMeta>
         ) : null
       }
     >
@@ -237,18 +276,13 @@ export function InvoiceDetailPage() {
               label: tCollab('tabs.details'),
               panel: (
                 <Stack spacing={3}>
-                  <InvoiceHeaderForm
-                    companyId={companyId}
-                    invoice={invoice}
-                    editable={canEdit}
-                    quoteIds={quoteIds}
-                  />
                   <InvoiceLinesTable
                     companyId={companyId}
                     invoiceId={invoice.id}
                     requestIds={requestIds}
                     quoteIds={quoteIds}
                     currency={invoice.currency}
+                    totalAmount={invoice.totalAmount}
                     lines={invoice.lines}
                     billableLines={billableQuery.data?.lines ?? []}
                     editable={canEdit}

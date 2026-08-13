@@ -5,6 +5,7 @@ import {
   DEFAULT_INVOICES_FILTERS,
   clearCounterpartyOnDirectionChange,
   countActiveInvoicesFilters,
+  getInvoiceStatusOptions,
 } from '@/features/invoices/lib/invoicesFilters';
 import {
   dateInputToIsoEndOfDay,
@@ -78,6 +79,22 @@ describe('invoicesFilters', () => {
 
     expect(next.counterpartyCompanyId).toBeNull();
     expect(next.status).toBe('ISSUED');
+  });
+
+  it('resets draft status when switching to inbound', () => {
+    const next = clearCounterpartyOnDirectionChange('inbound', {
+      ...DEFAULT_INVOICES_FILTERS,
+      counterpartyCompanyId: 'partner-1',
+      status: 'DRAFT',
+    });
+
+    expect(next.status).toBe('ALL');
+    expect(next.counterpartyCompanyId).toBeNull();
+  });
+
+  it('excludes draft from inbound status options', () => {
+    expect(getInvoiceStatusOptions('inbound')).not.toContain('DRAFT');
+    expect(getInvoiceStatusOptions('outbound')).toContain('DRAFT');
   });
 
   it('counts active filters', () => {

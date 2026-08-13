@@ -1,14 +1,16 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Button, Link, Stack, Typography } from '@mui/material';
+import { Link, ListItemIcon, ListItemText, Stack, Typography } from '@mui/material';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetShippableLinesQuery } from '@/api/endpoints/invoicesApi';
 import { useGetShippingInvoiceQuery } from '@/api/endpoints/shippingInvoicesApi';
-import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { ShippingInvoiceHeaderForm } from '@/features/shipping/components/ShippingInvoiceHeaderForm';
 import { ShippingInvoiceLinesTable } from '@/features/shipping/components/ShippingInvoiceLinesTable';
 import { ShippingStatusActions } from '@/features/shipping/components/ShippingStatusActions';
@@ -16,6 +18,7 @@ import { useCreateConsolidationFromShippingInvoice } from '@/features/consolidat
 import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { SHIPPING_INVOICE_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 export function ShippingInvoiceDetailPage() {
   const { t } = useTranslation('shipping');
@@ -77,14 +80,18 @@ export function ShippingInvoiceDetailPage() {
       title={title}
       statusBadge={
         shippingInvoice?.status ? (
-          <ShippingInvoiceStatusBadge status={shippingInvoice.status} />
+          <DocumentStatusProgress
+            currentStatus={shippingInvoice.status}
+            steps={SHIPPING_INVOICE_STATUS_FLOW.steps}
+            enumKey={SHIPPING_INVOICE_STATUS_FLOW.enumKey}
+          />
         ) : undefined
       }
       loading={shippingQuery.isLoading}
       error={shippingQuery.error}
-      actions={
+      actionMenuItems={
         shippingInvoice ? (
-          <Stack direction="row" spacing={1}>
+          <>
             <ShippingStatusActions
               companyId={companyId}
               shippingInvoiceId={shippingInvoice.id}
@@ -93,18 +100,22 @@ export function ShippingInvoiceDetailPage() {
             />
             {canCreateConsolidation ? (
               <PermissionGate permission="manageConsolidations">
-                <Button
-                  variant="outlined"
+                <DocumentActionMenuItem
+                  disabled={isCreating}
                   onClick={() =>
                     createConsolidationFromShippingInvoice(shippingInvoice.id)
                   }
-                  disabled={isCreating}
                 >
-                  {t('actions.createConsolidation')}
-                </Button>
+                  <ListItemIcon>
+                    <Inventory2OutlinedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>
+                    {t('actions.createConsolidation')}
+                  </ListItemText>
+                </DocumentActionMenuItem>
               </PermissionGate>
             ) : null}
-          </Stack>
+          </>
         ) : null
       }
       meta={

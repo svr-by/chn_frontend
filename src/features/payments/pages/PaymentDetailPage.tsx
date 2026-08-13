@@ -6,13 +6,14 @@ import { useSnackbar } from 'notistack';
 
 import { useGetPaymentQuery } from '@/api/endpoints/paymentsApi';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';
 import { PaymentUploadSection } from '@/features/payments/components/PaymentUploadSection';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { PAYMENT_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 export function PaymentDetailPage() {
   const { t } = useTranslation('payments');
@@ -54,12 +55,16 @@ export function PaymentDetailPage() {
       title={title}
       statusBadge={
         payment?.status ? (
-          <PaymentStatusBadge status={payment.status} />
+          <DocumentStatusProgress
+            currentStatus={payment.status}
+            steps={PAYMENT_STATUS_FLOW.steps}
+            enumKey={PAYMENT_STATUS_FLOW.enumKey}
+          />
         ) : undefined
       }
       loading={paymentQuery.isLoading}
       error={paymentQuery.error}
-      actions={
+      actionMenuItems={
         payment ? (
           <PaymentStatusActions
             companyId={companyId}

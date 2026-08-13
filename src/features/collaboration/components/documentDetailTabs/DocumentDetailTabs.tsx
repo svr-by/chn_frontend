@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import { DocumentActivityPanel } from '@/features/collaboration/components/documentActivityPanel/DocumentActivityPanel';
 import { DocumentCommentsPanel } from '@/features/collaboration/components/documentCommentsPanel/DocumentCommentsPanel';
-import { DocumentRelatedPanel } from '@/features/trace/components/DocumentRelatedPanel';
+import { DocumentRelatedPanel } from '@/features/trace/components/documentRelatedPanel/DocumentRelatedPanel';
 import { usePermissions } from '@/hooks/usePermissions';
 import {
   parseDocumentDetailTab,
@@ -77,24 +77,26 @@ export function DocumentDetailTabs({
 
   return (
     <Box>
-      <Tabs
-        value={activeTab}
-        onChange={handleTabChange}
-        variant="scrollable"
-        scrollButtons="auto"
-        aria-label={t('tabs.ariaLabel')}
-      >
-        {extraTabs?.map((tab) => (
-          <Tab key={tab.value} value={tab.value} label={tab.label} />
-        ))}
-        {enableComments ? (
-          <Tab value="comments" label={t('tabs.comments')} />
-        ) : null}
-        <Tab value="activity" label={t('tabs.activity')} />
-        {canViewTrace ? (
-          <Tab value="related" label={t('tabs.related')} />
-        ) : null}
-      </Tabs>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          variant="scrollable"
+          scrollButtons="auto"
+          aria-label={t('tabs.ariaLabel')}
+        >
+          {extraTabs?.map((tab) => (
+            <Tab key={tab.value} value={tab.value} label={tab.label} />
+          ))}
+          {enableComments ? (
+            <Tab value="comments" label={t('tabs.comments')} />
+          ) : null}
+          <Tab value="activity" label={t('tabs.activity')} />
+          {canViewTrace ? (
+            <Tab value="related" label={t('tabs.related')} />
+          ) : null}
+        </Tabs>
+      </Box>
 
       {extraTabs?.map((tab) => (
         <TabPanel key={tab.value} value={tab.value} activeTab={activeTab}>

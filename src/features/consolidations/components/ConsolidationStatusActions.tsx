@@ -5,8 +5,14 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@mui/material';
+import EventAvailableOutlinedIcon from '@mui/icons-material/EventAvailableOutlined';
+import GavelOutlinedIcon from '@mui/icons-material/GavelOutlined';
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import WhereToVoteOutlinedIcon from '@mui/icons-material/WhereToVoteOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -18,6 +24,7 @@ import {
   usePlanConsolidationMutation,
 } from '@/api/endpoints/consolidationsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 
 interface ConsolidationStatusActionsProps {
@@ -81,9 +88,12 @@ export function ConsolidationStatusActions({
     <PermissionGate permission="manageConsolidations">
       {status === 'DRAFT' ? (
         <>
-          <Button variant="contained" onClick={() => setPlanOpen(true)}>
-            {t('actions.plan')}
-          </Button>
+          <DocumentActionMenuItem onClick={() => setPlanOpen(true)}>
+            <ListItemIcon>
+              <EventAvailableOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('actions.plan')}</ListItemText>
+          </DocumentActionMenuItem>
           <Dialog open={planOpen} onClose={() => setPlanOpen(false)}>
             <DialogTitle>{t('confirm.planTitle')}</DialogTitle>
             <DialogContent>
@@ -107,9 +117,12 @@ export function ConsolidationStatusActions({
       ) : null}
       {status === 'PLANNED' ? (
         <>
-          <Button variant="contained" onClick={() => setTransitOpen(true)}>
-            {t('actions.markInTransit')}
-          </Button>
+          <DocumentActionMenuItem onClick={() => setTransitOpen(true)}>
+            <ListItemIcon>
+              <LocalShippingOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('actions.markInTransit')}</ListItemText>
+          </DocumentActionMenuItem>
           <Dialog open={transitOpen} onClose={() => setTransitOpen(false)}>
             <DialogTitle>{t('confirm.inTransitTitle')}</DialogTitle>
             <DialogContent>
@@ -133,9 +146,12 @@ export function ConsolidationStatusActions({
       ) : null}
       {status === 'IN_TRANSIT' ? (
         <>
-          <Button variant="contained" onClick={() => setCustomsOpen(true)}>
-            {t('actions.markCustoms')}
-          </Button>
+          <DocumentActionMenuItem onClick={() => setCustomsOpen(true)}>
+            <ListItemIcon>
+              <GavelOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('actions.markCustoms')}</ListItemText>
+          </DocumentActionMenuItem>
           <Dialog open={customsOpen} onClose={() => setCustomsOpen(false)}>
             <DialogTitle>{t('confirm.customsTitle')}</DialogTitle>
             <DialogContent>
@@ -159,9 +175,12 @@ export function ConsolidationStatusActions({
       ) : null}
       {status === 'CUSTOMS' ? (
         <>
-          <Button variant="contained" onClick={() => setDeliveredOpen(true)}>
-            {t('actions.markDelivered')}
-          </Button>
+          <DocumentActionMenuItem onClick={() => setDeliveredOpen(true)}>
+            <ListItemIcon>
+              <WhereToVoteOutlinedIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText>{t('actions.markDelivered')}</ListItemText>
+          </DocumentActionMenuItem>
           <Dialog open={deliveredOpen} onClose={() => setDeliveredOpen(false)}>
             <DialogTitle>{t('confirm.deliveredTitle')}</DialogTitle>
             <DialogContent>

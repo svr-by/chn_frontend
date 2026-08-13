@@ -5,8 +5,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@mui/material';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -16,6 +20,7 @@ import {
   useIssueInvoiceMutation,
 } from '@/api/endpoints/invoicesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 
 interface InvoiceStatusActionsProps {
@@ -70,57 +75,61 @@ export function InvoiceStatusActions({
   return (
     <PermissionGate permission="manageInvoices">
       {status === 'DRAFT' ? (
-        <>
-          <Button variant="contained" onClick={() => setIssueOpen(true)}>
-            {t('actions.issue')}
-          </Button>
-          <Dialog open={issueOpen} onClose={() => setIssueOpen(false)}>
-            <DialogTitle>{t('confirm.issueTitle')}</DialogTitle>
-            <DialogContent>
-              <ApiErrorAlert error={issueState.error} />
-              <Typography>{t('confirm.issueMessage')}</Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setIssueOpen(false)}>
-                {t('actions.dismiss')}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleIssue}
-                disabled={issueState.isLoading}
-              >
-                {t('actions.issue')}
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
+        <DocumentActionMenuItem onClick={() => setIssueOpen(true)}>
+          <ListItemIcon>
+            <SendOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.issue')}</ListItemText>
+        </DocumentActionMenuItem>
       ) : null}
       {status === 'PAID' ? (
-        <>
-          <Button variant="contained" onClick={() => setConfirmOpen(true)}>
+        <DocumentActionMenuItem onClick={() => setConfirmOpen(true)}>
+          <ListItemIcon>
+            <CheckCircleOutlineOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.confirmInvoice')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+
+      <Dialog open={issueOpen} onClose={() => setIssueOpen(false)}>
+        <DialogTitle>{t('confirm.issueTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={issueState.error} />
+          <Typography>{t('confirm.issueMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIssueOpen(false)}>
+            {t('actions.dismiss')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleIssue}
+            disabled={issueState.isLoading}
+          >
+            {t('actions.issue')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
+        <DialogTitle>{t('confirm.confirmTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={confirmState.error} />
+          <Typography>{t('confirm.confirmMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setConfirmOpen(false)}>
+            {t('actions.dismiss')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleConfirm}
+            disabled={confirmState.isLoading}
+          >
             {t('actions.confirmInvoice')}
           </Button>
-          <Dialog open={confirmOpen} onClose={() => setConfirmOpen(false)}>
-            <DialogTitle>{t('confirm.confirmTitle')}</DialogTitle>
-            <DialogContent>
-              <ApiErrorAlert error={confirmState.error} />
-              <Typography>{t('confirm.confirmMessage')}</Typography>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setConfirmOpen(false)}>
-                {t('actions.dismiss')}
-              </Button>
-              <Button
-                variant="contained"
-                onClick={handleConfirm}
-                disabled={confirmState.isLoading}
-              >
-                {t('actions.confirmInvoice')}
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      ) : null}
+        </DialogActions>
+      </Dialog>
     </PermissionGate>
   );
 }

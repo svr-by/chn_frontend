@@ -110,6 +110,14 @@ export function OffersNestedTable({
         },
       },
       {
+        id: 'notes',
+        header: t('comparison.columns.notes'),
+        Cell: ({ row }) => {
+          const notes = row.original.offer.notes?.trim();
+          return notes || '—';
+        },
+      },
+      {
         id: 'selection',
         header: t('columns.selectedQuantity'),
         Cell: ({ row }) => (

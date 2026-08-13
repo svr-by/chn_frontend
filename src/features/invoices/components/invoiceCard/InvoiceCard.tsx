@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { GetCompaniesCompanyIdInvoicesDirection } from '@/api/generated/models/getCompaniesCompanyIdInvoicesDirection';
 import type { SupplierInvoiceSummary } from '@/api/generated/models/supplierInvoiceSummary';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
+import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 
 interface InvoiceCardProps {
   invoice: SupplierInvoiceSummary;
@@ -18,11 +20,11 @@ function formatDateTime(value: string | null | undefined): string {
 
 export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
   const { t } = useTranslation('invoices');
-  const isBuyerView = direction === 'outbound';
+  const isBuyerView = direction === 'inbound';
 
   const counterpartyName = isBuyerView
-    ? (invoice.buyerCompany?.name ?? '—')
-    : (invoice.supplierCompany?.name ?? '—');
+    ? (invoice.supplierCompany?.name ?? '—')
+    : (invoice.buyerCompany?.name ?? '—');
 
   const numberText = invoice.number || '—';
   const createdAtText = formatDateTime(invoice.createdAt);
@@ -67,13 +69,16 @@ export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
             {counterpartyName}
           </Typography>
 
+          <Typography variant="subtitle2" noWrap>
+            <DecimalWithSuffix value={invoice.totalAmount} suffix={invoice.currency} />
+          </Typography>
+
           <Typography variant="body2" color="text.secondary" noWrap>
-            {`${t('columns.invoiceNumber')}: ${numberText} · ${invoice.currency}`}
+            {`${t('columns.invoiceNumber')} ${numberText}`}
           </Typography>
 
           <Typography variant="body2" color="text.secondary">
-            {t('columns.createdAt')}: {createdAtText}
-            {' / '}
+            {isBuyerView ? '' : `${t('columns.createdAt')}: ${createdAtText} · `}
             {t('columns.issuedAt')}: {issuedAtText}
           </Typography>
         </Stack>

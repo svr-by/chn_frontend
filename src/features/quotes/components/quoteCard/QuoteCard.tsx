@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import type { GetCompaniesCompanyIdQuotesDirection } from '@/api/generated/models/getCompaniesCompanyIdQuotesDirection';
 import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
+import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 
 interface QuoteCardProps {
   quote: SupplierQuoteSummary;
@@ -19,11 +19,11 @@ function formatDateTime(value: string | null | undefined): string {
 
 export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
   const { t } = useTranslation('quotes');
-  const isBuyerView = direction === 'outbound';
+  const isBuyerView = direction === 'inbound';
 
   const counterpartyName = isBuyerView
-    ? quote.buyerCompany?.name ?? '—'
-    : quote.supplierCompany?.name ?? '—';
+    ? quote.supplierCompany?.name ?? '—'
+    : quote.buyerCompany?.name ?? '—';
 
   const createdAtText = formatDateTime(quote.createdAt);
   const validUntilText = formatDateTime(quote.validUntil);
@@ -68,12 +68,19 @@ export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
             {counterpartyName}
           </Typography>
 
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {t('columns.createdBy')}: {createdByName}
+          <Typography variant="subtitle2" noWrap>
+            <DecimalWithSuffix value={quote.positionsTotal} suffix={quote.currency} /> {' · '}
+            {quote.linesCount} {t('columns.linesCount')}
           </Typography>
 
+          {quote.number ? (
+            <Typography variant="body2" color="text.secondary" noWrap>
+              {`${t('columns.quoteNumber')} ${quote.number}`}
+            </Typography>
+          ) : null}
+
           <Typography variant="body2" color="text.secondary" noWrap>
-            {`${t('columns.positionsTotal')}: ${quote.positionsTotal} ${quote.currency} · ${t('columns.linesCount')}: ${quote.linesCount}`}
+            {t('columns.createdBy')}: {createdByName}
           </Typography>
 
           <Typography variant="body2" color="text.secondary">

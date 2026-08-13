@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Button, Link, Stack, Typography } from '@mui/material';
+import { Link, ListItemIcon, ListItemText } from '@mui/material';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -15,19 +16,31 @@ import {
   useGetInboundRequestQuery,
   useGetRequestQuery,
 } from '@/api/endpoints/requestsApi';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
+import {
+  DocumentDetailMeta,
+  DocumentDetailMetaItem,
+  DocumentDetailMetaRow,
+} from '@/layouts/documentDetailLayout/DocumentDetailMeta';
 import { PermissionGate } from '@/components/PermissionGate';
-import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { QuoteStatusActions } from '@/features/quotes/components/quoteStatusActions/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { QuoteHeaderForm } from '@/features/quotes/components/quoteHeaderForm/QuoteHeaderForm';
+import {
+  QuoteCurrencyEditButton,
+  QuoteNotesEditButton,
+  QuoteNumberEditButton,
+  QuoteValidUntilEditButton,
+} from '@/features/quotes/components/quoteHeaderForm/QuoteHeaderForm';
 import { QuoteLinesTable } from '@/features/quotes/components/quoteLinesTable/QuoteLinesTable';
 import {
   isQuoteLineSelectionAllowed,
   SUPPLIER_EDITABLE_QUOTE_STATUSES,
 } from '@/features/quotes/lib/quoteSelection';
 import { usePermissions } from '@/hooks/usePermissions';
+import { SUPPLIER_QUOTE_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -106,11 +119,8 @@ export function QuoteDetailPage() {
     return null;
   }
 
-  const title = quote
-    ? t('detail.fallbackTitle', {
-        date: new Date(quote.createdAt).toLocaleDateString(),
-      })
-    : '';
+  const title = t('detail.titleWithNumber', { number: quote?.number ?? '' });
+
   const requestLines = isSupplier
     ? (inboundRequestQuery.data?.request.lines ?? [])
     : [];
@@ -149,15 +159,26 @@ export function QuoteDetailPage() {
   return (
     <DocumentDetailLayout
       title={title}
+      titleAction={
+        quote && canEdit ? (
+          <QuoteNumberEditButton companyId={companyId} quote={quote} />
+        ) : null
+      }
       statusBadge={
-        quote?.status ? <QuoteStatusBadge status={quote.status} /> : undefined
+        quote?.status ? (
+          <DocumentStatusProgress
+            currentStatus={quote.status}
+            steps={SUPPLIER_QUOTE_STATUS_FLOW.steps}
+            enumKey={SUPPLIER_QUOTE_STATUS_FLOW.enumKey}
+          />
+        ) : undefined
       }
       loading={quoteQuery.isLoading}
       error={quoteQuery.error}
       backFallbackTo="/app/quotes"
-      actions={
+      actionMenuItems={
         quote && isSupplier ? (
-          <Stack direction="row" spacing={1}>
+          <>
             <QuoteStatusActions
               companyId={companyId}
               quoteId={quote.id}
@@ -167,9 +188,7 @@ export function QuoteDetailPage() {
             />
             {canCreateInvoice ? (
               <PermissionGate permission="manageInvoices">
-                <Button
-                  variant="outlined"
-                  startIcon={<ReceiptLongOutlinedIcon />}
+                <DocumentActionMenuItem
                   onClick={() =>
                     navigate(
                       `/app/invoices/new?quoteId=${quote.id}${
@@ -180,109 +199,132 @@ export function QuoteDetailPage() {
                     )
                   }
                 >
-                  {t('actions.createInvoice')}
-                </Button>
+                  <ListItemIcon>
+                    <ReceiptLongOutlinedIcon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText>{t('actions.createInvoice')}</ListItemText>
+                </DocumentActionMenuItem>
               </PermissionGate>
             ) : null}
-          </Stack>
+          </>
         ) : null
       }
       meta={
         quote ? (
-          <Stack spacing={0.75}>
-            {requestLink ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <DescriptionOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  <Link
-                    component={RouterLink}
-                    to={requestLink}
-                    underline="hover"
-                  >
-                    {isSupplier
-                      ? t('detail.inboundRequest')
-                      : t('detail.outboundRequest')}
-                    {' '}
-                    {materialRequestTitle ?? '—'}
-                  </Link>
-                </Typography>
-              </Stack>
-            ) : null}
-            {counterpartyName ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <BusinessOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {counterpartyLabel}
-                </Typography>
-              </Stack>
-            ) : null}
-            {quote.submittedAt ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <ScheduleOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {t('detail.submittedAt', {
+          <DocumentDetailMeta>
+            <DocumentDetailMetaRow spacing={1.5}>
+              {requestLink ? (
+                <DocumentDetailMetaItem
+                  icon={<DescriptionOutlinedIcon />}
+                  value={
+                    <Link
+                      component={RouterLink}
+                      to={requestLink}
+                      underline="hover"
+                    >
+                      {isSupplier
+                        ? t('detail.inboundRequest')
+                        : t('detail.outboundRequest')}{' '}
+                      {materialRequestTitle ?? '—'}
+                    </Link>
+                  }
+                />
+              ) : null}
+              {counterpartyName ? (
+                <DocumentDetailMetaItem
+                  icon={<BusinessOutlinedIcon />}
+                  value={counterpartyLabel}
+                />
+              ) : null}
+              {quote.submittedAt ? (
+                <DocumentDetailMetaItem
+                  icon={<ScheduleOutlinedIcon />}
+                  value={t('detail.submittedAt', {
                     date: new Date(quote.submittedAt).toLocaleDateString(),
                   })}
-                </Typography>
-              </Stack>
-            ) : null}
-            {quote.validUntil && !canEdit ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <EventOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {t('form.validUntil')}:{' '}
-                  {new Date(quote.validUntil).toLocaleDateString()}
-                </Typography>
-              </Stack>
-            ) : null}
-            {quote.notes && !canEdit ? (
-              <Stack direction="row" spacing={1} alignItems="flex-start">
-                <NotesOutlinedIcon fontSize="small" color="action" />
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  whiteSpace="pre-wrap"
-                >
-                  {t('form.notes')}: {quote.notes}
-                </Typography>
-              </Stack>
-            ) : null}
-          </Stack>
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+
+            <DocumentDetailMetaRow>
+              <DocumentDetailMetaItem
+                icon={<PaidOutlinedIcon />}
+                label={t('form.currency')}
+                value={quote.currency}
+                action={
+                  canEdit ? (
+                    <QuoteCurrencyEditButton
+                      companyId={companyId}
+                      quote={quote}
+                    />
+                  ) : null
+                }
+              />
+              {Boolean(quote.validUntil) || canEdit ? (
+                <DocumentDetailMetaItem
+                  icon={<EventOutlinedIcon />}
+                  label={t('form.validUntil')}
+                  value={
+                    quote.validUntil
+                      ? new Date(quote.validUntil).toLocaleDateString()
+                      : undefined
+                  }
+                  action={
+                    canEdit ? (
+                      <QuoteValidUntilEditButton
+                        companyId={companyId}
+                        quote={quote}
+                      />
+                    ) : null
+                  }
+                />
+              ) : null}
+              {Boolean(quote.notes) || canEdit ? (
+                <DocumentDetailMetaItem
+                  icon={<NotesOutlinedIcon />}
+                  label={t('form.notes')}
+                  value={quote.notes ?? undefined}
+                  valueClampLines={quote.notes ? 2 : undefined}
+                  action={
+                    canEdit ? (
+                      <QuoteNotesEditButton
+                        companyId={companyId}
+                        quote={quote}
+                      />
+                    ) : null
+                  }
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+          </DocumentDetailMeta>
         ) : null
       }
     >
       {quote && (isSupplier || isBuyer) ? (
-        <Stack spacing={3}>
-          <QuoteHeaderForm
-            companyId={companyId}
-            quote={quote}
-            editable={canEdit}
-          />
-          <DocumentDetailTabs
-            companyId={companyId}
-            documentType="SUPPLIER_QUOTE"
-            documentId={quote.id}
-            extraTabs={[
-              {
-                value: 'details',
-                label: t('tabs.details'),
-                panel: (
-                  <QuoteLinesTable
-                    companyId={companyId}
-                    quoteId={quote.id}
-                    materialRequestId={quote.materialRequest?.id}
-                    currency={quote.currency}
-                    lines={quote.lines}
-                    requestLines={requestLines}
-                    editable={canEdit}
-                    selectionMode={isBuyer ? 'buyer' : 'supplier'}
-                    selectionEnabled={selectionEnabled}
-                  />
-                ),
-              },
-            ]}
-          />
-        </Stack>
+        <DocumentDetailTabs
+          companyId={companyId}
+          documentType="SUPPLIER_QUOTE"
+          documentId={quote.id}
+          extraTabs={[
+            {
+              value: 'details',
+              label: t('tabs.details'),
+              panel: (
+                <QuoteLinesTable
+                  companyId={companyId}
+                  quoteId={quote.id}
+                  materialRequestId={quote.materialRequest?.id}
+                  currency={quote.currency}
+                  lines={quote.lines}
+                  requestLines={requestLines}
+                  editable={canEdit}
+                  selectionMode={isBuyer ? 'buyer' : 'supplier'}
+                  selectionEnabled={selectionEnabled}
+                />
+              ),
+            },
+          ]}
+        />
       ) : null}
     </DocumentDetailLayout>
   );

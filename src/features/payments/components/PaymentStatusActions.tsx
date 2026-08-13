@@ -5,10 +5,13 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
+  ListItemIcon,
+  ListItemText,
   TextField,
   Typography,
 } from '@mui/material';
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -18,6 +21,7 @@ import {
   useRejectPaymentMutation,
 } from '@/api/endpoints/paymentsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 
 interface PaymentStatusActionsProps {
@@ -69,22 +73,24 @@ export function PaymentStatusActions({
 
   return (
     <PermissionGate permission="confirmPayments">
-      <Stack direction="row" spacing={1}>
-        <Button
-          variant="contained"
-          onClick={handleConfirm}
-          disabled={confirmState.isLoading}
-        >
-          {t('actions.confirm')}
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => setRejectOpen(true)}
-        >
-          {t('actions.reject')}
-        </Button>
-      </Stack>
+      <DocumentActionMenuItem
+        onClick={() => void handleConfirm()}
+        disabled={confirmState.isLoading}
+      >
+        <ListItemIcon>
+          <CheckCircleOutlineOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('actions.confirm')}</ListItemText>
+      </DocumentActionMenuItem>
+      <DocumentActionMenuItem
+        onClick={() => setRejectOpen(true)}
+        sx={{ color: 'error.main' }}
+      >
+        <ListItemIcon sx={{ color: 'inherit' }}>
+          <CloseOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('actions.reject')}</ListItemText>
+      </DocumentActionMenuItem>
 
       <Dialog open={rejectOpen} onClose={() => setRejectOpen(false)}>
         <DialogTitle>{t('reject.title')}</DialogTitle>

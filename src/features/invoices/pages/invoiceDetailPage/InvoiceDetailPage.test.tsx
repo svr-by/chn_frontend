@@ -1,11 +1,14 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useGetQuoteBillableLinesQuery, useListQuotesQuery } from '@/api/endpoints/quotesApi';
-import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
+import {
+  useGetInvoiceQuery,
+  useUpdateInvoiceMutation,
+} from '@/api/endpoints/invoicesApi';
 import { InvoiceDetailPage } from '@/features/invoices/pages/invoiceDetailPage/InvoiceDetailPage';
 import {
   COMPANY_ID,
@@ -96,14 +99,41 @@ vi.mock('@/api/endpoints/commentsApi', () => ({
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetInvoiceQuery = vi.mocked(useGetInvoiceQuery);
+const mockedUseUpdateInvoiceMutation = vi.mocked(useUpdateInvoiceMutation);
 const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
 const mockedUseGetQuoteBillableLinesQuery = vi.mocked(
   useGetQuoteBillableLinesQuery,
 );
 
+function renderDetailPage() {
+  return renderWithProviders(
+    <Routes>
+      <Route
+        path="/app/invoices/:invoiceId"
+        element={<InvoiceDetailPage />}
+      />
+    </Routes>,
+    {
+      preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+      route: `/app/invoices/${INVOICE_ID}`,
+    },
+  );
+}
+
 describe('InvoiceDetailPage', () => {
+  const updateInvoice = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+
+    updateInvoice.mockReturnValue({
+      unwrap: () =>
+        Promise.resolve({ invoice: createSupplierInvoice({ status: 'DRAFT' }) }),
+    });
+    mockedUseUpdateInvoiceMutation.mockReturnValue([
+      updateInvoice,
+      { isLoading: false, reset: vi.fn(), error: undefined },
+    ] as ReturnType<typeof useUpdateInvoiceMutation>);
 
     mockedUseListQuotesQuery.mockReturnValue({
       data: { quotes: [{ id: '00000000-0000-0000-0000-000000000070' }] },
@@ -147,21 +177,41 @@ describe('InvoiceDetailPage', () => {
       refetch: vi.fn(),
     } as ReturnType<typeof useGetInvoiceQuery>);
 
-    renderWithProviders(
-      <Routes>
-        <Route
-          path="/app/invoices/:invoiceId"
-          element={<InvoiceDetailPage />}
-        />
-      </Routes>,
-      {
-        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
-        route: `/app/invoices/${INVOICE_ID}`,
-      },
-    );
+    renderDetailPage();
 
     expect(screen.getByText('Issue invoice')).toBeInTheDocument();
     expect(screen.getByText('Add line')).toBeInTheDocument();
+  });
+
+  it('edits invoice number from title action', async () => {
+    const user = userEvent.setup();
+
+    mockedUseGetInvoiceQuery.mockReturnValue({
+      data: { invoice: createSupplierInvoice({ status: 'DRAFT' }) },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetInvoiceQuery>);
+
+    renderDetailPage();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Edit invoice number' }),
+    );
+    const numberField = screen.getByLabelText('Invoice number');
+    await user.clear(numberField);
+    await user.type(numberField, 'INV-999');
+    await user.click(screen.getByRole('button', { name: 'Save' }));
+
+    await waitFor(() => {
+      expect(updateInvoice).toHaveBeenCalledWith(
+        expect.objectContaining({
+          companyId: COMPANY_ID,
+          invoiceId: INVOICE_ID,
+          number: 'INV-999',
+        }),
+      );
+    });
   });
 
   it('shows register payment for ISSUED invoice', () => {
@@ -177,18 +227,7 @@ describe('InvoiceDetailPage', () => {
       refetch: vi.fn(),
     } as ReturnType<typeof useGetInvoiceQuery>);
 
-    renderWithProviders(
-      <Routes>
-        <Route
-          path="/app/invoices/:invoiceId"
-          element={<InvoiceDetailPage />}
-        />
-      </Routes>,
-      {
-        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
-        route: `/app/invoices/${INVOICE_ID}`,
-      },
-    );
+    renderDetailPage();
 
     expect(screen.getByText('Register payment')).toBeInTheDocument();
     expect(screen.queryByText('Add line')).not.toBeInTheDocument();
@@ -209,18 +248,7 @@ describe('InvoiceDetailPage', () => {
       refetch: vi.fn(),
     } as ReturnType<typeof useGetInvoiceQuery>);
 
-    renderWithProviders(
-      <Routes>
-        <Route
-          path="/app/invoices/:invoiceId"
-          element={<InvoiceDetailPage />}
-        />
-      </Routes>,
-      {
-        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
-        route: `/app/invoices/${INVOICE_ID}`,
-      },
-    );
+    renderDetailPage();
 
     await user.click(screen.getByRole('tab', { name: 'Comments' }));
 

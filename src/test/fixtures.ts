@@ -34,6 +34,7 @@ import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItem } from '@/api/generated/models/traceSearchItem';
 import type { RequestLineListItem } from '@/api/generated/models/requestLineListItem';
 import type { DocumentRelationships } from '@/api/generated/models/documentRelationships';
+import type { DocumentRelationshipsNodesItem } from '@/api/generated/models/documentRelationshipsNodesItem';
 import type { CompanyApiKey } from '@/api/generated/models/companyApiKey';
 import type { PartnerExternalMapping } from '@/api/generated/models/partnerExternalMapping';
 import type { IntegrationWebhook } from '@/api/generated/models/integrationWebhook';
@@ -387,6 +388,7 @@ export function createSupplierQuote(
     },
     status: 'DRAFT',
     currency: 'USD',
+    number: null,
     validUntil: null,
     notes: null,
     submittedAt: null,
@@ -417,6 +419,7 @@ export function createSupplierQuoteSummary(
     id: QUOTE_ID,
     status: 'DRAFT',
     currency: 'USD',
+    number: null,
     validUntil: null,
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
@@ -495,6 +498,7 @@ export function createQuoteComparison(
             selectedQuantity: null,
             leadTime: 2,
             leadTimeUnit: 'WEEK',
+            notes: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T00:00:00.000Z',
@@ -509,6 +513,7 @@ export function createQuoteComparison(
             selectedQuantity: null,
             leadTime: null,
             leadTimeUnit: null,
+            notes: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T01:00:00.000Z',
@@ -535,6 +540,7 @@ export function createQuoteComparison(
             selectedQuantity: null,
             leadTime: null,
             leadTimeUnit: null,
+            notes: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T00:00:00.000Z',
@@ -617,6 +623,7 @@ export function createSupplierInvoiceSummary(
     status: 'DRAFT',
     currency: 'USD',
     number: 'INV-001',
+    totalAmount: '10.00',
     issuedAt: null,
     confirmedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
@@ -1053,25 +1060,44 @@ export function createLineageEvent(
   };
 }
 
+export function createDocumentRelationshipNode(
+  overrides: Partial<DocumentRelationshipsNodesItem> &
+    Pick<
+      DocumentRelationshipsNodesItem,
+      'id' | 'documentType' | 'status'
+    >,
+): DocumentRelationshipsNodesItem {
+  return {
+    label: null,
+    companyName: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    createdBy: {
+      id: USER_ID,
+      name: 'Test User',
+    },
+    ...overrides,
+  };
+}
+
 export function createDocumentRelationships(
   overrides: Partial<DocumentRelationships> = {},
 ): DocumentRelationships {
   return {
     nodes: [
-      {
+      createDocumentRelationshipNode({
         id: REQUEST_ID,
         documentType: 'MATERIAL_REQUEST',
         status: 'QUOTING',
         label: 'Office supplies',
         companyName: 'Buyer Corp',
-      },
-      {
+      }),
+      createDocumentRelationshipNode({
         id: INVOICE_ID,
         documentType: 'INVOICE',
         status: 'ISSUED',
         label: 'INV-001',
         companyName: 'Supplier Corp',
-      },
+      }),
     ],
     edges: [
       {

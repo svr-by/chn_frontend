@@ -31,7 +31,7 @@ import {
 } from '@/features/invoices/lib/draftInvoiceLine';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 import { currencySelectOptions } from '@/lib/currencies';
 
 const headerSchema = z.object({
@@ -137,6 +137,10 @@ export function InvoiceCreatePage() {
   }
 
   async function onSubmit(values: HeaderFormValues) {
+    if (!companyId) {
+      return;
+    }
+
     const validation = validateDraftInvoiceLines(lines);
     if (!validation.ok) {
       setLinesError(
@@ -153,6 +157,7 @@ export function InvoiceCreatePage() {
     const created = await createInvoice({
       companyId,
       number: values.number,
+      currency: values.currency,
       notes: values.notes || undefined,
       lines: lines.map((line) => ({
         selectionLineId: line.selectionLineId,

@@ -34,6 +34,10 @@ vi.mock('@/api/endpoints/shippingInvoicesApi', () => ({
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
+  useDeleteShippingInvoiceMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
@@ -72,9 +76,10 @@ describe('ShippingStatusActions', () => {
     );
 
     expect(screen.getByText('Issue shipping invoice')).toBeInTheDocument();
+    expect(screen.getByText('Delete')).toBeInTheDocument();
   });
 
-  it('shows mark in transit for ISSUED', () => {
+  it('hides delete for ISSUED', () => {
     renderWithProviders(
       <ShippingStatusActions
         companyId={COMPANY_ID}
@@ -88,6 +93,7 @@ describe('ShippingStatusActions', () => {
     );
 
     expect(screen.getByText('Mark in transit')).toBeInTheDocument();
+    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
   });
 
   it('shows mark delivered for IN_TRANSIT', () => {

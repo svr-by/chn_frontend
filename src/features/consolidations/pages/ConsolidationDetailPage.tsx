@@ -8,14 +8,15 @@ import {
   useGetConsolidatableShippingInvoicesQuery,
   useGetConsolidationQuery,
 } from '@/api/endpoints/consolidationsApi';
-import { ConsolidationStatusBadge } from '@/components/ConsolidationStatusBadge';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { ConsolidationHeaderForm } from '@/features/consolidations/components/ConsolidationHeaderForm';
 import { ConsolidationShippingInvoicesTable } from '@/features/consolidations/components/ConsolidationShippingInvoicesTable';
 import { ConsolidationStatusActions } from '@/features/consolidations/components/ConsolidationStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { CONSOLIDATION_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 export function ConsolidationDetailPage() {
   const { t } = useTranslation('consolidations');
@@ -71,12 +72,16 @@ export function ConsolidationDetailPage() {
       title={title}
       statusBadge={
         consolidation?.status ? (
-          <ConsolidationStatusBadge status={consolidation.status} />
+          <DocumentStatusProgress
+            currentStatus={consolidation.status}
+            steps={CONSOLIDATION_STATUS_FLOW.steps}
+            enumKey={CONSOLIDATION_STATUS_FLOW.enumKey}
+          />
         ) : undefined
       }
       loading={consolidationQuery.isLoading}
       error={consolidationQuery.error}
-      actions={
+      actionMenuItems={
         consolidation ? (
           <ConsolidationStatusActions
             companyId={companyId}

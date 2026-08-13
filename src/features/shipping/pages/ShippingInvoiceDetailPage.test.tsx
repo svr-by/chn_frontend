@@ -46,6 +46,10 @@ vi.mock('@/api/endpoints/shippingInvoicesApi', () => ({
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
+  useDeleteShippingInvoiceMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
   useIssueShippingInvoiceMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },

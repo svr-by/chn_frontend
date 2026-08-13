@@ -2,9 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Stack,
-  TablePagination,
   Typography,
-  useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
@@ -21,7 +19,6 @@ import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
-import { ComparisonMobileCards } from '@/features/quotes/components/quoteComparisonMatrix/ComparisonMobileCards';
 import { OffersNestedTable } from '@/features/quotes/components/quoteComparisonMatrix/OffersNestedTable';
 import {
   buildQuoteComparisonRows,
@@ -59,7 +56,6 @@ export function QuoteComparisonMatrix({
   requestId,
 }: QuoteComparisonMatrixProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { t } = useTranslation('quotes');
 
   const comparisonQuery = useGetQuoteComparisonQuery(
@@ -136,6 +132,12 @@ export function QuoteComparisonMatrix({
         header: t('comparison.columns.quantity'),
         size: 120,
         grow: false,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        muiTableHeadCellProps: {
+          align: 'right',
+        },
         Cell: ({ row }) => (
           <DecimalWithSuffix
             value={row.original.requestLine.quantity}
@@ -148,6 +150,12 @@ export function QuoteComparisonMatrix({
         header: t('columns.selectedQuantity'),
         size: 120,
         grow: false,
+        muiTableBodyCellProps: {
+          align: 'right',
+        },
+        muiTableHeadCellProps: {
+          align: 'right',
+        },
         Cell: ({ row }) => (
           <DecimalWithSuffix
             value={sumLineSelectedQuantity(row.original)}
@@ -160,16 +168,6 @@ export function QuoteComparisonMatrix({
   );
 
   const [expanded, setExpanded] = useState<MRT_ExpandedState>({});
-
-  useEffect(() => {
-    setExpanded(
-      Object.fromEntries(
-        pagedTableData
-          .filter((row) => row.offers.length > 0)
-          .map((row) => [row.id, true]),
-      ),
-    );
-  }, [pagedTableData]);
 
   const table = useAppMaterialReactTable({
     columns,
@@ -250,29 +248,6 @@ export function QuoteComparisonMatrix({
         </Typography>
       ) : !hasOffers ? (
         <Typography color="text.secondary">{t('comparison.empty')}</Typography>
-      ) : isMobile ? (
-        <Stack spacing={1}>
-          <ComparisonMobileCards
-            rows={pagedTableData}
-            companyId={companyId}
-            selectionEnabled={selectionEnabled}
-            materialRequestId={requestId}
-          />
-          <TablePagination
-            component="div"
-            count={tableData.length}
-            page={pagination.pageIndex}
-            onPageChange={(_event, nextPage) =>
-              setPagination((current) => ({
-                ...current,
-                pageIndex: nextPage,
-              }))
-            }
-            rowsPerPage={pagination.pageSize}
-            rowsPerPageOptions={[PAGE_SIZE]}
-            onRowsPerPageChange={() => undefined}
-          />
-        </Stack>
       ) : (
         <Box>
           <MaterialReactTable table={table} />

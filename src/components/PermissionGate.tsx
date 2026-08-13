@@ -20,8 +20,8 @@ export function PermissionGate({
     : hasPermission(permission);
 
   if (!allowed) {
-    return <>{fallback}</>;
+    return fallback;
   }
 
-  return <>{children}</>;
+  return children;
 }
