@@ -33,6 +33,7 @@
     "addLine": "添加行",
     "editLine": "编辑",
     "deleteLine": "删除",
+    "delete": "删除",
     "save": "保存",
     "saveHeader": "保存详情",
     "dismiss": "关闭",
@@ -84,6 +85,8 @@
     "inTransitMessage": "将此发货单标记为运输中？",
     "deliveredTitle": "标记为已送达",
     "deliveredMessage": "将此发货单标记为已送达？",
+    "deleteTitle": "删除运输发票",
+    "deleteMessage": "删除此运输发票草稿？此操作无法撤销。",
     "deleteLineTitle": "删除行",
     "deleteLineMessage": "从运输发票中移除此行？"
   },
@@ -110,6 +113,7 @@
     "lineAdded": "行已添加",
     "lineUpdated": "行已更新",
     "lineDeleted": "行已删除",
+    "deleted": "运输发票已删除",
     "notFound": "未找到运输发票",
     "noShippableLines": "此发票暂无可发货行。"
   }

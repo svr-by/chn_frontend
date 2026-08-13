@@ -33,6 +33,7 @@
     "addLine": "Add line",
     "editLine": "Edit",
     "deleteLine": "Delete",
+    "delete": "Delete",
     "save": "Save",
     "saveHeader": "Save details",
     "dismiss": "Dismiss",
@@ -84,6 +85,8 @@
     "inTransitMessage": "Mark this shipment as in transit?",
     "deliveredTitle": "Mark delivered",
     "deliveredMessage": "Mark this shipment as delivered?",
+    "deleteTitle": "Delete shipping invoice",
+    "deleteMessage": "Delete this draft shipping invoice? This cannot be undone.",
     "deleteLineTitle": "Delete line",
     "deleteLineMessage": "Remove this line from the shipping invoice?"
   },
@@ -110,6 +113,7 @@
     "lineAdded": "Line added",
     "lineUpdated": "Line updated",
     "lineDeleted": "Line deleted",
+    "deleted": "Shipping invoice deleted",
     "notFound": "Shipping invoice not found",
     "noShippableLines": "No shippable lines available for this invoice."
   }

@@ -17,6 +17,7 @@
     "createdAt": "已创建",
     "validUntil": "有效期至",
     "createdBy": "创建者",
+    "quoteNumber": "报价 #",
     "linesCount": "行数",
     "positionsTotal": "合计",
     "lineNumber": "#",
@@ -79,9 +80,14 @@
     "lines": "暂无可用申请行。"
   },
   "form": {
+    "number": "报价编号",
     "currency": "货币",
     "validUntil": "有效期至",
     "notes": "备注",
+    "editCurrency": "编辑货币",
+    "editNumber": "编辑报价编号",
+    "editValidUntil": "编辑有效期",
+    "editNotes": "编辑备注",
     "requestLine": "申请行",
     "quantity": "数量",
     "requestedQuantityHint": "需求数量：{{quantity}}",
@@ -109,6 +115,7 @@
   },
   "detail": {
     "fallbackTitle": "报价 {{date}}",
+    "titleWithNumber": "报价 {{number}}",
     "buyer": "买方：{{name}}",
     "supplier": "供应商：{{name}}",
     "request": "申请",
@@ -129,7 +136,8 @@
       "unitPrice": "单价",
       "offerQuantity": "数量",
       "total": "合计",
-      "leadTime": "交货期"
+      "leadTime": "交货期",
+      "notes": "备注"
     },
     "cell": {
       "unitPrice": "单价",

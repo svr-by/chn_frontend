@@ -25,10 +25,21 @@
     "inactiveCompanies": "Неактивные",
     "companyDeactivated": "Эта компания деактивирована. Активируйте её в профиле или переключите компанию."
   },
+  "actions": {
+    "more": "Ещё действия"
+  },
   "lineage": {
     "open": "Открыть трассировку"
   },
+
   "requestLine": {
-    "cancelledOnRequest": "Отменена в заявке"
+    "cancelledOnRequest": "Отменена в заявке",
+    "lineNumber": "Строка {{number}}"
+  },
+
+  "createdAt": "Создано: {{date}}",
+
+  "documentStatus": {
+    "progress": "Статус документа"
   }
 }

@@ -73,5 +73,9 @@
   "MAPPING_NOT_FOUND": "未找到映射。",
   "MAPPING_ALREADY_EXISTS": "已存在使用此键的映射。",
   "EXPORT_JOB_NOT_FOUND": "未找到导出任务。",
-  "EXPORT_JOB_NOT_READY": "导出文件尚未就绪。"
+  "EXPORT_JOB_NOT_READY": "导出文件尚未就绪。",
+  "REQUEST_DISTRIBUTION_NOT_EDITABLE": "此分配已无法编辑。",
+  "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "无法移除此行——供应商已在报价中包含它。",
+  "QUOTE_NUMBER_DUPLICATE_TODAY": "该报价编号今天已使用过。",
+  "INVOICE_CURRENCY_MISMATCH": "发票货币与所选行项目的货币不匹配。"
 }

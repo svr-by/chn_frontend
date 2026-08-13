@@ -85,7 +85,7 @@
   "actions": {
     "new": "新申请",
     "import": "导入 CSV",
-    "importFromFile": "从文件导入",
+    "importFromFile": "进口",
     "applyImport": "应用到表单",
     "inbound": "入站申请",
     "distribute": "分发",
@@ -96,7 +96,7 @@
     "submit": "提交",
     "close": "关闭",
     "delete": "删除",
-    "addLine": "添加行",
+    "addLine": "添加",
     "editLine": "编辑",
     "editTitle": "编辑标题",
     "deleteLine": "删除",
@@ -148,6 +148,10 @@
     "headerSection": "申请详情",
     "title": "标题",
     "editTitle": "编辑标题",
+    "editPriority": "编辑优先级",
+    "editAssignee": "编辑负责人",
+    "editDueDate": "编辑截止日期",
+    "editNotes": "编辑备注",
     "number": "编号",
     "date": "日期",
     "priority": "优先级",
@@ -193,8 +197,8 @@
     "assignee": "负责人：{{name}}",
     "priority": "优先级：{{priority}}",
     "dueDate": "截止日期：{{date}}",
-    "createdAt": "创建于 {{date}}",
-    "submittedAt": "已提交 {{date}}",
+    "createdAt": "创建于：{{date}}",
+    "submittedAt": "已提交：{{date}}",
     "selection": "选择"
   },
   "toast": {
@@ -243,14 +247,17 @@
     "rejected": "供应商已拒绝此申请",
     "rejectedWithReason": "供应商已拒绝此申请：{{reason}}",
     "toggleLine": "将第 {{line}} 行分配给 {{supplier}}",
+    "lineHasQuote": "无法移除此行——供应商已在报价中包含它。",
     "confirmEditTitle": "更新行选择？",
     "confirmEditMessage": "将 {{count}} 个所选行项目发送给 {{supplier}}？其草稿报价（如有）将被替换。",
+    "confirmEditWarning": "若供应商已对该行提交报价（非草稿），则无法移除。",
     "confirmResendTitle": "重新发送？",
     "confirmResendMessage": "以当前行选择再次向 {{supplier}} 发送申请？",
     "confirmRemoveTitle": "移除供应商？",
     "confirmRemoveMessage": "从该申请中移除 {{supplier}}？其草稿报价（如有）将被删除。",
     "toast": {
-      "removed": "已移除供应商分发"
+      "removed": "已移除供应商分发",
+      "updated": "行项目选择已更新"
     },
     "columns": {
       "supplier": "供应商",

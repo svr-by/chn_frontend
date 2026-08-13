@@ -17,6 +17,7 @@
     "createdAt": "Created",
     "validUntil": "Valid until",
     "createdBy": "Created by",
+    "quoteNumber": "Quote #",
     "linesCount": "Lines",
     "positionsTotal": "Total",
     "lineNumber": "#",
@@ -79,9 +80,14 @@
     "lines": "No request lines available yet."
   },
   "form": {
+    "number": "Quote number",
     "currency": "Currency",
     "validUntil": "Valid until",
     "notes": "Notes",
+    "editCurrency": "Edit currency",
+    "editNumber": "Edit quote number",
+    "editValidUntil": "Edit valid until",
+    "editNotes": "Edit notes",
     "requestLine": "Request line",
     "quantity": "Quantity",
     "requestedQuantityHint": "Requested: {{quantity}}",
@@ -109,6 +115,7 @@
   },
   "detail": {
     "fallbackTitle": "Quote {{date}}",
+    "titleWithNumber": "Quote {{number}}",
     "buyer": "Buyer: {{name}}",
     "supplier": "Supplier: {{name}}",
     "request": "Request",
@@ -129,7 +136,8 @@
       "unitPrice": "Unit price",
       "offerQuantity": "Qty",
       "total": "Total",
-      "leadTime": "Lead time"
+      "leadTime": "Lead time",
+      "notes": "Notes"
     },
     "cell": {
       "unitPrice": "Unit price",

@@ -85,7 +85,7 @@
   "actions": {
     "new": "New request",
     "import": "Import CSV",
-    "importFromFile": "Import from file",
+    "importFromFile": "Import",
     "applyImport": "Apply to form",
     "inbound": "Inbound requests",
     "distribute": "Distribute",
@@ -96,7 +96,7 @@
     "submit": "Submit",
     "close": "Close",
     "delete": "Delete",
-    "addLine": "Add line",
+    "addLine": "Add",
     "editLine": "Edit",
     "editTitle": "Edit title",
     "deleteLine": "Delete",
@@ -148,6 +148,10 @@
     "headerSection": "Request details",
     "title": "Title",
     "editTitle": "Edit title",
+    "editPriority": "Edit priority",
+    "editAssignee": "Edit assignee",
+    "editDueDate": "Edit due date",
+    "editNotes": "Edit notes",
     "number": "Number",
     "date": "Date",
     "priority": "Priority",
@@ -189,12 +193,12 @@
   "detail": {
     "title": "Request {{title}}",
     "fallbackTitle": "Request {{id}}",
-    "createdBy": "Created by {{name}}",
-    "assignee": "Assignee {{name}}",
+    "createdBy": "Created by: {{name}}",
+    "assignee": "Assignee: {{name}}",
     "priority": "Priority {{priority}}",
-    "dueDate": "Due {{date}}",
-    "createdAt": "Created {{date}}",
-    "submittedAt": "Submitted {{date}}",
+    "dueDate": "Due: {{date}}",
+    "createdAt": "Created: {{date}}",
+    "submittedAt": "Submitted: {{date}}",
     "selection": "Selection"
   },
   "toast": {
@@ -243,14 +247,17 @@
     "rejected": "Supplier rejected this request",
     "rejectedWithReason": "Supplier rejected this request: {{reason}}",
     "toggleLine": "Assign line {{line}} to {{supplier}}",
+    "lineHasQuote": "Cannot remove this line — the supplier already quoted it.",
     "confirmEditTitle": "Update line selection?",
     "confirmEditMessage": "Send {{count}} selected position(s) to {{supplier}}? Their draft quote (if any) will be replaced.",
+    "confirmEditWarning": "Removing lines that the supplier already quoted (non-draft) will be rejected.",
     "confirmResendTitle": "Send again?",
     "confirmResendMessage": "Send the request to {{supplier}} again with the current line selection?",
     "confirmRemoveTitle": "Remove supplier?",
     "confirmRemoveMessage": "Remove {{supplier}} from this request? Their draft quote (if any) will be deleted.",
     "toast": {
-      "removed": "Supplier distribution removed"
+      "removed": "Supplier distribution removed",
+      "updated": "Line selection updated"
     },
     "columns": {
       "supplier": "Supplier",

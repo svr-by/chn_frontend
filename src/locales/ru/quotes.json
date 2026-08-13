@@ -17,6 +17,7 @@
     "createdAt": "Создано",
     "validUntil": "Действительно до",
     "createdBy": "Создал(а)",
+    "quoteNumber": "КП №",
     "linesCount": "Позиций",
     "positionsTotal": "Итого",
     "lineNumber": "#",
@@ -79,9 +80,14 @@
     "lines": "Позиции заявки пока недоступны."
   },
   "form": {
+    "number": "Номер КП",
     "currency": "Валюта",
     "validUntil": "Действительно до",
     "notes": "Примечания",
+    "editCurrency": "Изменить валюту",
+    "editNumber": "Изменить номер КП",
+    "editValidUntil": "Изменить срок действия",
+    "editNotes": "Изменить примечания",
     "requestLine": "Позиция заявки",
     "quantity": "Количество",
     "requestedQuantityHint": "Запрошено: {{quantity}}",
@@ -109,6 +115,7 @@
   },
   "detail": {
     "fallbackTitle": "Коммерческое предложение {{date}}",
+    "titleWithNumber": "КП {{number}}",
     "buyer": "Покупатель: {{name}}",
     "supplier": "Поставщик: {{name}}",
     "request": "Заявка",
@@ -129,7 +136,8 @@
       "unitPrice": "Цена за единицу",
       "offerQuantity": "Кол-во",
       "total": "Итого",
-      "leadTime": "Срок"
+      "leadTime": "Срок",
+      "notes": "Примечания"
     },
     "cell": {
       "unitPrice": "Цена за единицу",

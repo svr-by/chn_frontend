@@ -25,10 +25,21 @@
     "inactiveCompanies": "已停用",
     "companyDeactivated": "该公司已停用。请在个人资料中重新激活，或切换公司。"
   },
+  "actions": {
+    "more": "更多操作"
+  },
   "lineage": {
     "open": "打开溯源"
   },
+
   "requestLine": {
-    "cancelledOnRequest": "已在申请中取消"
+    "cancelledOnRequest": "已在申请中取消",
+    "lineNumber": "行 {{number}}"
+  },
+
+  "createdAt": "创建于：{{date}}",
+
+  "documentStatus": {
+    "progress": "单据状态"
   }
 }

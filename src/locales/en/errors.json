@@ -71,5 +71,9 @@
   "MAPPING_NOT_FOUND": "Mapping not found.",
   "MAPPING_ALREADY_EXISTS": "A mapping with this key already exists.",
   "EXPORT_JOB_NOT_FOUND": "Export job not found.",
-  "EXPORT_JOB_NOT_READY": "Export file is not ready yet."
+  "EXPORT_JOB_NOT_READY": "Export file is not ready yet.",
+  "REQUEST_DISTRIBUTION_NOT_EDITABLE": "This distribution can no longer be edited.",
+  "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "Cannot remove this line — the supplier already quoted it.",
+  "QUOTE_NUMBER_DUPLICATE_TODAY": "This quote number was already used today.",
+  "INVOICE_CURRENCY_MISMATCH": "Invoice currency does not match the selected lines."
 }

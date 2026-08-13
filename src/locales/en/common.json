@@ -26,10 +26,21 @@
     "inactiveCompanies": "Inactive",
     "companyDeactivated": "This company is deactivated. Reactivate it in Profile or switch company."
   },
+  "actions": {
+    "more": "More actions"
+  },
   "lineage": {
     "open": "Open trace"
   },
+
   "requestLine": {
-    "cancelledOnRequest": "Cancelled on request"
+    "cancelledOnRequest": "Cancelled on request",
+    "lineNumber": "Line {{number}}"
+  },
+
+  "createdAt": "Created: {{date}}",
+
+  "documentStatus": {
+    "progress": "Document status"
   }
 }

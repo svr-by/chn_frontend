@@ -73,5 +73,9 @@
   "MAPPING_NOT_FOUND": "Сопоставление не найдено.",
   "MAPPING_ALREADY_EXISTS": "Сопоставление с таким ключом уже существует.",
   "EXPORT_JOB_NOT_FOUND": "Задание экспорта не найдено.",
-  "EXPORT_JOB_NOT_READY": "Файл экспорта ещё не готов."
+  "EXPORT_JOB_NOT_READY": "Файл экспорта ещё не готов.",
+  "REQUEST_DISTRIBUTION_NOT_EDITABLE": "Это распределение больше нельзя редактировать.",
+  "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "Нельзя убрать позицию — поставщик уже добавил её в КП.",
+  "QUOTE_NUMBER_DUPLICATE_TODAY": "Такой номер КП уже использовался сегодня.",
+  "INVOICE_CURRENCY_MISMATCH": "Валюта счёта не совпадает с валютой выбранных позиций."
 }

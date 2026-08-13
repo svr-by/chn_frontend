@@ -85,7 +85,7 @@
   "actions": {
     "new": "Новая заявка",
     "import": "Импорт CSV",
-    "importFromFile": "Импорт из файла",
+    "importFromFile": "Импорт",
     "applyImport": "Применить к форме",
     "inbound": "Входящие заявки",
     "distribute": "Распределить",
@@ -96,7 +96,7 @@
     "submit": "Утвердить",
     "close": "Закрыть",
     "delete": "Удалить",
-    "addLine": "Добавить позицию",
+    "addLine": "Добавить",
     "editLine": "Редактировать",
     "editTitle": "Изменить название",
     "deleteLine": "Удалить",
@@ -148,6 +148,10 @@
     "headerSection": "Данные заявки",
     "title": "Название",
     "editTitle": "Изменить название",
+    "editPriority": "Изменить приоритет",
+    "editAssignee": "Изменить исполнителя",
+    "editDueDate": "Изменить срок",
+    "editNotes": "Изменить примечания",
     "number": "Номер",
     "date": "Дата",
     "priority": "Приоритет",
@@ -193,8 +197,8 @@
     "assignee": "Исполнитель: {{name}}",
     "priority": "Приоритет: {{priority}}",
     "dueDate": "Срок: {{date}}",
-    "createdAt": "Создано {{date}}",
-    "submittedAt": "Утверждено {{date}}",
+    "createdAt": "Создано: {{date}}",
+    "submittedAt": "Утверждено: {{date}}",
     "selection": "Выбор"
   },
   "toast": {
@@ -243,14 +247,17 @@
     "rejected": "Поставщик отклонил эту заявку",
     "rejectedWithReason": "Поставщик отклонил эту заявку: {{reason}}",
     "toggleLine": "Назначить позицию {{line}} поставщику {{supplier}}",
+    "lineHasQuote": "Нельзя убрать позицию — поставщик уже добавил её в КП.",
     "confirmEditTitle": "Изменить выбор позиций?",
     "confirmEditMessage": "Отправить {{supplier}} выбранные позиции ({{count}})? Черновик КП поставщика (если есть) будет заменён.",
+    "confirmEditWarning": "Нельзя убрать позиции, по которым поставщик уже создал строки КП (не в черновике).",
     "confirmResendTitle": "Отправить снова?",
     "confirmResendMessage": "Отправить заявку поставщику {{supplier}} снова с текущим выбором позиций?",
     "confirmRemoveTitle": "Убрать поставщика?",
     "confirmRemoveMessage": "Убрать {{supplier}} из этой заявки? Черновик КП поставщика (если есть) будет удалён.",
     "toast": {
-      "removed": "Распределение поставщика удалено"
+      "removed": "Распределение поставщика удалено",
+      "updated": "Выбор позиций обновлён"
     },
     "columns": {
       "supplier": "Поставщик",
@@ -273,9 +280,9 @@
       "distributedAt": "Распределено"
     },
     "actions": {
-      "createQuote": "Создать коммерческое предложение",
+      "createQuote": "Создать КП",
       "submitOnCreate": "Отправить при создании",
-      "openQuote": "Открыть коммерческое предложение",
+      "openQuote": "Открыть КП",
       "reject": "Отклонить"
     },
     "reject": {
