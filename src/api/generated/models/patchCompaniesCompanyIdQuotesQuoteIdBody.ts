@@ -10,6 +10,8 @@ export type PatchCompaniesCompanyIdQuotesQuoteIdBody = {
    * @maxLength 3
    */
   currency?: string;
+  /** @minLength 1 */
+  number?: string;
   validUntil?: PatchCompaniesCompanyIdQuotesQuoteIdBodyValidUntil;
   notes?: PatchCompaniesCompanyIdQuotesQuoteIdBodyNotes;
 };

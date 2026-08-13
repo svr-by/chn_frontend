@@ -6,6 +6,11 @@ import type { PostCompaniesCompanyIdInvoicesBodyLinesItem } from './postCompanie
 export type PostCompaniesCompanyIdInvoicesBody = {
   /** @minLength 1 */
   number: string;
+  /**
+   * @minLength 3
+   * @maxLength 3
+   */
+  currency: string;
   /** @minLength 1 */
   notes?: string;
   /** @minItems 1 */

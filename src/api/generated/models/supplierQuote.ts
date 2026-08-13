@@ -3,6 +3,7 @@
  */
 import type { SupplierQuoteCreatedByUser } from './supplierQuoteCreatedByUser';
 import type { SupplierQuoteStatus } from './supplierQuoteStatus';
+import type { SupplierQuoteNumber } from './supplierQuoteNumber';
 import type { SupplierQuoteValidUntil } from './supplierQuoteValidUntil';
 import type { SupplierQuoteNotes } from './supplierQuoteNotes';
 import type { SupplierQuoteSubmittedAt } from './supplierQuoteSubmittedAt';
@@ -17,6 +18,7 @@ export interface SupplierQuote {
   createdByUser: SupplierQuoteCreatedByUser;
   status: SupplierQuoteStatus;
   currency: string;
+  number: SupplierQuoteNumber;
   validUntil: SupplierQuoteValidUntil;
   notes: SupplierQuoteNotes;
   submittedAt: SupplierQuoteSubmittedAt;

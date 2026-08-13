@@ -12,6 +12,8 @@ export type PostCompaniesCompanyIdQuotesBody = {
    */
   currency?: string;
   /** @minLength 1 */
+  number?: string;
+  /** @minLength 1 */
   notes?: string;
   submitOnCreate?: boolean;
   lines?: PostCompaniesCompanyIdQuotesBodyLinesItem[];

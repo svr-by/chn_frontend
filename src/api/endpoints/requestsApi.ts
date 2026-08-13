@@ -10,6 +10,7 @@ import {
   getGetCompaniesCompanyIdRequestsRequestIdQuotesComparisonUrl,
   getGetCompaniesCompanyIdRequestsRequestIdUrl,
   getGetCompaniesCompanyIdRequestsUrl,
+  getPatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdUrl,
   getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl,
@@ -34,6 +35,8 @@ import type {
   GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
   PatchCompaniesCompanyIdRequestsRequestId200,
   PatchCompaniesCompanyIdRequestsRequestIdBody,
+  PatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionId200,
+  PatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdBody,
   PatchCompaniesCompanyIdRequestsRequestIdLinesLineId200,
   PatchCompaniesCompanyIdRequestsRequestIdLinesLineIdBody,
   PostCompaniesCompanyIdRequests201,
@@ -76,6 +79,17 @@ function requestLineMutationTags(companyId: string, requestId: string) {
     { type: 'Requests' as const, id: `${requestId}-comparison` },
     ...inboundTags(companyId),
     { type: 'Requests' as const, id: `${requestId}-inbound` },
+    { type: 'Quotes' as const, id: `request-${requestId}` },
+  ];
+}
+
+function distributionMutationTags(companyId: string, requestId: string) {
+  return [
+    ...requestDetailTags(companyId, requestId),
+    { type: 'Requests' as const, id: `${requestId}-comparison` },
+    ...inboundTags(companyId),
+    { type: 'Requests' as const, id: `${requestId}-inbound` },
+    { type: 'Requests' as const, id: `${requestId}-distributions` },
     { type: 'Quotes' as const, id: `request-${requestId}` },
   ];
 }
@@ -333,11 +347,28 @@ export const requestsApi = baseApi.injectEndpoints({
         ),
         method: 'DELETE',
       }),
-      invalidatesTags: (_result, _error, { companyId, requestId }) => [
-        ...requestDetailTags(companyId, requestId),
-        ...inboundTags(companyId),
-        { type: 'Requests', id: `${requestId}-distributions` },
-      ],
+      invalidatesTags: (_result, _error, { companyId, requestId }) =>
+        distributionMutationTags(companyId, requestId),
+    }),
+    updateRequestDistribution: builder.mutation<
+      PatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionId200,
+      {
+        companyId: string;
+        requestId: string;
+        distributionId: string;
+      } & PatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdBody
+    >({
+      query: ({ companyId, requestId, distributionId, ...body }) => ({
+        url: getPatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdUrl(
+          companyId,
+          requestId,
+          distributionId,
+        ),
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId, requestId }) =>
+        distributionMutationTags(companyId, requestId),
     }),
     getQuoteComparison: builder.query<
       GetCompaniesCompanyIdRequestsRequestIdQuotesComparison200,
@@ -372,6 +403,7 @@ export const {
   useListInboundRequestsQuery,
   useDistributeRequestMutation,
   useDeleteRequestDistributionMutation,
+  useUpdateRequestDistributionMutation,
   useRejectInboundRequestMutation,
   useGetRequestDistributionsQuery,
   useGetQuoteComparisonQuery,

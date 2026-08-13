@@ -1,5 +1,6 @@
 import {
   getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl,
+  getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl,
   getGetCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl,
   getGetCompaniesCompanyIdShippingInvoicesUrl,
   getPatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdUrl,
@@ -202,6 +203,27 @@ export const shippingInvoicesApi = baseApi.injectEndpoints({
         { companyId, shippingInvoiceId, supplierInvoiceId },
       ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
     }),
+    deleteShippingInvoice: builder.mutation<
+      void,
+      {
+        companyId: string;
+        shippingInvoiceId: string;
+        supplierInvoiceId?: string;
+      }
+    >({
+      query: ({ companyId, shippingInvoiceId }) => ({
+        url: getDeleteCompaniesCompanyIdShippingInvoicesShippingInvoiceIdUrl(
+          companyId,
+          shippingInvoiceId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, shippingInvoiceId, supplierInvoiceId },
+      ) => shippingDetailTags(companyId, shippingInvoiceId, supplierInvoiceId),
+    }),
     issueShippingInvoice: builder.mutation<
       PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdIssue200,
       {
@@ -276,6 +298,7 @@ export const {
   useAddShippingLineMutation,
   useUpdateShippingLineMutation,
   useDeleteShippingLineMutation,
+  useDeleteShippingInvoiceMutation,
   useIssueShippingInvoiceMutation,
   useMarkShippingInTransitMutation,
   useMarkShippingDeliveredMutation,
