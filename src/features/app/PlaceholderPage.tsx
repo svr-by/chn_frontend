@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Typography } from '@mui/material';
 
 import { navConfig } from '@/lib/navConfig';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 interface PlaceholderPageProps {
   path: string;

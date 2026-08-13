@@ -19,7 +19,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { resolveNotificationPath } from '@/lib/notificationRoutes';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 export function NotificationsPage() {
   const { t } = useTranslation('notifications');

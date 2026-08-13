@@ -34,7 +34,7 @@ import {
 } from '@/features/requests/lib/draftRequestLine';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 type FormTab = 'lines' | 'notes';
 

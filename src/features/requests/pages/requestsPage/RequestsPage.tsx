@@ -37,7 +37,7 @@ import {
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const PAGE_SIZE = 20;
 

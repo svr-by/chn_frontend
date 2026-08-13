@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from './PageShell';
 import { renderWithProviders } from '@/test/render';
 
 describe('PageShell', () => {

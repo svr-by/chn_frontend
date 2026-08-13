@@ -15,7 +15,7 @@ import { InvitationsTable } from '@/features/settings/components/InvitationsTabl
 import { MembersTable } from '@/features/settings/components/MembersTable';
 import { RemoveMemberDialog } from '@/features/settings/components/RemoveMemberDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const TAB_KEYS = ['members', 'invitations'] as const;
 type TabKey = (typeof TAB_KEYS)[number];

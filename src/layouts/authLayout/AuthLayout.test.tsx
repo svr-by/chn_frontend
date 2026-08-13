@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { AuthLayout } from '@/layouts/AuthLayout';
+import { AuthLayout } from './AuthLayout';
 import { authStorage } from '@/lib/authStorage';
 import { createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';

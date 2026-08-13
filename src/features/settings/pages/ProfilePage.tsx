@@ -26,7 +26,7 @@ import { CompanyStatusPanel } from '@/features/settings/components/CompanyStatus
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 import { usePermissions } from '@/hooks/usePermissions';
 import { isCompanyOperational } from '@/lib/permissions';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 interface InfoRowProps {
   icon: ReactNode;

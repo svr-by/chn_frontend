@@ -8,7 +8,7 @@ import { ExportsPanel } from '@/features/integrations/components/ExportsPanel';
 import { MappingsPanel } from '@/features/integrations/components/MappingsPanel';
 import { WebhooksPanel } from '@/features/integrations/components/WebhooksPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const TAB_KEYS = ['api-keys', 'mappings', 'webhooks', 'exports'] as const;
 type TabKey = (typeof TAB_KEYS)[number];

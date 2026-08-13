@@ -22,7 +22,7 @@ import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { ConsolidationCreateDialog } from '@/features/consolidations/components/ConsolidationCreateDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const PAGE_SIZE = 20;
 

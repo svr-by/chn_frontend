@@ -30,7 +30,7 @@ import { useImportJobPolling } from '@/hooks/useImportJobPolling';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { buildImportFormData } from '@/lib/buildImportFormData';
 import { ImportJobStatus } from '@/api/generated/models/importJobStatus';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const DEFAULT_FORMAT: ImportFormatValues = {
   fieldDelimiter: ',',

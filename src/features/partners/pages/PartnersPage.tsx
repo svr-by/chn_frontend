@@ -19,7 +19,7 @@ import { ActivePartnersTable } from '@/features/partners/components/ActivePartne
 import { PartnerInviteDialog } from '@/features/partners/components/PartnerInviteDialog';
 import { PartnerInvitationsTable } from '@/features/partners/components/PartnerInvitationsTable';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 type PartnersTab = 'partners' | 'invitations';
 

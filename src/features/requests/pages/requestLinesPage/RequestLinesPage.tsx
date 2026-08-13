@@ -6,7 +6,7 @@ import { InboundRequestLinesPanel } from '@/features/requests/components/inbound
 import { OutboundRequestLinesPanel } from '@/features/requests/components/outboundRequestLinesPanel/OutboundRequestLinesPanel';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 import type { ListDirection } from '@/lib/preferredDirection';
 
 export function RequestLinesPage() {

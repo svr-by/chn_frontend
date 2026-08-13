@@ -3,7 +3,7 @@ import { screen } from '@testing-library/react';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { AppLayout } from '@/layouts/AppLayout';
+import { AppLayout } from './AppLayout';
 import { createMembership, createTestUser, COMPANY_ID } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 import { AppThemeProvider } from '@/app/AppThemeProvider';

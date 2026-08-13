@@ -29,7 +29,7 @@ import {
   countActiveQuotesFilters,
   type QuotesFiltersValue,
 } from '@/features/quotes/lib/quotesFilters';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 import type { ListDirection } from '@/lib/preferredDirection';
 
 const PAGE_SIZE = 20;
