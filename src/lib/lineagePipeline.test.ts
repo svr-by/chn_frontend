@@ -67,5 +67,28 @@ describe('buildLineagePipeline', () => {
     );
     expect(invoicesStep?.items).toHaveLength(1);
     expect(invoicesStep?.items[0]?.link).toBe(`/app/invoices/${INVOICE_ID}`);
+    expect(invoicesStep?.items[0]?.meta?.lineNumber).toBe('1');
+    expect(invoicesStep?.items[0]?.meta?.companyName).toBe('Supplier Ltd');
+  });
+
+  it('includes line numbers for stages that expose them', () => {
+    const steps = buildLineagePipeline(createLineageTrace());
+    expect(steps.find((s) => s.stage === 'request')?.items[0]?.meta?.lineNumber).toBe(
+      '1',
+    );
+    expect(steps.find((s) => s.stage === 'quotes')?.items[0]?.meta?.lineNumber).toBe(
+      '1',
+    );
+  });
+
+  it('includes company and createdAt when available from the API', () => {
+    const steps = buildLineagePipeline(createLineageTrace());
+    const requestItem = steps.find((s) => s.stage === 'request')?.items[0];
+    const quoteItem = steps.find((s) => s.stage === 'quotes')?.items[0];
+
+    expect(requestItem?.meta?.createdAt).toBe('2026-01-01T00:00:00.000Z');
+    expect(requestItem?.meta?.companyName).toBeUndefined();
+    expect(quoteItem?.meta?.companyName).toBe('Supplier Ltd');
+    expect(quoteItem?.meta?.createdAt).toBeUndefined();
   });
 });

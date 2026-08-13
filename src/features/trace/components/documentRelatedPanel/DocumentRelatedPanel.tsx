@@ -175,6 +175,20 @@ function RelatedNodeCard({
               {node.companyName}
             </Typography>
           ) : null}
+
+          {node.createdBy?.name ? (
+            <Typography variant="body2" color="text.secondary">
+              {t('related.createdBy', { name: node.createdBy.name })}
+            </Typography>
+          ) : null}
+
+          {node.createdAt ? (
+            <Typography variant="body2" color="text.secondary">
+              {t('related.createdAt', {
+                date: new Date(node.createdAt).toLocaleDateString(),
+              })}
+            </Typography>
+          ) : null}
         </Stack>
       </CardContent>
     </Card>

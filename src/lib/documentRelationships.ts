@@ -100,6 +100,6 @@ function sortStageNodes(
     if (b.id === currentDocumentId) {
       return 1;
     }
-    return a.label.localeCompare(b.label);
+    return (a.label ?? '').localeCompare(b.label ?? '');
   });
 }

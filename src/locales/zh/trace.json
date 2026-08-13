@@ -34,16 +34,21 @@
     "loading": "正在加载溯源…",
     "notFound": "未找到溯源追踪"
   },
+  "tabs": {
+    "ariaLabel": "溯源详情分区",
+    "pipeline": "图谱",
+    "events": "事件"
+  },
   "pipeline": {
     "emptyStage": "尚未到达",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
-    "invoiceMeta": "{{supplier}} · {{payments}} 笔付款",
+    "invoiceMeta": "{{payments}} 笔付款",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "运输：{{mode}}",
     "consolidationViaShipping": "通过运输发票",
     "itemLabel": {
-      "request": "申请：{{label}} · 行 {{lineNumber}}",
-      "quotes": "供应商：{{label}}",
+      "request": "申请：{{label}}",
+      "quotes": "报价：{{label}}",
       "selections": "数量：{{label}}",
       "invoices": "发票：{{label}}",
       "shipments": "发运：{{label}}",
@@ -74,6 +79,8 @@
   "related": {
     "empty": "暂无关联文档。",
     "current": "当前",
+    "createdAt": "创建于：{{date}}",
+    "createdBy": "创建人：{{name}}",
     "documentTypes": {
       "MATERIAL_REQUEST": "申请",
       "SUPPLIER_QUOTE": "报价",

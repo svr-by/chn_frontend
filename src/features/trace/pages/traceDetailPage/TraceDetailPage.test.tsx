@@ -1,10 +1,11 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useGetLineageTraceQuery } from '@/api/endpoints/traceApi';
-import { TraceDetailPage } from '@/features/trace/pages/TraceDetailPage';
+import { TraceDetailPage } from '@/features/trace/pages/traceDetailPage/TraceDetailPage';
 import {
   COMPANY_ID,
   createLineageTrace,
@@ -86,8 +87,42 @@ describe('TraceDetailPage', () => {
     );
 
     expect(screen.getByText('Lineage trace')).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Graph' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Events' })).toBeInTheDocument();
     expect(screen.getAllByText('Office paper').length).toBeGreaterThan(0);
-    expect(screen.getByText('Supplier Ltd')).toBeInTheDocument();
+    expect(screen.getAllByText(/Supplier Ltd/).length).toBeGreaterThan(0);
+  });
+
+  it('shows events panel when events tab is selected', async () => {
+    const user = userEvent.setup();
+    vi.mocked(useGetLineageTraceQuery).mockReturnValue({
+      data: createLineageTrace(),
+      isLoading: false,
+      isFetching: false,
+      error: undefined,
+      refetch: vi.fn(),
+    } as never);
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/trace/:lineageId" element={<TraceDetailPage />} />
+      </Routes>,
+      {
+        preloadedState: {
+          auth: {
+            activeCompanyId: COMPANY_ID,
+          } as never,
+        },
+        route: `/app/trace/${LINEAGE_ID}`,
+      },
+    );
+
+    await user.click(screen.getByRole('tab', { name: 'Events' }));
+
+    expect(
+      await screen.findByText('No audit events for this lineage.'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Supplier Ltd')).not.toBeInTheDocument();
   });
 
   it('redirects to search on 404', async () => {

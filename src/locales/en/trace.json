@@ -34,16 +34,21 @@
     "loading": "Loading trace…",
     "notFound": "Lineage trace not found"
   },
+  "tabs": {
+    "ariaLabel": "Lineage detail sections",
+    "pipeline": "Graph",
+    "events": "Events"
+  },
   "pipeline": {
     "emptyStage": "Not reached yet",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
-    "invoiceMeta": "{{supplier}} · {{payments}} payment(s)",
+    "invoiceMeta": "{{payments}} payment(s)",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "Transport: {{mode}}",
     "consolidationViaShipping": "Via shipping invoice",
     "itemLabel": {
-      "request": "Request: {{label}} · line {{lineNumber}}",
-      "quotes": "Supplier: {{label}}",
+      "request": "Request: {{label}}",
+      "quotes": "Quotation: {{label}}",
       "selections": "Quantity: {{label}}",
       "invoices": "Invoice: {{label}}",
       "shipments": "Shipment: {{label}}",
@@ -74,6 +79,8 @@
   "related": {
     "empty": "No related documents.",
     "current": "Current",
+    "createdAt": "Created: {{date}}",
+    "createdBy": "Created by: {{name}}",
     "documentTypes": {
       "MATERIAL_REQUEST": "Request",
       "SUPPLIER_QUOTE": "Quote",

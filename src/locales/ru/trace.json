@@ -34,16 +34,21 @@
     "loading": "Загрузка трассировки…",
     "notFound": "Трассировка происхождения не найдена"
   },
+  "tabs": {
+    "ariaLabel": "Разделы трассировки",
+    "pipeline": "Граф",
+    "events": "События"
+  },
   "pipeline": {
     "emptyStage": "Ещё не достигнуто",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
-    "invoiceMeta": "{{supplier}} · {{payments}} платеж(ей)",
+    "invoiceMeta": "{{payments}} платеж(ей)",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
     "consolidationTransport": "Транспорт: {{mode}}",
     "consolidationViaShipping": "Через транспортную накладную",
     "itemLabel": {
-      "request": "Заявка: {{label}} · строка {{lineNumber}}",
-      "quotes": "Поставщик: {{label}}",
+      "request": "Заявка: {{label}}",
+      "quotes": "Предложение: {{label}}",
       "selections": "Кол-во: {{label}}",
       "invoices": "Счёт: {{label}}",
       "shipments": "Отгрузка: {{label}}",
@@ -74,6 +79,8 @@
   "related": {
     "empty": "Связанных документов нет.",
     "current": "Текущий",
+    "createdAt": "Создано: {{date}}",
+    "createdBy": "Сотрудник: {{name}}",
     "documentTypes": {
       "MATERIAL_REQUEST": "Заявка",
       "SUPPLIER_QUOTE": "Коммерческое предложение",

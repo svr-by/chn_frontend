@@ -6,6 +6,7 @@ import {
 } from '@/lib/documentRelationships';
 import {
   createDocumentRelationships,
+  createDocumentRelationshipNode,
   INVOICE_ID,
   REQUEST_ID,
 } from '@/test/fixtures';
@@ -17,34 +18,34 @@ describe('documentRelationships', () => {
   it('groups nodes into stages and keeps current first in its stage', () => {
     const graph = createDocumentRelationships({
       nodes: [
-        {
+        createDocumentRelationshipNode({
           id: REQUEST_ID,
           documentType: 'MATERIAL_REQUEST',
           status: 'QUOTING',
           label: 'Office supplies',
           companyName: 'Buyer Corp',
-        },
-        {
+        }),
+        createDocumentRelationshipNode({
           id: QUOTE_ID,
           documentType: 'SUPPLIER_QUOTE',
           status: 'SUBMITTED',
           label: 'Q-12',
           companyName: 'Supplier Corp',
-        },
-        {
+        }),
+        createDocumentRelationshipNode({
           id: INVOICE_ID,
           documentType: 'INVOICE',
           status: 'ISSUED',
           label: 'INV-001',
           companyName: 'Supplier Corp',
-        },
-        {
+        }),
+        createDocumentRelationshipNode({
           id: PAYMENT_ID,
           documentType: 'PAYMENT',
           status: 'CONFIRMED',
           label: 'PAY-001',
           companyName: 'Buyer Corp',
-        },
+        }),
       ],
     });
 
@@ -62,28 +63,63 @@ describe('documentRelationships', () => {
   it('never uses uuid labels when resolving display text', () => {
     expect(
       getRelationshipNodeLabel(
-        {
+        createDocumentRelationshipNode({
           id: REQUEST_ID,
           documentType: 'MATERIAL_REQUEST',
           status: 'DRAFT',
           label: REQUEST_ID,
           companyName: 'Buyer Corp',
-        },
+        }),
         'Request',
       ),
     ).toBe('Buyer Corp');
 
     expect(
       getRelationshipNodeLabel(
-        {
+        createDocumentRelationshipNode({
           id: REQUEST_ID,
           documentType: 'MATERIAL_REQUEST',
           status: 'DRAFT',
           label: REQUEST_ID,
           companyName: null,
-        },
+        }),
         'Request',
       ),
     ).toBe('Request');
+  });
+
+  it('sorts nodes with null labels without throwing', () => {
+    const graph = createDocumentRelationships({
+      nodes: [
+        createDocumentRelationshipNode({
+          id: QUOTE_ID,
+          documentType: 'SUPPLIER_QUOTE',
+          status: 'SUBMITTED',
+          label: null,
+          companyName: 'Supplier Corp',
+        }),
+        createDocumentRelationshipNode({
+          id: INVOICE_ID,
+          documentType: 'INVOICE',
+          status: 'ISSUED',
+          label: 'INV-001',
+          companyName: 'Supplier Corp',
+        }),
+      ],
+    });
+
+    expect(() => buildRelatedGraphView(graph, INVOICE_ID)).not.toThrow();
+    expect(
+      getRelationshipNodeLabel(
+        createDocumentRelationshipNode({
+          id: QUOTE_ID,
+          documentType: 'SUPPLIER_QUOTE',
+          status: 'SUBMITTED',
+          label: null,
+          companyName: null,
+        }),
+        'Quote',
+      ),
+    ).toBe('Quote');
   });
 });

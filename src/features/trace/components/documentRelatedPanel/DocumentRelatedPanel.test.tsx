@@ -4,10 +4,11 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetDocumentRelationshipsQuery } from '@/api/endpoints/traceApi';
-import { DocumentRelatedPanel } from '@/features/trace/components/DocumentRelatedPanel';
+import { DocumentRelatedPanel } from '@/features/trace/components/documentRelatedPanel/DocumentRelatedPanel';
 import {
   COMPANY_ID,
   createDocumentRelationships,
+  createDocumentRelationshipNode,
   INVOICE_ID,
   REQUEST_ID,
 } from '@/test/fixtures';
@@ -60,6 +61,14 @@ describe('DocumentRelatedPanel', () => {
     expect(screen.getByText('Quoting')).toBeInTheDocument();
     expect(screen.getByText('Issued')).toBeInTheDocument();
     expect(screen.getByText('Current')).toBeInTheDocument();
+    expect(screen.getAllByText('Created by: Test User').length).toBeGreaterThan(
+      0,
+    );
+    expect(
+      screen.getAllByText(
+        `Created: ${new Date('2026-01-01T00:00:00.000Z').toLocaleDateString()}`,
+      ).length,
+    ).toBeGreaterThan(0);
 
     await user.click(screen.getByRole('link', { name: 'Office supplies' }));
     expect(screen.getByText('Request detail')).toBeInTheDocument();
@@ -89,20 +98,20 @@ describe('DocumentRelatedPanel', () => {
     vi.mocked(useGetDocumentRelationshipsQuery).mockReturnValue({
       data: createDocumentRelationships({
         nodes: [
-          {
+          createDocumentRelationshipNode({
             id: REQUEST_ID,
             documentType: 'MATERIAL_REQUEST',
             status: 'QUOTING',
             label: REQUEST_ID,
             companyName: 'Buyer Corp',
-          },
-          {
+          }),
+          createDocumentRelationshipNode({
             id: INVOICE_ID,
             documentType: 'INVOICE',
             status: 'ISSUED',
             label: INVOICE_ID,
             companyName: null,
-          },
+          }),
         ],
       }),
       isLoading: false,

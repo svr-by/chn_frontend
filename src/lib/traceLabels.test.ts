@@ -5,6 +5,7 @@ import { createLineageEvent } from '@/test/fixtures';
 import {
   getDocumentStatusLabel,
   getLineageEventLabel,
+  getPipelineItemStatusLabel,
   getPipelineStatusLabel,
   getRelationLabel,
 } from '@/lib/traceLabels';
@@ -24,6 +25,19 @@ describe('traceLabels', () => {
     expect(getDocumentStatusLabel('INVOICE', 'ISSUED', t)).toBe('Issued');
     expect(getDocumentStatusLabel('PAYMENT', 'UNKNOWN_STATUS', t)).toBe(
       'UNKNOWN_STATUS',
+    );
+  });
+
+  it('translates pipeline item statuses via shared enums', () => {
+    expect(getPipelineItemStatusLabel('request', 'QUOTING', t)).toBe(
+      'Quoting',
+    );
+    expect(getPipelineItemStatusLabel('quotes', 'SUBMITTED', t)).toBe(
+      'Submitted',
+    );
+    expect(getPipelineItemStatusLabel('invoices', 'ISSUED', t)).toBe('Issued');
+    expect(getPipelineItemStatusLabel('selections', 'selected', t)).toBe(
+      'Selected',
     );
   });
 

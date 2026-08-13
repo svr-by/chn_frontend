@@ -28,7 +28,7 @@ import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { getPipelineStatusLabel } from '@/lib/traceLabels';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
 
 dayjs.extend(relativeTime);
 

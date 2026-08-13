@@ -50,6 +50,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             description: trace.requestLine.description,
             quantity: trace.requestLine.quantity,
             unit: trace.requestLine.unit ?? '',
+            createdAt: trace.request.createdAt,
             ...(trace.requestLine.cancelledAt
               ? { cancelledAt: trace.requestLine.cancelledAt }
               : {}),
@@ -65,6 +66,8 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
         status: quote.status,
         link: resolveDocumentPath('SUPPLIER_QUOTE', quote.quoteId) ?? '#',
         meta: {
+          lineNumber: String(quote.line.lineNumber),
+          companyName: quote.supplierCompany.name,
           unitPrice: quote.line.unitPrice,
           quantity: quote.line.quantity,
           currency: quote.currency,
@@ -87,6 +90,12 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             ? (resolveDocumentPath('SUPPLIER_QUOTE', quoteId) ?? '#')
             : '#',
           meta: {
+            ...(matchingQuote
+              ? {
+                  lineNumber: String(matchingQuote.line.lineNumber),
+                  companyName: matchingQuote.supplierCompany.name,
+                }
+              : {}),
             quantity: selection.line.quantity,
             notes: selection.line.notes ?? '',
           },
@@ -101,7 +110,8 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
         status: invoice.status,
         link: resolveDocumentPath('INVOICE', invoice.invoiceId) ?? '#',
         meta: {
-          supplier: invoice.supplierCompany.name,
+          lineNumber: String(invoice.line.lineNumber),
+          companyName: invoice.supplierCompany.name,
           currency: invoice.currency,
           payments: String(invoice.payments.length),
         },
@@ -120,6 +130,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
           resolveDocumentPath('SHIPPING_INVOICE', shipment.shippingInvoiceId) ??
           '#',
         meta: {
+          lineNumber: String(shipment.line.lineNumber),
           carrier: shipment.carrier ?? '',
           trackingNumber: shipment.trackingNumber ?? '',
         },

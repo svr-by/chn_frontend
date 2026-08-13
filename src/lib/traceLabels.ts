@@ -3,6 +3,7 @@ import type { TFunction } from 'i18next';
 import type { DocumentRelationshipsNodesItemDocumentType } from '@/api/generated/models/documentRelationshipsNodesItemDocumentType';
 import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItemPipelineStatus } from '@/api/generated/models/traceSearchItemPipelineStatus';
+import type { PipelineStage } from '@/lib/lineagePipeline';
 
 const DOCUMENT_STATUS_ENUM_KEYS = {
   MATERIAL_REQUEST: 'materialRequestStatus',
@@ -15,6 +16,29 @@ const DOCUMENT_STATUS_ENUM_KEYS = {
   DocumentRelationshipsNodesItemDocumentType,
   string
 >;
+
+const PIPELINE_STAGE_STATUS_ENUM_KEYS = {
+  request: 'materialRequestStatus',
+  quotes: 'supplierQuoteStatus',
+  selections: 'purchaseSelectionStatus',
+  invoices: 'supplierInvoiceStatus',
+  shipments: 'shippingInvoiceStatus',
+  consolidations: 'consolidationStatus',
+} as const satisfies Record<PipelineStage, string>;
+
+function translateEnumStatus(
+  enumKey: string,
+  status: string,
+  t: TFunction,
+): string | null {
+  const statusKey = status.toLowerCase();
+  const key = `enums:${enumKey}.${statusKey}`;
+  const translated = t(key);
+  if (translated === key || translated === `${enumKey}.${statusKey}`) {
+    return null;
+  }
+  return translated;
+}
 
 export function getPipelineStatusLabel(
   status: TraceSearchItemPipelineStatus,
@@ -43,14 +67,31 @@ export function getDocumentStatusLabel(
     return status;
   }
 
-  const statusKey = status.toLowerCase();
-  const key = `enums:${enumKey}.${statusKey}`;
-  const translated = t(key);
-  if (translated === key || translated === `${enumKey}.${statusKey}`) {
-    return status;
+  return translateEnumStatus(enumKey, status, t) ?? status;
+}
+
+export function getPipelineItemStatusLabel(
+  stage: PipelineStage,
+  status: string,
+  t: TFunction,
+): string {
+  const fromEnum = translateEnumStatus(
+    PIPELINE_STAGE_STATUS_ENUM_KEYS[stage],
+    status,
+    t,
+  );
+  if (fromEnum) {
+    return fromEnum;
   }
 
-  return translated;
+  const statusKey = status.toLowerCase();
+  const pipelineKey = `trace:pipelineStatus.${statusKey}`;
+  const pipelineTranslated = t(pipelineKey);
+  if (pipelineTranslated !== pipelineKey) {
+    return pipelineTranslated;
+  }
+
+  return status;
 }
 
 export function getRelationLabel(relation: string, t: TFunction): string {

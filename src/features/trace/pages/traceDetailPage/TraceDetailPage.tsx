@@ -1,26 +1,35 @@
 import { useEffect } from 'react';
-import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Box, Button, Link, Stack, Typography } from '@mui/material';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetLineageTraceQuery } from '@/api/endpoints/traceApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
-import { LineageEventsPanel } from '@/features/trace/components/LineageEventsPanel';
-import { LineagePipelineView } from '@/features/trace/components/LineagePipelineView';
+import { LineageEventsPanel } from '@/features/trace/components/lineageEventsPanel/LineageEventsPanel';
+import { LineagePipelineView } from '@/features/trace/components/lineagePipelineView/LineagePipelineView';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { BackLink } from '@/components/BackLink';
-import { PageShell } from '@/layouts/PageShell';
+import { PageShell } from '@/layouts/pageShell/PageShell';
+
+const TAB_KEYS = ['pipeline', 'events'] as const;
+type TabKey = (typeof TAB_KEYS)[number];
+
+function isTabKey(value: string | null): value is TabKey {
+  return TAB_KEYS.includes(value as TabKey);
+}
 
 export function TraceDetailPage() {
   const { t } = useTranslation('trace');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { lineageId } = useParams<{ lineageId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
+  const tabParam = searchParams.get('tab');
+  const activeTab: TabKey = isTabKey(tabParam) ? tabParam : 'pipeline';
 
   const traceQuery = useGetLineageTraceQuery(
     { companyId: companyId ?? '', lineageId: lineageId ?? '' },
@@ -94,9 +103,41 @@ export function TraceDetailPage() {
                 </Stack>
               </Stack>
 
-              <LineagePipelineView trace={trace} />
+              <Box>
+                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                  <Tabs
+                    value={activeTab}
+                    onChange={(_event, value: TabKey) => {
+                      const nextParams = new URLSearchParams(searchParams);
+                      if (value === 'pipeline') {
+                        nextParams.delete('tab');
+                      } else {
+                        nextParams.set('tab', value);
+                      }
+                      setSearchParams(nextParams, { replace: true });
+                    }}
+                    aria-label={t('tabs.ariaLabel')}
+                  >
+                    <Tab value="pipeline" label={t('tabs.pipeline')} />
+                    <Tab value="events" label={t('tabs.events')} />
+                  </Tabs>
+                </Box>
 
-              <LineageEventsPanel companyId={companyId} lineageId={lineageId} />
+                {activeTab === 'pipeline' ? (
+                  <Box sx={{ pt: 3 }}>
+                    <LineagePipelineView trace={trace} />
+                  </Box>
+                ) : null}
+
+                {activeTab === 'events' ? (
+                  <Box sx={{ pt: 3 }}>
+                    <LineageEventsPanel
+                      companyId={companyId}
+                      lineageId={lineageId}
+                    />
+                  </Box>
+                ) : null}
+              </Box>
             </>
           ) : null}
         </Stack>

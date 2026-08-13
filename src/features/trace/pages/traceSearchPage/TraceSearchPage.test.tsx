@@ -5,7 +5,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useSearchTraceQuery } from '@/api/endpoints/traceApi';
-import { TraceSearchPage } from '@/features/trace/pages/TraceSearchPage';
+import { TraceSearchPage } from '@/features/trace/pages/traceSearchPage/TraceSearchPage';
 import {
   COMPANY_ID,
   createMembership,
