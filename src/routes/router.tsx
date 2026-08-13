@@ -13,9 +13,6 @@ import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/pages/requestDetailPage/RequestDetailPage';
-import {
-  InboundRequestDetailPage,
-} from '@/features/requests/pages/inboundRequestDetailPage/InboundRequestDetailPage';
 import { InboundRequestsPage } from '@/features/requests/pages/inboundRequestsPage/InboundRequestsPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
@@ -29,8 +26,8 @@ import { ShippingInvoiceDetailPage } from '@/features/shipping/pages/ShippingInv
 import { ConsolidationsPage } from '@/features/consolidations/pages/ConsolidationsPage';
 import { ConsolidationDetailPage } from '@/features/consolidations/pages/ConsolidationDetailPage';
 import { NotificationsPage } from '@/features/notifications/pages/NotificationsPage';
-import { TraceDetailPage } from '@/features/trace/pages/TraceDetailPage';
-import { TraceSearchPage } from '@/features/trace/pages/TraceSearchPage';
+import { TraceDetailPage } from '@/features/trace/pages/traceDetailPage/TraceDetailPage';
+import { TraceSearchPage } from '@/features/trace/pages/traceSearchPage/TraceSearchPage';
 import { RequestImportPage } from '@/features/imports/pages/RequestImportPage';
 import { RequestLinesPage } from '@/features/requests/pages/requestLinesPage/RequestLinesPage';
 import { RequestNewPage } from '@/features/requests/pages/requestNewPage/RequestNewPage';
@@ -40,8 +37,8 @@ import { TeamSettingsPage } from '@/features/settings/pages/TeamSettingsPage';
 import { IntegrationsSettingsPage } from '@/features/integrations/pages/IntegrationsSettingsPage';
 import { ProfilePage } from '@/features/settings/pages/ProfilePage';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
-import { AppLayout } from '@/layouts/AppLayout';
-import { AuthLayout } from '@/layouts/AuthLayout';
+import { AppLayout } from '@/layouts/appLayout/AppLayout';
+import { AuthLayout } from '@/layouts/authLayout/AuthLayout';
 import { navConfig } from '@/lib/navConfig';
 import { AuthBootstrap } from '@/routes/AuthBootstrap';
 import { GuestRoute } from '@/routes/GuestRoute';
@@ -153,7 +150,7 @@ export const router = createBrowserRouter([
               { path: 'requests/inbound', element: <InboundRequestsPage /> },
               {
                 path: 'requests/inbound/:requestId',
-                element: <InboundRequestDetailPage />,
+                element: <RequestDetailPage />,
               },
               { path: 'requests/:requestId', element: <RequestDetailPage /> },
               { path: 'quotes', element: <QuotesPage /> },
