@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControlLabel,
-  Stack,
+  ListItemIcon,
+  ListItemText,
   TextField,
   Typography,
 } from '@mui/material';
@@ -24,6 +23,7 @@ import {
 } from '@/api/endpoints/quotesApi';
 import { useRejectInboundRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 
 interface InboundRequestStatusActionsProps {
@@ -41,7 +41,7 @@ export function InboundRequestStatusActions({
   const [rejectOpen, setRejectOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [submitOnCreate, setSubmitOnCreate] = useState(false);
+  const [submitOnCreate] = useState(true);
 
   const quotesQuery = useListQuotesQuery(
     { companyId, requestId, limit: 1, offset: 0, direction: 'outbound' },
@@ -83,45 +83,37 @@ export function InboundRequestStatusActions({
 
   if (existingQuote) {
     return (
-      <Button
-        variant="contained"
-        startIcon={<OpenInNewOutlinedIcon />}
+      <DocumentActionMenuItem
         onClick={() => navigate(`/app/quotes/${existingQuote.id}`)}
       >
-        {t('inbound.actions.openQuote')}
-      </Button>
+        <ListItemIcon>
+          <OpenInNewOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('inbound.actions.openQuote')}</ListItemText>
+      </DocumentActionMenuItem>
     );
   }
 
   return (
     <PermissionGate permission="manageQuotes">
-      <Stack direction="row" spacing={1} alignItems="center">
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={submitOnCreate}
-              onChange={(event) => setSubmitOnCreate(event.target.checked)}
-            />
-          }
-          label={t('inbound.actions.submitOnCreate')}
-        />
-        <Button
-          variant="contained"
-          startIcon={<RequestQuoteOutlinedIcon />}
-          onClick={() => void handleCreateQuote()}
-          disabled={isCreating || createState.isLoading}
-        >
-          {t('inbound.actions.createQuote')}
-        </Button>
-        <Button
-          variant="outlined"
-          color="error"
-          startIcon={<CloseOutlinedIcon />}
-          onClick={() => setRejectOpen(true)}
-        >
-          {t('inbound.actions.reject')}
-        </Button>
-      </Stack>
+      <DocumentActionMenuItem
+        onClick={() => void handleCreateQuote()}
+        disabled={isCreating || createState.isLoading}
+      >
+        <ListItemIcon>
+          <RequestQuoteOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('inbound.actions.createQuote')}</ListItemText>
+      </DocumentActionMenuItem>
+      <DocumentActionMenuItem
+        onClick={() => setRejectOpen(true)}
+        sx={{ color: 'error.main' }}
+      >
+        <ListItemIcon sx={{ color: 'inherit' }}>
+          <CloseOutlinedIcon fontSize="small" />
+        </ListItemIcon>
+        <ListItemText>{t('inbound.actions.reject')}</ListItemText>
+      </DocumentActionMenuItem>
 
       <ApiErrorAlert error={createState.error} />
 

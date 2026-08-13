@@ -120,8 +120,6 @@ export function RequestLinesTable({
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h6">{t('linesTitle')}</Typography>
-
       <ApiErrorAlert error={deleteState.error} />
 
       <PaginatedTable

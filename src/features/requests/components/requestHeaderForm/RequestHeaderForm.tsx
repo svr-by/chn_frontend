@@ -166,6 +166,397 @@ export function RequestTitleEditButton({
   );
 }
 
+export function RequestPriorityEditButton({
+  companyId,
+  request,
+}: {
+  companyId: string;
+  request: MaterialRequest;
+}) {
+  const { t } = useTranslation('requests');
+  const { save, error, isLoading } = useRequestHeaderSave(companyId, request);
+  const [open, setOpen] = useState(false);
+  const [draft, setDraft] = useState(request.priority);
+
+  useEffect(() => {
+    if (open) {
+      setDraft(request.priority);
+    }
+  }, [open, request.priority]);
+
+  async function handleSave() {
+    if (draft === request.priority) {
+      setOpen(false);
+      return;
+    }
+
+    await save({ priority: draft });
+    setOpen(false);
+  }
+
+  return (
+    <>
+      <Tooltip title={t('form.editPriority')}>
+        <IconButton
+          size="small"
+          aria-label={t('form.editPriority')}
+          onClick={() => setOpen(true)}
+          disabled={isLoading}
+        >
+          <EditOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
+      <Dialog
+        open={open}
+        onClose={() => !isLoading && setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{t('form.editPriority')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <ApiErrorAlert error={error} />
+            <FormControl size="small" fullWidth>
+              <InputLabel id="request-priority-edit-label">
+                {t('form.priority')}
+              </InputLabel>
+              <Select
+                labelId="request-priority-edit-label"
+                label={t('form.priority')}
+                value={draft}
+                onChange={(event) => {
+                  setDraft(event.target.value as MaterialRequest['priority']);
+                }}
+              >
+                {PRIORITY_OPTIONS.map((priority) => (
+                  <MenuItem key={priority} value={priority}>
+                    {t(
+                      `enums:materialRequestPriority.${priority.toLowerCase()}`,
+                    )}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} disabled={isLoading}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void handleSave()}
+            disabled={isLoading}
+          >
+            {t('actions.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+export function RequestAssigneeEditButton({
+  companyId,
+  request,
+}: {
+  companyId: string;
+  request: MaterialRequest;
+}) {
+  const { t } = useTranslation('requests');
+  const { save, error, isLoading } = useRequestHeaderSave(companyId, request);
+  const [open, setOpen] = useState(false);
+  const [draftAssigneeUserId, setDraftAssigneeUserId] = useState<
+    string | ''
+  >(request.assigneeUserId ?? '');
+
+  useEffect(() => {
+    if (open) {
+      setDraftAssigneeUserId(request.assigneeUserId ?? '');
+    }
+  }, [open, request.assigneeUserId]);
+
+  const membersQuery = useListMembersQuery(
+    { companyId },
+    { skip: !companyId || !open },
+  );
+
+  const members = useMemo(
+    () =>
+      (membersQuery.data?.members ?? []).filter((member) => member.user),
+    [membersQuery.data?.members],
+  );
+
+  const assigneeOptions = useMemo(() => {
+    const options = members.map((member) => {
+      const user = member.user!;
+      return {
+        id: user.id,
+        label: formatMemberName(user.firstName, user.lastName) || user.email,
+      };
+    });
+
+    if (
+      request.assigneeUserId &&
+      !options.some((option) => option.id === request.assigneeUserId)
+    ) {
+      options.unshift({
+        id: request.assigneeUserId,
+        label: request.assigneeUserName ?? request.assigneeUserId,
+      });
+    }
+
+    return options;
+  }, [members, request.assigneeUserId, request.assigneeUserName]);
+
+  async function handleSave() {
+    const next = draftAssigneeUserId || null;
+    if (next === request.assigneeUserId) {
+      setOpen(false);
+      return;
+    }
+
+    await save({ assigneeUserId: next });
+    setOpen(false);
+  }
+
+  return (
+    <>
+      <Tooltip title={t('form.editAssignee')}>
+        <IconButton
+          size="small"
+          aria-label={t('form.editAssignee')}
+          onClick={() => setOpen(true)}
+          disabled={isLoading}
+        >
+          <EditOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
+      <Dialog
+        open={open}
+        onClose={() => !isLoading && setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{t('form.editAssignee')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <ApiErrorAlert error={error} />
+            <FormControl size="small" fullWidth>
+              <InputLabel id="request-assignee-edit-label">
+                {t('form.assignee')}
+              </InputLabel>
+              <Select
+                labelId="request-assignee-edit-label"
+                label={t('form.assignee')}
+                value={draftAssigneeUserId}
+                onChange={(event) => {
+                  const next = event.target.value as string;
+                  setDraftAssigneeUserId(next as string);
+                }}
+              >
+                <MenuItem value="">
+                  <em>{t('form.assigneeUnassigned')}</em>
+                </MenuItem>
+                {assigneeOptions.map((option) => (
+                  <MenuItem key={option.id} value={option.id}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} disabled={isLoading}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void handleSave()}
+            disabled={isLoading}
+          >
+            {t('actions.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+export function RequestDueDateEditButton({
+  companyId,
+  request,
+}: {
+  companyId: string;
+  request: MaterialRequest;
+}) {
+  const { t } = useTranslation('requests');
+  const { save, error, isLoading } = useRequestHeaderSave(companyId, request);
+  const [open, setOpen] = useState(false);
+  const [draftDueDateInputValue, setDraftDueDateInputValue] = useState(
+    isoToDateInputValue(request.dueDate),
+  );
+
+  useEffect(() => {
+    if (open) {
+      setDraftDueDateInputValue(isoToDateInputValue(request.dueDate));
+    }
+  }, [open, request.dueDate]);
+
+  async function handleSave() {
+    const next = draftDueDateInputValue
+      ? dateInputToIsoEndOfDay(draftDueDateInputValue)
+      : null;
+
+    if (next === request.dueDate) {
+      setOpen(false);
+      return;
+    }
+
+    await save({ dueDate: next });
+    setOpen(false);
+  }
+
+  return (
+    <>
+      <Tooltip title={t('form.editDueDate')}>
+        <IconButton
+          size="small"
+          aria-label={t('form.editDueDate')}
+          onClick={() => setOpen(true)}
+          disabled={isLoading}
+        >
+          <EditOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
+      <Dialog
+        open={open}
+        onClose={() => !isLoading && setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{t('form.editDueDate')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <ApiErrorAlert error={error} />
+            <TextField
+              label={t('form.dueDate')}
+              type="date"
+              size="small"
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              value={draftDueDateInputValue}
+              onChange={(event) => {
+                setDraftDueDateInputValue(event.target.value);
+              }}
+              autoFocus
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} disabled={isLoading}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void handleSave()}
+            disabled={isLoading}
+          >
+            {t('actions.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
+export function RequestNotesEditButton({
+  companyId,
+  request,
+}: {
+  companyId: string;
+  request: MaterialRequest;
+}) {
+  const { t } = useTranslation('requests');
+  const { save, error, isLoading } = useRequestHeaderSave(companyId, request);
+  const [open, setOpen] = useState(false);
+  const [draftNotes, setDraftNotes] = useState(request.notes ?? '');
+
+  useEffect(() => {
+    if (open) {
+      setDraftNotes(request.notes ?? '');
+    }
+  }, [open, request.notes]);
+
+  async function handleSave() {
+    const trimmed = draftNotes.trim();
+    const next = trimmed ? trimmed : null;
+
+    if (next === request.notes) {
+      setOpen(false);
+      return;
+    }
+
+    await save({ notes: next });
+    setOpen(false);
+  }
+
+  return (
+    <>
+      <Tooltip title={t('form.editNotes')}>
+        <IconButton
+          size="small"
+          aria-label={t('form.editNotes')}
+          onClick={() => setOpen(true)}
+          disabled={isLoading}
+        >
+          <EditOutlinedIcon fontSize="small" />
+        </IconButton>
+      </Tooltip>
+
+      <Dialog
+        open={open}
+        onClose={() => !isLoading && setOpen(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>{t('form.editNotes')}</DialogTitle>
+        <DialogContent>
+          <Stack spacing={2} sx={{ pt: 1 }}>
+            <ApiErrorAlert error={error} />
+            <TextField
+              label={t('form.notes')}
+              fullWidth
+              multiline
+              minRows={3}
+              size="small"
+              autoFocus
+              value={draftNotes}
+              onChange={(event) => setDraftNotes(event.target.value)}
+            />
+          </Stack>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} disabled={isLoading}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void handleSave()}
+            disabled={isLoading}
+          >
+            {t('actions.save')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
+
 export function RequestHeaderFields({
   companyId,
   request,
@@ -372,3 +763,4 @@ export function RequestNotesField({
     </Box>
   );
 }
+

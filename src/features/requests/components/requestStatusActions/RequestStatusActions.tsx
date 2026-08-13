@@ -6,7 +6,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Stack,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
@@ -19,6 +20,7 @@ import {
   useDeleteRequestMutation,
 } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { MaterialRequestStatus } from '@/types/api';
@@ -44,7 +46,7 @@ export function RequestStatusActions({
   const [deleteRequest, deleteState] = useDeleteRequestMutation();
   const [closeRequest, closeState] = useCloseRequestMutation();
 
-  const canClose = status !== 'CLOSED';
+  const canClose = status !== 'DRAFT' && status !== 'CLOSED';
   const canDelete = status === 'DRAFT';
 
   if (!canClose && !canDelete) {
@@ -53,27 +55,25 @@ export function RequestStatusActions({
 
   return (
     <PermissionGate permission="manageRequests">
-      <Stack direction="row" spacing={1}>
-        {canClose ? (
-          <Button
-            variant="outlined"
-            startIcon={<LockOutlinedIcon />}
-            onClick={() => setCloseConfirmOpen(true)}
-          >
-            {t('actions.close')}
-          </Button>
-        ) : null}
-        {canDelete ? (
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteOutlineOutlinedIcon />}
-            onClick={() => setDeleteConfirmOpen(true)}
-          >
-            {t('actions.delete')}
-          </Button>
-        ) : null}
-      </Stack>
+      {canClose ? (
+        <DocumentActionMenuItem onClick={() => setCloseConfirmOpen(true)}>
+          <ListItemIcon>
+            <LockOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.close')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+      {canDelete ? (
+        <DocumentActionMenuItem
+          onClick={() => setDeleteConfirmOpen(true)}
+          sx={{ color: 'error.main' }}
+        >
+          <ListItemIcon sx={{ color: 'inherit' }}>
+            <DeleteOutlineOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.delete')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
 
       <Dialog
         open={closeConfirmOpen}

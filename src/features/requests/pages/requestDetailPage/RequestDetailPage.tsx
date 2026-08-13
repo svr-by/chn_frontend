@@ -1,43 +1,71 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Stack, Typography } from '@mui/material';
+import { useMatch, useNavigate, useParams } from 'react-router-dom';
+import { Stack } from '@mui/material';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
+import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
+import FlagOutlinedIcon from '@mui/icons-material/FlagOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetRequestQuery } from '@/api/endpoints/requestsApi';
-import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
-import { DocumentDetailLayout } from '@/layouts/DocumentDetailLayout';
-import { StatusBadge } from '@/components/StatusBadge';
 import {
-  RequestHeaderFields,
-  RequestNotesField,
+  useGetInboundRequestQuery,
+  useGetRequestQuery,
+} from '@/api/endpoints/requestsApi';
+import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
+import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
+import {
+  DocumentDetailMeta,
+  DocumentDetailMetaItem,
+  DocumentDetailMetaRow,
+} from '@/layouts/documentDetailLayout/DocumentDetailMeta';
+import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import {
+  RequestAssigneeEditButton,
+  RequestDueDateEditButton,
+  RequestNotesEditButton,
+  RequestPriorityEditButton,
   RequestTitleEditButton,
 } from '@/features/requests/components/requestHeaderForm/RequestHeaderForm';
+import { InboundRequestStatusActions } from '@/features/requests/components/inboundRequestStatusActions/InboundRequestStatusActions';
 import { RequestLinesTable } from '@/features/requests/components/requestLinesTable/RequestLinesTable';
 import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
 import { RequestStatusActions } from '@/features/requests/components/requestStatusActions/RequestStatusActions';
 import { QuoteComparisonMatrix } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
+import { MATERIAL_REQUEST_STATUS_FLOW } from '@/lib/documentStatusFlows';
 
 export function RequestDetailPage() {
   const { t } = useTranslation(['requests', 'enums']);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { requestId } = useParams<{ requestId: string }>();
+  const isInbound = Boolean(useMatch('/app/requests/inbound/:requestId'));
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const { hasPermission } = usePermissions();
 
-  const requestQuery = useGetRequestQuery(
+  const outboundQuery = useGetRequestQuery(
     { companyId: companyId ?? '', requestId: requestId ?? '' },
-    { skip: !companyId || !requestId },
+    { skip: !companyId || !requestId || isInbound },
   );
 
-  const request = requestQuery.data?.request;
+  const inboundQuery = useGetInboundRequestQuery(
+    { companyId: companyId ?? '', requestId: requestId ?? '' },
+    { skip: !companyId || !requestId || !isInbound },
+  );
+
+  const requestQuery = isInbound ? inboundQuery : outboundQuery;
+  const outboundRequest = outboundQuery.data?.request;
+  const inboundRequest = inboundQuery.data?.request;
+  const request = isInbound ? inboundRequest : outboundRequest;
   const canEdit =
-    hasPermission('manageRequests') && request?.status !== 'CLOSED';
+    !isInbound &&
+    hasPermission('manageRequests') &&
+    outboundRequest?.status !== 'CLOSED';
 
   useEffect(() => {
     if (
@@ -45,10 +73,22 @@ export function RequestDetailPage() {
       'status' in requestQuery.error &&
       requestQuery.error.status === 404
     ) {
-      enqueueSnackbar(t('toast.notFound'), { variant: 'error' });
-      navigate('/app/requests', { replace: true });
+      enqueueSnackbar(
+        t(isInbound ? 'inbound.toast.notFound' : 'toast.notFound'),
+        { variant: 'error' },
+      );
+      navigate(isInbound ? '/app/requests?tab=inbound' : '/app/requests', {
+        replace: true,
+      });
     }
-  }, [requestQuery.isError, requestQuery.error, enqueueSnackbar, navigate, t]);
+  }, [
+    requestQuery.isError,
+    requestQuery.error,
+    isInbound,
+    enqueueSnackbar,
+    navigate,
+    t,
+  ]);
 
   if (!companyId || !requestId) {
     return null;
@@ -56,119 +96,222 @@ export function RequestDetailPage() {
 
   const title =
     request?.title ?? t('detail.fallbackTitle', { id: requestId.slice(0, 8) });
+  const listFallback = isInbound
+    ? '/app/requests?tab=inbound'
+    : '/app/requests';
 
   return (
     <DocumentDetailLayout
       maxWidth="fluid"
       title={t('detail.title', { title })}
       titleAction={
-        request && canEdit ? (
-          <RequestTitleEditButton companyId={companyId} request={request} />
+        outboundRequest && canEdit ? (
+          <RequestTitleEditButton
+            companyId={companyId}
+            request={outboundRequest}
+          />
         ) : null
       }
       statusBadge={
-        request?.status ? <StatusBadge status={request.status} /> : undefined
+        request?.status ? (
+          <DocumentStatusProgress
+            currentStatus={request.status}
+            steps={MATERIAL_REQUEST_STATUS_FLOW.steps}
+            enumKey={MATERIAL_REQUEST_STATUS_FLOW.enumKey}
+          />
+        ) : undefined
       }
       loading={requestQuery.isLoading}
       error={requestQuery.error}
-      actions={
+      backFallbackTo={listFallback}
+      actionMenuItems={
         request ? (
-          <RequestStatusActions
-            companyId={companyId}
-            requestId={request.id}
-            status={request.status}
-            requestLines={request.lines}
-          />
+          isInbound ? (
+            <InboundRequestStatusActions
+              companyId={companyId}
+              requestId={request.id}
+            />
+          ) : (
+            <RequestStatusActions
+              companyId={companyId}
+              requestId={request.id}
+              status={request.status}
+              requestLines={request.lines}
+            />
+          )
         ) : null
       }
       meta={
         request ? (
-          <Stack spacing={0.75}>
-            {request.createdByUserName ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <PersonOutlineOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {t('detail.createdBy', { name: request.createdByUserName })}
-                </Typography>
-              </Stack>
-            ) : null}
-            <Stack direction="row" spacing={1} alignItems="center">
-              <ScheduleOutlinedIcon fontSize="small" color="action" />
-              <Typography variant="body2" color="text.secondary">
-                {t('detail.createdAt', {
-                  date: new Date(request.createdAt).toLocaleString(),
-                })}
-              </Typography>
-            </Stack>
-            {request.submittedAt ? (
-              <Stack direction="row" spacing={1} alignItems="center">
-                <ScheduleOutlinedIcon fontSize="small" color="action" />
-                <Typography variant="body2" color="text.secondary">
-                  {t('detail.submittedAt', {
-                    date: new Date(request.submittedAt).toLocaleString(),
+          <DocumentDetailMeta>
+            <DocumentDetailMetaRow spacing={1.5}>
+              {isInbound && inboundRequest ? (
+                <DocumentDetailMetaItem
+                  icon={<BusinessOutlinedIcon />}
+                  label={t('inbound.columns.buyer')}
+                  value={inboundRequest.buyerCompany.name}
+                />
+              ) : null}
+              {!isInbound && request.createdByUserName ? (
+                <DocumentDetailMetaItem
+                  icon={<PersonOutlineOutlinedIcon />}
+                  value={t('detail.createdBy', {
+                    name: request.createdByUserName,
                   })}
-                </Typography>
-              </Stack>
-            ) : null}
-          </Stack>
+                />
+              ) : null}
+              {request.submittedAt ? (
+                <DocumentDetailMetaItem
+                  icon={<ScheduleOutlinedIcon />}
+                  value={t('detail.submittedAt', {
+                    date: new Date(request.submittedAt).toLocaleDateString(),
+                  })}
+                />
+              ) : null}
+              {isInbound && inboundRequest?.distributedAt ? (
+                <DocumentDetailMetaItem
+                  icon={<ScheduleOutlinedIcon />}
+                  label={t('inbound.columns.distributedAt')}
+                  value={new Date(
+                    inboundRequest.distributedAt,
+                  ).toLocaleDateString()}
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+
+            <DocumentDetailMetaRow>
+              <DocumentDetailMetaItem
+                icon={<AssignmentIndOutlinedIcon />}
+                label={t('form.assignee')}
+                value={
+                  request.assigneeUserName ?? t('form.assigneeUnassigned')
+                }
+                action={
+                  outboundRequest && canEdit ? (
+                    <RequestAssigneeEditButton
+                      companyId={companyId}
+                      request={outboundRequest}
+                    />
+                  ) : null
+                }
+              />
+              {Boolean(request.dueDate) || canEdit ? (
+                <DocumentDetailMetaItem
+                  icon={<EventOutlinedIcon />}
+                  label={t('form.dueDate')}
+                  value={
+                    request.dueDate
+                      ? new Date(request.dueDate).toLocaleDateString()
+                      : undefined
+                  }
+                  action={
+                    outboundRequest && canEdit ? (
+                      <RequestDueDateEditButton
+                        companyId={companyId}
+                        request={outboundRequest}
+                      />
+                    ) : null
+                  }
+                />
+              ) : null}
+              <DocumentDetailMetaItem
+                icon={<FlagOutlinedIcon />}
+                label={t('form.priority')}
+                value={t(
+                  `enums:materialRequestPriority.${request.priority.toLowerCase()}`,
+                )}
+                action={
+                  outboundRequest && canEdit ? (
+                    <RequestPriorityEditButton
+                      companyId={companyId}
+                      request={outboundRequest}
+                    />
+                  ) : null
+                }
+              />
+              {Boolean(request.notes) || canEdit ? (
+                <DocumentDetailMetaItem
+                  icon={<NotesOutlinedIcon />}
+                  label={t('form.notes')}
+                  value={request.notes ?? undefined}
+                  valueClampLines={request.notes ? 2 : undefined}
+                  action={
+                    outboundRequest && canEdit ? (
+                      <RequestNotesEditButton
+                        companyId={companyId}
+                        request={outboundRequest}
+                      />
+                    ) : null
+                  }
+                />
+              ) : null}
+            </DocumentDetailMetaRow>
+          </DocumentDetailMeta>
         ) : null
       }
     >
       {request ? (
         <Stack spacing={3}>
-          <RequestHeaderFields
-            companyId={companyId}
-            request={request}
-            editable={canEdit}
-          />
           <DocumentDetailTabs
             companyId={companyId}
             documentType="MATERIAL_REQUEST"
             documentId={request.id}
             enableComments={false}
-            extraTabs={[
-              {
-                value: 'details',
-                label: t('tabs.details'),
-                panel: (
-                  <Stack spacing={3}>
-                    <RequestLinesTable
-                      companyId={companyId}
-                      requestId={request.id}
-                      lines={request.lines}
-                      editable={canEdit}
-                    />
-                    <RequestNotesField
-                      companyId={companyId}
-                      request={request}
-                      editable={canEdit}
-                    />
-                  </Stack>
-                ),
-              },
-              {
-                value: 'suppliers',
-                label: t('tabs.suppliers'),
-                panel: (
-                  <RequestSuppliersMatrix
-                    companyId={companyId}
-                    requestId={request.id}
-                    requestLines={request.lines}
-                    requestStatus={request.status}
-                  />
-                ),
-              },
-              {
-                value: 'quotes',
-                label: t('tabs.quotes'),
-                panel: (
-                  <QuoteComparisonMatrix
-                    companyId={companyId}
-                    requestId={request.id}
-                  />
-                ),
-              },
-            ]}
+            extraTabs={
+              isInbound
+                ? [
+                    {
+                      value: 'details',
+                      label: t('tabs.details'),
+                      panel: (
+                        <RequestLinesTable
+                          companyId={companyId}
+                          requestId={request.id}
+                          lines={request.lines}
+                          editable={false}
+                        />
+                      ),
+                    },
+                  ]
+                : [
+                    {
+                      value: 'details',
+                      label: t('tabs.details'),
+                      panel: (
+                        <Stack spacing={3}>
+                          <RequestLinesTable
+                            companyId={companyId}
+                            requestId={request.id}
+                            lines={request.lines}
+                            editable={canEdit}
+                          />
+                        </Stack>
+                      ),
+                    },
+                    {
+                      value: 'suppliers',
+                      label: t('tabs.suppliers'),
+                      panel: (
+                        <RequestSuppliersMatrix
+                          companyId={companyId}
+                          requestId={request.id}
+                          requestLines={request.lines}
+                          requestStatus={request.status}
+                        />
+                      ),
+                    },
+                    {
+                      value: 'quotes',
+                      label: t('tabs.quotes'),
+                      panel: (
+                        <QuoteComparisonMatrix
+                          companyId={companyId}
+                          requestId={request.id}
+                        />
+                      ),
+                    },
+                  ]
+            }
           />
         </Stack>
       ) : null}

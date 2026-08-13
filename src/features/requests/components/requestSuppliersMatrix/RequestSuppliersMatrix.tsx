@@ -25,7 +25,9 @@ import type { RequestLine } from '@/api/generated/models/requestLine';
 import {
   useDeleteRequestDistributionMutation,
   useDistributeRequestMutation,
+  useGetQuoteComparisonQuery,
   useGetRequestDistributionsQuery,
+  useUpdateRequestDistributionMutation,
 } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PaginatedTable } from '@/components/PaginatedTable';
@@ -61,6 +63,24 @@ function areLineSetsEqual(a: Set<string>, b: Set<string>): boolean {
   return true;
 }
 
+/** Non-draft supplier offers — lines that cannot be removed from distribution. */
+function buildQuotedLineKeys(
+  comparisonLines:
+    | { requestLine: { id: string }; offers: { supplierCompany: { id: string }; status: string }[] }[]
+    | undefined,
+): Set<string> {
+  const keys = new Set<string>();
+  for (const line of comparisonLines ?? []) {
+    for (const offer of line.offers) {
+      if (offer.status === 'DRAFT') {
+        continue;
+      }
+      keys.add(`${offer.supplierCompany.id}:${line.requestLine.id}`);
+    }
+  }
+  return keys;
+}
+
 export function RequestSuppliersMatrix({
   companyId,
   requestId,
@@ -85,18 +105,29 @@ export function RequestSuppliersMatrix({
     pageSize: PAGE_SIZE,
   });
 
-  const canDistribute =
-    ['DRAFT', 'QUOTING'].includes(requestStatus) &&
-    hasPermission('manageRequests');
+  const canManageDistributions =
+    requestStatus !== 'CLOSED' && hasPermission('manageRequests');
 
   const distributionsQuery = useGetRequestDistributionsQuery(
     { companyId, requestId },
     { skip: !companyId || !requestId },
   );
 
+  const comparisonQuery = useGetQuoteComparisonQuery(
+    { companyId, requestId },
+    { skip: !companyId || !requestId },
+  );
+
+  const quotedLineKeys = useMemo(
+    () => buildQuotedLineKeys(comparisonQuery.data?.lines),
+    [comparisonQuery.data?.lines],
+  );
+
   const [deleteDistribution, deleteState] =
     useDeleteRequestDistributionMutation();
   const [distributeRequest, distributeState] = useDistributeRequestMutation();
+  const [updateDistribution, updateState] =
+    useUpdateRequestDistributionMutation();
 
   const distributions = useMemo(() => {
     const items = distributionsQuery.data?.distributions ?? [];
@@ -181,7 +212,20 @@ export function RequestSuppliersMatrix({
     });
   }
 
-  async function submitDistributionLines(
+  async function savePendingDistribution(
+    distribution: RequestDistribution,
+    requestLineIds: string[],
+  ) {
+    await updateDistribution({
+      companyId,
+      requestId,
+      distributionId: distribution.id,
+      requestLineIds,
+    }).unwrap();
+    enqueueSnackbar(t('distributions.toast.updated'), { variant: 'success' });
+  }
+
+  async function resendDistribution(
     distribution: RequestDistribution,
     requestLineIds: string[],
   ) {
@@ -210,7 +254,7 @@ export function RequestSuppliersMatrix({
     }
 
     try {
-      await submitDistributionLines(distributionToSave, requestLineIds);
+      await savePendingDistribution(distributionToSave, requestLineIds);
       setDistributionToSave(null);
     } catch {
       // ApiErrorAlert below
@@ -230,7 +274,7 @@ export function RequestSuppliersMatrix({
     }
 
     try {
-      await submitDistributionLines(distributionToResend, requestLineIds);
+      await resendDistribution(distributionToResend, requestLineIds);
       setDistributionToResend(null);
     } catch {
       // ApiErrorAlert below
@@ -263,7 +307,13 @@ export function RequestSuppliersMatrix({
         const dirty = isDirty(distribution.id);
         const draftIds = new Set(draftLineIds[distribution.id] ?? []);
         const isRejected = distribution.status === 'REJECTED';
-        const canEditLines = canDistribute && distribution.status === 'PENDING';
+        const canEditDistributionLines =
+          canManageDistributions &&
+          (distribution.status === 'PENDING' || isRejected);
+        const canSaveLines =
+          canManageDistributions && distribution.status === 'PENDING';
+        const savedLineIds =
+          savedLineIdSets.get(distribution.id) ?? new Set<string>();
         const draftCount = draftIds.size;
 
         return {
@@ -306,9 +356,9 @@ export function RequestSuppliersMatrix({
                   </Tooltip>
                 ) : null}
               </Stack>
-              {canDistribute ? (
+              {canManageDistributions ? (
                 <Stack direction="row" spacing={0.25} justifyContent="center">
-                  {canEditLines ? (
+                  {canSaveLines ? (
                     <Tooltip title={t('distributions.editLines')}>
                       <span>
                         <IconButton
@@ -350,11 +400,19 @@ export function RequestSuppliersMatrix({
           ),
           Cell: ({ row }) => {
             const checked = draftIds.has(row.original.id);
-            return (
+            const lockedByQuote =
+              checked &&
+              savedLineIds.has(row.original.id) &&
+              quotedLineKeys.has(
+                `${distribution.supplierCompany.id}:${row.original.id}`,
+              );
+            const checkboxDisabled = !canEditDistributionLines || lockedByQuote;
+
+            const checkbox = (
               <Checkbox
                 size="small"
                 checked={checked}
-                disabled={!canEditLines}
+                disabled={checkboxDisabled}
                 color={isRejected ? 'error' : 'primary'}
                 sx={
                   isRejected
@@ -377,6 +435,14 @@ export function RequestSuppliersMatrix({
                 }}
               />
             );
+
+            return lockedByQuote ? (
+              <Tooltip title={t('distributions.lineHasQuote')}>
+                <span>{checkbox}</span>
+              </Tooltip>
+            ) : (
+              checkbox
+            );
           },
         };
       },
@@ -384,15 +450,23 @@ export function RequestSuppliersMatrix({
 
     return [...baseColumns, ...supplierColumns];
     // eslint-disable-next-line react-hooks/exhaustive-deps -- draft helpers close over latest state via rebuild deps
-  }, [canDistribute, distributions, draftLineIds, savedLineIdSets, t]);
+  }, [
+    canManageDistributions,
+    distributions,
+    draftLineIds,
+    quotedLineKeys,
+    savedLineIdSets,
+    t,
+  ]);
 
   return (
     <Stack spacing={2}>
-      <Typography variant="h6">{t('distributions.title')}</Typography>
-
       <ApiErrorAlert
         error={
-          distributionsQuery.error ?? deleteState.error ?? distributeState.error
+          distributionsQuery.error ??
+          deleteState.error ??
+          distributeState.error ??
+          updateState.error
         }
       />
 
@@ -414,7 +488,7 @@ export function RequestSuppliersMatrix({
           isLoading={distributionsQuery.isLoading}
           isFetching={distributionsQuery.isFetching}
           renderBottomToolbarCustomActions={
-            canDistribute
+            canManageDistributions
               ? () => (
                   <PermissionGate permission="manageRequests">
                     <Button
@@ -457,7 +531,10 @@ export function RequestSuppliersMatrix({
                 : 0,
             })}
           </Typography>
-          <ApiErrorAlert error={distributeState.error} />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+            {t('distributions.confirmEditWarning')}
+          </Typography>
+          <ApiErrorAlert error={updateState.error} />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDistributionToSave(null)}>
@@ -466,7 +543,7 @@ export function RequestSuppliersMatrix({
           <Button
             variant="contained"
             disabled={
-              distributeState.isLoading ||
+              updateState.isLoading ||
               !distributionToSave ||
               (draftLineIds[distributionToSave.id] ?? []).length === 0
             }

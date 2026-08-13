@@ -48,7 +48,7 @@ describe('RequestStatusActions', () => {
     ] as ReturnType<typeof useCloseRequestMutation>);
   });
 
-  it('shows close and delete buttons on DRAFT status with manageRequests', () => {
+  it('shows delete menu item on DRAFT status with manageRequests', () => {
     mockedUseGetMeQuery.mockReturnValue({
       data: {
         user: createTestUser({
@@ -73,8 +73,12 @@ describe('RequestStatusActions', () => {
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
-    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Delete' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('menuitem', { name: 'Delete' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('menuitem', { name: 'Close' }),
+    ).not.toBeInTheDocument();
   });
 
   it('shows close but not delete when status is QUOTING', () => {
@@ -102,9 +106,9 @@ describe('RequestStatusActions', () => {
       { preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never } },
     );
 
-    expect(screen.getByRole('button', { name: 'Close' })).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', { name: 'Close' })).toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Delete' }),
+      screen.queryByRole('menuitem', { name: 'Delete' }),
     ).not.toBeInTheDocument();
   });
 
@@ -134,10 +138,10 @@ describe('RequestStatusActions', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Close' }),
+      screen.queryByRole('menuitem', { name: 'Close' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Delete' }),
+      screen.queryByRole('menuitem', { name: 'Delete' }),
     ).not.toBeInTheDocument();
   });
 
@@ -167,10 +171,10 @@ describe('RequestStatusActions', () => {
     );
 
     expect(
-      screen.queryByRole('button', { name: 'Close' }),
+      screen.queryByRole('menuitem', { name: 'Close' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.queryByRole('button', { name: 'Delete' }),
+      screen.queryByRole('menuitem', { name: 'Delete' }),
     ).not.toBeInTheDocument();
   });
 });
