@@ -1,9 +1,9 @@
-import SendIcon from '@mui/icons-material/Send';
-import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
-import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheck';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import LocalShippingIcon from '@mui/icons-material/LocalShipping';
-import HubIcon from '@mui/icons-material/Hub';
+import SendIcon from '@mui/icons-material/SendOutlined';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuoteOutlined';
+import PlaylistAddCheckIcon from '@mui/icons-material/PlaylistAddCheckOutlined';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLongOutlined';
+import LocalShippingIcon from '@mui/icons-material/LocalShippingOutlined';
+import HubIcon from '@mui/icons-material/HubOutlined';
 import { Box, Stack, Tooltip } from '@mui/material';
 import type { SvgIconComponent } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';

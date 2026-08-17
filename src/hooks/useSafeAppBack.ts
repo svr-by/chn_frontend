@@ -18,6 +18,25 @@ function getLocationPath(location: Location) {
   return `${location.pathname}${location.search}${location.hash}`;
 }
 
+function getPathname(path: string) {
+  return path.split(/[?#]/)[0] ?? path;
+}
+
+function findPreviousDifferentPathnameEntry(
+  entries: AppHistoryEntry[],
+  fromIndex: number,
+  currentPathname: string,
+): AppHistoryEntry | undefined {
+  for (let index = fromIndex; index >= 0; index -= 1) {
+    const entry = entries[index];
+    if (getPathname(entry.path) !== currentPathname) {
+      return entry;
+    }
+  }
+
+  return undefined;
+}
+
 function readAppHistory(): AppHistoryEntry[] {
   try {
     const value = window.sessionStorage.getItem(APP_HISTORY_KEY);
@@ -72,6 +91,12 @@ function findCurrentEntryIndex(entries: AppHistoryEntry[], location: Location) {
     }
   }
 
+  for (let index = entries.length - 1; index >= 0; index -= 1) {
+    if (getPathname(entries[index].path) === location.pathname) {
+      return index;
+    }
+  }
+
   return -1;
 }
 
@@ -90,6 +115,14 @@ export function useAppHistoryTracker() {
       return;
     }
 
+    if (last && getPathname(last.path) === location.pathname) {
+      writeAppHistory([
+        ...entries.slice(0, -1),
+        { key: location.key, path },
+      ]);
+      return;
+    }
+
     writeAppHistory([...entries, { key: location.key, path }]);
   }, [location]);
 }
@@ -103,7 +136,13 @@ export function useSafeAppBack(fallbackTo = APP_ROOT) {
     const entries = readAppHistory();
     const currentIndex = findCurrentEntryIndex(entries, location);
     const previousEntry =
-      currentIndex > 0 ? entries[currentIndex - 1] : undefined;
+      currentIndex > 0
+        ? findPreviousDifferentPathnameEntry(
+            entries,
+            currentIndex - 1,
+            location.pathname,
+          )
+        : undefined;
 
     if (previousEntry && isAppPath(previousEntry.path)) {
       writeAppHistory(entries.slice(0, currentIndex));

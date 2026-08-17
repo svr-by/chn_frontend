@@ -1,10 +1,10 @@
 import type { SvgIconComponent } from '@mui/icons-material';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import GroupsIcon from '@mui/icons-material/Groups';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
-import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import AssignmentIcon from '@mui/icons-material/AssignmentOutlined';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulletedOutlined';
+import RequestQuoteIcon from '@mui/icons-material/RequestQuoteOutlined';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLongOutlined';
+import HandshakeIcon from '@mui/icons-material/HandshakeOutlined';
+import GroupsIcon from '@mui/icons-material/GroupsOutlined';
 
 import type { Permission } from '@/types/api';
 

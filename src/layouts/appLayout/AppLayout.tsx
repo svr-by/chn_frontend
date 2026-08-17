@@ -80,7 +80,7 @@ export function AppLayout() {
       <Toolbar>
         <Box
           component="img"
-          src="/assets/logo_short.png"
+          src="/assets/logo.png"
           alt={t('common:app.title')}
           sx={{ height: 24, width: 'auto' }}
         />
@@ -154,17 +154,6 @@ export function AppLayout() {
             <MenuIcon />
           </IconButton>
           <Box
-            component="img"
-            src="/assets/logo_short_white.png"
-            alt={t('common:app.title')}
-            sx={{
-              display: { xs: 'block', sm: 'none' },
-              height: 28,
-              width: 'auto',
-              mr: 1,
-            }}
-          />
-          <Box
             sx={{
               flex: 1,
               display: 'flex',
@@ -172,7 +161,7 @@ export function AppLayout() {
               minWidth: 0,
             }}
           >
-            <Box sx={{ display: { xs: 'none', md: 'block' }, minWidth: 0 }}>
+            <Box sx={{ minWidth: 0 }}>
               <CompanySwitcher onDark />
             </Box>
           </Box>
