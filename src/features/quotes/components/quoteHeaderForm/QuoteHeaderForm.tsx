@@ -32,6 +32,10 @@ interface QuoteHeaderEditProps {
   quote: SupplierQuote;
 }
 
+interface QuoteCurrencyEditButtonProps extends QuoteHeaderEditProps {
+  disabled?: boolean;
+}
+
 export function QuoteNumberEditButton({
   companyId,
   quote,
@@ -116,12 +120,17 @@ export function QuoteNumberEditButton({
 export function QuoteCurrencyEditButton({
   companyId,
   quote,
-}: QuoteHeaderEditProps) {
+  disabled = false,
+}: QuoteCurrencyEditButtonProps) {
   const { t } = useTranslation('quotes');
   const { save, error, isLoading } = useQuoteHeaderSave(companyId, quote);
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState(quote.currency);
   const currencyOptions = currencySelectOptions(quote.currency);
+  const isDisabled = disabled || isLoading;
+  const tooltipTitle = disabled
+    ? t('form.editCurrencyDisabledHasSelections')
+    : t('form.editCurrency');
 
   useEffect(() => {
     if (open) {
@@ -141,15 +150,17 @@ export function QuoteCurrencyEditButton({
 
   return (
     <>
-      <Tooltip title={t('form.editCurrency')}>
-        <IconButton
-          size="small"
-          aria-label={t('form.editCurrency')}
-          onClick={() => setOpen(true)}
-          disabled={isLoading}
-        >
-          <EditOutlinedIcon fontSize="small" />
-        </IconButton>
+      <Tooltip title={tooltipTitle}>
+        <span>
+          <IconButton
+            size="small"
+            aria-label={t('form.editCurrency')}
+            onClick={() => setOpen(true)}
+            disabled={isDisabled}
+          >
+            <EditOutlinedIcon fontSize="small" />
+          </IconButton>
+        </span>
       </Tooltip>
 
       <Dialog

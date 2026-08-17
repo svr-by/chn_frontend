@@ -41,6 +41,12 @@ import {
 } from '@/features/quotes/lib/quoteSelection';
 import { usePermissions } from '@/hooks/usePermissions';
 import { SUPPLIER_QUOTE_STATUS_FLOW } from '@/lib/documentStatusFlows';
+import type { SupplierQuoteStatus } from '@/api/generated/models/supplierQuoteStatus';
+
+const CSV_IMPORTABLE_QUOTE_STATUSES = new Set<SupplierQuoteStatus>([
+  'DRAFT',
+  'SUBMITTED',
+]);
 
 export function QuoteDetailPage() {
   const { t } = useTranslation('quotes');
@@ -140,6 +146,13 @@ export function QuoteDetailPage() {
     hasPermission('manageInvoices') &&
     Boolean(materialRequestId) &&
     hasBillableLines;
+  const canExportCsv = isSupplier && Boolean(materialRequestId);
+  const canImportCsv =
+    isSupplier &&
+    quote?.status != null &&
+    CSV_IMPORTABLE_QUOTE_STATUSES.has(quote.status) &&
+    hasPermission('manageQuotes') &&
+    Boolean(materialRequestId);
   const selectionEnabled =
     isBuyer &&
     quote?.status != null &&
@@ -252,7 +265,7 @@ export function QuoteDetailPage() {
                 label={t('form.currency')}
                 value={quote.currency}
                 action={
-                  canEdit ? (
+                  canEdit && !hasSelections ? (
                     <QuoteCurrencyEditButton
                       companyId={companyId}
                       quote={quote}
@@ -320,6 +333,8 @@ export function QuoteDetailPage() {
                   editable={canEdit}
                   selectionMode={isBuyer ? 'buyer' : 'supplier'}
                   selectionEnabled={selectionEnabled}
+                  canExportCsv={canExportCsv}
+                  canImportCsv={canImportCsv}
                 />
               ),
             },

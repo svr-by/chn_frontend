@@ -6,6 +6,7 @@ import type { QuotesFiltersValue } from '@/features/quotes/lib/quotesFilters';
 import { QuoteStatusFilter } from '@/features/quotes/components/quotesFilters/QuoteStatusFilter';
 import { QuoteCounterpartyAutocomplete } from '@/features/quotes/components/quotesFilters/QuoteCounterpartyAutocomplete';
 import { QuoteCurrencyFilter } from '@/features/quotes/components/quotesFilters/QuoteCurrencyFilter';
+import { QuoteNumberFilter } from '@/features/quotes/components/quotesFilters/QuoteNumberFilter';
 import { QuoteCreatedDateRangeFilter } from '@/features/quotes/components/quotesFilters/QuoteCreatedDateRangeFilter';
 
 interface QuotesFiltersFormProps {
@@ -43,6 +44,11 @@ export function QuotesFiltersForm({
       <QuoteCurrencyFilter
         value={filters.currency}
         onChange={(next) => onChange({ ...filters, currency: next })}
+      />
+
+      <QuoteNumberFilter
+        value={filters.number}
+        onChange={(number) => onChange({ ...filters, number })}
       />
 
       <QuoteCreatedDateRangeFilter

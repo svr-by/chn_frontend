@@ -1,17 +1,11 @@
 import { useState } from 'react';
 import {
   Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   IconButton,
   Stack,
   Tooltip,
   Typography,
 } from '@mui/material';
-import CheckBoxOutlineBlankOutlinedIcon from '@mui/icons-material/CheckBoxOutlineBlankOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -20,7 +14,6 @@ import {
   useDeleteQuoteLineSelectionMutation,
   usePutQuoteLineSelectionMutation,
 } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PermissionGate } from '@/components/PermissionGate';
 import { QuoteLineSelectionDialog } from './QuoteLineSelectionDialog';
@@ -31,6 +24,7 @@ interface QuoteLineSelectionCellProps {
   lineId: string;
   maxQuantity: string;
   selectedQuantity: string | null | undefined;
+  unit?: string | null;
   materialRequestId?: string;
   disabled?: boolean;
 }
@@ -41,13 +35,13 @@ export function QuoteLineSelectionCell({
   lineId,
   maxQuantity,
   selectedQuantity,
+  unit,
   materialRequestId,
   disabled = false,
 }: QuoteLineSelectionCellProps) {
   const { t } = useTranslation('quotes');
   const { enqueueSnackbar } = useSnackbar();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
   const [putSelection, putState] = usePutQuoteLineSelectionMutation();
   const [deleteSelection, deleteState] = useDeleteQuoteLineSelectionMutation();
@@ -80,12 +74,12 @@ export function QuoteLineSelectionCell({
     }).unwrap();
 
     enqueueSnackbar(t('toast.selectionRemoved'), { variant: 'success' });
-    setDeleteConfirmOpen(false);
+    setDialogOpen(false);
   }
 
   if (disabled) {
     return isSelected ? (
-      <DecimalDisplay value={selectedQuantity} />
+      <DecimalDisplay value={selectedQuantity} suffix={unit} />
     ) : (
       <Typography variant="body2" color="text.secondary">—</Typography>
     );
@@ -94,8 +88,14 @@ export function QuoteLineSelectionCell({
   return (
     <PermissionGate permission="manageQuotes">
       {isSelected ? (
-        <Stack direction="row" spacing={0.5} alignItems="center">
-          <DecimalDisplay value={selectedQuantity} />
+        <Stack
+          direction="row"
+          spacing={0.5}
+          alignItems="center"
+          justifyContent="flex-end"
+          flexWrap="nowrap"
+        >
+          <DecimalDisplay value={selectedQuantity} suffix={unit} />
           <Tooltip title={t('selection.edit')}>
             <IconButton
               size="small"
@@ -105,22 +105,11 @@ export function QuoteLineSelectionCell({
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
           </Tooltip>
-          <Tooltip title={t('selection.remove')}>
-            <IconButton
-              size="small"
-              color="error"
-              aria-label={t('selection.remove')}
-              onClick={() => setDeleteConfirmOpen(true)}
-            >
-              <DeleteOutlineOutlinedIcon fontSize="small" />
-            </IconButton>
-          </Tooltip>
         </Stack>
       ) : (
         <Button
           size="small"
           variant="outlined"
-          startIcon={<CheckBoxOutlineBlankOutlinedIcon />}
           onClick={() => setDialogOpen(true)}
         >
           {t('selection.select')}
@@ -138,31 +127,11 @@ export function QuoteLineSelectionCell({
         isSubmitting={putState.isLoading}
         error={putState.error}
         onSubmit={(values) => void handleSave(values)}
+        allowRemove={isSelected}
+        isRemoving={deleteState.isLoading}
+        removeError={deleteState.error}
+        onRemove={() => void handleDelete()}
       />
-
-      <Dialog
-        open={deleteConfirmOpen}
-        onClose={() => setDeleteConfirmOpen(false)}
-      >
-        <DialogTitle>{t('selection.removeTitle')}</DialogTitle>
-        <DialogContent>
-          <ApiErrorAlert error={deleteState.error} />
-          <Typography>{t('selection.removeMessage')}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setDeleteConfirmOpen(false)}>
-            {t('actions.cancel')}
-          </Button>
-          <Button
-            color="error"
-            variant="contained"
-            disabled={deleteState.isLoading}
-            onClick={() => void handleDelete()}
-          >
-            {t('selection.remove')}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </PermissionGate>
   );
 }

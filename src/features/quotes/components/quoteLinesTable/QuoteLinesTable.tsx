@@ -14,12 +14,16 @@ import {
   Stack,
   Tooltip,
   Typography,
+  useTheme,
 } from '@mui/material';
+import { alpha } from '@mui/material/styles';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -32,6 +36,8 @@ import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { QuoteLinesCsvExportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvExportDialog';
+import { QuoteLinesCsvImportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvImportDialog';
 import {
   buildQuoteOfferRows,
   type QuoteOfferRow,
@@ -44,6 +50,7 @@ import {
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
+import { parseDecimal } from '@/lib/decimal';
 
 const PAGE_SIZE = 20;
 
@@ -70,6 +77,8 @@ interface QuoteLinesTableProps {
   editable: boolean;
   selectionMode?: 'none' | 'buyer' | 'supplier';
   selectionEnabled?: boolean;
+  canExportCsv?: boolean;
+  canImportCsv?: boolean;
 }
 
 export function QuoteLinesTable({
@@ -82,11 +91,17 @@ export function QuoteLinesTable({
   editable,
   selectionMode = 'none',
   selectionEnabled = false,
+  canExportCsv = false,
+  canImportCsv = false,
 }: QuoteLinesTableProps) {
+  const theme = useTheme();
   const { t } = useTranslation(['quotes', 'enums']);
   const { enqueueSnackbar } = useSnackbar();
+  const selectedRowBg = alpha(theme.palette.success.main, 0.12);
 
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [csvExportOpen, setCsvExportOpen] = useState(false);
+  const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [editingLine, setEditingLine] = useState<QuoteLine | null>(null);
   const [initialRequestLineId, setInitialRequestLineId] = useState<
     string | null
@@ -100,6 +115,7 @@ export function QuoteLinesTable({
     pageIndex: 0,
     pageSize: PAGE_SIZE,
   });
+  const showCsvActions = Boolean(materialRequestId) && (canExportCsv || canImportCsv);
 
   const [deleteLine, deleteState] = useDeleteQuoteLineMutation();
 
@@ -120,6 +136,17 @@ export function QuoteLinesTable({
   const rows = useMemo(
     () => buildQuoteOfferRows(lines, requestLines, editable),
     [editable, lines, requestLines],
+  );
+
+  const positionsTotal = useMemo(
+    () =>
+      lines
+        .reduce(
+          (sum, line) => sum.plus(parseDecimal(line.lineTotal)),
+          parseDecimal('0'),
+        )
+        .toString(),
+    [lines],
   );
 
   useEffect(() => {
@@ -193,6 +220,7 @@ export function QuoteLinesTable({
       {
         accessorKey: 'description',
         header: t('columns.requestLine'),
+        grow: true,
         Cell: ({ row }) => (
           <Stack direction="row" spacing={1} flexWrap="wrap">
             <span>{row.original.description}</span>
@@ -203,47 +231,52 @@ export function QuoteLinesTable({
         ),
       },
       {
+        id: 'notes',
+        header: t('columns.notes'),
+        size: 120,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
+        Cell: ({ row }) => row.original.quoteLine?.notes ?? '—',
+      },
+      {
+        id: 'leadTime',
+        header: t('columns.leadTime'),
+        size: 120,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
+        Cell: ({ row }) => {
+          const quoteLine = row.original.quoteLine;
+          if (!quoteLine?.leadTime || !quoteLine.leadTimeUnit) {
+            return '—';
+          }
+
+          return `${quoteLine.leadTime} ${t(
+            `enums:leadTimeUnit.${quoteLine.leadTimeUnit.toLowerCase()}`,
+          )}`;
+        },
+      },
+      {
         id: 'requestedQuantity',
         header: t('columns.quantity'),
+        size: 120,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
         Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.requestedQuantity} />
-            {row.original.unit ? ` ${row.original.unit}` : ''}
-          </>
+            <DecimalDisplay value={row.original.requestedQuantity} suffix={row.original.unit} />
         ),
       },
       {
         id: 'offerQuantity',
         header: t('columns.offerQuantity'),
+        size: 120,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
         Cell: ({ row }) =>
           row.original.quoteLine ? (
-            <DecimalDisplay value={row.original.quoteLine.quantity} />
-          ) : (
-            '—'
-          ),
-      },
-      {
-        id: 'unitPrice',
-        header: t('columns.unitPrice'),
-        Cell: ({ row }) =>
-          row.original.quoteLine ? (
-            <>
-              <DecimalDisplay value={row.original.quoteLine.unitPrice} />{' '}
-              {currency}
-            </>
-          ) : (
-            '—'
-          ),
-      },
-      {
-        id: 'lineTotal',
-        header: t('columns.lineTotal'),
-        Cell: ({ row }) =>
-          row.original.quoteLine ? (
-            <>
-              <DecimalDisplay value={row.original.quoteLine.lineTotal} />{' '}
-              {currency}
-            </>
+            <DecimalDisplay value={row.original.requestedQuantity} suffix={row.original.unit} />
           ) : (
             '—'
           ),
@@ -251,6 +284,10 @@ export function QuoteLinesTable({
       {
         id: 'selectedQuantity',
         header: t('columns.selectedQuantity'),
+        size: 150,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
         Cell: ({ row }) => {
           const quoteLine = row.original.quoteLine;
           if (!quoteLine) {
@@ -265,6 +302,7 @@ export function QuoteLinesTable({
                 lineId={quoteLine.id}
                 maxQuantity={quoteLine.quantity}
                 selectedQuantity={quoteLine.selectedQuantity}
+                unit={row.original.unit}
                 materialRequestId={materialRequestId}
                 disabled={!selectionEnabled}
               />
@@ -273,35 +311,56 @@ export function QuoteLinesTable({
 
           const selectedQuantity = quoteLine.selectedQuantity;
           return selectedQuantity != null ? (
-            <DecimalDisplay value={selectedQuantity} />
+            <DecimalDisplay
+              value={selectedQuantity}
+              suffix={row.original.unit}
+            />
           ) : (
             '—'
           );
         },
       },
       {
-        id: 'leadTime',
-        header: t('columns.leadTime'),
-        Cell: ({ row }) => {
-          const quoteLine = row.original.quoteLine;
-          if (!quoteLine?.leadTime || !quoteLine.leadTimeUnit) {
-            return '—';
-          }
-
-          return `${quoteLine.leadTime} ${t(
-            `enums:leadTimeUnit.${quoteLine.leadTimeUnit.toLowerCase()}`,
-          )}`;
-        },
+        id: 'unitPrice',
+        header: t('columns.unitPrice'),
+        size: 120,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
+        Cell: ({ row }) =>
+          row.original.quoteLine ? (
+            <DecimalDisplay value={row.original.quoteLine.unitPrice} suffix={currency} groupDigits />
+          ) : (
+            '—'
+          ),
       },
       {
-        id: 'notes',
-        header: t('columns.notes'),
-        Cell: ({ row }) => row.original.quoteLine?.notes ?? '—',
+        id: 'lineTotal',
+        header: t('columns.lineTotal'),
+        size: 140,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
+        muiTableFooterCellProps: { align: 'right' },
+        Cell: ({ row }) =>
+          row.original.quoteLine ? (
+            <DecimalDisplay value={row.original.quoteLine.lineTotal} suffix={currency} groupDigits />
+          ) : (
+            '—'
+          ),
+        Footer: () => (
+          <DecimalDisplay
+            value={positionsTotal}
+            suffix={currency}
+            groupDigits
+            fontWeight={600}
+          />
+        ),
       },
     ];
 
     return baseColumns;
-  }, [actionsMenu?.row.id, currency, editable, selectionEnabled, selectionMode, companyId, quoteId, materialRequestId, t]);
+  }, [actionsMenu?.row.id, currency, editable, positionsTotal, selectionEnabled, selectionMode, companyId, quoteId, materialRequestId, t]);
 
   function closeActionsMenu() {
     setActionsMenu(null);
@@ -337,7 +396,6 @@ export function QuoteLinesTable({
   return (
     <Stack spacing={2}>
       <Stack direction="row" justifyContent="space-between" alignItems="center">
-        <Typography variant="h6">{t('linesTitle')}</Typography>
         {editable && hasAvailableRequestLines && requestLines.length === 0 ? (
           <PermissionGate permission="manageQuotes">
             <Button
@@ -427,19 +485,59 @@ export function QuoteLinesTable({
         ) : null}
       </Menu>
 
-      {rows.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.lines')}</Typography>
-      ) : (
-        <PaginatedTable
-          columns={columns}
-          data={pagedRows}
-          rowCount={rows.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          getRowId={(row) => row.id}
-          layoutMode="grid"
-        />
-      )}
+      <PaginatedTable
+        columns={columns}
+        data={pagedRows}
+        rowCount={rows.length}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        getRowId={(row) => row.id}
+        layoutMode="grid"
+        muiTableBodyRowProps={({ row }) => {
+          const isSelected = row.original.quoteLine?.selectedQuantity != null;
+          return {
+            sx: {
+              bgcolor: isSelected ? selectedRowBg : 'transparent',
+            },
+          };
+        }}
+        muiTableBodyCellProps={({ row }) => {
+          const isSelected = row.original.quoteLine?.selectedQuantity != null;
+          return {
+            sx: {
+              bgcolor: isSelected ? selectedRowBg : 'transparent',
+            },
+          };
+        }}
+        renderBottomToolbarCustomActions={
+          showCsvActions
+            ? () => (
+                <Stack direction="row" spacing={1}>
+                  {canExportCsv ? (
+                    <Button
+                      variant="outlined"
+                      startIcon={<FileDownloadOutlinedIcon />}
+                      onClick={() => setCsvExportOpen(true)}
+                    >
+                      {t('actions.exportCsv')}
+                    </Button>
+                  ) : null}
+                  {canImportCsv ? (
+                    <PermissionGate permission="manageQuotes">
+                      <Button
+                        variant="outlined"
+                        startIcon={<UploadFileOutlinedIcon />}
+                        onClick={() => setCsvImportOpen(true)}
+                      >
+                        {t('actions.importCsv')}
+                      </Button>
+                    </PermissionGate>
+                  ) : null}
+                </Stack>
+              )
+            : undefined
+        }
+      />
 
       <QuoteLineFormDialog
         open={dialogOpen}
@@ -459,6 +557,24 @@ export function QuoteLinesTable({
           )
         }
       />
+
+      {materialRequestId ? (
+        <>
+          <QuoteLinesCsvExportDialog
+            open={csvExportOpen}
+            onClose={() => setCsvExportOpen(false)}
+            companyId={companyId}
+            requestId={materialRequestId}
+          />
+          <QuoteLinesCsvImportDialog
+            open={csvImportOpen}
+            onClose={() => setCsvImportOpen(false)}
+            companyId={companyId}
+            requestId={materialRequestId}
+            quoteId={quoteId}
+          />
+        </>
+      ) : null}
 
       <Dialog
         open={Boolean(lineToDelete)}

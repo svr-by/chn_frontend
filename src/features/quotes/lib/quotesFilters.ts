@@ -15,6 +15,8 @@ export type QuotesFiltersValue = {
    */
   counterpartyCompanyId: string | null;
   currency: string | null;
+  /** Document number filter (API query param `number`). */
+  number: string;
   /**
    * Local date input values in format: YYYY-MM-DD
    * (empty string means "not set").
@@ -27,6 +29,7 @@ export const DEFAULT_QUOTES_FILTERS: QuotesFiltersValue = {
   status: 'ALL',
   counterpartyCompanyId: null,
   currency: null,
+  number: '',
   createdFrom: '',
   createdTo: '',
 };
@@ -53,6 +56,8 @@ export function buildQuotesListQueryArgs({
   offset: number;
   filters: QuotesFiltersValue;
 }): { companyId: string } & GetCompaniesCompanyIdQuotesParams {
+  const trimmedNumber = filters.number.trim();
+
   const params: GetCompaniesCompanyIdQuotesParams = {
     limit,
     offset,
@@ -64,6 +69,7 @@ export function buildQuotesListQueryArgs({
         : { buyerCompanyId: filters.counterpartyCompanyId }
       : {}),
     ...(filters.currency ? { currency: filters.currency } : {}),
+    ...(trimmedNumber ? { number: trimmedNumber } : {}),
     ...(filters.createdFrom ? { createdFrom: dateInputToIsoStartOfDay(filters.createdFrom) } : {}),
     ...(filters.createdTo ? { createdTo: dateInputToIsoEndOfDay(filters.createdTo) } : {}),
   };
@@ -89,6 +95,7 @@ export function areQuotesFiltersEqual(
     a.status === b.status &&
     a.counterpartyCompanyId === b.counterpartyCompanyId &&
     a.currency === b.currency &&
+    a.number === b.number &&
     a.createdFrom === b.createdFrom &&
     a.createdTo === b.createdTo
   );
@@ -99,6 +106,7 @@ export function countActiveQuotesFilters(filters: QuotesFiltersValue): number {
   if (filters.status !== DEFAULT_QUOTES_FILTERS.status) count += 1;
   if (filters.counterpartyCompanyId != null) count += 1;
   if (filters.currency != null) count += 1;
+  if (filters.number.trim() !== '') count += 1;
   if (filters.createdFrom !== '') count += 1;
   if (filters.createdTo !== '') count += 1;
   return count;

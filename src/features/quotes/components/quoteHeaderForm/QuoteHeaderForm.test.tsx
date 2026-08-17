@@ -10,6 +10,7 @@ import {
 } from '@/features/quotes/components/quoteHeaderForm/QuoteHeaderForm';
 import {
   COMPANY_ID,
+  createQuoteLine,
   createSupplierQuote,
   QUOTE_ID,
   REQUEST_ID,
@@ -57,6 +58,25 @@ describe('QuoteHeaderForm edit buttons', () => {
         currency: 'EUR',
       });
     });
+  });
+
+  it('disables currency edit when quote has buyer selections', () => {
+    const quote = createSupplierQuote({
+      currency: 'USD',
+      lines: [createQuoteLine({ selectedQuantity: '5' })],
+    });
+
+    renderWithProviders(
+      <QuoteCurrencyEditButton
+        companyId={COMPANY_ID}
+        quote={quote}
+        disabled
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Edit currency' }),
+    ).toBeDisabled();
   });
 
   it('saves notes from edit dialog', async () => {

@@ -9,7 +9,7 @@ const STATUS_COLORS: Record<
 > = {
   DRAFT: 'default',
   SUBMITTED: 'info',
-  PARTIALLY_ACCEPTED: 'warning',
+  PARTIALLY_ACCEPTED: 'success',
   ACCEPTED: 'success',
   REJECTED: 'error',
 };

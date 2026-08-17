@@ -4,8 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
+import {
+  useCreateQuoteMutation,
+  useLazyListQuotesQuery,
+  useListQuotesQuery,
+} from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
+import { useListInboundRequestsQuery } from '@/api/endpoints/requestsApi';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import {
   PREFERRED_TRADING_ROLE_STORAGE_KEY,
@@ -14,6 +19,7 @@ import {
 } from '@/lib/preferredDirection';
 import {
   COMPANY_ID,
+  createInboundMaterialRequestSummary,
   createMembership,
   createSupplierQuoteSummary,
   createTradingPartner,
@@ -32,6 +38,7 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/quotesApi', () => ({
   useListQuotesQuery: vi.fn(),
+  useLazyListQuotesQuery: vi.fn(),
   useGetQuoteQuery: vi.fn(),
   useCreateQuoteMutation: vi.fn(),
   useUpdateQuoteMutation: vi.fn(),
@@ -45,9 +52,22 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
   useListPartnersQuery: vi.fn(),
 }));
 
+vi.mock('@/api/endpoints/requestsApi', () => ({
+  useListInboundRequestsQuery: vi.fn(),
+}));
+
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
 const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
+const mockedUseCreateQuoteMutation = vi.mocked(useCreateQuoteMutation);
+const mockedUseLazyListQuotesQuery = vi.mocked(useLazyListQuotesQuery);
+const mockedUseListInboundRequestsQuery = vi.mocked(
+  useListInboundRequestsQuery,
+);
+
+function mockMutationHook(mock: ReturnType<typeof vi.fn>) {
+  return [mock, { isLoading: false, error: undefined, reset: vi.fn() }] as const;
+}
 
 async function openFilters(
   user: ReturnType<typeof userEvent.setup>,
@@ -65,7 +85,7 @@ describe('QuotesPage', () => {
         user: createTestUser({
           memberships: [
             createMembership({
-              effectivePermissions: ['viewQuotes'],
+              effectivePermissions: ['viewQuotes', 'manageQuotes'],
             }),
           ],
         }),
@@ -93,9 +113,24 @@ describe('QuotesPage', () => {
       isFetching: false,
       refetch: vi.fn(),
     } as ReturnType<typeof useListPartnersQuery>);
+
+    mockedUseListInboundRequestsQuery.mockReturnValue({
+      data: { requests: [], pagination: { total: 0, limit: 100, offset: 0 } },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListInboundRequestsQuery>);
+
+    mockedUseCreateQuoteMutation.mockReturnValue(
+      mockMutationHook(vi.fn()) as ReturnType<typeof useCreateQuoteMutation>,
+    );
+    mockedUseLazyListQuotesQuery.mockReturnValue([
+      vi.fn(),
+      { isLoading: false, reset: vi.fn() },
+    ] as unknown as ReturnType<typeof useLazyListQuotesQuery>);
   });
 
-  it('renders inbound tab by default', async () => {
+  it('renders inbound tab by default without new quote button', async () => {
     const user = userEvent.setup();
 
     renderWithProviders(
@@ -108,6 +143,9 @@ describe('QuotesPage', () => {
       },
     );
 
+    expect(
+      screen.queryByRole('button', { name: 'New quote' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument();
     expect(screen.getByText('Acme Corp')).toBeInTheDocument();
     expect(screen.getByText('Draft')).toBeInTheDocument();
@@ -118,6 +156,62 @@ describe('QuotesPage', () => {
       expect.objectContaining({ direction: 'inbound' }),
       expect.anything(),
     );
+  });
+
+  it('shows new quote button on outbound tab', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/quotes" element={<QuotesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/quotes',
+      },
+    );
+
+    await user.click(screen.getByRole('tab', { name: 'Outbound' }));
+
+    expect(screen.getByRole('button', { name: 'New quote' })).toBeInTheDocument();
+  });
+
+  it('opens create dialog from new quote button', async () => {
+    const user = userEvent.setup();
+
+    mockedUseListInboundRequestsQuery.mockReturnValue({
+      data: {
+        requests: [
+          createInboundMaterialRequestSummary({
+            title: 'Steel parts RFQ',
+          }),
+        ],
+        pagination: { total: 1, limit: 100, offset: 0 },
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListInboundRequestsQuery>);
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/quotes" element={<QuotesPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/quotes?direction=outbound',
+      },
+    );
+
+    await user.click(screen.getByRole('button', { name: 'New quote' }));
+
+    expect(
+      await screen.findByRole('dialog', { name: 'New quote' }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Incoming request')).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: /Quote number/ })).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: /Currency/ })).toBeInTheDocument();
+    expect(screen.getByLabelText('Submit immediately')).toBeInTheDocument();
   });
 
   it('opens outbound tab when preferred supplier role is stored', async () => {

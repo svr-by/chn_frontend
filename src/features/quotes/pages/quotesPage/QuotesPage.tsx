@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Badge,
   Box,
+  Button,
   CircularProgress,
   IconButton,
   Stack,
@@ -10,6 +11,7 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
@@ -18,8 +20,10 @@ import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { ListPagination } from '@/components/ListPagination';
+import { PermissionGate } from '@/components/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
+import { CreateQuoteFromInboundDialog } from '@/features/quotes/components/createQuoteFromInboundDialog/CreateQuoteFromInboundDialog';
 import { QuoteCard } from '@/features/quotes/components/quoteCard/QuoteCard';
 import { QuotesFiltersPanel } from '@/features/quotes/components/quotesFilters/QuotesFiltersPanel';
 import {
@@ -50,6 +54,7 @@ export function QuotesPage() {
 
   const [pageIndex, setPageIndex] = useState(0);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [appliedFilters, setAppliedFilters] = useState<QuotesFiltersValue>({
     ...DEFAULT_QUOTES_FILTERS,
   });
@@ -110,14 +115,32 @@ export function QuotesPage() {
     <PageShell maxWidth="xl" fillViewport>
       <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
         <Stack spacing={0}>
-          <Box>
-            <Typography variant="h5" component="h1">
-              {t('title')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {t('subtitle')}
-            </Typography>
-          </Box>
+          <Stack
+            direction={{ xs: 'column', sm: 'row' }}
+            justifyContent="space-between"
+            alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+            spacing={2}
+          >
+            <Box>
+              <Typography variant="h5" component="h1">
+                {t('title')}
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {t('subtitle')}
+              </Typography>
+            </Box>
+            {direction === 'outbound' ? (
+              <PermissionGate permission="manageQuotes">
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setCreateOpen(true)}
+                >
+                  {t('actions.new')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+          </Stack>
 
           <Stack direction="row" alignItems="center" spacing={1}>
             <Tabs
@@ -197,6 +220,12 @@ export function QuotesPage() {
           </Stack>
         )}
       </Stack>
+
+      <CreateQuoteFromInboundDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        companyId={companyId}
+      />
     </PageShell>
   );
 }
