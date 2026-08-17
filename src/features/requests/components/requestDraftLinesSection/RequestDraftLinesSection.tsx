@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
+import TranslateOutlinedIcon from '@mui/icons-material/TranslateOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
@@ -26,6 +27,7 @@ interface RequestDraftLinesSectionProps {
   lines: DraftRequestLine[];
   onChange: (lines: DraftRequestLine[]) => void;
   onImportClick: () => void;
+  onTranslateClick: () => void;
   errorMessage?: string;
 }
 
@@ -34,6 +36,7 @@ export function RequestDraftLinesSection({
   lines,
   onChange,
   onImportClick,
+  onTranslateClick,
   errorMessage,
 }: RequestDraftLinesSectionProps) {
   const { t } = useTranslation('requests');
@@ -210,6 +213,15 @@ export function RequestDraftLinesSection({
               onClick={onImportClick}
             >
               {t('actions.importFromFile')}
+            </Button>
+            <Button
+              type="button"
+              variant="outlined"
+              startIcon={<TranslateOutlinedIcon />}
+              onClick={onTranslateClick}
+              disabled={lines.length === 0}
+            >
+              {t('actions.translate')}
             </Button>
           </Stack>
         )}

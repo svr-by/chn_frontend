@@ -85,11 +85,9 @@ export function RequestCard(props: RequestCardProps) {
             {request.title || '—'}
           </Typography>
 
-          {tab === 'outbound' ? (
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {t('columns.createdBy')}: {request.createdByUserName ?? '—'}
-            </Typography>
-          ) : null}
+          <Typography variant="body2" color="text.secondary" noWrap>
+            {t('columns.createdBy')}: {request.assigneeUserName ?? '—'}
+          </Typography>
 
           <Typography variant="body2" color="text.secondary" noWrap>
             {`${t('columns.priority')}: ${priorityLabel} · ${t('columns.dueDate')}: ${formatDate(request.dueDate)}`}

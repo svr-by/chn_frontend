@@ -130,6 +130,8 @@ export function RequestDetailPage() {
             <InboundRequestStatusActions
               companyId={companyId}
               requestId={request.id}
+              requestTitle={request.title}
+              buyerName={inboundRequest?.buyerCompany.name}
             />
           ) : (
             <RequestStatusActions

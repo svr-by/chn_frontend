@@ -13,9 +13,9 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ReplayOutlinedIcon from '@mui/icons-material/ReplayOutlined';
+import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -66,7 +66,10 @@ function areLineSetsEqual(a: Set<string>, b: Set<string>): boolean {
 /** Non-draft supplier offers — lines that cannot be removed from distribution. */
 function buildQuotedLineKeys(
   comparisonLines:
-    | { requestLine: { id: string }; offers: { supplierCompany: { id: string }; status: string }[] }[]
+    | {
+        requestLine: { id: string };
+        offers: { supplierCompany: { id: string }; status: string }[];
+      }[]
     | undefined,
 ): Set<string> {
   const keys = new Set<string>();
@@ -79,6 +82,18 @@ function buildQuotedLineKeys(
     }
   }
   return keys;
+}
+
+/** Suppliers with at least one non-draft quote — distribution cannot be removed. */
+function buildQuotedSupplierIds(quotedLineKeys: Set<string>): Set<string> {
+  const ids = new Set<string>();
+  for (const key of quotedLineKeys) {
+    const separatorIndex = key.indexOf(':');
+    if (separatorIndex > 0) {
+      ids.add(key.slice(0, separatorIndex));
+    }
+  }
+  return ids;
 }
 
 export function RequestSuppliersMatrix({
@@ -121,6 +136,11 @@ export function RequestSuppliersMatrix({
   const quotedLineKeys = useMemo(
     () => buildQuotedLineKeys(comparisonQuery.data?.lines),
     [comparisonQuery.data?.lines],
+  );
+
+  const quotedSupplierIds = useMemo(
+    () => buildQuotedSupplierIds(quotedLineKeys),
+    [quotedLineKeys],
   );
 
   const [deleteDistribution, deleteState] =
@@ -315,6 +335,9 @@ export function RequestSuppliersMatrix({
         const savedLineIds =
           savedLineIdSets.get(distribution.id) ?? new Set<string>();
         const draftCount = draftIds.size;
+        const hasSupplierQuotes = quotedSupplierIds.has(
+          distribution.supplierCompany.id,
+        );
 
         return {
           id: `distribution-${distribution.id}`,
@@ -359,15 +382,15 @@ export function RequestSuppliersMatrix({
               {canManageDistributions ? (
                 <Stack direction="row" spacing={0.25} justifyContent="center">
                   {canSaveLines ? (
-                    <Tooltip title={t('distributions.editLines')}>
+                    <Tooltip title={t('distributions.saveLines')}>
                       <span>
                         <IconButton
                           size="small"
-                          aria-label={t('distributions.editLines')}
+                          aria-label={t('distributions.saveLines')}
                           disabled={!dirty || draftCount === 0}
                           onClick={() => setDistributionToSave(distribution)}
                         >
-                          <EditOutlinedIcon fontSize="small" />
+                          <SaveOutlinedIcon fontSize="small" />
                         </IconButton>
                       </span>
                     </Tooltip>
@@ -384,15 +407,24 @@ export function RequestSuppliersMatrix({
                       </IconButton>
                     </Tooltip>
                   ) : null}
-                  <Tooltip title={t('distributions.remove')}>
-                    <IconButton
-                      size="small"
-                      color="error"
-                      aria-label={t('distributions.remove')}
-                      onClick={() => setDistributionToRemove(distribution)}
-                    >
-                      <DeleteOutlineIcon fontSize="small" />
-                    </IconButton>
+                  <Tooltip
+                    title={
+                      hasSupplierQuotes
+                        ? t('distributions.cannotRemoveHasQuote')
+                        : t('distributions.remove')
+                    }
+                  >
+                    <span>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        aria-label={t('distributions.remove')}
+                        disabled={hasSupplierQuotes}
+                        onClick={() => setDistributionToRemove(distribution)}
+                      >
+                        <DeleteOutlineIcon fontSize="small" />
+                      </IconButton>
+                    </span>
                   </Tooltip>
                 </Stack>
               ) : null}
@@ -455,6 +487,7 @@ export function RequestSuppliersMatrix({
     distributions,
     draftLineIds,
     quotedLineKeys,
+    quotedSupplierIds,
     savedLineIdSets,
     t,
   ]);
@@ -549,7 +582,7 @@ export function RequestSuppliersMatrix({
             }
             onClick={() => void handleSaveConfirm()}
           >
-            {t('distributions.editLines')}
+            {t('distributions.saveLines')}
           </Button>
         </DialogActions>
       </Dialog>

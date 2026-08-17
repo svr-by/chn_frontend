@@ -17,56 +17,41 @@ import RequestQuoteOutlinedIcon from '@mui/icons-material/RequestQuoteOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import {
-  useCreateQuoteMutation,
-  useListQuotesQuery,
-} from '@/api/endpoints/quotesApi';
+import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useRejectInboundRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/PermissionGate';
+import { CreateQuoteFromInboundDialog } from '@/features/quotes/components/createQuoteFromInboundDialog/CreateQuoteFromInboundDialog';
 
 interface InboundRequestStatusActionsProps {
   companyId: string;
   requestId: string;
+  requestTitle: string;
+  buyerName?: string;
 }
 
 export function InboundRequestStatusActions({
   companyId,
   requestId,
+  requestTitle,
+  buyerName,
 }: InboundRequestStatusActionsProps) {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [rejectOpen, setRejectOpen] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
-  const [isCreating, setIsCreating] = useState(false);
-  const [submitOnCreate] = useState(true);
 
   const quotesQuery = useListQuotesQuery(
     { companyId, requestId, limit: 1, offset: 0, direction: 'outbound' },
     { skip: !companyId || !requestId },
   );
 
-  const [createQuote, createState] = useCreateQuoteMutation();
   const [rejectInboundRequest, rejectState] = useRejectInboundRequestMutation();
 
   const existingQuote = quotesQuery.data?.quotes[0];
-
-  async function handleCreateQuote() {
-    setIsCreating(true);
-    try {
-      const result = await createQuote({
-        companyId,
-        requestId,
-        submitOnCreate,
-      }).unwrap();
-      enqueueSnackbar(t('inbound.toast.quoteCreated'), { variant: 'success' });
-      navigate(`/app/quotes/${result.quote.id}`);
-    } finally {
-      setIsCreating(false);
-    }
-  }
 
   async function handleReject() {
     await rejectInboundRequest({
@@ -96,10 +81,7 @@ export function InboundRequestStatusActions({
 
   return (
     <PermissionGate permission="manageQuotes">
-      <DocumentActionMenuItem
-        onClick={() => void handleCreateQuote()}
-        disabled={isCreating || createState.isLoading}
-      >
+      <DocumentActionMenuItem onClick={() => setCreateOpen(true)}>
         <ListItemIcon>
           <RequestQuoteOutlinedIcon fontSize="small" />
         </ListItemIcon>
@@ -115,7 +97,16 @@ export function InboundRequestStatusActions({
         <ListItemText>{t('inbound.actions.reject')}</ListItemText>
       </DocumentActionMenuItem>
 
-      <ApiErrorAlert error={createState.error} />
+      <CreateQuoteFromInboundDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        companyId={companyId}
+        lockedRequest={{
+          id: requestId,
+          title: requestTitle,
+          buyerName,
+        }}
+      />
 
       <Dialog open={rejectOpen} onClose={() => setRejectOpen(false)}>
         <DialogTitle>{t('inbound.reject.title')}</DialogTitle>

@@ -1,5 +1,7 @@
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200PreviewRowsItem } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200PreviewRowsItem';
 import type { PostCompaniesCompanyIdImportsRequestLinesHtmPreview200PreviewRowsItem } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesHtmPreview200PreviewRowsItem';
+import type { PostCompaniesCompanyIdImportsRequestLinesTranslatePreview200Preview } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesTranslatePreview200Preview';
+import type { PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodyPreview } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodyPreview';
 import type { PostCompaniesCompanyIdRequestsBodyLinesItem } from '@/api/generated/models/postCompaniesCompanyIdRequestsBodyLinesItem';
 
 export type DraftRequestLine = {
@@ -90,4 +92,54 @@ export function mapPreviewRowsToDraftLines(
 export function isCsvImportFile(file: File): boolean {
   const name = file.name.toLowerCase();
   return name.endsWith('.csv') || file.type === 'text/csv';
+}
+
+export function draftLinesToTranslatePreview(
+  lines: DraftRequestLine[],
+): PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodyPreview {
+  return {
+    rows: lines.map((line, index) => ({
+      rowNumber: index + 1,
+      data: {
+        description: line.description,
+        quantity: line.quantity,
+        ...(line.unit ? { unit: line.unit } : {}),
+        ...(line.sku ? { sku: line.sku } : {}),
+        ...(line.notes ? { notes: line.notes } : {}),
+      },
+      errors: [],
+      parsed: {
+        description: line.description,
+        quantity: line.quantity,
+        unit: line.unit ?? null,
+        sku: line.sku ?? null,
+        productId: line.productId ?? null,
+        notes: line.notes ?? null,
+      },
+    })),
+    validRowCount: lines.length,
+    invalidRowCount: 0,
+  };
+}
+
+export function applyTranslatedPreviewToDraftLines(
+  lines: DraftRequestLine[],
+  preview: PostCompaniesCompanyIdImportsRequestLinesTranslatePreview200Preview,
+): DraftRequestLine[] {
+  return lines.map((line, index) => {
+    const row =
+      preview.rows.find((item) => item.rowNumber === index + 1) ??
+      preview.rows[index];
+    const parsed = row?.parsed;
+    if (!parsed) {
+      return line;
+    }
+
+    return {
+      ...line,
+      description: parsed.description,
+      unit: parsed.unit ?? undefined,
+      notes: parsed.notes ?? undefined,
+    };
+  });
 }

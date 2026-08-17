@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  applyTranslatedPreviewToDraftLines,
   draftLinesToCreatePayload,
+  draftLinesToTranslatePreview,
   isCsvImportFile,
   mapPreviewRowsToDraftLines,
   type DraftRequestLine,
@@ -97,6 +99,55 @@ describe('draftRequestLine helpers', () => {
         productId: '11111111-1111-1111-8111-111111111111',
         sku: 'G-1',
         notes: 'rush',
+      },
+    ]);
+  });
+
+  it('maps draft lines to a translate preview and applies translated texts', () => {
+    const lines: DraftRequestLine[] = [
+      {
+        clientId: 'c1',
+        description: 'Bolt',
+        quantity: '10',
+        unit: 'pcs',
+        sku: 'B-1',
+        notes: 'M8',
+      },
+    ];
+
+    const preview = draftLinesToTranslatePreview(lines);
+    expect(preview.validRowCount).toBe(1);
+    expect(preview.rows[0]?.parsed?.description).toBe('Bolt');
+    expect(preview.rows[0]?.parsed?.quantity).toBe('10');
+
+    const translated = applyTranslatedPreviewToDraftLines(lines, {
+      validRowCount: 1,
+      invalidRowCount: 0,
+      rows: [
+        {
+          rowNumber: 1,
+          data: {},
+          errors: [],
+          parsed: {
+            description: 'Болт',
+            quantity: '99',
+            unit: 'шт',
+            sku: 'CHANGED',
+            productId: null,
+            notes: 'М8',
+          },
+        },
+      ],
+    });
+
+    expect(translated).toEqual([
+      {
+        clientId: 'c1',
+        description: 'Болт',
+        quantity: '10',
+        unit: 'шт',
+        sku: 'B-1',
+        notes: 'М8',
       },
     ]);
   });

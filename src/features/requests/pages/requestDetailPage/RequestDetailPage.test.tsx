@@ -90,6 +90,10 @@ vi.mock('@/api/endpoints/requestsApi', () => {
       vi.fn(),
       { isLoading: false, reset: vi.fn() },
     ]),
+    useUpdateRequestDistributionMutation: vi.fn(() => [
+      vi.fn(),
+      { isLoading: false, reset: vi.fn(), error: undefined },
+    ]),
     useDeleteRequestDistributionMutation: vi.fn(() => [
       vi.fn(),
       { isLoading: false, reset: vi.fn(), error: undefined },
@@ -102,7 +106,12 @@ vi.mock('@/api/endpoints/requestsApi', () => {
     })),
     useListRequestsQuery: vi.fn(),
     useCreateRequestMutation: vi.fn(),
-    useListInboundRequestsQuery: vi.fn(),
+    useListInboundRequestsQuery: vi.fn(() => ({
+      data: { requests: [], pagination: { total: 0, limit: 100, offset: 0 } },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    })),
     useGetQuoteComparisonQuery: vi.fn(() => ({
       data: emptyQuoteComparison,
       isLoading: false,
@@ -123,6 +132,10 @@ vi.mock('@/api/endpoints/partnersApi', () => ({
 
 vi.mock('@/api/endpoints/quotesApi', () => ({
   useListQuotesQuery: vi.fn(),
+  useLazyListQuotesQuery: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
   useCreateQuoteMutation: vi.fn(),
 }));
 
@@ -284,6 +297,50 @@ describe('RequestDetailPage', () => {
     expect(
       screen.getByRole('button', { name: 'Add supplier' }),
     ).toBeInTheDocument();
+  });
+
+  it('shows request status from the latest getRequest payload', () => {
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: ['viewRequests', 'manageRequests'],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    mockedUseGetRequestQuery.mockReturnValue({
+      data: { request: createMaterialRequest({ status: 'ORDERED' }) },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetRequestQuery>);
+
+    const view = renderOutboundPage();
+    expect(screen.getByText('Ordered')).toBeInTheDocument();
+
+    mockedUseGetRequestQuery.mockReturnValue({
+      data: {
+        request: createMaterialRequest({ status: 'PARTIALLY_ORDERED' }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetRequestQuery>);
+
+    view.rerender(
+      <Routes>
+        <Route path="/app/requests/:requestId" element={<RequestDetailPage />} />
+      </Routes>,
+    );
+
+    expect(screen.getByText('Partially ordered')).toBeInTheDocument();
   });
 
   it('opens distribute dialog from draft requests', async () => {

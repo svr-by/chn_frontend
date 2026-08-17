@@ -28,6 +28,7 @@ import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { BackLink } from '@/components/BackLink';
 import { RequestDraftLinesSection } from '@/features/requests/components/requestDraftLinesSection/RequestDraftLinesSection';
 import { RequestLinesImportDialog } from '@/features/requests/components/requestLinesImportDialog/RequestLinesImportDialog';
+import { RequestLinesTranslateDialog } from '@/features/requests/components/requestLinesTranslateDialog/RequestLinesTranslateDialog';
 import {
   draftLinesToCreatePayload,
   type DraftRequestLine,
@@ -63,6 +64,7 @@ export function RequestNewPage() {
   const [lines, setLines] = useState<DraftRequestLine[]>([]);
   const [linesError, setLinesError] = useState<string | undefined>();
   const [importOpen, setImportOpen] = useState(false);
+  const [translateOpen, setTranslateOpen] = useState(false);
   const [tab, setTab] = useState<FormTab>('lines');
 
   const [createRequest, createState] = useCreateRequestMutation();
@@ -307,6 +309,7 @@ export function RequestNewPage() {
                     companyId={companyId}
                     lines={lines}
                     onImportClick={() => setImportOpen(true)}
+                    onTranslateClick={() => setTranslateOpen(true)}
                     onChange={(nextLines) => {
                       setLines(nextLines);
                       if (nextLines.length > 0) {
@@ -350,6 +353,18 @@ export function RequestNewPage() {
           companyId={companyId}
           hasExistingLines={lines.length > 0}
           onApply={setLines}
+        />
+        <RequestLinesTranslateDialog
+          open={translateOpen}
+          onClose={() => setTranslateOpen(false)}
+          companyId={companyId}
+          lines={lines}
+          onApply={(nextLines) => {
+            setLines(nextLines);
+            if (nextLines.length > 0) {
+              setLinesError(undefined);
+            }
+          }}
         />
       </Stack>
     </PageShell>

@@ -95,11 +95,11 @@ describe('RequestLinesPage', () => {
     );
   });
 
-  it('opens the parent request when a row is clicked', async () => {
+  it('opens the parent request when the request link is clicked', async () => {
     const user = userEvent.setup();
     renderPage();
 
-    await user.click(screen.getByText('Office paper'));
+    await user.click(screen.getByText('Office supplies'));
 
     expect(await screen.findByText('Request detail')).toBeInTheDocument();
   });
