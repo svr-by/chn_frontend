@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { LineageCreatedMeta } from '@/features/trace/components/lineagePipelineView/LineageCreatedMeta';
 import type { PipelineItem, PipelineStage } from '@/lib/lineagePipeline';
 import { getPipelineItemStatusLabel } from '@/lib/traceLabels';
 
@@ -26,10 +27,12 @@ export function LineagePipelineItemCard({
 }: LineagePipelineItemCardProps) {
   const { t } = useTranslation(['trace', 'enums', 'common']);
   const statusLabel = getPipelineItemStatusLabel(stage, item.status, t);
-  const title = t(`pipeline.itemLabel.${stage}`, { label: item.label });
+  // const title = t(`pipeline.itemLabel.${stage}`, { label: item.label });
+  const title = `# ${item.label}`;
   const lineNumber = item.meta?.lineNumber;
   const companyName = item.meta?.companyName;
   const createdAt = item.meta?.createdAt;
+  const createdBy = item.meta?.createdBy;
 
   const transportModeKey = item.meta?.transportMode?.toLowerCase();
   const transportModeLabel = transportModeKey
@@ -61,7 +64,7 @@ export function LineagePipelineItemCard({
           </Stack>
 
           {companyName ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography variant="body2" color="text.secondary" fontWeight={600}>
               {companyName}
             </Typography>
           ) : null}
@@ -86,20 +89,19 @@ export function LineagePipelineItemCard({
 
           {stage === 'request' && item.meta ? (
             <Box>
-              <Typography variant="body2">
-                <DecimalDisplay value={item.meta.quantity} component="span" />
-                {item.meta.unit ? ` ${item.meta.unit}` : ''}
+              <Typography variant="body2" color="text.secondary">
+                <DecimalDisplay value={item.meta.quantity} suffix={item.meta.unit ?? ''} />
               </Typography>
             </Box>
           ) : null}
 
-          {stage === 'quotes' && item.meta ? (
+          {(stage === 'quotes' || stage === 'invoices') && item.meta ? (
             <Typography variant="body2" color="text.secondary">
-              {t('pipeline.quoteMeta', {
-                unitPrice: item.meta.unitPrice,
-                quantity: item.meta.quantity,
-                currency: item.meta.currency,
-              })}
+              <DecimalDisplay value={item.meta.quantity} suffix={item.meta.unit ?? ''} />
+              {' x '}
+              <DecimalDisplay value={item.meta.unitPrice} suffix={item.meta.currency ?? ''} groupDigits />
+              {' = '}
+              <DecimalDisplay value={item.meta.lineTotal} suffix={item.meta.currency ?? ''} groupDigits />
             </Typography>
           ) : null}
 
@@ -144,13 +146,7 @@ export function LineagePipelineItemCard({
             </Stack>
           ) : null}
 
-          {createdAt ? (
-            <Typography variant="body2" color="text.secondary">
-              {t('common:createdAt', {
-                date: new Date(createdAt).toLocaleDateString(),
-              })}
-            </Typography>
-          ) : null}
+          <LineageCreatedMeta createdAt={createdAt} createdBy={createdBy} />
         </Stack>
       </CardContent>
     </Card>

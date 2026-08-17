@@ -999,6 +999,14 @@ export function createLineageTrace(
       submittedAt: '2026-01-01T00:00:00.000Z',
       createdAt: '2026-01-01T00:00:00.000Z',
       updatedAt: '2026-01-01T00:00:00.000Z',
+      company: {
+        id: COMPANY_ID,
+        name: 'Acme Corp',
+      },
+      createdBy: {
+        id: USER_ID,
+        name: 'Jane Doe',
+      },
     },
     requestLine: {
       id: REQUEST_LINE_ID,
@@ -1017,12 +1025,18 @@ export function createLineageTrace(
     quotes: [
       {
         quoteId: QUOTE_ID,
-        supplierCompany: {
+        company: {
           id: SUPPLIER_COMPANY_ID,
           name: 'Supplier Ltd',
         },
         status: 'SUBMITTED',
         currency: 'USD',
+        number: null,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        createdBy: {
+          id: USER_ID,
+          name: 'Jane Doe',
+        },
         line: {
           id: QUOTE_LINE_ID,
           lineNumber: 1,
@@ -1031,10 +1045,10 @@ export function createLineageTrace(
           unitPrice: '5.0000',
           lineTotal: '50.0000',
           notes: null,
+          selectionLine: null,
         },
       },
     ],
-    selections: [],
     invoices: [],
     shipments: [],
     consolidations: [],

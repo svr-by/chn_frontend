@@ -36,9 +36,6 @@ describe('traceLabels', () => {
       'Submitted',
     );
     expect(getPipelineItemStatusLabel('invoices', 'ISSUED', t)).toBe('Issued');
-    expect(getPipelineItemStatusLabel('selections', 'selected', t)).toBe(
-      'Selected',
-    );
   });
 
   it('translates known relations and falls back when missing', () => {

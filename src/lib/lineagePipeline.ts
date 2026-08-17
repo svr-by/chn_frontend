@@ -4,10 +4,17 @@ import { resolveDocumentPath } from '@/lib/documentRoutes';
 export type PipelineStage =
   | 'request'
   | 'quotes'
-  | 'selections'
   | 'invoices'
   | 'shipments'
   | 'consolidations';
+
+export interface PipelineSelection {
+  id: string;
+  quantity: string;
+  notes?: string;
+  createdAt: string;
+  createdBy?: string;
+}
 
 export interface PipelineItem {
   documentId: string;
@@ -15,6 +22,7 @@ export interface PipelineItem {
   status: string;
   link: string;
   meta?: Record<string, string>;
+  selection?: PipelineSelection;
 }
 
 export interface PipelineStep {
@@ -25,11 +33,22 @@ export interface PipelineStep {
 const STAGE_ORDER: PipelineStage[] = [
   'request',
   'quotes',
-  'selections',
   'invoices',
   'shipments',
   'consolidations',
 ];
+
+function documentMeta(doc: {
+  company: { name: string };
+  createdAt: string;
+  createdBy: { name: string } | null;
+}): Record<string, string> {
+  return {
+    companyName: doc.company.name,
+    createdAt: doc.createdAt,
+    ...(doc.createdBy?.name ? { createdBy: doc.createdBy.name } : {}),
+  };
+}
 
 export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
   const steps: PipelineStep[] = [
@@ -50,7 +69,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             description: trace.requestLine.description,
             quantity: trace.requestLine.quantity,
             unit: trace.requestLine.unit ?? '',
-            createdAt: trace.request.createdAt,
+            ...documentMeta(trace.request),
             ...(trace.requestLine.cancelledAt
               ? { cancelledAt: trace.requestLine.cancelledAt }
               : {}),
@@ -60,45 +79,31 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
     },
     {
       stage: 'quotes',
-      items: trace.quotes.map((quote) => ({
-        documentId: quote.quoteId,
-        label: quote.supplierCompany.name,
-        status: quote.status,
-        link: resolveDocumentPath('SUPPLIER_QUOTE', quote.quoteId) ?? '#',
-        meta: {
-          lineNumber: String(quote.line.lineNumber),
-          companyName: quote.supplierCompany.name,
-          unitPrice: quote.line.unitPrice,
-          quantity: quote.line.quantity,
-          currency: quote.currency,
-        },
-      })),
-    },
-    {
-      stage: 'selections',
-      items: trace.selections.map((selection) => {
-        const matchingQuote = trace.quotes.find(
-          (quote) => quote.line.id === selection.line.quoteLineId,
-        );
-        const quoteId = matchingQuote?.quoteId;
+      items: trace.quotes.map((quote) => {
+        const selection = quote.line.selectionLine;
 
         return {
-          documentId: selection.line.id,
-          label: selection.line.quantity,
-          status: 'selected',
-          link: quoteId
-            ? (resolveDocumentPath('SUPPLIER_QUOTE', quoteId) ?? '#')
-            : '#',
+          documentId: quote.quoteId,
+          label: quote.number ?? quote.company.name,
+          status: quote.status,
+          link: resolveDocumentPath('SUPPLIER_QUOTE', quote.quoteId) ?? '#',
           meta: {
-            ...(matchingQuote
-              ? {
-                  lineNumber: String(matchingQuote.line.lineNumber),
-                  companyName: matchingQuote.supplierCompany.name,
-                }
-              : {}),
-            quantity: selection.line.quantity,
-            notes: selection.line.notes ?? '',
+            lineNumber: String(quote.line.lineNumber),
+            unitPrice: quote.line.unitPrice,
+            quantity: quote.line.quantity,
+            lineTotal: quote.line.lineTotal,
+            currency: quote.currency,
+            ...documentMeta(quote),
           },
+          selection: selection
+            ? {
+                id: selection.id,
+                quantity: selection.quantity,
+                notes: selection.notes ?? undefined,
+                createdAt: selection.createdAt,
+                createdBy: selection.createdBy?.name ?? undefined,
+              }
+            : undefined,
         };
       }),
     },
@@ -111,9 +116,12 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
         link: resolveDocumentPath('INVOICE', invoice.invoiceId) ?? '#',
         meta: {
           lineNumber: String(invoice.line.lineNumber),
-          companyName: invoice.supplierCompany.name,
+          unitPrice: invoice.line.unitPrice,
+          quantity: invoice.line.quantity,
+          lineTotal: invoice.line.lineTotal,
           currency: invoice.currency,
           payments: String(invoice.payments.length),
+          ...documentMeta(invoice),
         },
       })),
     },
@@ -133,6 +141,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
           lineNumber: String(shipment.line.lineNumber),
           carrier: shipment.carrier ?? '',
           trackingNumber: shipment.trackingNumber ?? '',
+          ...documentMeta(shipment),
         },
       })),
     },
@@ -149,6 +158,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
           transportMode: consolidation.transportMode ?? '',
           trackingNumber: consolidation.trackingNumber ?? '',
           linkedViaShippingInvoiceId: consolidation.linkedViaShippingInvoiceId,
+          ...documentMeta(consolidation),
         },
       })),
     },

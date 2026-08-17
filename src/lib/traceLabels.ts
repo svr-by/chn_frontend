@@ -20,7 +20,6 @@ const DOCUMENT_STATUS_ENUM_KEYS = {
 const PIPELINE_STAGE_STATUS_ENUM_KEYS = {
   request: 'materialRequestStatus',
   quotes: 'supplierQuoteStatus',
-  selections: 'purchaseSelectionStatus',
   invoices: 'supplierInvoiceStatus',
   shipments: 'shippingInvoiceStatus',
   consolidations: 'consolidationStatus',

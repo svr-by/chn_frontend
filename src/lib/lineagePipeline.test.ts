@@ -14,7 +14,6 @@ describe('buildLineagePipeline', () => {
     expect(steps.map((step) => step.stage)).toEqual([
       'request',
       'quotes',
-      'selections',
       'invoices',
       'shipments',
       'consolidations',
@@ -41,13 +40,15 @@ describe('buildLineagePipeline', () => {
       invoices: [
         {
           invoiceId: INVOICE_ID,
-          supplierCompany: {
+          company: {
             id: '00000000-0000-0000-0000-000000000030',
             name: 'Supplier Ltd',
           },
           status: 'ISSUED',
           currency: 'USD',
           number: 'INV-001',
+          createdAt: '2026-01-02T00:00:00.000Z',
+          createdBy: { id: '00000000-0000-0000-0000-000000000001', name: 'Jane Doe' },
           line: {
             id: '00000000-0000-0000-0000-000000000111',
             lineNumber: 1,
@@ -81,14 +82,58 @@ describe('buildLineagePipeline', () => {
     );
   });
 
-  it('includes company and createdAt when available from the API', () => {
+  it('includes company, createdAt, and createdBy from the API', () => {
     const steps = buildLineagePipeline(createLineageTrace());
     const requestItem = steps.find((s) => s.stage === 'request')?.items[0];
     const quoteItem = steps.find((s) => s.stage === 'quotes')?.items[0];
 
     expect(requestItem?.meta?.createdAt).toBe('2026-01-01T00:00:00.000Z');
-    expect(requestItem?.meta?.companyName).toBeUndefined();
+    expect(requestItem?.meta?.companyName).toBe('Acme Corp');
+    expect(requestItem?.meta?.createdBy).toBe('Jane Doe');
     expect(quoteItem?.meta?.companyName).toBe('Supplier Ltd');
-    expect(quoteItem?.meta?.createdAt).toBeUndefined();
+    expect(quoteItem?.meta?.createdAt).toBe('2026-01-01T00:00:00.000Z');
+    expect(quoteItem?.meta?.createdBy).toBe('Jane Doe');
+  });
+
+  it('uses quote number as the label when present', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.number = 'Q-001';
+
+    const quoteItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'quotes',
+    )?.items[0];
+    expect(quoteItem?.label).toBe('Q-001');
+  });
+
+  it('attaches nested quote.line.selectionLine to the quote item', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.selectionLine = {
+      id: '00000000-0000-0000-0000-000000000080',
+      quantity: '8.0000',
+      notes: 'Selected',
+      buyerCompanyId: '00000000-0000-0000-0000-000000000010',
+      createdAt: '2026-01-03T00:00:00.000Z',
+      createdBy: { id: '00000000-0000-0000-0000-000000000001', name: 'Jane Doe' },
+    };
+
+    const quoteItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'quotes',
+    )?.items[0];
+    expect(quoteItem?.selection).toEqual({
+      id: '00000000-0000-0000-0000-000000000080',
+      quantity: '8.0000',
+      notes: 'Selected',
+      createdAt: '2026-01-03T00:00:00.000Z',
+      createdBy: 'Jane Doe',
+    });
+    expect(quoteItem?.link).toBe(`/app/quotes/${QUOTE_ID}`);
   });
 });

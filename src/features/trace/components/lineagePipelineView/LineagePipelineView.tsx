@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   Stack,
   Step,
@@ -10,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { LineageTrace } from '@/api/generated/models/lineageTrace';
 import { LineagePipelineItemCard } from '@/features/trace/components/lineagePipelineView/LineagePipelineItemCard';
+import { LineagePipelineSelectionShell } from '@/features/trace/components/lineagePipelineView/LineagePipelineSelectionShell';
 import { buildLineagePipeline } from '@/lib/lineagePipeline';
 
 interface LineagePipelineViewProps {
@@ -40,13 +42,25 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
               </Typography>
             ) : (
               <Stack spacing={1.5} sx={{ pb: 2 }}>
-                {step.items.map((item, index) => (
-                  <LineagePipelineItemCard
-                    key={`${step.stage}-${item.documentId}-${index}`}
-                    stage={step.stage}
-                    item={item}
-                  />
-                ))}
+                {step.items.map((item, index) => {
+                  const key = `${step.stage}-${item.documentId}-${index}`;
+                  const card = (
+                    <LineagePipelineItemCard stage={step.stage} item={item} />
+                  );
+
+                  if (!item.selection) {
+                    return <Fragment key={key}>{card}</Fragment>;
+                  }
+
+                  return (
+                    <LineagePipelineSelectionShell
+                      key={key}
+                      selection={item.selection}
+                    >
+                      {card}
+                    </LineagePipelineSelectionShell>
+                  );
+                })}
               </Stack>
             )}
           </StepContent>
