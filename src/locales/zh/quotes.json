@@ -22,7 +22,7 @@
     "positionsTotal": "合计",
     "lineNumber": "#",
     "requestLine": "申请行",
-    "quantity": "数量",
+    "quantity": "申请数量",
     "offerQuantity": "报价数量",
     "selectedQuantity": "已选数量",
     "unitPrice": "单价",
@@ -41,14 +41,18 @@
     "supplier": "供应商",
     "buyer": "买方",
     "currency": "货币",
+    "quoteNumber": "报价编号",
     "createdFrom": "创建自",
     "createdTo": "创建至",
     "placeholders": {
       "company": "选择公司",
-      "currency": "任意货币"
+      "currency": "任意货币",
+      "quoteNumber": "按编号搜索"
     }
   },
   "actions": {
+    "new": "新建报价",
+    "create": "创建报价",
     "submit": "提交报价",
     "delete": "删除报价",
     "withdraw": "撤回报价",
@@ -64,7 +68,21 @@
     "save": "保存",
     "saveHeader": "保存",
     "cancel": "取消",
-    "backToList": "返回报价"
+    "backToList": "返回报价",
+    "exportCsv": "下载 CSV",
+    "importCsv": "上传 CSV"
+  },
+  "createFromInbound": {
+    "title": "新建报价",
+    "message": "选择要为其创建报价的来料申请。",
+    "request": "来料申请",
+    "requestPlaceholder": "按标题或买方搜索",
+    "empty": "暂无可用的来料申请。",
+    "goToInboundRequests": "前往来料申请",
+    "lockedMessage": "请输入该来料申请对应报价的编号和币种。",
+    "submitOnCreate": "立即提交",
+    "existingQuote": "该申请已有报价。",
+    "openExistingQuote": "打开 {{number}}"
   },
   "statusFilter": {
     "label": "状态",
@@ -85,6 +103,7 @@
     "validUntil": "有效期至",
     "notes": "备注",
     "editCurrency": "编辑货币",
+    "editCurrencyDisabledHasSelections": "报价行存在买方选型时无法更改货币。",
     "editNumber": "编辑报价编号",
     "editValidUntil": "编辑有效期",
     "editNotes": "编辑备注",
@@ -157,10 +176,23 @@
     "lineDeleted": "报价行已删除",
     "notFound": "未找到报价",
     "notAvailable": "此报价不可用",
+    "csvExported": "CSV 已下载",
+    "csvExportFailed": "下载 CSV 失败",
+    "csvImported": "已从 CSV 更新报价行",
     "unsubmitted": "报价已退回草稿",
     "selectionSaved": "行已选择",
     "selectionUpdated": "选择已更新",
-    "selectionRemoved": "选择已移除"
+    "selectionRemoved": "选择已移除",
+    "created": "报价已创建"
+  },
+  "csv": {
+    "exportTitle": "下载报价行 CSV",
+    "importTitle": "上传报价行 CSV",
+    "download": "下载",
+    "upload": "上传",
+    "rowErrors": "行错误",
+    "rowNumber": "行号",
+    "errors": "错误"
   },
   "selection": {
     "select": "选择",

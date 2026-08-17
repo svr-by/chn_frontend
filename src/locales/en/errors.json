@@ -33,6 +33,9 @@
   "UPLOAD_FILE_REQUIRED": "Please select a file to upload.",
   "UPLOAD_FILE_TOO_LARGE": "The file is too large.",
   "CSV_PARSE_ERROR": "Failed to parse the CSV file.",
+  "IMPORT_MISSING_COLUMNS": "The file is missing required columns.",
+  "QUOTE_LINES_CSV_INVALID": "Some CSV rows could not be imported.",
+  "REQUEST_LINES_CSV_INVALID": "Some CSV rows could not be imported.",
   "IMPORT_DUPLICATE_COLUMNS": "The file has duplicate column headers.",
   "IMPORT_TOO_MANY_ROWS": "The file has too many rows.",
   "IMPORT_JOB_NOT_FOUND": "Import job not found.",
@@ -52,6 +55,11 @@
   "INVOICE_NOT_DRAFT": "This invoice is no longer a draft.",
   "INVOICE_HAS_NO_LINES": "Add at least one line before issuing.",
   "INVOICE_LINE_QUANTITY_EXCEEDS_BILLABLE": "Invoice line quantity exceeds the billable amount.",
+  "INVOICE_LINE_HAS_SHIPPING": "This line cannot be deleted because it has shipping.",
+  "INVOICE_QUANTITY_BELOW_SHIPPED": "Quantity cannot be lower than the already shipped quantity.",
+  "INVOICE_QUANTITY_EXCEEDS_SELECTION": "Invoice line quantity exceeds the selected quantity.",
+  "INVOICE_INVALID_QUANTITY": "Invoice line quantity must be greater than zero.",
+  "SELECTION_LINE_ALREADY_INVOICED": "This selection is already invoiced.",
   "INVOICE_LINES_NOT_BILLABLE": "One or more lines are not billable (buyer/currency mismatch, quantity, or already invoiced).",
   "INVOICE_NUMBER_DUPLICATE_TODAY": "This invoice number was already used today.",
   "PAYMENT_AMOUNT_EXCEEDS_REMAINING": "Payment amount exceeds the remaining invoice balance.",
@@ -75,5 +83,9 @@
   "REQUEST_DISTRIBUTION_NOT_EDITABLE": "This distribution can no longer be edited.",
   "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "Cannot remove this line — the supplier already quoted it.",
   "QUOTE_NUMBER_DUPLICATE_TODAY": "This quote number was already used today.",
-  "INVOICE_CURRENCY_MISMATCH": "Invoice currency does not match the selected lines."
+  "INVOICE_CURRENCY_MISMATCH": "Invoice currency does not match the selected lines.",
+  "TRANSLATION_NOT_CONFIGURED": "Translation is not configured on the server.",
+  "TRANSLATION_PROVIDER_ERROR": "Translation service failed. Try again later.",
+  "TRANSLATION_TOO_MANY_TEXTS": "Too many unique texts to translate in one request.",
+  "TRANSLATION_UNSUPPORTED_LOCALE": "This language is not supported for translation."
 }

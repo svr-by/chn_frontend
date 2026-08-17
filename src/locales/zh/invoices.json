@@ -5,7 +5,9 @@
   "paymentsTitle": "付款",
   "tabs": {
     "inbound": "入站",
-    "outbound": "出站"
+    "outbound": "出站",
+    "lines": "行",
+    "notes": "备注"
   },
   "columns": {
     "buyer": "买方",
@@ -98,11 +100,14 @@
     "editNotes": "编辑备注",
     "requestLine": "申请行",
     "maxQuantity": "最大数量",
+    "minQuantity": "最小数量（已发货）",
     "quantity": "数量",
     "billableLine": "可开票行",
-    "billableLineOption": "{{description}} — 数量 {{quantity}} @ {{price}}（合计 {{total}}）",
     "addLineTitle": "添加行",
-    "editLineTitle": "编辑行"
+    "editLineTitle": "编辑行",
+    "addLineQuotesHint": "仅显示 {{currency}} 货币下、状态为部分接受或已接受、且关联物料申请的出站报价。此处不会显示您的全部报价。",
+    "addLineQuotesHintSameBuyer": "报价仅限与本发票相同的买方。",
+    "addLineBillableHint": "每个报价仅显示仍有可开票数量且尚未加入本发票的选型行。"
   },
   "create": {
     "title": "创建发票",
@@ -114,7 +119,7 @@
   },
   "confirm": {
     "issueTitle": "开具发票",
-    "issueMessage": "开具此发票？行项目将不可编辑，且可登记付款。",
+    "issueMessage": "开具此发票？之后可以登记付款。",
     "confirmTitle": "确认发票",
     "confirmMessage": "确认此发票已完全核对？",
     "deleteLineTitle": "删除行",

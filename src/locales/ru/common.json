@@ -29,15 +29,13 @@
     "more": "Ещё действия"
   },
   "lineage": {
-    "open": "Открыть трассировку"
+    "open": "Трассировка"
   },
 
   "requestLine": {
     "cancelledOnRequest": "Отменена в заявке",
     "lineNumber": "Строка {{number}}"
   },
-
-  "createdAt": "Создано: {{date}}",
 
   "documentStatus": {
     "progress": "Статус документа"

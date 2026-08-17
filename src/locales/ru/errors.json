@@ -33,6 +33,9 @@
   "UPLOAD_FILE_REQUIRED": "Выберите файл для загрузки.",
   "UPLOAD_FILE_TOO_LARGE": "Файл слишком большой.",
   "CSV_PARSE_ERROR": "Не удалось разобрать CSV-файл.",
+  "IMPORT_MISSING_COLUMNS": "В файле отсутствуют обязательные столбцы.",
+  "QUOTE_LINES_CSV_INVALID": "Некоторые строки CSV не удалось импортировать.",
+  "REQUEST_LINES_CSV_INVALID": "Некоторые строки CSV не удалось импортировать.",
   "IMPORT_DUPLICATE_COLUMNS": "В файле есть дублирующиеся заголовки столбцов.",
   "IMPORT_TOO_MANY_ROWS": "В файле слишком много строк.",
   "IMPORT_JOB_NOT_FOUND": "Задание импорта не найдено.",
@@ -54,6 +57,11 @@
   "INVOICE_NOT_DRAFT": "Этот счёт больше не является черновиком.",
   "INVOICE_HAS_NO_LINES": "Добавьте хотя бы одну позицию перед выставлением.",
   "INVOICE_LINE_QUANTITY_EXCEEDS_BILLABLE": "Количество по позиции счёта превышает оплачиваемое количество.",
+  "INVOICE_LINE_HAS_SHIPPING": "Позицию нельзя удалить — по ней есть отгрузка.",
+  "INVOICE_QUANTITY_BELOW_SHIPPED": "Количество не может быть меньше уже отгруженного.",
+  "INVOICE_QUANTITY_EXCEEDS_SELECTION": "Количество по позиции счёта превышает выбранное количество.",
+  "INVOICE_INVALID_QUANTITY": "Количество по позиции счёта должно быть больше нуля.",
+  "SELECTION_LINE_ALREADY_INVOICED": "Эта выбранная позиция уже выставлена в счёте.",
   "INVOICE_LINES_NOT_BILLABLE": "Одна или несколько позиций недоступны для выставления (покупатель/валюта, количество или уже выставлены).",
   "INVOICE_NUMBER_DUPLICATE_TODAY": "Этот номер счёта уже использовался сегодня.",
   "PAYMENT_AMOUNT_EXCEEDS_REMAINING": "Сумма платежа превышает остаток по счёту.",
@@ -77,5 +85,9 @@
   "REQUEST_DISTRIBUTION_NOT_EDITABLE": "Это распределение больше нельзя редактировать.",
   "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "Нельзя убрать позицию — поставщик уже добавил её в КП.",
   "QUOTE_NUMBER_DUPLICATE_TODAY": "Такой номер КП уже использовался сегодня.",
-  "INVOICE_CURRENCY_MISMATCH": "Валюта счёта не совпадает с валютой выбранных позиций."
+  "INVOICE_CURRENCY_MISMATCH": "Валюта счёта не совпадает с валютой выбранных позиций.",
+  "TRANSLATION_NOT_CONFIGURED": "Перевод не настроен на сервере.",
+  "TRANSLATION_PROVIDER_ERROR": "Сервис перевода недоступен. Попробуйте позже.",
+  "TRANSLATION_TOO_MANY_TEXTS": "Слишком много уникальных текстов для одного перевода.",
+  "TRANSLATION_UNSUPPORTED_LOCALE": "Этот язык не поддерживается для перевода."
 }

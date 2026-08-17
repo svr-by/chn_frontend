@@ -105,7 +105,9 @@
     "save": "Save",
     "saveHeader": "Save details",
     "cancel": "Cancel",
-    "backToList": "Back"
+    "backToList": "Back",
+    "translate": "Translate",
+    "processTranslation": "Process"
   },
   "statusFilter": {
     "label": "Status",
@@ -211,7 +213,19 @@
     "lineAdded": "Line added",
     "lineUpdated": "Line updated",
     "lineDeleted": "Line deleted",
-    "notFound": "Request not found"
+    "notFound": "Request not found",
+    "translated": "Lines translated"
+  },
+  "translate": {
+    "title": "Translate lines",
+    "sourceLocale": "Source language",
+    "targetLocale": "Target language",
+    "sourceAuto": "Auto-detect",
+    "locale": {
+      "en": "English",
+      "ru": "Russian",
+      "zh": "Chinese"
+    }
   },
   "distribute": {
     "title": "Distribute to suppliers",
@@ -242,12 +256,13 @@
     "empty": "No supplier distributions yet.",
     "rejectedCount": "{{count}} rejected",
     "resend": "Send again",
-    "editLines": "Save line selection",
+    "saveLines": "Save line selection",
     "remove": "Remove supplier",
     "rejected": "Supplier rejected this request",
     "rejectedWithReason": "Supplier rejected this request: {{reason}}",
     "toggleLine": "Assign line {{line}} to {{supplier}}",
     "lineHasQuote": "Cannot remove this line — the supplier already quoted it.",
+    "cannotRemoveHasQuote": "Cannot remove — this supplier already has a non-draft quote",
     "confirmEditTitle": "Update line selection?",
     "confirmEditMessage": "Send {{count}} selected position(s) to {{supplier}}? Their draft quote (if any) will be replaced.",
     "confirmEditWarning": "Removing lines that the supplier already quoted (non-draft) will be rejected.",

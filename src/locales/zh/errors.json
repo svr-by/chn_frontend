@@ -33,6 +33,9 @@
   "UPLOAD_FILE_REQUIRED": "请选择要上传的文件。",
   "UPLOAD_FILE_TOO_LARGE": "文件过大。",
   "CSV_PARSE_ERROR": "解析 CSV 文件失败。",
+  "IMPORT_MISSING_COLUMNS": "文件缺少必填列。",
+  "QUOTE_LINES_CSV_INVALID": "部分 CSV 行无法导入。",
+  "REQUEST_LINES_CSV_INVALID": "部分 CSV 行无法导入。",
   "IMPORT_DUPLICATE_COLUMNS": "文件存在重复的列标题。",
   "IMPORT_TOO_MANY_ROWS": "文件行数过多。",
   "IMPORT_JOB_NOT_FOUND": "未找到导入任务。",
@@ -54,6 +57,11 @@
   "INVOICE_NOT_DRAFT": "此发票已非草稿状态。",
   "INVOICE_HAS_NO_LINES": "开具前请至少添加一行。",
   "INVOICE_LINE_QUANTITY_EXCEEDS_BILLABLE": "发票行数量超过可开票数量。",
+  "INVOICE_LINE_HAS_SHIPPING": "该行已有发货，无法删除。",
+  "INVOICE_QUANTITY_BELOW_SHIPPED": "数量不能低于已发货数量。",
+  "INVOICE_QUANTITY_EXCEEDS_SELECTION": "发票行数量超过已选择数量。",
+  "INVOICE_INVALID_QUANTITY": "发票行数量必须大于零。",
+  "SELECTION_LINE_ALREADY_INVOICED": "此选择行已开票。",
   "INVOICE_LINES_NOT_BILLABLE": "一行或多行不可开票（买方/货币不一致、数量无效或已开票）。",
   "INVOICE_NUMBER_DUPLICATE_TODAY": "今天已使用过此发票号码。",
   "PAYMENT_AMOUNT_EXCEEDS_REMAINING": "付款金额超过发票剩余余额。",
@@ -77,5 +85,9 @@
   "REQUEST_DISTRIBUTION_NOT_EDITABLE": "此分配已无法编辑。",
   "QUOTE_LINE_EXISTS_CANNOT_REMOVE_FROM_DISTRIBUTION": "无法移除此行——供应商已在报价中包含它。",
   "QUOTE_NUMBER_DUPLICATE_TODAY": "该报价编号今天已使用过。",
-  "INVOICE_CURRENCY_MISMATCH": "发票货币与所选行项目的货币不匹配。"
+  "INVOICE_CURRENCY_MISMATCH": "发票货币与所选行项目的货币不匹配。",
+  "TRANSLATION_NOT_CONFIGURED": "服务器未配置翻译。",
+  "TRANSLATION_PROVIDER_ERROR": "翻译服务失败，请稍后重试。",
+  "TRANSLATION_TOO_MANY_TEXTS": "一次请求中的唯一文本过多。",
+  "TRANSLATION_UNSUPPORTED_LOCALE": "不支持此翻译语言。"
 }

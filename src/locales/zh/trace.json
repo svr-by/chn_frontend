@@ -41,6 +41,7 @@
   },
   "pipeline": {
     "emptyStage": "尚未到达",
+    "selectionQuantity": "已选数量",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
     "invoiceMeta": "{{payments}} 笔付款",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
@@ -49,7 +50,6 @@
     "itemLabel": {
       "request": "申请：{{label}}",
       "quotes": "报价：{{label}}",
-      "selections": "数量：{{label}}",
       "invoices": "发票：{{label}}",
       "shipments": "发运：{{label}}",
       "consolidations": "集运：{{label}}"
@@ -57,7 +57,6 @@
     "stages": {
       "request": "物料申请",
       "quotes": "供应商报价",
-      "selections": "采购选择",
       "invoices": "发票",
       "shipments": "运输发票",
       "consolidations": "集运"

@@ -41,6 +41,7 @@
   },
   "pipeline": {
     "emptyStage": "Not reached yet",
+    "selectionQuantity": "Selected qty",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
     "invoiceMeta": "{{payments}} payment(s)",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
@@ -49,7 +50,6 @@
     "itemLabel": {
       "request": "Request: {{label}}",
       "quotes": "Quotation: {{label}}",
-      "selections": "Quantity: {{label}}",
       "invoices": "Invoice: {{label}}",
       "shipments": "Shipment: {{label}}",
       "consolidations": "Consolidation: {{label}}"
@@ -57,7 +57,6 @@
     "stages": {
       "request": "Material request",
       "quotes": "Supplier quotes",
-      "selections": "Purchase selections",
       "invoices": "Invoices",
       "shipments": "Shipping invoices",
       "consolidations": "Consolidations"

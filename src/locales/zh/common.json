@@ -37,8 +37,6 @@
     "lineNumber": "行 {{number}}"
   },
 
-  "createdAt": "创建于：{{date}}",
-
   "documentStatus": {
     "progress": "单据状态"
   }

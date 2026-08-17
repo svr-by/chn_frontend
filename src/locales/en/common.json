@@ -38,8 +38,6 @@
     "lineNumber": "Line {{number}}"
   },
 
-  "createdAt": "Created: {{date}}",
-
   "documentStatus": {
     "progress": "Document status"
   }

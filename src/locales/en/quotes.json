@@ -22,7 +22,7 @@
     "positionsTotal": "Total",
     "lineNumber": "#",
     "requestLine": "Request line",
-    "quantity": "Quantity",
+    "quantity": "Request qty",
     "offerQuantity": "Offer qty",
     "selectedQuantity": "Selected qty",
     "unitPrice": "Unit price",
@@ -41,14 +41,18 @@
     "supplier": "Supplier",
     "buyer": "Buyer",
     "currency": "Currency",
+    "quoteNumber": "Quote #",
     "createdFrom": "Created from",
     "createdTo": "Created to",
     "placeholders": {
       "company": "Select company",
-      "currency": "Any currency"
+      "currency": "Any currency",
+      "quoteNumber": "Search by number"
     }
   },
   "actions": {
+    "new": "New quote",
+    "create": "Create quote",
     "submit": "Submit quote",
     "delete": "Delete quote",
     "withdraw": "Withdraw quote",
@@ -64,7 +68,21 @@
     "save": "Save",
     "saveHeader": "Save",
     "cancel": "Cancel",
-    "backToList": "Back to quotes"
+    "backToList": "Back to quotes",
+    "exportCsv": "Download CSV",
+    "importCsv": "Upload CSV"
+  },
+  "createFromInbound": {
+    "title": "New quote",
+    "message": "Select an incoming request to create a quote for.",
+    "request": "Incoming request",
+    "requestPlaceholder": "Search by title or buyer",
+    "empty": "No incoming requests available.",
+    "goToInboundRequests": "Go to incoming requests",
+    "lockedMessage": "Enter the quote number and currency for this incoming request.",
+    "submitOnCreate": "Submit immediately",
+    "existingQuote": "A quote already exists for this request.",
+    "openExistingQuote": "Open {{number}}"
   },
   "statusFilter": {
     "label": "Status",
@@ -85,6 +103,7 @@
     "validUntil": "Valid until",
     "notes": "Notes",
     "editCurrency": "Edit currency",
+    "editCurrencyDisabledHasSelections": "Currency cannot be changed while buyer selections exist on quote lines.",
     "editNumber": "Edit quote number",
     "editValidUntil": "Edit valid until",
     "editNotes": "Edit notes",
@@ -160,7 +179,20 @@
     "selectionUpdated": "Selection updated",
     "selectionRemoved": "Selection removed",
     "notFound": "Quote not found",
-    "notAvailable": "This quote is not available"
+    "notAvailable": "This quote is not available",
+    "csvExported": "CSV downloaded",
+    "csvExportFailed": "Failed to download CSV",
+    "csvImported": "Quote lines updated from CSV",
+    "created": "Quote created"
+  },
+  "csv": {
+    "exportTitle": "Download quote lines CSV",
+    "importTitle": "Upload quote lines CSV",
+    "download": "Download",
+    "upload": "Upload",
+    "rowErrors": "Row errors",
+    "rowNumber": "Row",
+    "errors": "Errors"
   },
   "selection": {
     "select": "Select",

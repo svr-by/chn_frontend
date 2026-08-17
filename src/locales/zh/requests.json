@@ -105,7 +105,9 @@
     "save": "保存",
     "saveHeader": "保存详情",
     "cancel": "取消",
-    "backToList": "返回申请列表"
+    "backToList": "返回申请列表",
+    "translate": "翻译",
+    "processTranslation": "处理"
   },
   "statusFilter": {
     "label": "状态",
@@ -211,7 +213,19 @@
     "lineAdded": "行已添加",
     "lineUpdated": "行已更新",
     "lineDeleted": "行已删除",
-    "notFound": "未找到申请"
+    "notFound": "未找到申请",
+    "translated": "行已翻译"
+  },
+  "translate": {
+    "title": "翻译行",
+    "sourceLocale": "源语言",
+    "targetLocale": "目标语言",
+    "sourceAuto": "自动检测",
+    "locale": {
+      "en": "英语",
+      "ru": "俄语",
+      "zh": "中文"
+    }
   },
   "distribute": {
     "title": "分发给供应商",
@@ -242,12 +256,13 @@
     "empty": "暂无供应商分发。",
     "rejectedCount": "{{count}} 个已拒绝",
     "resend": "重新发送",
-    "editLines": "保存行选择",
+    "saveLines": "保存行选择",
     "remove": "移除供应商",
     "rejected": "供应商已拒绝此申请",
     "rejectedWithReason": "供应商已拒绝此申请：{{reason}}",
     "toggleLine": "将第 {{line}} 行分配给 {{supplier}}",
     "lineHasQuote": "无法移除此行——供应商已在报价中包含它。",
+    "cannotRemoveHasQuote": "无法移除——该供应商已有非草稿报价",
     "confirmEditTitle": "更新行选择？",
     "confirmEditMessage": "将 {{count}} 个所选行项目发送给 {{supplier}}？其草稿报价（如有）将被替换。",
     "confirmEditWarning": "若供应商已对该行提交报价（非草稿），则无法移除。",

@@ -5,7 +5,9 @@
   "paymentsTitle": "Payments",
   "tabs": {
     "inbound": "Inbound",
-    "outbound": "Outbound"
+    "outbound": "Outbound",
+    "lines": "Lines",
+    "notes": "Notes"
   },
   "columns": {
     "buyer": "Buyer",
@@ -36,7 +38,7 @@
     "remaining": "Remaining"
   },
   "actions": {
-    "create": "Create invoice",
+    "create": "New invoice",
     "issue": "Issue invoice",
     "confirmInvoice": "Confirm invoice",
     "addLine": "Add line",
@@ -98,11 +100,14 @@
     "editNotes": "Edit notes",
     "requestLine": "Request line",
     "maxQuantity": "Max quantity",
+    "minQuantity": "Min quantity (shipped)",
     "quantity": "Quantity",
     "billableLine": "Billable line",
-    "billableLineOption": "{{description}} — qty {{quantity}} @ {{price}} (total {{total}})",
     "addLineTitle": "Add line",
-    "editLineTitle": "Edit line"
+    "editLineTitle": "Edit line",
+    "addLineQuotesHint": "Only outbound quotes in {{currency}} with status Partially accepted or Accepted, linked to a material request, are listed. This is not your full quote list.",
+    "addLineQuotesHintSameBuyer": "Quotes are limited to the same buyer as this invoice.",
+    "addLineBillableHint": "Each quote shows selection lines that still have a billable quantity and are not already on this invoice."
   },
   "create": {
     "title": "Create invoice",
@@ -114,7 +119,7 @@
   },
   "confirm": {
     "issueTitle": "Issue invoice",
-    "issueMessage": "Issue this invoice? Lines will no longer be editable and payments can be registered.",
+    "issueMessage": "Issue this invoice? Payments can then be registered.",
     "confirmTitle": "Confirm invoice",
     "confirmMessage": "Confirm this invoice as fully reconciled?",
     "deleteLineTitle": "Delete line",

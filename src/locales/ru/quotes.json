@@ -22,7 +22,7 @@
     "positionsTotal": "Итого",
     "lineNumber": "#",
     "requestLine": "Позиция заявки",
-    "quantity": "Количество",
+    "quantity": "Запрошено",
     "offerQuantity": "Кол-во в КП",
     "selectedQuantity": "Выбранное кол-во",
     "unitPrice": "Цена за единицу",
@@ -41,14 +41,18 @@
     "supplier": "Поставщик",
     "buyer": "Покупатель",
     "currency": "Валюта",
+    "quoteNumber": "Номер КП",
     "createdFrom": "Создано с",
     "createdTo": "Создано по",
     "placeholders": {
       "company": "Выберите компанию",
-      "currency": "Любая валюта"
+      "currency": "Любая валюта",
+      "quoteNumber": "Поиск по номеру"
     }
   },
   "actions": {
+    "new": "Новое КП",
+    "create": "Создать КП",
     "submit": "Отправить",
     "delete": "Удалить",
     "withdraw": "Отозвать",
@@ -60,11 +64,25 @@
     "editLine": "Редактировать",
     "deleteLine": "Удалить",
     "more": "Ещё действия",
-    "openTrace": "Открыть трассировку",
+    "openTrace": "Трассировка",
     "save": "Сохранить",
     "saveHeader": "Сохранить",
     "cancel": "Отмена",
-    "backToList": "Назад к коммерческим предложениям"
+    "backToList": "Назад к коммерческим предложениям",
+    "exportCsv": "Скачать CSV",
+    "importCsv": "Загрузить CSV"
+  },
+  "createFromInbound": {
+    "title": "Новое коммерческое предложение",
+    "message": "Выберите входящую заявку, для которой нужно создать КП.",
+    "request": "Входящая заявка",
+    "requestPlaceholder": "Поиск по названию или покупателю",
+    "empty": "Нет доступных входящих заявок.",
+    "goToInboundRequests": "Перейти к входящим заявкам",
+    "lockedMessage": "Укажите номер и валюту КП для этой входящей заявки.",
+    "submitOnCreate": "Отправить сразу",
+    "existingQuote": "По этой заявке уже есть КП.",
+    "openExistingQuote": "Открыть {{number}}"
   },
   "statusFilter": {
     "label": "Статус",
@@ -85,6 +103,7 @@
     "validUntil": "Действительно до",
     "notes": "Примечания",
     "editCurrency": "Изменить валюту",
+    "editCurrencyDisabledHasSelections": "Валюту нельзя изменить, пока на строках КП есть выбор покупателя.",
     "editNumber": "Изменить номер КП",
     "editValidUntil": "Изменить срок действия",
     "editNotes": "Изменить примечания",
@@ -157,10 +176,23 @@
     "lineDeleted": "Предложение удалено",
     "notFound": "Коммерческое предложение не найдено",
     "notAvailable": "Это коммерческое предложение недоступно",
+    "csvExported": "CSV скачан",
+    "csvExportFailed": "Не удалось скачать CSV",
+    "csvImported": "Позиции КП обновлены из CSV",
     "unsubmitted": "КП возвращено в черновик",
     "selectionSaved": "Строка выбрана",
     "selectionUpdated": "Выбор обновлён",
-    "selectionRemoved": "Выбор снят"
+    "selectionRemoved": "Выбор снят",
+    "created": "Коммерческое предложение создано"
+  },
+  "csv": {
+    "exportTitle": "Скачать CSV позиций КП",
+    "importTitle": "Загрузить CSV позиций КП",
+    "download": "Скачать",
+    "upload": "Загрузить",
+    "rowErrors": "Ошибки строк",
+    "rowNumber": "Строка",
+    "errors": "Ошибки"
   },
   "selection": {
     "select": "Выбрать",

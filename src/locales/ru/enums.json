@@ -23,7 +23,7 @@
   },
   "supplierQuoteStatus": {
     "draft": "Черновик",
-    "submitted": "Утверждено",
+    "submitted": "Выставлено",
     "partially_accepted": "Частично принято",
     "accepted": "Принято",
     "rejected": "Отклонено"

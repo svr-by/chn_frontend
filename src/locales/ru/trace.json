@@ -41,6 +41,7 @@
   },
   "pipeline": {
     "emptyStage": "Ещё не достигнуто",
+    "selectionQuantity": "Выбрано",
     "quoteMeta": "{{unitPrice}} × {{quantity}} {{currency}}",
     "invoiceMeta": "{{payments}} платеж(ей)",
     "shipmentMeta": "{{carrier}} · {{trackingNumber}}",
@@ -49,7 +50,6 @@
     "itemLabel": {
       "request": "Заявка: {{label}}",
       "quotes": "Предложение: {{label}}",
-      "selections": "Кол-во: {{label}}",
       "invoices": "Счёт: {{label}}",
       "shipments": "Отгрузка: {{label}}",
       "consolidations": "Консолидация: {{label}}"
@@ -57,7 +57,6 @@
     "stages": {
       "request": "Заявка",
       "quotes": "Предложения",
-      "selections": "Выбор",
       "invoices": "Счета",
       "shipments": "Доставка",
       "consolidations": "Консолидации"
