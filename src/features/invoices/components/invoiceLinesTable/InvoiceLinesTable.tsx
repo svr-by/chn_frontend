@@ -18,14 +18,15 @@ import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import type { BillableLine } from '@/api/generated/models/billableLine';
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
 import { useDeleteInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { PaginatedTable } from '@/components/PaginatedTable';
 import { PermissionGate } from '@/components/PermissionGate';
+import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
 import { InvoiceLineFormDialog } from '@/features/invoices/components/invoiceLinesTable/InvoiceLineFormDialog';
 import { createInvoiceLineBaseColumns } from '@/features/invoices/lib/invoiceLineTableColumns';
+import { parseDecimal } from '@/lib/decimal';
 
 const PAGE_SIZE = 20;
 
@@ -34,10 +35,11 @@ interface InvoiceLinesTableProps {
   invoiceId: string;
   requestIds?: string[];
   quoteIds?: string[];
+  buyerCompanyId?: string | null;
   currency: string;
   totalAmount: string;
   lines: InvoiceLine[];
-  billableLines: BillableLine[];
+  shippedQuantityByLineId?: Record<string, string>;
   editable: boolean;
 }
 
@@ -46,16 +48,17 @@ export function InvoiceLinesTable({
   invoiceId,
   requestIds,
   quoteIds,
+  buyerCompanyId,
   currency,
   totalAmount,
   lines,
-  billableLines,
+  shippedQuantityByLineId = {},
   editable,
 }: InvoiceLinesTableProps) {
   const { t } = useTranslation('invoices');
   const { enqueueSnackbar } = useSnackbar();
 
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [editingLine, setEditingLine] = useState<InvoiceLine | null>(null);
   const [lineToDelete, setLineToDelete] = useState<InvoiceLine | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -65,11 +68,20 @@ export function InvoiceLinesTable({
 
   const [deleteLine, deleteState] = useDeleteInvoiceLineMutation();
 
+  function shippedQuantityFor(lineId: string): string {
+    return shippedQuantityByLineId[lineId] ?? '0';
+  }
+
+  function lineHasShipping(lineId: string): boolean {
+    try {
+      return parseDecimal(shippedQuantityFor(lineId)).gt(0);
+    } catch {
+      return false;
+    }
+  }
+
   const existingSelectionLineIds = lines.map(
     (line) => line.selectionLine?.id ?? '',
-  );
-  const hasBillableLines = billableLines.some(
-    (item) => !existingSelectionLineIds.includes(item.selectionLineId),
   );
 
   useEffect(() => {
@@ -102,7 +114,6 @@ export function InvoiceLinesTable({
                 <MenuItem
                   onClick={() => {
                     setEditingLine(line);
-                    setDialogOpen(true);
                   }}
                 >
                   <ListItemIcon>
@@ -110,17 +121,19 @@ export function InvoiceLinesTable({
                   </ListItemIcon>
                   <ListItemText>{t('actions.editLine')}</ListItemText>
                 </MenuItem>
-                <MenuItem onClick={() => setLineToDelete(line)}>
-                  <ListItemIcon>
-                    <DeleteOutlineIcon fontSize="small" color="error" />
-                  </ListItemIcon>
-                  <ListItemText>{t('actions.deleteLine')}</ListItemText>
-                </MenuItem>
+                {lineHasShipping(line.id) ? null : (
+                  <MenuItem onClick={() => setLineToDelete(line)}>
+                    <ListItemIcon>
+                      <DeleteOutlineIcon fontSize="small" color="error" />
+                    </ListItemIcon>
+                    <ListItemText>{t('actions.deleteLine')}</ListItemText>
+                  </MenuItem>
+                )}
               </PermissionGate>
             )
           : undefined,
       }),
-    [currency, editable, t, totalAmount],
+    [currency, editable, shippedQuantityByLineId, t, totalAmount],
   );
 
   async function handleDeleteConfirm() {
@@ -128,22 +141,24 @@ export function InvoiceLinesTable({
       return;
     }
 
-    await deleteLine({
-      companyId,
-      invoiceId,
-      lineId: lineToDelete.id,
-      requestIds,
-      quoteIds,
-    }).unwrap();
+    try {
+      await deleteLine({
+        companyId,
+        invoiceId,
+        lineId: lineToDelete.id,
+        requestIds,
+        quoteIds,
+      }).unwrap();
 
-    enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
-    setLineToDelete(null);
+      enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
+      setLineToDelete(null);
+    } catch {
+      // ApiErrorAlert in the dialog
+    }
   }
 
   return (
     <Stack spacing={2}>
-      <ApiErrorAlert error={deleteState.error} />
-
       <PaginatedTable
         columns={columns}
         data={pagedLines}
@@ -159,11 +174,7 @@ export function InvoiceLinesTable({
                   <Button
                     variant="outlined"
                     startIcon={<AddIcon />}
-                    disabled={!hasBillableLines}
-                    onClick={() => {
-                      setEditingLine(null);
-                      setDialogOpen(true);
-                    }}
+                    onClick={() => setAddDialogOpen(true)}
                   >
                     {t('actions.addLine')}
                   </Button>
@@ -173,37 +184,57 @@ export function InvoiceLinesTable({
         }
       />
 
-      <InvoiceLineFormDialog
-        open={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false);
-          setEditingLine(null);
-        }}
+      <InvoiceDraftLineDialog
+        mode="persist"
+        open={addDialogOpen}
+        onClose={() => setAddDialogOpen(false)}
         companyId={companyId}
         invoiceId={invoiceId}
+        currency={currency}
+        buyerCompanyId={buyerCompanyId}
+        existingSelectionLineIds={existingSelectionLineIds}
         requestIds={requestIds}
         quoteIds={quoteIds}
-        billableLines={billableLines}
-        existingSelectionLineIds={existingSelectionLineIds}
-        line={editingLine}
         onSuccess={() =>
-          enqueueSnackbar(
-            editingLine ? t('toast.lineUpdated') : t('toast.lineAdded'),
-            { variant: 'success' },
-          )
+          enqueueSnackbar(t('toast.lineAdded'), { variant: 'success' })
         }
       />
 
+      {editingLine ? (
+        <InvoiceLineFormDialog
+          open={Boolean(editingLine)}
+          onClose={() => setEditingLine(null)}
+          companyId={companyId}
+          invoiceId={invoiceId}
+          requestIds={requestIds}
+          quoteIds={quoteIds}
+          shippedQuantity={shippedQuantityFor(editingLine.id)}
+          line={editingLine}
+          onSuccess={() =>
+            enqueueSnackbar(t('toast.lineUpdated'), { variant: 'success' })
+          }
+        />
+      ) : null}
+
       <Dialog
         open={Boolean(lineToDelete)}
-        onClose={() => setLineToDelete(null)}
+        onClose={() => {
+          setLineToDelete(null);
+          deleteState.reset();
+        }}
       >
         <DialogTitle>{t('confirm.deleteLineTitle')}</DialogTitle>
         <DialogContent>
+          <ApiErrorAlert error={deleteState.error} />
           <Typography>{t('confirm.deleteLineMessage')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setLineToDelete(null)}>
+          <Button
+            onClick={() => {
+              setLineToDelete(null);
+              deleteState.reset();
+            }}
+          >
             {t('actions.cancel')}
           </Button>
           <Button

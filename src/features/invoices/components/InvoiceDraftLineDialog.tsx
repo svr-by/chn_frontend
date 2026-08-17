@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Alert,
   Button,
   Dialog,
   DialogActions,
@@ -12,11 +13,13 @@ import {
   MenuItem,
   Select,
   Stack,
+  Typography,
 } from '@mui/material';
 import { Controller, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { useAddInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
 import {
   useListQuotesQuery,
   useGetQuoteBillableLinesQuery,
@@ -27,6 +30,10 @@ import {
   billableToDraftLine,
   type DraftInvoiceLine,
 } from '@/features/invoices/lib/draftInvoiceLine';
+import {
+  formatInvoiceQuoteLineOptionLabel,
+  formatInvoiceQuoteOptionLabel,
+} from '@/features/invoices/lib/invoiceQuoteOptionLabel';
 import { isDecimalLte, isValidDecimal } from '@/lib/decimal';
 
 const INVOICEABLE_QUOTE_STATUSES = new Set([
@@ -42,27 +49,48 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-interface InvoiceDraftLineDialogProps {
+type InvoiceDraftLineDialogBaseProps = {
   open: boolean;
   onClose: () => void;
   companyId: string;
   currency: string;
   existingSelectionLineIds: string[];
   initialQuoteId?: string | null;
-  onAdd: (line: DraftInvoiceLine) => void;
-}
+  buyerCompanyId?: string | null;
+};
 
-export function InvoiceDraftLineDialog({
-  open,
-  onClose,
-  companyId,
-  currency,
-  existingSelectionLineIds,
-  initialQuoteId,
-  onAdd,
-}: InvoiceDraftLineDialogProps) {
+type InvoiceDraftLineDialogDraftProps = InvoiceDraftLineDialogBaseProps & {
+  mode?: 'draft';
+  onAdd: (line: DraftInvoiceLine) => void;
+};
+
+type InvoiceDraftLineDialogPersistProps = InvoiceDraftLineDialogBaseProps & {
+  mode: 'persist';
+  invoiceId: string;
+  requestIds?: string[];
+  quoteIds?: string[];
+  onSuccess?: () => void;
+};
+
+export type InvoiceDraftLineDialogProps =
+  | InvoiceDraftLineDialogDraftProps
+  | InvoiceDraftLineDialogPersistProps;
+
+export function InvoiceDraftLineDialog(props: InvoiceDraftLineDialogProps) {
+  const {
+    open,
+    onClose,
+    companyId,
+    currency,
+    existingSelectionLineIds,
+    initialQuoteId,
+    buyerCompanyId,
+  } = props;
+  const isPersist = props.mode === 'persist';
   const { t } = useTranslation('invoices');
   const [quoteId, setQuoteId] = useState(initialQuoteId ?? '');
+
+  const [addLine, addState] = useAddInvoiceLineMutation();
 
   const quotesQuery = useListQuotesQuery(
     {
@@ -80,9 +108,10 @@ export function InvoiceDraftLineDialog({
       (quotesQuery.data?.quotes ?? []).filter(
         (quote) =>
           INVOICEABLE_QUOTE_STATUSES.has(quote.status) &&
-          Boolean(quote.materialRequest?.id),
+          Boolean(quote.materialRequest?.id) &&
+          (!buyerCompanyId || quote.buyerCompany?.id === buyerCompanyId),
       ),
-    [quotesQuery.data?.quotes],
+    [buyerCompanyId, quotesQuery.data?.quotes],
   );
 
   const selectedQuote = quotes.find((quote) => quote.id === quoteId);
@@ -161,7 +190,7 @@ export function InvoiceDraftLineDialog({
     }
   }, [selectedBillable, setValue]);
 
-  function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormValues) {
     const billable = selectableLines.find(
       (line) => line.selectionLineId === values.selectionLineId,
     );
@@ -173,7 +202,29 @@ export function InvoiceDraftLineDialog({
       return;
     }
 
-    onAdd(
+    if (isPersist) {
+      const nextRequestIds = [
+        ...new Set([...(props.requestIds ?? []), requestId]),
+      ];
+      const nextQuoteIds = [
+        ...new Set([...(props.quoteIds ?? []), values.quoteId]),
+      ];
+
+      await addLine({
+        companyId,
+        invoiceId: props.invoiceId,
+        requestIds: nextRequestIds,
+        quoteIds: nextQuoteIds,
+        selectionLineId: values.selectionLineId,
+        quantity: values.quantity,
+      }).unwrap();
+
+      props.onSuccess?.();
+      onClose();
+      return;
+    }
+
+    props.onAdd(
       billableToDraftLine({
         billable,
         quantity: values.quantity,
@@ -186,12 +237,25 @@ export function InvoiceDraftLineDialog({
     onClose();
   }
 
+  const mutationError = isPersist ? addState.error : undefined;
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle>{t('form.addLineTitle')}</DialogTitle>
       <DialogContent>
-        <ApiErrorAlert error={quotesQuery.error ?? billableQuery.error} />
+        <ApiErrorAlert
+          error={mutationError ?? quotesQuery.error ?? billableQuery.error}
+        />
         <Stack spacing={2} sx={{ pt: 1 }}>
+          <Alert severity="info">
+            <Typography variant="body2" align="center">
+              {t('form.addLineQuotesHint', { currency })}
+              {buyerCompanyId ? (
+                t('form.addLineQuotesHintSameBuyer')
+              ) : null}
+            </Typography>
+          </Alert>
+
           <FormControl fullWidth error={Boolean(errors.quoteId)}>
             <InputLabel id="draft-quote-label">{t('create.quote')}</InputLabel>
             <Controller
@@ -212,11 +276,7 @@ export function InvoiceDraftLineDialog({
                 >
                   {quotes.map((quote) => (
                     <MenuItem key={quote.id} value={quote.id}>
-                      {quote.buyerCompany?.name ?? quote.id.slice(0, 8)}
-                      {quote.materialRequest?.title
-                        ? ` · ${quote.materialRequest.title}`
-                        : ''}{' '}
-                      · {quote.status}
+                      {formatInvoiceQuoteOptionLabel(quote)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -253,12 +313,7 @@ export function InvoiceDraftLineDialog({
                       key={line.selectionLineId}
                       value={line.selectionLineId}
                     >
-                      {t('form.billableLineOption', {
-                        description: line.requestLine?.description ?? '—',
-                        quantity: line.quantity,
-                        price: line.unitPrice,
-                        total: line.lineTotal,
-                      })}
+                      {formatInvoiceQuoteLineOptionLabel(line, currency)}
                     </MenuItem>
                   ))}
                 </Select>
@@ -266,7 +321,9 @@ export function InvoiceDraftLineDialog({
             />
             {selectableLines.length === 0 && quoteId ? (
               <FormHelperText>{t('empty.billableLines')}</FormHelperText>
-            ) : null}
+            ) : (
+              <FormHelperText>{t('form.addLineBillableHint')}</FormHelperText>
+            )}
           </FormControl>
 
           <Controller
@@ -294,8 +351,8 @@ export function InvoiceDraftLineDialog({
         <Button onClick={onClose}>{t('actions.dismiss')}</Button>
         <Button
           variant="contained"
-          onClick={handleSubmit(onSubmit)}
-          disabled={!selectedBillable}
+          onClick={() => void handleSubmit(onSubmit)()}
+          disabled={!selectedBillable || (isPersist && addState.isLoading)}
         >
           {t('actions.addLine')}
         </Button>

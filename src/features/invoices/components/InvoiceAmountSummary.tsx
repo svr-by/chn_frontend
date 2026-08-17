@@ -22,17 +22,31 @@ export function InvoiceAmountSummary({
     <Stack direction="row" spacing={3} flexWrap="wrap" useFlexGap>
       <Typography variant="body2" color="text.secondary">
         {t('amounts.total')}:{' '}
-        <DecimalDisplay value={totalAmount} component="span" /> {currency}
+        <DecimalDisplay
+          value={totalAmount}
+          suffix={currency}
+          groupDigits
+          component="span"
+        />
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      {/* <Typography variant="body2" color="text.secondary">
         {t('amounts.confirmedPaid')}:{' '}
-        <DecimalDisplay value={confirmedPaidAmount} component="span" />{' '}
-        {currency}
+        <DecimalDisplay
+          value={confirmedPaidAmount}
+          suffix={currency}
+          groupDigits
+          component="span"
+        />
       </Typography>
       <Typography variant="body2" color="text.secondary">
         {t('amounts.remaining')}:{' '}
-        <DecimalDisplay value={remainingAmount} component="span" /> {currency}
-      </Typography>
+        <DecimalDisplay
+          value={remainingAmount}
+          suffix={currency}
+          groupDigits
+          component="span"
+        />
+      </Typography> */}
     </Stack>
   );
 }

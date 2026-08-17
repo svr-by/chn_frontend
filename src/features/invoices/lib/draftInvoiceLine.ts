@@ -5,6 +5,9 @@ export type DraftInvoiceLine = {
   quantity: string;
   requestId: string;
   description: string;
+  unit: string | null;
+  cancelledAt: string | null;
+  notes: string | null;
   unitPrice: string;
   lineTotal: string;
   maxQuantity: string;
@@ -26,6 +29,9 @@ export function billableToDraftLine(args: {
     quantity: args.quantity,
     requestId: args.requestId,
     description: args.billable.requestLine?.description ?? '—',
+    unit: args.billable.requestLine?.unit ?? null,
+    cancelledAt: args.billable.requestLine?.cancelledAt ?? null,
+    notes: null,
     unitPrice: args.billable.unitPrice,
     lineTotal: args.billable.lineTotal,
     maxQuantity: args.billable.quantity,

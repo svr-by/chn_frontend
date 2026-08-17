@@ -7,36 +7,30 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  FormControl,
-  FormHelperText,
-  InputLabel,
-  MenuItem,
-  Select,
   Stack,
   TextField,
 } from '@mui/material';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import type { BillableLine } from '@/api/generated/models/billableLine';
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
-import {
-  useAddInvoiceLineMutation,
-  useUpdateInvoiceLineMutation,
-} from '@/api/endpoints/invoicesApi';
+import { useUpdateInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
+import { useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { DecimalInput } from '@/components/DecimalInput';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
-import { isDecimalLte, isValidDecimal } from '@/lib/decimal';
+import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
+import { isDecimalGte, isDecimalLte, isValidDecimal } from '@/lib/decimal';
 
-function createLineSchema(maxQuantity: string) {
+function createEditLineSchema(maxQuantity: string, minQuantity: string) {
   return z.object({
-    selectionLineId: z.string().uuid(),
     quantity: z
       .string()
       .refine(isValidDecimal, { message: 'Invalid quantity' })
+      .refine((value) => isDecimalGte(value, minQuantity), {
+        message: 'Quantity below shipped',
+      })
       .refine((value) => isDecimalLte(value, maxQuantity), {
         message: 'Quantity exceeds billable',
       }),
@@ -44,13 +38,7 @@ function createLineSchema(maxQuantity: string) {
   });
 }
 
-const editLineSchema = z.object({
-  quantity: z.string().refine(isValidDecimal, { message: 'Invalid quantity' }),
-  notes: z.string().trim().optional(),
-});
-
-type CreateLineFormValues = z.infer<ReturnType<typeof createLineSchema>>;
-type EditLineFormValues = z.infer<typeof editLineSchema>;
+type EditLineFormValues = z.infer<ReturnType<typeof createEditLineSchema>>;
 
 interface InvoiceLineFormDialogProps {
   open: boolean;
@@ -59,9 +47,8 @@ interface InvoiceLineFormDialogProps {
   invoiceId: string;
   requestIds?: string[];
   quoteIds?: string[];
-  billableLines: BillableLine[];
-  existingSelectionLineIds: string[];
-  line?: InvoiceLine | null;
+  shippedQuantity?: string;
+  line: InvoiceLine;
   onSuccess?: () => void;
 }
 
@@ -72,126 +59,71 @@ export function InvoiceLineFormDialog({
   invoiceId,
   requestIds,
   quoteIds,
-  billableLines,
-  existingSelectionLineIds,
+  shippedQuantity = '0',
   line,
   onSuccess,
 }: InvoiceLineFormDialogProps) {
   const { t } = useTranslation('invoices');
-  const isEdit = Boolean(line);
 
-  const [addLine, addState] = useAddInvoiceLineMutation();
   const [updateLine, updateState] = useUpdateInvoiceLineMutation();
 
-  const selectableLines = useMemo(
-    () =>
-      billableLines.filter(
-        (item) => !existingSelectionLineIds.includes(item.selectionLineId),
-      ),
-    [billableLines, existingSelectionLineIds],
+  const requestId = line.requestLine?.requestId;
+  const { quoteId } = useSupplierQuoteForRequest(
+    companyId,
+    requestId,
+    open && Boolean(requestId),
   );
+
+  const billableQuery = useGetQuoteBillableLinesQuery(
+    { companyId, quoteId: quoteId ?? '' },
+    { skip: !open || !quoteId },
+  );
+
+  const billableLines = billableQuery.data?.lines ?? [];
 
   const maxQuantity =
-    isEdit && line
-      ? (billableLines.find(
-          (item) => item.selectionLineId === line.selectionLine?.id,
-        )?.quantity ?? line.quantity)
-      : (selectableLines[0]?.quantity ?? '0');
+    billableLines.find(
+      (item) => item.selectionLineId === line.selectionLine?.id,
+    )?.quantity ?? line.quantity;
 
-  const createSchema = useMemo(
-    () => createLineSchema(maxQuantity),
-    [maxQuantity],
+  const minQuantity = shippedQuantity;
+
+  const editSchema = useMemo(
+    () => createEditLineSchema(maxQuantity, minQuantity),
+    [maxQuantity, minQuantity],
   );
-
-  const createForm = useForm<CreateLineFormValues>({
-    resolver: zodResolver(createSchema),
-    defaultValues: {
-      selectionLineId: '',
-      quantity: '',
-      notes: '',
-    },
-  });
 
   const editForm = useForm<EditLineFormValues>({
-    resolver: zodResolver(
-      editLineSchema.refine(
-        (values) => isDecimalLte(values.quantity, maxQuantity),
-        { message: 'Quantity exceeds billable', path: ['quantity'] },
-      ),
-    ),
+    resolver: zodResolver(editSchema),
     defaultValues: {
-      quantity: line?.quantity ?? '',
-      notes: line?.notes ?? '',
+      quantity: line.quantity,
+      notes: line.notes ?? '',
     },
   });
 
-  const selectedSelectionLineId = createForm.watch('selectionLineId');
-  const createQuantity = createForm.watch('quantity');
   const editQuantity = editForm.watch('quantity');
-  const selectedBillable = selectableLines.find(
-    (item) => item.selectionLineId === selectedSelectionLineId,
-  );
-  const effectiveMaxQuantity = selectedBillable?.quantity ?? maxQuantity;
 
   useEffect(() => {
     if (!open) {
       return;
     }
 
-    if (isEdit && line) {
-      editForm.reset({
-        quantity: line.quantity,
-        notes: line.notes ?? '',
-      });
-    } else {
-      const first = selectableLines[0];
-      createForm.reset({
-        selectionLineId: first?.selectionLineId ?? '',
-        quantity: first?.quantity ?? '',
-        notes: '',
-      });
-    }
-  }, [open, isEdit, line, selectableLines, createForm, editForm]);
-
-  useEffect(() => {
-    if (!isEdit && selectedBillable) {
-      createForm.setValue('quantity', selectedBillable.quantity);
-    }
-  }, [isEdit, selectedBillable, createForm]);
-
-  async function handleCreateSubmit(values: CreateLineFormValues) {
-    const billable = selectableLines.find(
-      (item) => item.selectionLineId === values.selectionLineId,
-    );
-    if (!billable || !isDecimalLte(values.quantity, billable.quantity)) {
-      return;
-    }
-
-    await addLine({
-      companyId,
-      invoiceId,
-      requestIds,
-      quoteIds,
-      selectionLineId: values.selectionLineId,
-      quantity: values.quantity,
-      notes: values.notes || undefined,
-    }).unwrap();
-
-    onSuccess?.();
-    onClose();
-  }
+    editForm.reset({
+      quantity: line.quantity,
+      notes: line.notes ?? '',
+    });
+  }, [open, line, editForm]);
 
   async function handleEditSubmit(values: EditLineFormValues) {
-    if (!line) {
-      return;
-    }
-
     const billableMax =
       billableLines.find(
         (item) => item.selectionLineId === line.selectionLine?.id,
       )?.quantity ?? line.quantity;
 
-    if (!isDecimalLte(values.quantity, billableMax)) {
+    if (
+      !isDecimalGte(values.quantity, minQuantity) ||
+      !isDecimalLte(values.quantity, billableMax)
+    ) {
       return;
     }
 
@@ -209,163 +141,72 @@ export function InvoiceLineFormDialog({
     onClose();
   }
 
-  const mutationError = isEdit ? updateState.error : addState.error;
-  const isLoading = isEdit ? updateState.isLoading : addState.isLoading;
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>
-        {isEdit ? t('form.editLineTitle') : t('form.addLineTitle')}
-      </DialogTitle>
+      <DialogTitle>{t('form.editLineTitle')}</DialogTitle>
       <DialogContent>
-        <ApiErrorAlert error={mutationError} />
-        {isEdit && line ? (
-          <Box
-            component="form"
-            id="invoice-line-edit-form"
-            onSubmit={editForm.handleSubmit(handleEditSubmit)}
-            sx={{ pt: 1 }}
-          >
-            <Stack spacing={2}>
-              <Stack spacing={1}>
-                <TextField
-                  label={t('form.requestLine')}
-                  value={line.requestLine?.description ?? '—'}
-                  fullWidth
-                  disabled
-                />
-                <RequestLineCancelledBadge
-                  cancelledAt={line.requestLine?.cancelledAt}
-                />
-              </Stack>
+        <ApiErrorAlert error={updateState.error ?? billableQuery.error} />
+        <Box
+          component="form"
+          id="invoice-line-edit-form"
+          onSubmit={editForm.handleSubmit(handleEditSubmit)}
+          sx={{ pt: 1 }}
+        >
+          <Stack spacing={2}>
+            <Stack spacing={1}>
               <TextField
-                label={t('form.maxQuantity')}
-                value={maxQuantity}
+                label={t('form.requestLine')}
+                value={line.requestLine?.description ?? '—'}
                 fullWidth
                 disabled
               />
-              <DecimalInput
-                label={t('form.quantity')}
-                fullWidth
-                required
-                value={editQuantity}
-                onChange={(value) =>
-                  editForm.setValue('quantity', value, { shouldValidate: true })
-                }
-                error={Boolean(editForm.formState.errors.quantity)}
-                helperText={editForm.formState.errors.quantity?.message}
-              />
-              <TextField
-                label={t('form.notes')}
-                fullWidth
-                multiline
-                minRows={2}
-                {...editForm.register('notes')}
+              <RequestLineCancelledBadge
+                cancelledAt={line.requestLine?.cancelledAt}
               />
             </Stack>
-          </Box>
-        ) : selectableLines.length === 0 ? (
-          <Box sx={{ pt: 1 }}>{t('empty.billableLines')}</Box>
-        ) : (
-          <Box
-            component="form"
-            id="invoice-line-create-form"
-            onSubmit={createForm.handleSubmit(handleCreateSubmit)}
-            sx={{ pt: 1 }}
-          >
-            <Stack spacing={2}>
-              <Controller
-                name="selectionLineId"
-                control={createForm.control}
-                render={({ field, fieldState }) => (
-                  <FormControl fullWidth error={Boolean(fieldState.error)}>
-                    <InputLabel id="invoice-billable-label">
-                      {t('form.billableLine')}
-                    </InputLabel>
-                    <Select
-                      {...field}
-                      labelId="invoice-billable-label"
-                      label={t('form.billableLine')}
-                    >
-                      {selectableLines.map((billable) => (
-                        <MenuItem
-                          key={billable.selectionLineId}
-                          value={billable.selectionLineId}
-                        >
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                            flexWrap="wrap"
-                          >
-                            <span>
-                              {t('form.billableLineOption', {
-                                description:
-                                  billable.requestLine?.description ?? '—',
-                                quantity: billable.quantity,
-                                price: billable.unitPrice,
-                                total: billable.lineTotal,
-                              })}
-                            </span>
-                            <RequestLineCancelledBadge
-                              cancelledAt={billable.requestLine?.cancelledAt}
-                            />
-                          </Stack>
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {fieldState.error ? (
-                      <FormHelperText>
-                        {fieldState.error.message}
-                      </FormHelperText>
-                    ) : null}
-                  </FormControl>
-                )}
-              />
-              {selectedBillable ? (
-                <Box>
-                  <strong>{t('form.maxQuantity')}:</strong>{' '}
-                  <DecimalDisplay value={effectiveMaxQuantity} />
-                </Box>
-              ) : null}
-              <DecimalInput
-                label={t('form.quantity')}
-                fullWidth
-                required
-                value={createQuantity}
-                onChange={(value) =>
-                  createForm.setValue('quantity', value, {
-                    shouldValidate: true,
-                  })
-                }
-                error={Boolean(createForm.formState.errors.quantity)}
-                helperText={createForm.formState.errors.quantity?.message}
-              />
-              <TextField
-                label={t('form.notes')}
-                fullWidth
-                multiline
-                minRows={2}
-                {...createForm.register('notes')}
-              />
-            </Stack>
-          </Box>
-        )}
+            <TextField
+              label={t('form.maxQuantity')}
+              value={maxQuantity}
+              fullWidth
+              disabled
+            />
+            <TextField
+              label={t('form.minQuantity')}
+              value={minQuantity}
+              fullWidth
+              disabled
+            />
+            <DecimalInput
+              label={t('form.quantity')}
+              fullWidth
+              required
+              value={editQuantity}
+              onChange={(value) =>
+                editForm.setValue('quantity', value, { shouldValidate: true })
+              }
+              error={Boolean(editForm.formState.errors.quantity)}
+              helperText={editForm.formState.errors.quantity?.message}
+            />
+            <TextField
+              label={t('form.notes')}
+              fullWidth
+              multiline
+              minRows={2}
+              {...editForm.register('notes')}
+            />
+          </Stack>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>{t('actions.dismiss')}</Button>
-        {isEdit || selectableLines.length > 0 ? (
-          <Button
-            type="submit"
-            form={
-              isEdit ? 'invoice-line-edit-form' : 'invoice-line-create-form'
-            }
-            variant="contained"
-            disabled={isLoading}
-          >
-            {t('actions.save')}
-          </Button>
-        ) : null}
+        <Button
+          type="submit"
+          form="invoice-line-edit-form"
+          variant="contained"
+          disabled={updateState.isLoading}
+        >
+          {t('actions.save')}
+        </Button>
       </DialogActions>
     </Dialog>
   );

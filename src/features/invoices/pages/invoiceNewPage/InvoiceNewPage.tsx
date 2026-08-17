@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react';
+import { Link as RouterLink, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
@@ -10,6 +10,8 @@ import {
   MenuItem,
   Select,
   Stack,
+  Tab,
+  Tabs,
   TextField,
   Typography,
 } from '@mui/material';
@@ -19,13 +21,15 @@ import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { useCreateInvoiceMutation } from '@/api/endpoints/invoicesApi';
-import { useGetQuoteQuery } from '@/api/endpoints/quotesApi';
+import {
+  useGetQuoteBillableLinesQuery,
+  useGetQuoteQuery,
+} from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { BackLink } from '@/components/BackLink';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
+import { InvoiceDraftLinesSection } from '@/features/invoices/components/invoiceDraftLinesSection/InvoiceDraftLinesSection';
 import {
-  groupDraftLinesByRequest,
+  billableToDraftLine,
   validateDraftInvoiceLines,
   type DraftInvoiceLine,
 } from '@/features/invoices/lib/draftInvoiceLine';
@@ -33,6 +37,8 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 import { currencySelectOptions } from '@/lib/currencies';
+
+type FormTab = 'lines' | 'notes';
 
 const headerSchema = z.object({
   number: z.string().trim().min(1),
@@ -42,7 +48,7 @@ const headerSchema = z.object({
 
 type HeaderFormValues = z.infer<typeof headerSchema>;
 
-export function InvoiceCreatePage() {
+export function InvoiceNewPage() {
   const { t } = useTranslation('invoices');
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -51,10 +57,11 @@ export function InvoiceCreatePage() {
   const { hasPermission } = usePermissions();
 
   const initialQuoteId = searchParams.get('quoteId');
+  const didPrefillLines = useRef(false);
 
   const [lines, setLines] = useState<DraftInvoiceLine[]>([]);
   const [linesError, setLinesError] = useState<string | undefined>();
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [tab, setTab] = useState<FormTab>('lines');
 
   const [createInvoice, createState] = useCreateInvoiceMutation();
 
@@ -81,6 +88,10 @@ export function InvoiceCreatePage() {
     { companyId: companyId ?? '', quoteId: initialQuoteId ?? '' },
     { skip: !companyId || !initialQuoteId },
   );
+  const billableQuery = useGetQuoteBillableLinesQuery(
+    { companyId: companyId ?? '', quoteId: initialQuoteId ?? '' },
+    { skip: !companyId || !initialQuoteId },
+  );
 
   useEffect(() => {
     const quoteCurrency = prefillQuoteQuery.data?.quote.currency;
@@ -89,7 +100,35 @@ export function InvoiceCreatePage() {
     }
   }, [prefillQuoteQuery.data?.quote.currency, currency, setValue]);
 
-  const groupedLines = useMemo(() => groupDraftLinesByRequest(lines), [lines]);
+  useEffect(() => {
+    const quote = prefillQuoteQuery.data?.quote;
+    const billableLines = billableQuery.data?.lines;
+    const requestId = quote?.materialRequest?.id;
+    if (
+      didPrefillLines.current ||
+      !quote ||
+      !requestId ||
+      !billableLines?.length
+    ) {
+      return;
+    }
+
+    didPrefillLines.current = true;
+    setValue('currency', quote.currency, { shouldValidate: true });
+    setLines(
+      billableLines.map((billable) =>
+        billableToDraftLine({
+          billable,
+          quantity: billable.quantity,
+          requestId,
+          currency: quote.currency,
+          buyerCompanyId: quote.buyerCompany?.id ?? null,
+          quoteId: quote.id,
+        }),
+      ),
+    );
+  }, [prefillQuoteQuery.data?.quote, billableQuery.data?.lines, setValue]);
+
   const existingSelectionLineIds = lines.map((line) => line.selectionLineId);
 
   if (!companyId) {
@@ -98,6 +137,10 @@ export function InvoiceCreatePage() {
 
   if (!hasPermission('manageInvoices')) {
     return <Navigate to="/app/invoices" replace />;
+  }
+
+  function handleTabChange(_event: SyntheticEvent, value: FormTab) {
+    setTab(value);
   }
 
   function handleCurrencyChange(next: string) {
@@ -130,12 +173,6 @@ export function InvoiceCreatePage() {
     });
   }
 
-  function handleRemoveLine(selectionLineId: string) {
-    setLines((prev) =>
-      prev.filter((line) => line.selectionLineId !== selectionLineId),
-    );
-  }
-
   async function onSubmit(values: HeaderFormValues) {
     if (!companyId) {
       return;
@@ -148,6 +185,7 @@ export function InvoiceCreatePage() {
           ? t('validation.minLines')
           : t('toast.linesInvalid'),
       );
+      setTab('lines');
       return;
     }
 
@@ -192,7 +230,6 @@ export function InvoiceCreatePage() {
               <TextField
                 label={t('form.invoiceNumber')}
                 fullWidth
-                required
                 error={Boolean(errors.number)}
                 helperText={errors.number?.message}
                 {...register('number')}
@@ -203,7 +240,7 @@ export function InvoiceCreatePage() {
                 error={Boolean(errors.currency)}
                 sx={{ minWidth: { sm: 160 }, maxWidth: { sm: 200 } }}
               >
-                <InputLabel id="invoice-create-currency">
+                <InputLabel id="invoice-new-currency">
                   {t('form.currency')}
                 </InputLabel>
                 <Controller
@@ -211,7 +248,7 @@ export function InvoiceCreatePage() {
                   control={control}
                   render={({ field }) => (
                     <Select
-                      labelId="invoice-create-currency"
+                      labelId="invoice-new-currency"
                       label={t('form.currency')}
                       value={field.value}
                       onChange={(event) =>
@@ -231,94 +268,45 @@ export function InvoiceCreatePage() {
                 ) : null}
               </FormControl>
             </Stack>
-            <TextField
-              label={t('form.notes')}
-              fullWidth
-              multiline
-              minRows={2}
-              {...register('notes')}
-            />
 
-            <Stack spacing={1.5}>
-              <Stack
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Typography variant="h6">{t('linesTitle')}</Typography>
-                <Button
-                  variant="outlined"
-                  onClick={() => setDialogOpen(true)}
-                  disabled={!currency}
-                >
-                  {t('actions.addLine')}
-                </Button>
-              </Stack>
+            <Box>
+              <Tabs value={tab} onChange={handleTabChange}>
+                <Tab label={t('tabs.lines')} value="lines" />
+                <Tab label={t('tabs.notes')} value="notes" />
+              </Tabs>
 
-              {linesError ? (
-                <Typography color="error" variant="body2">
-                  {linesError}
-                </Typography>
-              ) : null}
+              <Box sx={{ pt: 2 }}>
+                {tab === 'lines' ? (
+                  <InvoiceDraftLinesSection
+                    companyId={companyId}
+                    currency={currency}
+                    lines={lines}
+                    onChange={(nextLines) => {
+                      setLines(nextLines);
+                      if (nextLines.length > 0) {
+                        setLinesError(undefined);
+                      }
+                    }}
+                    onAddLine={handleAddLine}
+                    existingSelectionLineIds={existingSelectionLineIds}
+                    initialQuoteId={initialQuoteId}
+                    errorMessage={linesError}
+                  />
+                ) : (
+                  <TextField
+                    label={t('form.notes')}
+                    fullWidth
+                    multiline
+                    minRows={6}
+                    error={Boolean(errors.notes)}
+                    helperText={errors.notes?.message}
+                    {...register('notes')}
+                  />
+                )}
+              </Box>
+            </Box>
 
-              {lines.length === 0 ? (
-                <Typography color="text.secondary">{t('empty.lines')}</Typography>
-              ) : (
-                <Stack spacing={2}>
-                  {groupedLines.map(([requestId, requestLines]) => (
-                    <Stack key={requestId} spacing={1}>
-                      <Typography variant="subtitle2" color="text.secondary">
-                        {t('detail.requestGroup', {
-                          id: requestId.slice(0, 8),
-                        })}
-                      </Typography>
-                      {requestLines.map((line) => (
-                        <Stack
-                          key={line.selectionLineId}
-                          direction={{ xs: 'column', sm: 'row' }}
-                          spacing={1}
-                          justifyContent="space-between"
-                          alignItems={{ xs: 'flex-start', sm: 'center' }}
-                          sx={{
-                            borderBottom: 1,
-                            borderColor: 'divider',
-                            py: 1,
-                          }}
-                        >
-                          <Box>
-                            <Typography variant="body2">
-                              {line.description}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              <DecimalDisplay value={line.quantity} /> ×{' '}
-                              <DecimalDisplay value={line.unitPrice} />{' '}
-                              {line.currency}
-                            </Typography>
-                          </Box>
-                          <Button
-                            size="small"
-                            color="error"
-                            onClick={() =>
-                              handleRemoveLine(line.selectionLineId)
-                            }
-                          >
-                            {t('actions.deleteLine')}
-                          </Button>
-                        </Stack>
-                      ))}
-                    </Stack>
-                  ))}
-                </Stack>
-              )}
-            </Stack>
-
-            <Stack direction="row" spacing={1} justifyContent="flex-end">
-              <Button
-                onClick={() => navigate('/app/invoices')}
-                disabled={createState.isLoading}
-              >
-                {t('actions.cancel')}
-              </Button>
+            <Stack direction="row" spacing={2} justifyContent="center">
               <Button
                 type="submit"
                 variant="contained"
@@ -326,22 +314,17 @@ export function InvoiceCreatePage() {
               >
                 {t('actions.save')}
               </Button>
+              <Button
+                component={RouterLink}
+                to="/app/invoices"
+                disabled={createState.isLoading}
+              >
+                {t('actions.cancel')}
+              </Button>
             </Stack>
           </Stack>
         </Box>
       </Stack>
-
-      {currency ? (
-        <InvoiceDraftLineDialog
-          open={dialogOpen}
-          onClose={() => setDialogOpen(false)}
-          companyId={companyId}
-          currency={currency}
-          existingSelectionLineIds={existingSelectionLineIds}
-          initialQuoteId={initialQuoteId}
-          onAdd={handleAddLine}
-        />
-      ) : null}
     </PageShell>
   );
 }

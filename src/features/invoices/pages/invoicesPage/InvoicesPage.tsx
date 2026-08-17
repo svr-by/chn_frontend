@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
+import AddIcon from '@mui/icons-material/Add';
 import { useTranslation } from 'react-i18next';
 
 import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
@@ -139,6 +140,7 @@ export function InvoicesPage() {
               <PermissionGate permission="manageInvoices">
                 <Button
                   variant="contained"
+                  startIcon={<AddIcon />}
                   onClick={() =>
                     navigate(
                       requestIdFilter

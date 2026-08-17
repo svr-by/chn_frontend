@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ListItemIcon, ListItemText, Stack } from '@mui/material';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined';
+import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
@@ -10,8 +11,10 @@ import StorefrontOutlinedIcon from '@mui/icons-material/StorefrontOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
-import { useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
-import { useGetInvoiceQuery } from '@/api/endpoints/invoicesApi';
+import {
+  useGetInvoiceQuery,
+  useGetShippableLinesQuery,
+} from '@/api/endpoints/invoicesApi';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import {
   DocumentDetailMeta,
@@ -26,10 +29,10 @@ import {
   InvoiceNotesEditButton,
   InvoiceNumberEditButton,
 } from '@/features/invoices/components/invoiceHeaderForm/InvoiceHeaderForm';
+import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
 import { InvoiceLinesTable } from '@/features/invoices/components/invoiceLinesTable/InvoiceLinesTable';
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
-import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
 import { requestIdsFromInvoiceLines } from '@/features/invoices/lib/invoicesFilters';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
@@ -65,9 +68,10 @@ export function InvoiceDetailPage() {
     () => requestIdsFromInvoiceLines(invoice?.lines ?? []),
     [invoice?.lines],
   );
-  const primaryRequestId = requestIds[0];
-  const isDraft = invoice?.status === 'DRAFT';
-  const canEdit = isDraft && hasPermission('manageInvoices');
+  const isSupplier = Boolean(
+    invoice && companyId && invoice.supplierCompany?.id === companyId,
+  );
+  const canEdit = isSupplier && hasPermission('manageInvoices');
   const canRegisterPayment =
     invoice &&
     PAYMENT_ALLOWED_STATUSES.has(invoice.status) &&
@@ -84,21 +88,18 @@ export function InvoiceDetailPage() {
   const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
     useCreateShippingInvoiceFromInvoice();
 
-  const { quoteId } = useSupplierQuoteForRequest(
-    companyId ?? '',
-    primaryRequestId,
-    canEdit,
+  const shippableQuery = useGetShippableLinesQuery(
+    { companyId: companyId ?? '', invoiceId: invoiceId ?? '' },
+    { skip: !companyId || !invoiceId || !canEdit },
   );
-  const quoteIds = quoteId ? [quoteId] : undefined;
 
-  const billableQuery = useGetQuoteBillableLinesQuery(
-    {
-      companyId: companyId ?? '',
-      quoteId: quoteId ?? '',
-      materialRequestId: primaryRequestId,
-    },
-    { skip: !companyId || !quoteId || !canEdit },
-  );
+  const shippedQuantityByLineId = useMemo(() => {
+    const map: Record<string, string> = {};
+    for (const line of shippableQuery.data?.lines ?? []) {
+      map[line.invoiceLineId] = line.shippedQuantity;
+    }
+    return map;
+  }, [shippableQuery.data?.lines]);
 
   useEffect(() => {
     if (
@@ -127,7 +128,6 @@ export function InvoiceDetailPage() {
           <InvoiceNumberEditButton
             companyId={companyId}
             invoice={invoice}
-            quoteIds={quoteIds}
           />
         ) : null
       }
@@ -150,7 +150,6 @@ export function InvoiceDetailPage() {
               companyId={companyId}
               invoiceId={invoice.id}
               requestIds={requestIds}
-              quoteIds={quoteIds}
               status={invoice.status}
             />
             {canRegisterPayment ? (
@@ -213,6 +212,11 @@ export function InvoiceDetailPage() {
             </DocumentDetailMetaRow>
 
             <DocumentDetailMetaRow>
+              <DocumentDetailMetaItem
+                icon={<PaidOutlinedIcon />}
+                label={t('form.currency')}
+                value={invoice.currency}
+              />
               {/* {showShippingLink ? (
                 <DocumentDetailMetaItem
                   icon={<LocalShippingOutlinedIcon />}
@@ -254,7 +258,6 @@ export function InvoiceDetailPage() {
                       <InvoiceNotesEditButton
                         companyId={companyId}
                         invoice={invoice}
-                        quoteIds={quoteIds}
                       />
                     ) : null
                   }
@@ -276,15 +279,21 @@ export function InvoiceDetailPage() {
               label: tCollab('tabs.details'),
               panel: (
                 <Stack spacing={3}>
+                  {/* <InvoiceAmountSummary
+                    totalAmount={invoice.totalAmount}
+                    confirmedPaidAmount={invoice.confirmedPaidAmount}
+                    remainingAmount={invoice.remainingAmount}
+                    currency={invoice.currency}
+                  /> */}
                   <InvoiceLinesTable
                     companyId={companyId}
                     invoiceId={invoice.id}
                     requestIds={requestIds}
-                    quoteIds={quoteIds}
+                    buyerCompanyId={invoice.buyerCompany?.id}
                     currency={invoice.currency}
                     totalAmount={invoice.totalAmount}
                     lines={invoice.lines}
-                    billableLines={billableQuery.data?.lines ?? []}
+                    shippedQuantityByLineId={shippedQuantityByLineId}
                     editable={canEdit}
                   />
                   {showPayments ? (

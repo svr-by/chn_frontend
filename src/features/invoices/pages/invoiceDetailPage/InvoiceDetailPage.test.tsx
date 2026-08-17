@@ -7,12 +7,14 @@ import { useGetMeQuery } from '@/api/endpoints/authApi';
 import { useGetQuoteBillableLinesQuery, useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import {
   useGetInvoiceQuery,
+  useGetShippableLinesQuery,
   useUpdateInvoiceMutation,
 } from '@/api/endpoints/invoicesApi';
 import { InvoiceDetailPage } from '@/features/invoices/pages/invoiceDetailPage/InvoiceDetailPage';
 import {
   COMPANY_ID,
   createMembership,
+  createShippableLine,
   createSupplierInvoice,
   createTestUser,
   INVOICE_ID,
@@ -35,6 +37,7 @@ vi.mock('@/api/endpoints/quotesApi', () => ({
 
 vi.mock('@/api/endpoints/invoicesApi', () => ({
   useGetInvoiceQuery: vi.fn(),
+  useGetShippableLinesQuery: vi.fn(),
   useLazyGetShippableLinesQuery: vi.fn(() => [vi.fn(), { isLoading: false }]),
   useUpdateInvoiceMutation: vi.fn(() => [
     vi.fn(),
@@ -99,6 +102,7 @@ vi.mock('@/api/endpoints/commentsApi', () => ({
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
 const mockedUseGetInvoiceQuery = vi.mocked(useGetInvoiceQuery);
+const mockedUseGetShippableLinesQuery = vi.mocked(useGetShippableLinesQuery);
 const mockedUseUpdateInvoiceMutation = vi.mocked(useUpdateInvoiceMutation);
 const mockedUseListQuotesQuery = vi.mocked(useListQuotesQuery);
 const mockedUseGetQuoteBillableLinesQuery = vi.mocked(
@@ -134,6 +138,13 @@ describe('InvoiceDetailPage', () => {
       updateInvoice,
       { isLoading: false, reset: vi.fn(), error: undefined },
     ] as ReturnType<typeof useUpdateInvoiceMutation>);
+
+    mockedUseGetShippableLinesQuery.mockReturnValue({
+      data: { invoiceId: INVOICE_ID, lines: [createShippableLine()] },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetShippableLinesQuery>);
 
     mockedUseListQuotesQuery.mockReturnValue({
       data: { quotes: [{ id: '00000000-0000-0000-0000-000000000070' }] },
@@ -214,7 +225,7 @@ describe('InvoiceDetailPage', () => {
     });
   });
 
-  it('shows register payment for ISSUED invoice', () => {
+  it('shows register payment and add line for ISSUED invoice', () => {
     mockedUseGetInvoiceQuery.mockReturnValue({
       data: {
         invoice: createSupplierInvoice({
@@ -230,7 +241,35 @@ describe('InvoiceDetailPage', () => {
     renderDetailPage();
 
     expect(screen.getByText('Register payment')).toBeInTheDocument();
+    expect(screen.getByText('Add line')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Edit invoice number' }),
+    ).toBeInTheDocument();
+  });
+
+  it('hides line edits for inbound buyer', () => {
+    mockedUseGetInvoiceQuery.mockReturnValue({
+      data: {
+        invoice: createSupplierInvoice({
+          status: 'ISSUED',
+          issuedAt: '2026-01-02T00:00:00.000Z',
+          supplierCompany: {
+            id: '00000000-0000-0000-0000-000000000099',
+            name: 'Other Supplier',
+          },
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetInvoiceQuery>);
+
+    renderDetailPage();
+
     expect(screen.queryByText('Add line')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Edit invoice number' }),
+    ).not.toBeInTheDocument();
   });
 
   it('switches to comments tab', async () => {

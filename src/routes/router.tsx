@@ -17,7 +17,7 @@ import { InboundRequestsPage } from '@/features/requests/pages/inboundRequestsPa
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import { InvoicesPage } from '@/features/invoices/pages/invoicesPage/InvoicesPage';
-import { InvoiceCreatePage } from '@/features/invoices/pages/invoiceCreatePage/InvoiceCreatePage';
+import { InvoiceNewPage } from '@/features/invoices/pages/invoiceNewPage/InvoiceNewPage';
 import { InvoiceDetailPage } from '@/features/invoices/pages/invoiceDetailPage/InvoiceDetailPage';
 import { PaymentsPage } from '@/features/payments/pages/PaymentsPage';
 import { PaymentDetailPage } from '@/features/payments/pages/PaymentDetailPage';
@@ -156,7 +156,7 @@ export const router = createBrowserRouter([
               { path: 'quotes', element: <QuotesPage /> },
               { path: 'quotes/:quoteId', element: <QuoteDetailPage /> },
               { path: 'invoices', element: <InvoicesPage /> },
-              { path: 'invoices/new', element: <InvoiceCreatePage /> },
+              { path: 'invoices/new', element: <InvoiceNewPage /> },
               { path: 'invoices/:invoiceId', element: <InvoiceDetailPage /> },
               { path: 'payments', element: <PaymentsPage /> },
               { path: 'payments/:paymentId', element: <PaymentDetailPage /> },
