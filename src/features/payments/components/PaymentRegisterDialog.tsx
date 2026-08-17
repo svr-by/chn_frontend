@@ -17,16 +17,31 @@ import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
 import { useRegisterPaymentMutation } from '@/api/endpoints/paymentsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
 import { DecimalInput } from '@/components/DecimalInput';
-import { isDecimalLte, isValidDecimal } from '@/lib/decimal';
+import { isDecimalLte, isValidDecimal, parseDecimal } from '@/lib/decimal';
 
-function createSchema(remainingAmount: string) {
+function remainingForPayment(remainingAmount: string): string | null {
+  try {
+    if (parseDecimal(remainingAmount).gt(0)) {
+      return remainingAmount;
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
+
+function createSchema(remainingAmount: string | null) {
   return z.object({
     amount: z
       .string()
       .refine(isValidDecimal, { message: 'Invalid amount' })
-      .refine((value) => isDecimalLte(value, remainingAmount), {
-        message: 'Amount exceeds remaining',
-      }),
+      .refine(
+        (value) =>
+          remainingAmount == null || isDecimalLte(value, remainingAmount),
+        {
+          message: 'Amount exceeds remaining',
+        },
+      ),
     notes: z.string().trim().optional(),
   });
 }
@@ -50,7 +65,8 @@ export function PaymentRegisterDialog({
   const navigate = useNavigate();
   const [registerPayment, registerState] = useRegisterPaymentMutation();
 
-  const schema = createSchema(invoice.remainingAmount);
+  const payableRemaining = remainingForPayment(invoice.remainingAmount);
+  const schema = createSchema(payableRemaining);
 
   const {
     register,
@@ -62,7 +78,7 @@ export function PaymentRegisterDialog({
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      amount: invoice.remainingAmount,
+      amount: payableRemaining ?? '',
       notes: '',
     },
   });
@@ -90,7 +106,7 @@ export function PaymentRegisterDialog({
       TransitionProps={{
         onEnter: () =>
           reset({
-            amount: invoice.remainingAmount,
+            amount: payableRemaining ?? '',
             notes: '',
           }),
       }}
