@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import type { MaterialRequestStatus } from '@/api/generated/models/materialRequestStatus';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
 import { OffersNestedTable } from '@/features/quotes/components/quoteComparisonMatrix/OffersNestedTable';
 import {
@@ -139,7 +139,7 @@ export function QuoteComparisonMatrix({
           align: 'right',
         },
         Cell: ({ row }) => (
-          <DecimalWithSuffix
+          <DecimalDisplay
             value={row.original.requestLine.quantity}
             suffix={row.original.requestLine.unit ?? '—'}
           />
@@ -157,7 +157,7 @@ export function QuoteComparisonMatrix({
           align: 'right',
         },
         Cell: ({ row }) => (
-          <DecimalWithSuffix
+          <DecimalDisplay
             value={sumLineSelectedQuantity(row.original)}
             suffix={row.original.requestLine.unit ?? '—'}
           />
@@ -224,7 +224,6 @@ export function QuoteComparisonMatrix({
             pr: 1,
             py: 1,
             width: '100%',
-            bgcolor: 'action.hover',
           }}
         >
           <OffersNestedTable
@@ -232,6 +231,7 @@ export function QuoteComparisonMatrix({
             companyId={companyId}
             selectionEnabled={selectionEnabled}
             materialRequestId={requestId}
+            unit={row.original.requestLine.unit}
           />
         </Box>
       );

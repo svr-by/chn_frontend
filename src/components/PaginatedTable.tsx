@@ -1,3 +1,4 @@
+import type { TableRowProps } from '@mui/material';
 import {
   MaterialReactTable,
   type MRT_ColumnDef,
@@ -40,6 +41,8 @@ interface PaginatedTableProps<T extends object> {
   positionGlobalFilter?: MRT_TableOptions<T>['positionGlobalFilter'];
   renderBottomToolbarCustomActions?: MRT_TableOptions<T>['renderBottomToolbarCustomActions'];
   renderTopToolbarCustomActions?: MRT_TableOptions<T>['renderTopToolbarCustomActions'];
+  muiTableBodyRowProps?: MRT_TableOptions<T>['muiTableBodyRowProps'];
+  muiTableBodyCellProps?: MRT_TableOptions<T>['muiTableBodyCellProps'];
 }
 
 export function PaginatedTable<T extends object>({
@@ -69,6 +72,8 @@ export function PaginatedTable<T extends object>({
   positionGlobalFilter,
   renderBottomToolbarCustomActions,
   renderTopToolbarCustomActions,
+  muiTableBodyRowProps,
+  muiTableBodyCellProps,
 }: PaginatedTableProps<T>) {
   const table = useAppMaterialReactTable({
     columns,
@@ -104,12 +109,30 @@ export function PaginatedTable<T extends object>({
       ...(globalFilter !== undefined ? { globalFilter } : {}),
       ...(rowSelection !== undefined ? { rowSelection } : {}),
     },
-    muiTableBodyRowProps: onRowClick
-      ? ({ row }) => ({
-          onClick: () => onRowClick(row.original),
-          sx: { cursor: 'pointer' },
-        })
-      : undefined,
+    muiTableBodyRowProps: ({ row, staticRowIndex, table: mrtTable }) => {
+      const fromProp: TableRowProps =
+        typeof muiTableBodyRowProps === 'function'
+          ? (muiTableBodyRowProps({ row, staticRowIndex, table: mrtTable }) ??
+            {})
+          : (muiTableBodyRowProps ?? {});
+
+      if (!onRowClick) {
+        return fromProp;
+      }
+
+      return {
+        ...fromProp,
+        onClick: (event) => {
+          fromProp.onClick?.(event);
+          onRowClick(row.original);
+        },
+        sx: {
+          cursor: 'pointer',
+          ...fromProp.sx,
+        },
+      };
+    },
+    muiTableBodyCellProps,
     getRowId: getRowId ? (row) => getRowId(row) : undefined,
     renderBottomToolbarCustomActions,
     renderTopToolbarCustomActions,

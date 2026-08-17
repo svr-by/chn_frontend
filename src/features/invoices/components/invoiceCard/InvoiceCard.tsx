@@ -5,7 +5,6 @@ import type { GetCompaniesCompanyIdInvoicesDirection } from '@/api/generated/mod
 import type { SupplierInvoiceSummary } from '@/api/generated/models/supplierInvoiceSummary';
 import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 
 interface InvoiceCardProps {
   invoice: SupplierInvoiceSummary;
@@ -70,7 +69,7 @@ export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
           </Typography>
 
           <Typography variant="subtitle2" noWrap>
-            <DecimalWithSuffix value={invoice.totalAmount} suffix={invoice.currency} />
+            <DecimalDisplay value={invoice.totalAmount} suffix={invoice.currency} groupDigits />
           </Typography>
 
           <Typography variant="body2" color="text.secondary" noWrap>

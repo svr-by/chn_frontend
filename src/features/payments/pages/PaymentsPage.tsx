@@ -74,10 +74,11 @@ export function PaymentsPage() {
         accessorKey: 'amount',
         header: t('columns.amount'),
         Cell: ({ row }) => (
-          <>
-            <DecimalDisplay value={row.original.amount} />{' '}
-            {row.original.currency}
-          </>
+          <DecimalDisplay
+            value={row.original.amount}
+            suffix={row.original.currency}
+            groupDigits
+          />
         ),
       },
       {

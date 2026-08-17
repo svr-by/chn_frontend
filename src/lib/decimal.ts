@@ -25,22 +25,53 @@ export function isDecimalGte(a: string, b: string): boolean {
 export interface FormatDecimalOptions {
   minimumFractionDigits?: number;
   maximumFractionDigits?: number;
+  groupDigits?: boolean;
+  locale?: string;
+}
+
+function groupIntegerDigits(integerPart: string, locale: string): string {
+  const normalized = integerPart.replace(/^0+(?=\d)/, '') || '0';
+
+  try {
+    return new Intl.NumberFormat(locale, {
+      useGrouping: true,
+      maximumFractionDigits: 0,
+    }).format(BigInt(normalized));
+  } catch {
+    return normalized;
+  }
 }
 
 export function formatDecimal(
   value: DecimalString,
   options: FormatDecimalOptions = {},
 ): string {
-  const { minimumFractionDigits = 0, maximumFractionDigits = 4 } = options;
+  const {
+    minimumFractionDigits = 0,
+    maximumFractionDigits = 4,
+    groupDigits = false,
+    locale = 'en',
+  } = options;
   const decimal = parseDecimal(value);
 
-  return decimal.toFixed(
+  const formatted = decimal.toFixed(
     Math.max(
       minimumFractionDigits,
       Math.min(maximumFractionDigits, countFractionDigits(value)),
     ),
     Decimal.ROUND_HALF_UP,
   );
+
+  if (!groupDigits) {
+    return formatted;
+  }
+
+  const [integerPart, fractionPart] = formatted.split('.');
+  const groupedInteger = groupIntegerDigits(integerPart, locale);
+
+  return fractionPart != null
+    ? `${groupedInteger}.${fractionPart}`
+    : groupedInteger;
 }
 
 function countFractionDigits(value: string): number {

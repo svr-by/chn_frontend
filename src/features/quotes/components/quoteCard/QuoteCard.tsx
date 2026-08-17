@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import type { GetCompaniesCompanyIdQuotesDirection } from '@/api/generated/models/getCompaniesCompanyIdQuotesDirection';
 import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
 import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 
 interface QuoteCardProps {
   quote: SupplierQuoteSummary;
@@ -69,7 +69,7 @@ export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
           </Typography>
 
           <Typography variant="subtitle2" noWrap>
-            <DecimalWithSuffix value={quote.positionsTotal} suffix={quote.currency} /> {' · '}
+            <DecimalDisplay value={quote.positionsTotal} suffix={quote.currency} groupDigits /> {' · '}
             {quote.linesCount} {t('columns.linesCount')}
           </Typography>
 

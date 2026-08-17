@@ -3,7 +3,6 @@ import { Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonOfferRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
@@ -14,6 +13,7 @@ import {
 
 interface OfferCardDetailsProps extends OfferSelectionProps {
   row: QuoteComparisonOfferRow;
+  unit?: string | null;
 }
 
 export function OfferCardDetails({
@@ -21,6 +21,7 @@ export function OfferCardDetails({
   companyId,
   selectionEnabled,
   materialRequestId,
+  unit,
 }: OfferCardDetailsProps) {
   const { t } = useTranslation(['quotes', 'enums']);
   const { offer } = row;
@@ -43,7 +44,7 @@ export function OfferCardDetails({
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.unitPrice')}:{' '}
-        <DecimalWithSuffix value={offer.unitPrice} suffix={offer.currency} />
+        <DecimalDisplay value={offer.unitPrice} suffix={offer.currency} groupDigits />
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.offerQuantity')}:{' '}
@@ -51,7 +52,7 @@ export function OfferCardDetails({
       </Typography>
       <Typography variant="body2">
         {t('comparison.columns.total')}:{' '}
-        <DecimalWithSuffix value={offer.lineTotal} suffix={offer.currency} />
+        <DecimalDisplay value={offer.lineTotal} suffix={offer.currency} groupDigits />
       </Typography>
       {offer.leadTime != null && offer.leadTimeUnit ? (
         <Typography variant="body2">
@@ -70,6 +71,7 @@ export function OfferCardDetails({
         lineId={offer.quoteLineId}
         maxQuantity={offer.quantity}
         selectedQuantity={resolveSelectedQuantity(offer)}
+        unit={unit}
         materialRequestId={materialRequestId}
         disabled={!selectionEnabled}
       />

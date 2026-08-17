@@ -79,8 +79,12 @@ export function PaymentDetailPage() {
           <Stack spacing={0.5}>
             <Typography variant="body2" color="text.secondary">
               {t('detail.amount')}:{' '}
-              <DecimalDisplay value={payment.amount} component="span" />{' '}
-              {payment.currency}
+              <DecimalDisplay
+                value={payment.amount}
+                suffix={payment.currency}
+                groupDigits
+                component="span"
+              />
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {t('detail.invoice')}:{' '}

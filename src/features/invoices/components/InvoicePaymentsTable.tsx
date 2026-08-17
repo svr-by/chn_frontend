@@ -35,9 +35,11 @@ export function InvoicePaymentsTable({
         accessorKey: 'amount',
         header: t('paymentsColumns.amount'),
         Cell: ({ cell }) => (
-          <>
-            <DecimalDisplay value={cell.getValue<string>()} /> {currency}
-          </>
+          <DecimalDisplay
+            value={cell.getValue<string>()}
+            suffix={currency}
+            groupDigits
+          />
         ),
       },
       {

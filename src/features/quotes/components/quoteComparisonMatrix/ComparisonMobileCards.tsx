@@ -10,7 +10,7 @@ import { alpha } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
 import { OfferCardDetails } from '@/features/quotes/components/quoteComparisonMatrix/OfferCardDetails';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
@@ -60,14 +60,14 @@ export function ComparisonMobileCards({
             </Stack>
             <Typography variant="body2" color="text.secondary">
               {t('comparison.columns.quantity')}:{' '}
-              <DecimalWithSuffix
+              <DecimalDisplay
                 value={lineRow.requestLine.quantity}
                 suffix={lineRow.requestLine.unit ?? '—'}
               />
             </Typography>
             <Typography variant="body2" color="text.secondary">
               {t('columns.selectedQuantity')}:{' '}
-              <DecimalWithSuffix
+              <DecimalDisplay
                 value={selectedTotal}
                 suffix={lineRow.requestLine.unit ?? '—'}
               />
@@ -132,6 +132,7 @@ export function ComparisonMobileCards({
                           companyId={companyId}
                           selectionEnabled={selectionEnabled}
                           materialRequestId={materialRequestId}
+                          unit={lineRow.requestLine.unit}
                         />
                       </Stack>
                     </Box>

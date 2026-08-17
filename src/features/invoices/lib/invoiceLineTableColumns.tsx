@@ -4,7 +4,7 @@ import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
 
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
+import { DecimalDisplay } from '@/components/DecimalDisplay';
 import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
 import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
 import {
@@ -84,7 +84,7 @@ export function createInvoiceLineBaseColumns(
       muiTableBodyCellProps: { align: 'right' },
       muiTableHeadCellProps: { align: 'right' },
       Cell: ({ row }) => (
-        <DecimalWithSuffix
+        <DecimalDisplay
           value={row.original.quantity}
           suffix={row.original.requestLine?.unit ?? ''}
         />
@@ -100,12 +100,8 @@ export function createInvoiceLineBaseColumns(
       muiTableHeadCellProps: { align: 'right' },
       muiTableFooterCellProps: { align: 'right' },
       Cell: ({ row }) => (
-        <DecimalWithSuffix value={row.original.unitPrice} suffix={currency} />
+        <DecimalDisplay value={row.original.unitPrice} suffix={currency} groupDigits />
       ),
-      // Footer:
-      //   totalAmount != null
-      //     ? () => t('amounts.total').toUpperCase()
-      //     : undefined,
     },
     {
       id: 'lineTotal',
@@ -117,14 +113,15 @@ export function createInvoiceLineBaseColumns(
       muiTableHeadCellProps: { align: 'right' },
       muiTableFooterCellProps: { align: 'right' },
       Cell: ({ row }) => (
-        <DecimalWithSuffix value={row.original.lineTotal} suffix={currency} />
+        <DecimalDisplay value={row.original.lineTotal} suffix={currency} groupDigits />
       ),
       Footer:
         totalAmount != null
           ? () => (
-              <DecimalWithSuffix
+              <DecimalDisplay
                 value={totalAmount}
                 suffix={currency}
+                groupDigits
                 fontWeight={600}
               />
             )

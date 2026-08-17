@@ -6,7 +6,6 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { DecimalWithSuffix } from '@/components/DecimalWithSuffix';
 import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonOfferRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
@@ -19,6 +18,7 @@ import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
 
 interface OffersNestedTableProps extends OfferSelectionProps {
   offers: QuoteComparisonOfferRow[];
+  unit?: string | null;
 }
 
 export function OffersNestedTable({
@@ -26,6 +26,7 @@ export function OffersNestedTable({
   companyId,
   selectionEnabled,
   materialRequestId,
+  unit,
 }: OffersNestedTableProps) {
   const theme = useTheme();
   const { t } = useTranslation(['quotes', 'enums']);
@@ -36,6 +37,7 @@ export function OffersNestedTable({
       {
         id: 'supplier',
         header: t('comparison.columns.supplier'),
+        grow: true,
         Cell: ({ row }) => (
           <Stack spacing={0.5}>
             <Typography variant="body2">
@@ -54,6 +56,8 @@ export function OffersNestedTable({
       {
         id: 'quote',
         header: t('comparison.columns.quote'),
+        size: 120,
+        grow: false,
         Cell: ({ row }) => (
           <Link
             component={RouterLink}
@@ -66,35 +70,60 @@ export function OffersNestedTable({
         ),
       },
       {
+        id: 'notes',
+        header: t('comparison.columns.notes'),
+        size: 250,
+        Cell: ({ row }) => {
+          const notes = row.original.offer.notes?.trim();
+          return notes || '—';
+        },
+      },
+      {
         id: 'unitPrice',
         header: t('comparison.columns.unitPrice'),
+        size: 120,
+        grow: false,
+        muiTableHeadCellProps: { align: 'right' },
+        muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => (
-          <DecimalWithSuffix
+          <DecimalDisplay
             value={row.original.offer.unitPrice}
             suffix={row.original.offer.currency}
+            groupDigits
           />
         ),
       },
       {
         id: 'offerQuantity',
         header: t('comparison.columns.offerQuantity'),
+        size: 120,
+        grow: false,
+        muiTableHeadCellProps: { align: 'right' },
+        muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => (
-          <DecimalDisplay value={row.original.offer.quantity} />
+          <DecimalDisplay value={row.original.offer.quantity} suffix={unit} />
         ),
       },
       {
         id: 'total',
         header: t('comparison.columns.total'),
+        size: 140,
+        grow: false,
+        muiTableHeadCellProps: { align: 'right' },
+        muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => (
-          <DecimalWithSuffix
+          <DecimalDisplay
             value={row.original.offer.lineTotal}
             suffix={row.original.offer.currency}
+            groupDigits
           />
         ),
       },
       {
         id: 'leadTime',
         header: t('comparison.columns.leadTime'),
+        size: 120,
+        grow: false,
         Cell: ({ row }) => {
           const { leadTime, leadTimeUnit } = row.original.offer;
           if (leadTime == null || !leadTimeUnit) {
@@ -110,16 +139,12 @@ export function OffersNestedTable({
         },
       },
       {
-        id: 'notes',
-        header: t('comparison.columns.notes'),
-        Cell: ({ row }) => {
-          const notes = row.original.offer.notes?.trim();
-          return notes || '—';
-        },
-      },
-      {
         id: 'selection',
         header: t('columns.selectedQuantity'),
+        size: 120,
+        grow: false,
+        muiTableHeadCellProps: { align: 'right' },
+        muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => (
           <QuoteLineSelectionCell
             companyId={companyId}
@@ -127,19 +152,21 @@ export function OffersNestedTable({
             lineId={row.original.offer.quoteLineId}
             maxQuantity={row.original.offer.quantity}
             selectedQuantity={resolveSelectedQuantity(row.original.offer)}
+            unit={unit}
             materialRequestId={materialRequestId}
             disabled={!selectionEnabled}
           />
         ),
       },
     ],
-    [companyId, materialRequestId, selectionEnabled, t],
+    [companyId, materialRequestId, selectionEnabled, t, unit],
   );
 
   const table = useAppMaterialReactTable({
     columns,
     data: offers,
     getRowId: (row) => row.id,
+    layoutMode: 'grid',
     enablePagination: false,
     enableBottomToolbar: false,
     enableTopToolbar: false,
