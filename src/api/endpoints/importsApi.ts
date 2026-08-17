@@ -3,6 +3,7 @@ import {
   getPostCompaniesCompanyIdImportsJobIdConfirmUrl,
   getPostCompaniesCompanyIdImportsRequestLinesCsvPreviewUrl,
   getPostCompaniesCompanyIdImportsRequestLinesHtmPreviewUrl,
+  getPostCompaniesCompanyIdImportsRequestLinesTranslatePreviewUrl,
   getPostCompaniesCompanyIdImportsRequestLinesUrl,
 } from '@/api/generated/endpoints';
 import type {
@@ -11,6 +12,8 @@ import type {
   PostCompaniesCompanyIdImportsRequestLines202,
   PostCompaniesCompanyIdImportsRequestLinesCsvPreview200,
   PostCompaniesCompanyIdImportsRequestLinesHtmPreview200,
+  PostCompaniesCompanyIdImportsRequestLinesTranslatePreview200,
+  PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBody,
 } from '@/api/generated/models';
 import { baseApi } from '@/api/baseApi';
 
@@ -50,6 +53,18 @@ export const importsApi = baseApi.injectEndpoints({
         ),
         method: 'POST',
         body: formData,
+      }),
+    }),
+    previewTranslateImport: builder.mutation<
+      PostCompaniesCompanyIdImportsRequestLinesTranslatePreview200,
+      CompanyScopedArgs<PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBody>
+    >({
+      query: ({ companyId, ...body }) => ({
+        url: getPostCompaniesCompanyIdImportsRequestLinesTranslatePreviewUrl(
+          companyId,
+        ),
+        method: 'POST',
+        body,
       }),
     }),
     uploadImport: builder.mutation<
@@ -94,6 +109,7 @@ export const importsApi = baseApi.injectEndpoints({
 export const {
   usePreviewCsvImportMutation,
   usePreviewHtmImportMutation,
+  usePreviewTranslateImportMutation,
   useUploadImportMutation,
   useGetImportJobQuery,
   useConfirmImportMutation,

@@ -13,6 +13,7 @@ import {
   getPatchCompaniesCompanyIdRequestsRequestIdDistributionsDistributionIdUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdLinesLineIdUrl,
   getPatchCompaniesCompanyIdRequestsRequestIdUrl,
+  getPostCompaniesCompanyIdRequestsInboundRequestIdLinesCsvUrl,
   getPostCompaniesCompanyIdRequestsInboundRequestIdRejectUrl,
   getPostCompaniesCompanyIdRequestsRequestIdCloseUrl,
   getPostCompaniesCompanyIdRequestsRequestIdDistributeUrl,
@@ -41,6 +42,7 @@ import type {
   PatchCompaniesCompanyIdRequestsRequestIdLinesLineIdBody,
   PostCompaniesCompanyIdRequests201,
   PostCompaniesCompanyIdRequestsBody,
+  PostCompaniesCompanyIdRequestsInboundRequestIdLinesCsv200,
   PostCompaniesCompanyIdRequestsInboundRequestIdReject200,
   PostCompaniesCompanyIdRequestsInboundRequestIdRejectBody,
   PostCompaniesCompanyIdRequestsRequestIdClose200,
@@ -384,6 +386,32 @@ export const requestsApi = baseApi.injectEndpoints({
         { type: 'Requests', id: `${requestId}-comparison` },
       ],
     }),
+    importInboundRequestLinesCsv: builder.mutation<
+      PostCompaniesCompanyIdRequestsInboundRequestIdLinesCsv200,
+      {
+        companyId: string;
+        requestId: string;
+        formData: FormData;
+        quoteId?: string;
+      }
+    >({
+      query: ({ companyId, requestId, formData }) => ({
+        url: getPostCompaniesCompanyIdRequestsInboundRequestIdLinesCsvUrl(
+          companyId,
+          requestId,
+        ),
+        method: 'POST',
+        body: formData,
+      }),
+      invalidatesTags: (_result, _error, { companyId, requestId, quoteId }) => [
+        { type: 'Quotes', id: companyId },
+        ...(quoteId ? [{ type: 'Quotes' as const, id: quoteId }] : []),
+        { type: 'Quotes', id: `request-${requestId}` },
+        { type: 'Requests', id: requestId },
+        { type: 'Requests', id: `${requestId}-inbound` },
+        ...inboundTags(companyId),
+      ],
+    }),
   }),
 });
 
@@ -407,4 +435,5 @@ export const {
   useRejectInboundRequestMutation,
   useGetRequestDistributionsQuery,
   useGetQuoteComparisonQuery,
+  useImportInboundRequestLinesCsvMutation,
 } = requestsApi;

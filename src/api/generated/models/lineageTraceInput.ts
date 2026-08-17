@@ -4,7 +4,6 @@
 import type { LineageTraceInputRequest } from './lineageTraceInputRequest';
 import type { LineageTraceInputRequestLine } from './lineageTraceInputRequestLine';
 import type { LineageTraceInputQuotesItem } from './lineageTraceInputQuotesItem';
-import type { LineageTraceInputSelectionsItem } from './lineageTraceInputSelectionsItem';
 import type { LineageTraceInputInvoicesItem } from './lineageTraceInputInvoicesItem';
 import type { LineageTraceInputShipmentsItem } from './lineageTraceInputShipmentsItem';
 import type { LineageTraceInputConsolidationsItem } from './lineageTraceInputConsolidationsItem';
@@ -15,7 +14,6 @@ export interface LineageTraceInput {
   request: LineageTraceInputRequest;
   requestLine: LineageTraceInputRequestLine;
   quotes: LineageTraceInputQuotesItem[];
-  selections: LineageTraceInputSelectionsItem[];
   invoices: LineageTraceInputInvoicesItem[];
   shipments: LineageTraceInputShipmentsItem[];
   consolidations: LineageTraceInputConsolidationsItem[];

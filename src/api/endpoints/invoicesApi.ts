@@ -76,6 +76,7 @@ function invoiceDetailTags(
   return [
     { type: 'Invoices' as const, id: companyId },
     { type: 'Invoices' as const, id: invoiceId },
+    { type: 'Invoices' as const, id: `shippable-${invoiceId}` },
     ...requestAndQuoteTags(meta),
   ];
 }

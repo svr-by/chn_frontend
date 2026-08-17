@@ -351,6 +351,7 @@ export const quotesApi = baseApi.injectEndpoints({
 
 export const {
   useListQuotesQuery,
+  useLazyListQuotesQuery,
   useGetQuoteQuery,
   useCreateQuoteMutation,
   useUpdateQuoteMutation,
