@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
+import { ShippingInvoiceStatusBadge } from '@/components/status/shippingInvoiceStatusBadge/ShippingInvoiceStatusBadge';
 import { renderWithProviders } from '@/test/render';
 
 describe('ShippingInvoiceStatusBadge', () => {

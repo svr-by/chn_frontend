@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/navigation/languageSwitcher/LanguageSwitcher';
 import i18n from '@/app/i18n';
 import { renderWithProviders } from '@/test/render';
 import { UI_LOCALE_STORAGE_KEY } from '@/lib/supportedLocales';

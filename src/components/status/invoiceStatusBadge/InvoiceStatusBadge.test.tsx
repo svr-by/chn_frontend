@@ -1,17 +1,18 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
+import { InvoiceStatusBadge } from '@/components/status/invoiceStatusBadge/InvoiceStatusBadge';
 import { renderWithProviders } from '@/test/render';
 
-describe('PaymentStatusBadge', () => {
+describe('InvoiceStatusBadge', () => {
   it.each([
-    ['PENDING', 'Pending'],
-    ['UPLOADED', 'Uploaded'],
+    ['DRAFT', 'Draft'],
+    ['ISSUED', 'Issued'],
+    ['PARTIALLY_PAID', 'Partially paid'],
+    ['PAID', 'Paid'],
     ['CONFIRMED', 'Confirmed'],
-    ['REJECTED', 'Rejected'],
   ] as const)('renders %s as %s', (status, label) => {
-    renderWithProviders(<PaymentStatusBadge status={status} />);
+    renderWithProviders(<InvoiceStatusBadge status={status} />);
     expect(screen.getByText(label)).toBeInTheDocument();
   });
 });

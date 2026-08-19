@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { ConsolidationStatusBadge } from '@/components/ConsolidationStatusBadge';
+import { ConsolidationStatusBadge } from '@/components/status/consolidationStatusBadge/ConsolidationStatusBadge';
 import { renderWithProviders } from '@/test/render';
 
 describe('ConsolidationStatusBadge', () => {

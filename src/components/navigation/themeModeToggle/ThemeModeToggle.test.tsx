@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { ThemeModeToggle } from '@/components/ThemeModeToggle';
+import { ThemeModeToggle } from '@/components/navigation/themeModeToggle/ThemeModeToggle';
 import { AppThemeProvider } from '@/app/AppThemeProvider';
 import { renderWithProviders } from '@/test/render';
 import { THEME_MODE_STORAGE_KEY } from '@/lib/themeMode';

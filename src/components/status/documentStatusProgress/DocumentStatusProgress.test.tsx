@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen } from '@testing-library/react';
 
-import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import {
   MATERIAL_REQUEST_STATUS_FLOW,
   PAYMENT_STATUS_FLOW,
