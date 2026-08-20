@@ -22,9 +22,9 @@ import {
   useSubmitQuoteMutation,
   useUnsubmitQuoteMutation,
 } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 
 interface QuoteStatusActionsProps {
   companyId: string;

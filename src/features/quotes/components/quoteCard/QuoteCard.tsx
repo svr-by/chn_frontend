@@ -1,10 +1,12 @@
-import { Paper, Stack, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import type { GetCompaniesCompanyIdQuotesDirection } from '@/api/generated/models/getCompaniesCompanyIdQuotesDirection';
 import type { SupplierQuoteSummary } from '@/api/generated/models/supplierQuoteSummary';
-import { QuoteStatusBadge } from '@/components/QuoteStatusBadge';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { QuoteStatusBadge } from '@/components/status/quoteStatusBadge/QuoteStatusBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { DocumentListItemLayout } from '@/components/layouts/documentListItemLayout/DocumentListItemLayout';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 
 interface QuoteCardProps {
   quote: SupplierQuoteSummary;
@@ -12,86 +14,44 @@ interface QuoteCardProps {
   onClick: () => void;
 }
 
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return '—';
-  return new Date(value).toLocaleDateString();
-}
-
 export function QuoteCard({ quote, direction, onClick }: QuoteCardProps) {
-  const { t } = useTranslation('quotes');
+  const { t, i18n } = useTranslation('quotes');
   const isBuyerView = direction === 'inbound';
 
   const counterpartyName = isBuyerView
-    ? quote.supplierCompany?.name ?? '—'
-    : quote.buyerCompany?.name ?? '—';
-
-  const createdAtText = formatDateTime(quote.createdAt);
-  const validUntilText = formatDateTime(quote.validUntil);
+  ? quote.supplierCompany?.name ?? '—'
+  : quote.buyerCompany?.name ?? '—';
+  
+  const numberText = t('detail.titleWithNumber', { number: quote.number ?? '—' });
   const createdByName = quote.createdByUser?.name ?? '—';
+  const createdAtText = formatLocalizedDate(quote.createdAt, i18n.language);
+  const validUntilText = formatLocalizedDate(quote.validUntil, i18n.language);
 
   return (
-    <Paper
-      component="button"
-      type="button"
-      variant="outlined"
+    <DocumentListItemLayout
       onClick={onClick}
-      sx={{
-        width: '100%',
-        textAlign: 'left',
-        cursor: 'pointer',
-        p: 2,
-        borderRadius: 1,
-        bgcolor: 'background.paper',
-        borderColor: 'divider',
-        transition: (theme) =>
-          theme.transitions.create(['border-color', 'background-color'], {
-            duration: theme.transitions.duration.shorter,
-          }),
-        '&:hover': {
-          borderColor: 'primary.main',
-          bgcolor: 'action.hover',
-        },
-        '&:focus-visible': {
-          outline: (theme) => `2px solid ${theme.palette.primary.main}`,
-          outlineOffset: 2,
-        },
-      }}
-    >
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1.5}
-        justifyContent="space-between"
-        alignItems={{ xs: 'flex-start', sm: 'center' }}
-      >
-        <Stack spacing={0.5} sx={{ minWidth: 0, flex: 1 }}>
+      content={
+        <>
           <Typography variant="subtitle1" fontWeight={600} noWrap>
+            {numberText}
+          </Typography>
+
+          <Typography variant="subtitle2" fontWeight={500} noWrap>
             {counterpartyName}
           </Typography>
 
-          <Typography variant="subtitle2" noWrap>
+          <Typography variant="body1" noWrap>
             <DecimalDisplay value={quote.positionsTotal} suffix={quote.currency} groupDigits /> {' · '}
-            {quote.linesCount} {t('columns.linesCount')}
-          </Typography>
-
-          {quote.number ? (
-            <Typography variant="body2" color="text.secondary" noWrap>
-              {`${t('columns.quoteNumber')} ${quote.number}`}
-            </Typography>
-          ) : null}
-
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {t('columns.createdBy')}: {createdByName}
+            {`${t('columns.linesCount')}: ${quote.linesCount}`}
           </Typography>
 
           <Typography variant="body2" color="text.secondary">
-            {t('columns.createdAt')}: {createdAtText}
-            {' / '}
-            {t('columns.validUntil')}: {validUntilText}
+            {`${createdAtText} · ${createdByName}`}
+            {quote.validUntil ? ` · ${t('columns.validUntil')}: ${validUntilText}` : ''}
           </Typography>
-        </Stack>
-
-        <QuoteStatusBadge status={quote.status} />
-      </Stack>
-    </Paper>
+        </>
+      }
+      aside={<QuoteStatusBadge status={quote.status} />}
+    />
   );
 }

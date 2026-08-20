@@ -41,7 +41,7 @@
     "supplier": "Supplier",
     "buyer": "Buyer",
     "currency": "Currency",
-    "quoteNumber": "Quote #",
+    "quoteNumber": "Number",
     "createdFrom": "Created from",
     "createdTo": "Created to",
     "placeholders": {

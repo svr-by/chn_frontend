@@ -16,9 +16,9 @@ import { useTranslation } from 'react-i18next';
 
 import type { MaterialRequestStatus } from '@/api/generated/models/materialRequestStatus';
 import { useGetQuoteComparisonQuery } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
 import { OffersNestedTable } from '@/features/quotes/components/quoteComparisonMatrix/OffersNestedTable';
 import {
   buildQuoteComparisonRows,

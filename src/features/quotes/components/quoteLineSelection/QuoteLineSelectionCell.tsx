@@ -14,8 +14,8 @@ import {
   useDeleteQuoteLineSelectionMutation,
   usePutQuoteLineSelectionMutation,
 } from '@/api/endpoints/quotesApi';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PermissionGate } from '@/components/PermissionGate';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { QuoteLineSelectionDialog } from './QuoteLineSelectionDialog';
 
 interface QuoteLineSelectionCellProps {

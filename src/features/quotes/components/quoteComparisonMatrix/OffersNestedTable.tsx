@@ -2,10 +2,12 @@ import { useMemo } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Link, Stack, Typography, useTheme } from '@mui/material';
 import { alpha } from '@mui/material/styles';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonOfferRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
@@ -73,10 +75,21 @@ export function OffersNestedTable({
         id: 'notes',
         header: t('comparison.columns.notes'),
         size: 250,
-        Cell: ({ row }) => {
-          const notes = row.original.offer.notes?.trim();
-          return notes || '—';
-        },
+        Cell: ({ row }) => (
+          <ClampedTextDialog
+            text={row.original.offer.notes}
+            title={t('form.notes')}
+            closeLabel={t('actions.cancel')}
+            previewLines={2}
+            icon={
+              <NotesOutlinedIcon
+                fontSize="small"
+                color="action"
+                sx={{ mt: 0.5, flex: '0 0 auto' }}
+              />
+            }
+          />
+        ),
       },
       {
         id: 'unitPrice',

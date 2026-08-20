@@ -18,7 +18,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { useTranslation } from 'react-i18next';
 
 import type { SupplierQuote } from '@/api/generated/models/supplierQuote';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useQuoteHeaderSave } from '@/features/quotes/hooks/useQuoteHeaderSave';
 import { currencySelectOptions } from '@/lib/currencies';
 import {

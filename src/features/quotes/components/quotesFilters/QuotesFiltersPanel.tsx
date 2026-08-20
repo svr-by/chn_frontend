@@ -6,7 +6,7 @@ import {
   areQuotesFiltersEqual,
   type QuotesFiltersValue,
 } from '@/features/quotes/lib/quotesFilters';
-import { FiltersDrawer } from '@/components/FiltersDrawer';
+import { FiltersDrawer } from '@/components/filters/filtersDrawer/FiltersDrawer';
 import { QuotesFiltersForm } from '@/features/quotes/components/quotesFilters/QuotesFiltersForm';
 
 interface QuotesFiltersPanelProps {

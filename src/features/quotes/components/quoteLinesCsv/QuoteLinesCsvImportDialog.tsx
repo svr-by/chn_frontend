@@ -17,8 +17,8 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useImportInboundRequestLinesCsvMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { FileUploadZone } from '@/components/FileUploadZone';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { FileUploadZone } from '@/components/forms/fileUploadZone/FileUploadZone';
 import {
   ImportFormatOptions,
   type ImportFormatValues,

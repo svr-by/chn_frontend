@@ -30,7 +30,7 @@ import {
   useLazyListQuotesQuery,
 } from '@/api/endpoints/quotesApi';
 import { useListInboundRequestsQuery } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { currencySelectOptions } from '@/lib/currencies';
 
 export type LockedInboundRequest = {

@@ -15,8 +15,8 @@ import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalInput } from '@/components/DecimalInput';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 
 type SelectionFormValues = {

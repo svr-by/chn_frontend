@@ -22,8 +22,8 @@ import {
   DocumentDetailMetaItem,
   DocumentDetailMetaRow,
 } from '@/layouts/documentDetailLayout/DocumentDetailMeta';
-import { PermissionGate } from '@/components/PermissionGate';
-import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { QuoteStatusActions } from '@/features/quotes/components/quoteStatusActions/QuoteStatusActions';

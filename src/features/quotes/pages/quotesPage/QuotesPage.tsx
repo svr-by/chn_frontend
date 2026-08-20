@@ -18,9 +18,9 @@ import { useTranslation } from 'react-i18next';
 import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
 import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { ListPagination } from '@/components/ListPagination';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { ListPagination } from '@/components/tables/listPagination/ListPagination';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { CreateQuoteFromInboundDialog } from '@/features/quotes/components/createQuoteFromInboundDialog/CreateQuoteFromInboundDialog';
@@ -143,14 +143,18 @@ export function QuotesPage() {
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Tabs
-              value={tabIndex}
-              onChange={handleTabChange}
-              sx={{ flex: 1, minWidth: 0 }}
-            >
-              <Tab label={t('tabs.inbound')} />
-              <Tab label={t('tabs.outbound')} />
-            </Tabs>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', flex: 1, minWidth: 0 }}>
+              <Tabs
+                value={tabIndex}
+                onChange={handleTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label={t('tabs.ariaLabel')}
+              >
+                <Tab label={t('tabs.inbound')} />
+                <Tab label={t('tabs.outbound')} />
+              </Tabs>
+            </Box>
             <IconButton
               aria-label={t('filters.open')}
               onClick={() => setFiltersOpen(true)}

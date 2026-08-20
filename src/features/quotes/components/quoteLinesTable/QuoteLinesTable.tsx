@@ -23,6 +23,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
@@ -31,11 +32,12 @@ import { useSnackbar } from 'notistack';
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteQuoteLineMutation } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { QuoteLinesCsvExportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvExportDialog';
 import { QuoteLinesCsvImportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvImportDialog';
 import {
@@ -236,7 +238,21 @@ export function QuoteLinesTable({
         size: 120,
         muiTableBodyCellProps: { align: 'right' },
         muiTableHeadCellProps: { align: 'right' },
-        Cell: ({ row }) => row.original.quoteLine?.notes ?? '—',
+        Cell: ({ row }) => (
+          <ClampedTextDialog
+            text={row.original.quoteLine?.notes}
+            title={t('form.notes')}
+            closeLabel={t('actions.cancel')}
+            previewLines={2}
+            icon={
+              <NotesOutlinedIcon
+                fontSize="small"
+                color="action"
+                sx={{ mt: 0.5, flex: '0 0 auto' }}
+              />
+            }
+          />
+        ),
       },
       {
         id: 'leadTime',

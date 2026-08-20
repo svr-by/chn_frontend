@@ -10,8 +10,8 @@ import { alpha } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
 import { OfferCardDetails } from '@/features/quotes/components/quoteComparisonMatrix/OfferCardDetails';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonLineRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
