@@ -16,6 +16,15 @@ export function resolveNotificationPath(
     return `/app/partners?tab=invitations&linkId=${notification.partnerLinkId}`;
   }
 
+  const isRequestDistributedForSupplier =
+    notification.documentEventId === 'REQUEST_DISTRIBUTED' ||
+    notification.title.toLowerCase().includes('request distributed');
+
+  if (isRequestDistributedForSupplier && notification.documentId) {
+    // For supplier-facing notifications we must open the inbound request page.
+    return `/app/requests/inbound/${notification.documentId}`;
+  }
+
   return resolveDocumentPath(
     notification.documentType,
     notification.documentId,
