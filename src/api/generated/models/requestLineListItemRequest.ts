@@ -4,10 +4,8 @@
 import type { RequestLineListItemRequestReference } from './requestLineListItemRequestReference';
 import type { RequestLineListItemRequestStatus } from './requestLineListItemRequestStatus';
 import type { RequestLineListItemRequestPriority } from './requestLineListItemRequestPriority';
-import type { RequestLineListItemRequestCreatedByUserId } from './requestLineListItemRequestCreatedByUserId';
-import type { RequestLineListItemRequestCreatedByUserName } from './requestLineListItemRequestCreatedByUserName';
-import type { RequestLineListItemRequestAssigneeUserId } from './requestLineListItemRequestAssigneeUserId';
-import type { RequestLineListItemRequestAssigneeUserName } from './requestLineListItemRequestAssigneeUserName';
+import type { RequestLineListItemRequestCreatedBy } from './requestLineListItemRequestCreatedBy';
+import type { RequestLineListItemRequestAssignee } from './requestLineListItemRequestAssignee';
 
 export interface RequestLineListItemRequest {
   /** @pattern ^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$ */
@@ -16,8 +14,6 @@ export interface RequestLineListItemRequest {
   reference: RequestLineListItemRequestReference;
   status: RequestLineListItemRequestStatus;
   priority: RequestLineListItemRequestPriority;
-  createdByUserId: RequestLineListItemRequestCreatedByUserId;
-  createdByUserName: RequestLineListItemRequestCreatedByUserName;
-  assigneeUserId: RequestLineListItemRequestAssigneeUserId;
-  assigneeUserName: RequestLineListItemRequestAssigneeUserName;
+  createdBy: RequestLineListItemRequestCreatedBy;
+  assignee: RequestLineListItemRequestAssignee;
 }
