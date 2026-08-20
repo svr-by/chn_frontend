@@ -183,10 +183,8 @@ export function createMaterialRequest(
   return {
     id: REQUEST_ID,
     companyId: COMPANY_ID,
-    createdByUserId: USER_ID,
-    createdByUserName: 'Jane Doe',
-    assigneeUserId: USER_ID,
-    assigneeUserName: 'Jane Doe',
+    createdBy: { id: USER_ID, name: 'Jane Doe' },
+    assignee: { id: USER_ID, name: 'Jane Doe' },
     title: 'Office supplies',
     reference: 'REQ-001',
     status: 'DRAFT',
@@ -207,10 +205,8 @@ export function createMaterialRequestSummary(
   return {
     id: REQUEST_ID,
     companyId: COMPANY_ID,
-    createdByUserId: USER_ID,
-    createdByUserName: 'Jane Doe',
-    assigneeUserId: USER_ID,
-    assigneeUserName: 'Jane Doe',
+    createdBy: { id: USER_ID, name: 'Jane Doe' },
+    assignee: { id: USER_ID, name: 'Jane Doe' },
     title: 'Office supplies',
     reference: 'REQ-001',
     status: 'DRAFT',
@@ -219,6 +215,7 @@ export function createMaterialRequestSummary(
     submittedAt: null,
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    lineCount: 1,
     ...overrides,
   };
 }
@@ -227,16 +224,21 @@ export function createInboundMaterialRequestSummary(
   overrides: Partial<InboundMaterialRequestSummary> = {},
 ): InboundMaterialRequestSummary {
   return {
-    ...createMaterialRequestSummary({
-      status: 'QUOTING',
-      submittedAt: '2026-01-01T00:00:00.000Z',
-    }),
+    id: REQUEST_ID,
+    assignee: { id: USER_ID, name: 'Jane Doe' },
+    title: 'Office supplies',
+    reference: 'REQ-001',
+    status: 'QUOTING',
+    priority: 'NORMAL',
+    dueDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    lineCount: 3,
     buyerCompany: {
       id: BUYER_COMPANY_ID,
       name: 'Buyer Corp',
     },
     distributedAt: '2026-01-02T00:00:00.000Z',
-    lineCount: 3,
     ...overrides,
   };
 }
@@ -268,10 +270,8 @@ export function createRequestLineListItem(
       reference: 'REQ-001',
       status: 'QUOTING',
       priority: 'NORMAL',
-      createdByUserId: USER_ID,
-      createdByUserName: 'Jane Doe',
-      assigneeUserId: USER_ID,
-      assigneeUserName: 'Jane Doe',
+      createdBy: { id: USER_ID, name: 'Jane Doe' },
+      assignee: { id: USER_ID, name: 'Jane Doe' },
     },
     links: {
       distributed: true,
@@ -691,6 +691,9 @@ export function createBillableLine(
     selectionLineId: SELECTION_LINE_ID,
     lineageId: '00000000-0000-0000-0000-000000000112',
     quantity: '10',
+    selectionQuantity: '10',
+    invoicedQuantity: '0',
+    remainingQuantity: '10',
     unitPrice: '1.00',
     lineTotal: '10.00',
     quoteLine: {
