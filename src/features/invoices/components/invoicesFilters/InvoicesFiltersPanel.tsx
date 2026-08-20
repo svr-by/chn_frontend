@@ -6,7 +6,7 @@ import {
   areInvoicesFiltersEqual,
   type InvoicesFiltersValue,
 } from '@/features/invoices/lib/invoicesFilters';
-import { FiltersDrawer } from '@/components/FiltersDrawer';
+import { FiltersDrawer } from '@/components/filters/filtersDrawer/FiltersDrawer';
 import { InvoicesFiltersForm } from '@/features/invoices/components/invoicesFilters/InvoicesFiltersForm';
 
 interface InvoicesFiltersPanelProps {

@@ -5,9 +5,9 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
 import type { DraftInvoiceLine } from '@/features/invoices/lib/draftInvoiceLine';
 import { parseDecimal } from '@/lib/decimal';

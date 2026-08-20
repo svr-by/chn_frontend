@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { createBillableLine } from '@/test/fixtures';
+
 import {
   formatInvoiceQuoteLineOptionLabel,
   formatInvoiceQuoteOptionLabel,
@@ -49,31 +51,20 @@ describe('formatInvoiceQuoteOptionLabel', () => {
 });
 
 describe('formatInvoiceQuoteLineOptionLabel', () => {
-  it('joins description, quantity, price and total', () => {
+  it('includes quantity breakdown and unit price', () => {
     expect(
-      formatInvoiceQuoteLineOptionLabel({
-        quantity: '10',
-        unitPrice: '1.50',
-        lineTotal: '15.00',
-        requestLine: {
-          id: '00000000-0000-0000-0000-000000000051',
-          description: 'Bolt M8',
-          quantity: '100',
-          unit: 'pcs',
-          cancelledAt: null,
-        },
-      }),
-    ).toBe('Bolt M8 · 10 @ 1.50 · 15.00');
+      formatInvoiceQuoteLineOptionLabel(createBillableLine(), 'USD'),
+    ).toBe(
+      'Bolt M8 — remaining 10 (selected 10, invoiced 0) · 10 x 1.00 USD',
+    );
   });
 
   it('falls back when description is missing', () => {
     expect(
-      formatInvoiceQuoteLineOptionLabel({
-        quantity: '2',
-        unitPrice: '3.00',
-        lineTotal: '6.00',
-        requestLine: null,
-      }),
-    ).toBe('— · 2 @ 3.00 · 6.00');
+      formatInvoiceQuoteLineOptionLabel(
+        createBillableLine({ requestLine: null }),
+        'USD',
+      ),
+    ).toBe('— — remaining 10 (selected 10, invoiced 0) · 10 x 1.00 USD');
   });
 });

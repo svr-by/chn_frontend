@@ -17,9 +17,9 @@ import { z } from 'zod';
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
 import { useUpdateInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
 import { useGetQuoteBillableLinesQuery } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalInput } from '@/components/DecimalInput';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { useSupplierQuoteForRequest } from '@/features/invoices/hooks/useSupplierQuoteForRequest';
 import { isDecimalGte, isDecimalLte, isValidDecimal } from '@/lib/decimal';
 
@@ -81,10 +81,11 @@ export function InvoiceLineFormDialog({
 
   const billableLines = billableQuery.data?.lines ?? [];
 
-  const maxQuantity =
-    billableLines.find(
-      (item) => item.selectionLineId === line.selectionLine?.id,
-    )?.quantity ?? line.quantity;
+  const selectedBillable = billableLines.find(
+    (item) => item.selectionLineId === line.selectionLine?.id,
+  );
+
+  const maxQuantity = selectedBillable?.quantity ?? line.quantity;
 
   const minQuantity = shippedQuantity;
 
@@ -170,6 +171,15 @@ export function InvoiceLineFormDialog({
               fullWidth
               disabled
             />
+            {selectedBillable ? (
+              <Box sx={{ typography: 'body2', color: 'text.secondary' }}>
+                {t('form.billableQuantityBreakdown', {
+                  selected: selectedBillable.selectionQuantity,
+                  invoiced: selectedBillable.invoicedQuantity,
+                  remaining: selectedBillable.remainingQuantity,
+                })}
+              </Box>
+            ) : null}
             <TextField
               label={t('form.minQuantity')}
               value={minQuantity}

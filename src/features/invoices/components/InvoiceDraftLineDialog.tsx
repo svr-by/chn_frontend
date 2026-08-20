@@ -24,14 +24,13 @@ import {
   useListQuotesQuery,
   useGetQuoteBillableLinesQuery,
 } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalInput } from '@/components/DecimalInput';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import {
   billableToDraftLine,
   type DraftInvoiceLine,
 } from '@/features/invoices/lib/draftInvoiceLine';
 import {
-  formatInvoiceQuoteLineOptionLabel,
   formatInvoiceQuoteOptionLabel,
 } from '@/features/invoices/lib/invoiceQuoteOptionLabel';
 import { isDecimalLte, isValidDecimal } from '@/lib/decimal';
@@ -313,7 +312,13 @@ export function InvoiceDraftLineDialog(props: InvoiceDraftLineDialogProps) {
                       key={line.selectionLineId}
                       value={line.selectionLineId}
                     >
-                      {formatInvoiceQuoteLineOptionLabel(line, currency)}
+                      {t('form.billableLineOption', {
+                        description:
+                          line.requestLine?.description?.trim() || '—',
+                        remaining: line.remainingQuantity,
+                        selected: line.selectionQuantity,
+                        invoiced: line.invoicedQuantity,
+                      })}
                     </MenuItem>
                   ))}
                 </Select>
@@ -339,7 +344,11 @@ export function InvoiceDraftLineDialog(props: InvoiceDraftLineDialogProps) {
                 helperText={
                   errors.quantity?.message ??
                   (selectedBillable
-                    ? `${t('form.maxQuantity')}: ${selectedBillable.quantity}`
+                    ? t('form.billableQuantityBreakdown', {
+                        selected: selectedBillable.selectionQuantity,
+                        invoiced: selectedBillable.invoicedQuantity,
+                        remaining: selectedBillable.remainingQuantity,
+                      })
                     : undefined)
                 }
               />

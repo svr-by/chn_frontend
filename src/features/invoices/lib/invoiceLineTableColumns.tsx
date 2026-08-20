@@ -4,9 +4,9 @@ import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
 
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,

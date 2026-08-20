@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 
 interface InvoiceAmountSummaryProps {
   totalAmount: string;

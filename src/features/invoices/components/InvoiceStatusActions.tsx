@@ -19,9 +19,9 @@ import {
   useConfirmInvoiceMutation,
   useIssueInvoiceMutation,
 } from '@/api/endpoints/invoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 
 interface InvoiceStatusActionsProps {
   companyId: string;

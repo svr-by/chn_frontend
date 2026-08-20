@@ -5,9 +5,9 @@ import type { MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { InvoicePaymentSummary } from '@/api/generated/models/invoicePaymentSummary';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { SimpleTable } from '@/components/SimpleTable';
-import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { SimpleTable } from '@/components/tables/simpleTable/SimpleTable';
+import { PaymentStatusBadge } from '@/components/status/paymentStatusBadge/PaymentStatusBadge';
 
 interface InvoicePaymentsTableProps {
   payments: InvoicePaymentSummary[];

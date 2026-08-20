@@ -17,7 +17,7 @@ import { useSnackbar } from 'notistack';
 import type { PatchCompaniesCompanyIdInvoicesInvoiceIdBody } from '@/api/generated/models/patchCompaniesCompanyIdInvoicesInvoiceIdBody';
 import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
 import { useUpdateInvoiceMutation } from '@/api/endpoints/invoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { requestIdsFromInvoiceLines } from '@/features/invoices/lib/invoicesFilters';
 
 interface InvoiceHeaderEditProps {

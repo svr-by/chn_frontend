@@ -1,10 +1,12 @@
-import { Paper, Stack, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import type { GetCompaniesCompanyIdInvoicesDirection } from '@/api/generated/models/getCompaniesCompanyIdInvoicesDirection';
 import type { SupplierInvoiceSummary } from '@/api/generated/models/supplierInvoiceSummary';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { InvoiceStatusBadge } from '@/components/InvoiceStatusBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { DocumentListItemLayout } from '@/components/layouts/documentListItemLayout/DocumentListItemLayout';
+import { InvoiceStatusBadge } from '@/components/status/invoiceStatusBadge/InvoiceStatusBadge';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 
 interface InvoiceCardProps {
   invoice: SupplierInvoiceSummary;
@@ -12,78 +14,46 @@ interface InvoiceCardProps {
   onClick: () => void;
 }
 
-function formatDateTime(value: string | null | undefined): string {
-  if (!value) return '—';
-  return new Date(value).toLocaleDateString();
-}
-
 export function InvoiceCard({ invoice, direction, onClick }: InvoiceCardProps) {
-  const { t } = useTranslation('invoices');
+  const { t, i18n } = useTranslation('invoices');
   const isBuyerView = direction === 'inbound';
 
   const counterpartyName = isBuyerView
     ? (invoice.supplierCompany?.name ?? '—')
     : (invoice.buyerCompany?.name ?? '—');
 
-  const numberText = invoice.number || '—';
-  const createdAtText = formatDateTime(invoice.createdAt);
-  const issuedAtText = formatDateTime(invoice.issuedAt);
+  const numberText = t('detail.titleWithNumber', { number: invoice.number ?? '—' });
+  const createdAtText = formatLocalizedDate(invoice.createdAt, i18n.language);
+  const issuedAtText = formatLocalizedDate(invoice.issuedAt, i18n.language);
 
   return (
-    <Paper
-      component="button"
-      type="button"
-      variant="outlined"
+    <DocumentListItemLayout
       onClick={onClick}
-      sx={{
-        width: '100%',
-        textAlign: 'left',
-        cursor: 'pointer',
-        p: 2,
-        borderRadius: 1,
-        bgcolor: 'background.paper',
-        borderColor: 'divider',
-        transition: (theme) =>
-          theme.transitions.create(['border-color', 'background-color'], {
-            duration: theme.transitions.duration.shorter,
-          }),
-        '&:hover': {
-          borderColor: 'primary.main',
-          bgcolor: 'action.hover',
-        },
-        '&:focus-visible': {
-          outline: (theme) => `2px solid ${theme.palette.primary.main}`,
-          outlineOffset: 2,
-        },
-      }}
-    >
-      <Stack
-        direction={{ xs: 'column', sm: 'row' }}
-        spacing={1.5}
-        justifyContent="space-between"
-        alignItems={{ xs: 'flex-start', sm: 'center' }}
-      >
-        <Stack spacing={0.5} sx={{ minWidth: 0, flex: 1 }}>
+      content={
+        <>
           <Typography variant="subtitle1" fontWeight={600} noWrap>
+            {numberText}
+          </Typography>
+
+          <Typography variant="subtitle2" fontWeight={500} noWrap>
             {counterpartyName}
           </Typography>
 
-          <Typography variant="subtitle2" noWrap>
-            <DecimalDisplay value={invoice.totalAmount} suffix={invoice.currency} groupDigits />
-          </Typography>
-
-          <Typography variant="body2" color="text.secondary" noWrap>
-            {`${t('columns.invoiceNumber')} ${numberText}`}
+          <Typography variant="body1" noWrap>
+            <DecimalDisplay value={invoice.totalAmount} suffix={invoice.currency} groupDigits /> 
+            {/* {' · '} */}
+            {/* {`${t('columns.linesCount')}: ${invoice.linesCount}`} */}
           </Typography>
 
           <Typography variant="body2" color="text.secondary">
-            {isBuyerView ? '' : `${t('columns.createdAt')}: ${createdAtText} · `}
-            {t('columns.issuedAt')}: {issuedAtText}
+            {createdAtText}
+            {/* {' · '} */}
+            {/* {createdByName} */}
+            {invoice.issuedAt ? ` · ${t('columns.issuedAt')}: ${issuedAtText}` : ''}
           </Typography>
-        </Stack>
-
-        <InvoiceStatusBadge status={invoice.status} />
-      </Stack>
-    </Paper>
+        </>
+      }
+      aside={<InvoiceStatusBadge status={invoice.status} />}
+    />
   );
 }

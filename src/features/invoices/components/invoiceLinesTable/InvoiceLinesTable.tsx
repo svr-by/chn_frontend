@@ -20,9 +20,9 @@ import { useSnackbar } from 'notistack';
 
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
 import { useDeleteInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
 import { InvoiceLineFormDialog } from '@/features/invoices/components/invoiceLinesTable/InvoiceLineFormDialog';
 import { createInvoiceLineBaseColumns } from '@/features/invoices/lib/invoiceLineTableColumns';

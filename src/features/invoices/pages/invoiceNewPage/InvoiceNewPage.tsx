@@ -25,8 +25,8 @@ import {
   useGetQuoteBillableLinesQuery,
   useGetQuoteQuery,
 } from '@/api/endpoints/quotesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { BackLink } from '@/components/BackLink';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { BackLink } from '@/components/navigation/backLink/BackLink';
 import { InvoiceDraftLinesSection } from '@/features/invoices/components/invoiceDraftLinesSection/InvoiceDraftLinesSection';
 import {
   billableToDraftLine,

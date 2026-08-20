@@ -34,11 +34,21 @@ export function formatInvoiceQuoteOptionLabel(
 }
 
 export function formatInvoiceQuoteLineOptionLabel(
-  line: Pick<BillableLine, 'quantity' | 'unitPrice' | 'lineTotal' | 'requestLine'>,
+  line: Pick<
+    BillableLine,
+    | 'quantity'
+    | 'unitPrice'
+    | 'lineTotal'
+    | 'selectionQuantity'
+    | 'invoicedQuantity'
+    | 'remainingQuantity'
+    | 'requestLine'
+  >,
   currency: string,
 ): string {
   const description = line.requestLine?.description?.trim() || '—';
-  return [description, `${line.quantity} x ${line.unitPrice} ${currency}`].join(
-    ' · ',
-  );
+  return [
+    `${description} — remaining ${line.remainingQuantity} (selected ${line.selectionQuantity}, invoiced ${line.invoicedQuantity})`,
+    `${line.quantity} x ${line.unitPrice} ${currency}`,
+  ].join(' · ');
 }
