@@ -29,8 +29,8 @@ import { MaterialRequestPriority } from '@/api/generated/models/materialRequestP
 import type { PatchCompaniesCompanyIdRequestsRequestIdBody } from '@/api/generated/models/patchCompaniesCompanyIdRequestsRequestIdBody';
 import { useListMembersQuery } from '@/api/endpoints/membersApi';
 import { useUpdateRequestMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { AutosaveTextField } from '@/components/AutosaveTextField';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { AutosaveTextField } from '@/components/forms/autosaveTextField/AutosaveTextField';
 import {
   dateInputToIsoEndOfDay,
   isoToDateInputValue,
@@ -269,13 +269,13 @@ export function RequestAssigneeEditButton({
   const [open, setOpen] = useState(false);
   const [draftAssigneeUserId, setDraftAssigneeUserId] = useState<
     string | ''
-  >(request.assigneeUserId ?? '');
+  >(request.assignee?.id ?? '');
 
   useEffect(() => {
     if (open) {
-      setDraftAssigneeUserId(request.assigneeUserId ?? '');
+      setDraftAssigneeUserId(request.assignee?.id ?? '');
     }
-  }, [open, request.assigneeUserId]);
+  }, [open, request.assignee?.id]);
 
   const membersQuery = useListMembersQuery(
     { companyId },
@@ -298,21 +298,21 @@ export function RequestAssigneeEditButton({
     });
 
     if (
-      request.assigneeUserId &&
-      !options.some((option) => option.id === request.assigneeUserId)
+      request.assignee?.id &&
+      !options.some((option) => option.id === request.assignee?.id)
     ) {
       options.unshift({
-        id: request.assigneeUserId,
-        label: request.assigneeUserName ?? request.assigneeUserId,
+        id: request.assignee?.id,
+        label: request.assignee?.name ?? request.assignee?.id,
       });
     }
 
     return options;
-  }, [members, request.assigneeUserId, request.assigneeUserName]);
+  }, [members, request.assignee?.id, request.assignee?.name]);
 
   async function handleSave() {
     const next = draftAssigneeUserId || null;
-    if (next === request.assigneeUserId) {
+    if (next === request.assignee?.id) {
       setOpen(false);
       return;
     }
@@ -585,17 +585,17 @@ export function RequestHeaderFields({
     });
 
     if (
-      request.assigneeUserId &&
-      !options.some((option) => option.id === request.assigneeUserId)
+      request.assignee?.id &&
+      !options.some((option) => option.id === request.assignee?.id)
     ) {
       options.unshift({
-        id: request.assigneeUserId,
-        label: request.assigneeUserName ?? request.assigneeUserId,
+        id: request.assignee?.id,
+        label: request.assignee?.name ?? request.assignee?.id,
       });
     }
 
     return options;
-  }, [members, request.assigneeUserId, request.assigneeUserName]);
+  }, [members, request.assignee?.id, request.assignee?.name]);
 
   const dueDateValue = isoToDateInputValue(request.dueDate);
 
@@ -618,11 +618,11 @@ export function RequestHeaderFields({
               )}
             </Typography>
           </Stack>
-          {request.assigneeUserName ? (
+          {request.assignee?.name ? (
             <Stack direction="row" spacing={1} alignItems="center">
               <AssignmentIndOutlinedIcon fontSize="small" color="action" />
               <Typography variant="body2" color="text.secondary">
-                {t('form.assignee')}: {request.assigneeUserName}
+                {t('form.assignee')}: {request.assignee?.name}
               </Typography>
             </Stack>
           ) : null}
@@ -679,10 +679,10 @@ export function RequestHeaderFields({
           <Select
             labelId="request-assignee-label"
             label={t('form.assignee')}
-            value={request.assigneeUserId ?? ''}
+            value={request.assignee?.id ?? ''}
             onChange={(event) => {
               const next = event.target.value;
-              const current = request.assigneeUserId ?? '';
+              const current = request.assignee?.id ?? '';
               if (next === current) {
                 return;
               }

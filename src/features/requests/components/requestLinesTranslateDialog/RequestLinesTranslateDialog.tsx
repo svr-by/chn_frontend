@@ -17,7 +17,7 @@ import { useSnackbar } from 'notistack';
 import { usePreviewTranslateImportMutation } from '@/api/endpoints/importsApi';
 import { PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodySourceLocale } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodySourceLocale';
 import type { PostCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodyTargetLocale as TargetLocale } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesTranslatePreviewBodyTargetLocale';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import {
   applyTranslatedPreviewToDraftLines,
   draftLinesToTranslatePreview,

@@ -16,10 +16,12 @@ describe('requestLinesFilters', () => {
       filters: {
         ...DEFAULT_REQUEST_LINES_FILTERS,
         q: ' paper ',
-        status: 'QUOTING',
         createdByUserId: ' user-1 ',
-        undistributed: true,
-        withoutQuotes: true,
+        distributed: 'false',
+        quoted: 'false',
+        selected: 'true',
+        invoiced: 'any',
+        shipped: 'false',
       },
     });
 
@@ -31,12 +33,14 @@ describe('requestLinesFilters', () => {
         sortBy: 'requestCreatedAt',
         sortOrder: 'desc',
         q: 'paper',
-        status: 'QUOTING',
         createdByUserId: 'user-1',
-        undistributed: 'true',
-        withoutQuotes: 'true',
+        distributed: 'false',
+        quoted: 'false',
+        selected: 'true',
+        shipped: 'false',
       }),
     );
+    expect(args).not.toHaveProperty('invoiced');
   });
 
   it('omits default outbound filters from query args', () => {
@@ -48,10 +52,12 @@ describe('requestLinesFilters', () => {
     });
 
     expect(args).not.toHaveProperty('q');
-    expect(args).not.toHaveProperty('status');
     expect(args).not.toHaveProperty('createdByUserId');
-    expect(args).not.toHaveProperty('undistributed');
-    expect(args).not.toHaveProperty('withoutQuotes');
+    expect(args).not.toHaveProperty('distributed');
+    expect(args).not.toHaveProperty('quoted');
+    expect(args).not.toHaveProperty('selected');
+    expect(args).not.toHaveProperty('invoiced');
+    expect(args).not.toHaveProperty('shipped');
   });
 
   it('maps inbound filters to API query args', () => {
@@ -62,19 +68,20 @@ describe('requestLinesFilters', () => {
       filters: {
         ...DEFAULT_REQUEST_LINES_FILTERS,
         q: 'sku',
-        status: 'ORDERED',
-        withoutQuotes: true,
+        buyerCompanyId: 'buyer-1',
+        quoted: 'false',
       },
     });
 
     expect(args).toEqual(
       expect.objectContaining({
         q: 'sku',
-        status: 'ORDERED',
-        withoutQuotes: 'true',
+        buyerCompanyId: 'buyer-1',
+        quoted: 'false',
         offset: 40,
       }),
     );
+    expect(args).not.toHaveProperty('distributed');
   });
 
   it('counts active filters per tab', () => {
@@ -88,7 +95,7 @@ describe('requestLinesFilters', () => {
           ...DEFAULT_REQUEST_LINES_FILTERS,
           q: 'test',
           createdByUserId: 'user-1',
-          undistributed: true,
+          distributed: 'false',
         },
         'outbound',
       ),
@@ -98,11 +105,11 @@ describe('requestLinesFilters', () => {
       countActiveRequestLinesFilters(
         {
           ...DEFAULT_REQUEST_LINES_FILTERS,
-          createdByUserId: 'user-1',
-          undistributed: true,
+          buyerCompanyId: 'buyer-1',
+          quoted: 'true',
         },
         'inbound',
       ),
-    ).toBe(0);
+    ).toBe(2);
   });
 });

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Chip } from '@mui/material';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import type { InboundRequestLineListItem } from '@/api/generated/models/inboundRequestLineListItem';
 import { useListInboundRequestLinesQuery } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { createRequestLineListBaseColumns } from '@/features/requests/lib/requestLineListTableColumns';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 import {
   buildInboundRequestLinesQueryArgs,
   type RequestLinesFiltersValue,
@@ -21,11 +22,11 @@ interface InboundRequestLinesPanelProps {
   filters: RequestLinesFiltersValue;
 }
 
-export function InboundRequestLinesPanel({
+export const InboundRequestLinesPanel = memo(function InboundRequestLinesPanel({
   companyId,
   filters,
 }: InboundRequestLinesPanelProps) {
-  const { t } = useTranslation('requests');
+  const { t, i18n } = useTranslation('requests');
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
@@ -60,6 +61,12 @@ export function InboundRequestLinesPanel({
         header: t('requestLines.columns.request'),
         size: 180,
         grow: false,
+        muiTableBodyCellProps: {
+          align: 'center',
+        },
+        muiTableHeadCellProps: {
+          align: 'center',
+        },
         Cell: ({ row }) => (
           <Link to={`/app/requests/inbound/${row.original.request.id}`}>
             {row.original.request.title ??
@@ -106,7 +113,7 @@ export function InboundRequestLinesPanel({
         grow: false,
         Cell: ({ cell }) => {
           const value = cell.getValue<string | null>();
-          return value ? new Date(value).toLocaleDateString() : '—';
+          return formatLocalizedDate(value, i18n.language);
         },
       },
       {
@@ -114,10 +121,10 @@ export function InboundRequestLinesPanel({
         header: t('requestLines.columns.updatedAt'),
         size: 120,
         grow: false,
-        Cell: ({ cell }) => new Date(cell.getValue<string>()).toLocaleDateString(),
+        Cell: ({ cell }) => formatLocalizedDate(cell.getValue<string | null>(), i18n.language),
       },
     ],
-    [t],
+    [t, i18n.language],
   );
 
   const items = listQuery.data?.items ?? [];
@@ -142,4 +149,4 @@ export function InboundRequestLinesPanel({
       />
     </>
   );
-}
+});

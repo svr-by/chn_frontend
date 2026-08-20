@@ -3,8 +3,9 @@ import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
 
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
+import { RequestLineDescriptionCell } from '@/features/requests/lib/requestLineDescription';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,
@@ -52,6 +53,7 @@ export function createRequestLineDescriptionColumn(
     accessorKey: 'description',
     header: t('columns.description'),
     grow: true,
+    Cell: ({ row }) => <RequestLineDescriptionCell line={row.original} />,
   };
 }
 

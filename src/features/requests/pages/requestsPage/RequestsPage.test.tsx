@@ -127,7 +127,7 @@ describe('RequestsPage', () => {
       },
     );
 
-    expect(screen.getByText('Office supplies')).toBeInTheDocument();
+    expect(screen.getByText('Request Office supplies')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Outbound' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Inbound' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Filters' })).toBeInTheDocument();

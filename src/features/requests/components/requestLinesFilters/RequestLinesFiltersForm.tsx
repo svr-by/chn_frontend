@@ -1,37 +1,85 @@
 import {
-  Checkbox,
   FormControl,
-  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
   Stack,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { RequestStatusFilter } from '@/features/requests/components/requestsFilters/RequestStatusFilter';
-import type { RequestLinesFiltersValue } from '@/features/requests/lib/requestLinesFilters';
-import type { MaterialRequestStatus } from '@/types/api';
+import type {
+  PipelineFilterValue,
+  RequestLinesFiltersValue,
+} from '@/features/requests/lib/requestLinesFilters';
 
 export type RequestLinesCreatedByOption = {
   label: string;
   value: string;
 };
 
+export type RequestLinesBuyerOption = {
+  label: string;
+  value: string;
+};
+
 interface RequestLinesFiltersFormProps {
   filters: RequestLinesFiltersValue;
-  statusOptions: Array<MaterialRequestStatus | 'ALL'>;
   createdByOptions: RequestLinesCreatedByOption[];
-  showExtendedFilters?: boolean;
+  buyerOptions: RequestLinesBuyerOption[];
+  showOutboundFilters?: boolean;
+  showInboundFilters?: boolean;
   onChange: (next: RequestLinesFiltersValue) => void;
+}
+
+const PIPELINE_FILTER_VALUES: PipelineFilterValue[] = ['any', 'true', 'false'];
+
+function PipelineFilterSelect({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: PipelineFilterValue;
+  onChange: (next: PipelineFilterValue) => void;
+}) {
+  const { t } = useTranslation('requests');
+
+  return (
+    <Stack spacing={1} sx={{ width: '100%', minWidth: 0 }}>
+      <Typography variant="body2" color="text.secondary">
+        {label}
+      </Typography>
+      <ToggleButtonGroup
+        exclusive
+        size="small"
+        fullWidth
+        value={value}
+        onChange={(_event, nextValue: PipelineFilterValue | null) => {
+          if (nextValue) {
+            onChange(nextValue);
+          }
+        }}
+      >
+        {PIPELINE_FILTER_VALUES.map((option) => (
+          <ToggleButton key={option} value={option}>
+            {t(`requestLines.filters.filter${option === 'any' ? 'Any' : option === 'true' ? 'Yes' : 'No'}`)}
+          </ToggleButton>
+        ))}
+      </ToggleButtonGroup>
+    </Stack>
+  );
 }
 
 export function RequestLinesFiltersForm({
   filters,
-  statusOptions,
   createdByOptions,
-  showExtendedFilters = false,
+  buyerOptions,
+  showOutboundFilters = false,
+  showInboundFilters = false,
   onChange,
 }: RequestLinesFiltersFormProps) {
   const { t } = useTranslation('requests');
@@ -46,13 +94,7 @@ export function RequestLinesFiltersForm({
         sx={{ width: '100%', minWidth: 0 }}
       />
 
-      <RequestStatusFilter
-        value={filters.status}
-        options={statusOptions}
-        onChange={(status) => onChange({ ...filters, status })}
-      />
-
-      {showExtendedFilters ? (
+      {showOutboundFilters ? (
         <>
           <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
             <InputLabel id="request-lines-created-by-filter">
@@ -77,37 +119,70 @@ export function RequestLinesFiltersForm({
             </Select>
           </FormControl>
 
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={filters.undistributed}
-                onChange={(event) =>
-                  onChange({
-                    ...filters,
-                    undistributed: event.target.checked,
-                  })
-                }
-              />
-            }
-            label={t('requestLines.filters.undistributed')}
+          <Typography variant="overline" color="text.secondary">
+            {t('requestLines.filters.pipelineSection')}
+          </Typography>
+
+          <PipelineFilterSelect
+            label={t('requestLines.filters.distributed')}
+            value={filters.distributed}
+            onChange={(distributed) => onChange({ ...filters, distributed })}
+          />
+          <PipelineFilterSelect
+            label={t('requestLines.filters.quoted')}
+            value={filters.quoted}
+            onChange={(quoted) => onChange({ ...filters, quoted })}
+          />
+          <PipelineFilterSelect
+            label={t('requestLines.filters.selected')}
+            value={filters.selected}
+            onChange={(selected) => onChange({ ...filters, selected })}
+          />
+          <PipelineFilterSelect
+            label={t('requestLines.filters.invoiced')}
+            value={filters.invoiced}
+            onChange={(invoiced) => onChange({ ...filters, invoiced })}
+          />
+          <PipelineFilterSelect
+            label={t('requestLines.filters.shipped')}
+            value={filters.shipped}
+            onChange={(shipped) => onChange({ ...filters, shipped })}
           />
         </>
       ) : null}
 
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={filters.withoutQuotes}
-            onChange={(event) =>
-              onChange({
-                ...filters,
-                withoutQuotes: event.target.checked,
-              })
-            }
+      {showInboundFilters ? (
+        <>
+          <FormControl size="small" sx={{ width: '100%', minWidth: 0 }}>
+            <InputLabel id="request-lines-buyer-filter">
+              {t('requestLines.filters.buyerCompany')}
+            </InputLabel>
+            <Select
+              labelId="request-lines-buyer-filter"
+              label={t('requestLines.filters.buyerCompany')}
+              value={filters.buyerCompanyId}
+              onChange={(event) =>
+                onChange({
+                  ...filters,
+                  buyerCompanyId: event.target.value,
+                })
+              }
+            >
+              {buyerOptions.map((option) => (
+                <MenuItem key={option.value || 'all'} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <PipelineFilterSelect
+            label={t('requestLines.filters.quoted')}
+            value={filters.quoted}
+            onChange={(quoted) => onChange({ ...filters, quoted })}
           />
-        }
-        label={t('requestLines.filters.withoutQuotes')}
-      />
+        </>
+      ) : null}
     </Stack>
   );
 }

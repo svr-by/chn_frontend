@@ -11,7 +11,9 @@ import {
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
+import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
 import { useListMembersQuery } from '@/api/endpoints/membersApi';
+import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { InboundRequestLinesPanel } from '@/features/requests/components/inboundRequestLinesPanel/InboundRequestLinesPanel';
 import { OutboundRequestLinesPanel } from '@/features/requests/components/outboundRequestLinesPanel/OutboundRequestLinesPanel';
 import { RequestLinesFiltersPanel } from '@/features/requests/components/requestLinesFilters/RequestLinesFiltersPanel';
@@ -19,7 +21,6 @@ import {
   DEFAULT_REQUEST_LINES_FILTERS,
   clearFiltersOnTabChange,
   countActiveRequestLinesFilters,
-  requestLineStatusOptionsForTab,
   type RequestLinesFiltersValue,
 } from '@/features/requests/lib/requestLinesFilters';
 import { useAppSelector } from '@/hooks/useAppSelector';
@@ -49,12 +50,16 @@ export function RequestLinesPage() {
     { skip: !companyId },
   );
 
+  const partnersQuery = useListPartnersQuery(
+    { companyId: companyId ?? '' },
+    { skip: !companyId },
+  );
+
   useEffect(() => {
     setAppliedFilters((prev) => clearFiltersOnTabChange(tab, prev));
     setDraftFilters((prev) => clearFiltersOnTabChange(tab, prev));
   }, [tab]);
 
-  const statusOptions = requestLineStatusOptionsForTab(tab);
   const activeFiltersCount = countActiveRequestLinesFilters(appliedFilters, tab);
 
   const createdByOptions = useMemo(() => {
@@ -78,6 +83,20 @@ export function RequestLinesPage() {
       }),
     ];
   }, [membersQuery.data?.members, t]);
+
+  const buyerOptions = useMemo(() => {
+    const partners = (partnersQuery.data?.partners ?? []).filter(
+      (partner) => partner.status === TradingPartnerStatus.ACTIVE,
+    );
+
+    return [
+      { label: t('statusFilter.all'), value: '' },
+      ...partners.map((partner) => ({
+        label: partner.company.name,
+        value: partner.company.id,
+      })),
+    ];
+  }, [partnersQuery.data?.partners, t]);
 
   if (!companyId) {
     return null;
@@ -103,14 +122,18 @@ export function RequestLinesPage() {
           </Box>
 
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Tabs
-              value={tab}
-              onChange={handleTabChange}
-              sx={{ flex: 1, minWidth: 0 }}
-            >
-              <Tab label={t('tabs.outbound')} value="outbound" />
-              <Tab label={t('tabs.inbound')} value="inbound" />
-            </Tabs>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', flex: 1, minWidth: 0 }}>
+              <Tabs
+                value={tab}
+                onChange={handleTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label={t('tabs.ariaLabel')}
+              >
+                <Tab label={t('tabs.outbound')} value="outbound" />
+                <Tab label={t('tabs.inbound')} value="inbound" />
+              </Tabs>
+            </Box>
             <IconButton
               aria-label={t('requestLines.filters.open')}
               onClick={() => setFiltersOpen(true)}
@@ -130,9 +153,10 @@ export function RequestLinesPage() {
         <RequestLinesFiltersPanel
           draftFilters={draftFilters}
           appliedFilters={appliedFilters}
-          statusOptions={statusOptions}
           createdByOptions={createdByOptions}
-          showExtendedFilters={tab === 'outbound'}
+          buyerOptions={buyerOptions}
+          showOutboundFilters={tab === 'outbound'}
+          showInboundFilters={tab === 'inbound'}
           drawerOpen={filtersOpen}
           onDrawerOpenChange={setFiltersOpen}
           onDraftChange={setDraftFilters}

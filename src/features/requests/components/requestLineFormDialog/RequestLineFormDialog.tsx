@@ -21,8 +21,8 @@ import {
   useAddRequestLineMutation,
   useUpdateRequestLineMutation,
 } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalInput } from '@/components/DecimalInput';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 import type {
   DraftRequestLine,

@@ -19,9 +19,9 @@ import { useSnackbar } from 'notistack';
 
 import { useListQuotesQuery } from '@/api/endpoints/quotesApi';
 import { useRejectInboundRequestMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { CreateQuoteFromInboundDialog } from '@/features/quotes/components/createQuoteFromInboundDialog/CreateQuoteFromInboundDialog';
 
 interface InboundRequestStatusActionsProps {

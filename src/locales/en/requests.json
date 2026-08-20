@@ -33,10 +33,17 @@
       "openWithCount": "Filters ({{count}})",
       "close": "Close filters",
       "q": "Search",
-      "status": "Request status",
       "createdBy": "Created by",
-      "undistributed": "Only undistributed lines",
-      "withoutQuotes": "Only lines without quotes",
+      "buyerCompany": "Buyer",
+      "pipelineSection": "Pipeline",
+      "distributed": "Distributed",
+      "quoted": "Quoted",
+      "selected": "Selected",
+      "invoiced": "Invoiced",
+      "shipped": "Shipped",
+      "filterAny": "Any",
+      "filterYes": "Yes",
+      "filterNo": "No",
       "apply": "Apply",
       "reset": "Reset"
     },
@@ -137,8 +144,8 @@
     "sortAsc": "Ascending",
     "sortDesc": "Descending",
     "queueAll": "All",
-    "queueCreatedByMe": "Created by me",
-    "queueAssignedToMe": "Assigned to me"
+    "queueCreatedByMe": "Mine",
+    "queueAssignedToMe": "For me"
   },
   "empty": {
     "list": "No requests found.",

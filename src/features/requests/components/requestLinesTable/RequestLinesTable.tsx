@@ -14,15 +14,17 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import { useDeleteRequestLineMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { RequestLineFormDialog } from '@/features/requests/components/requestLineFormDialog/RequestLineFormDialog';
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 
@@ -74,8 +76,8 @@ export function RequestLinesTable({
   );
 
   const columns = useMemo<MRT_ColumnDef<RequestLine>[]>(
-    () =>
-      createRequestLineBaseColumns(t, {
+    () => {
+      const baseColumns = createRequestLineBaseColumns(t, {
         renderActionExtraItems: editable
           ? (line) => (
               <PermissionGate permission="manageRequests">
@@ -99,7 +101,38 @@ export function RequestLinesTable({
               </PermissionGate>
             )
           : undefined,
-      }),
+      });
+
+      const notesColumn: MRT_ColumnDef<RequestLine> = {
+        id: 'notes',
+        accessorKey: 'notes',
+        header: t('columns.notes'),
+        size: 220,
+        grow: false,
+        Cell: ({ row }) => (
+          <ClampedTextDialog
+            text={row.original.notes}
+            title={t('form.notes')}
+            closeLabel={t('actions.cancel')}
+            previewLines={1}
+            icon={
+              <NotesOutlinedIcon
+                fontSize="small"
+                color="action"
+                sx={{ mt: 0.5, flex: '0 0 auto' }}
+              />
+            }
+          />
+        ),
+      };
+
+      // Keep `notes` between `description` and `quantity`.
+      return [
+        ...baseColumns.slice(0, 3),
+        notesColumn,
+        ...baseColumns.slice(3),
+      ];
+    },
     [editable, t],
   );
 

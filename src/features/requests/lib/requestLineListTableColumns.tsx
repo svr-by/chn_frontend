@@ -1,30 +1,27 @@
-import { Stack, Typography } from '@mui/material';
 import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineRowActionsMenu } from '@/components/LineRowActionsMenu';
+import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
+import {
+  RequestLineDescriptionCell,
+  type RequestLineSkuSource,
+} from '@/features/requests/lib/requestLineDescription';
 import {
   MRT_NARROW_ACTIONS_SIZE,
-  MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
 
 type RequestsTFunction = TFunction<'requests'>;
 
-export interface RequestLineListRowBase {
+export interface RequestLineListRowBase extends RequestLineSkuSource {
   lineageId: string;
   lineNumber: number;
-  description: string;
   quantity: string;
   unit?: string | null;
-  attributes?: { importSku?: unknown } | null;
-  product?: { sku?: string | null } | null;
-}
-
-export function getRequestLineListImportSku(line: RequestLineListRowBase) {
-  const value = line.attributes?.importSku;
-  return typeof value === 'string' && value.trim() ? value : null;
+  notes?: string | null;
 }
 
 export function createRequestLineListActionsColumn<T extends RequestLineListRowBase>(
@@ -53,21 +50,35 @@ export function createRequestLineListDescriptionColumn<
     header: t('requestLines.columns.description'),
     grow: true,
     enableColumnFilter: false,
-    Cell: ({ row }) => {
-      const sku =
-        row.original.product?.sku ?? getRequestLineListImportSku(row.original);
+    Cell: ({ row }) => <RequestLineDescriptionCell line={row.original} />,
+  };
+}
 
-      return (
-        <Stack spacing={0.5}>
-          <Typography variant="body2">{row.original.description}</Typography>
-          {sku ? (
-            <Typography variant="caption" color="text.secondary">
-              {sku}
-            </Typography>
-          ) : null}
-        </Stack>
-      );
-    },
+export function createRequestLineListNotesColumn<
+  T extends RequestLineListRowBase,
+>(t: RequestsTFunction): MRT_ColumnDef<T> {
+  return {
+    id: 'notes',
+    accessorKey: 'notes',
+    header: t('columns.notes'),
+    size: 220,
+    grow: false,
+    enableColumnFilter: false,
+    Cell: ({ row }) => (
+      <ClampedTextDialog
+        text={row.original.notes}
+        title={t('form.notes')}
+        closeLabel={t('actions.cancel')}
+        previewLines={1}
+        icon={
+          <NotesOutlinedIcon
+            fontSize="small"
+            color="action"
+            sx={{ mt: 0.5, flex: '0 0 auto' }}
+          />
+        }
+      />
+    ),
   };
 }
 
@@ -101,6 +112,7 @@ export function createRequestLineListBaseColumns<T extends RequestLineListRowBas
   return [
     createRequestLineListActionsColumn(t),
     createRequestLineListDescriptionColumn(t),
+    createRequestLineListNotesColumn(t),
     createRequestLineListQuantityColumn(t),
   ];
 }

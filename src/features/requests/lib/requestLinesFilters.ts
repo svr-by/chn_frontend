@@ -1,41 +1,36 @@
 import type { GetCompaniesCompanyIdRequestLinesInboundParams } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesInboundParams';
-import { GetCompaniesCompanyIdRequestLinesInboundStatus } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesInboundStatus';
 import type { GetCompaniesCompanyIdRequestLinesParams } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesParams';
-import { GetCompaniesCompanyIdRequestLinesStatus } from '@/api/generated/models/getCompaniesCompanyIdRequestLinesStatus';
-import type { MaterialRequestStatus } from '@/types/api';
 
 export type RequestLinesTab = 'outbound' | 'inbound';
 
+export type PipelineFilterValue = 'any' | 'true' | 'false';
+
 export type RequestLinesFiltersValue = {
   q: string;
-  status: MaterialRequestStatus | 'ALL';
   createdByUserId: string;
-  undistributed: boolean;
-  withoutQuotes: boolean;
+  buyerCompanyId: string;
+  distributed: PipelineFilterValue;
+  quoted: PipelineFilterValue;
+  selected: PipelineFilterValue;
+  invoiced: PipelineFilterValue;
+  shipped: PipelineFilterValue;
 };
 
 export const DEFAULT_REQUEST_LINES_FILTERS: RequestLinesFiltersValue = {
   q: '',
-  status: 'ALL',
   createdByUserId: '',
-  undistributed: false,
-  withoutQuotes: false,
+  buyerCompanyId: '',
+  distributed: 'any',
+  quoted: 'any',
+  selected: 'any',
+  invoiced: 'any',
+  shipped: 'any',
 };
 
-export const OUTBOUND_REQUEST_LINE_STATUS_OPTIONS: Array<
-  MaterialRequestStatus | 'ALL'
-> = ['ALL', ...Object.values(GetCompaniesCompanyIdRequestLinesStatus)];
-
-export const INBOUND_REQUEST_LINE_STATUS_OPTIONS: Array<
-  MaterialRequestStatus | 'ALL'
-> = ['ALL', ...Object.values(GetCompaniesCompanyIdRequestLinesInboundStatus)];
-
-export function requestLineStatusOptionsForTab(
-  tab: RequestLinesTab,
-): Array<MaterialRequestStatus | 'ALL'> {
-  return tab === 'inbound'
-    ? INBOUND_REQUEST_LINE_STATUS_OPTIONS
-    : OUTBOUND_REQUEST_LINE_STATUS_OPTIONS;
+function pipelineParam(
+  value: PipelineFilterValue,
+): 'true' | 'false' | undefined {
+  return value === 'any' ? undefined : value;
 }
 
 export function buildOutboundRequestLinesQueryArgs({
@@ -51,6 +46,11 @@ export function buildOutboundRequestLinesQueryArgs({
 }): { companyId: string } & GetCompaniesCompanyIdRequestLinesParams {
   const trimmedQ = filters.q.trim();
   const createdByUserId = filters.createdByUserId.trim();
+  const distributed = pipelineParam(filters.distributed);
+  const quoted = pipelineParam(filters.quoted);
+  const selected = pipelineParam(filters.selected);
+  const invoiced = pipelineParam(filters.invoiced);
+  const shipped = pipelineParam(filters.shipped);
 
   return {
     companyId,
@@ -59,10 +59,12 @@ export function buildOutboundRequestLinesQueryArgs({
     sortBy: 'requestCreatedAt',
     sortOrder: 'desc',
     ...(trimmedQ ? { q: trimmedQ } : {}),
-    ...(filters.status !== 'ALL' ? { status: filters.status } : {}),
     ...(createdByUserId ? { createdByUserId } : {}),
-    ...(filters.undistributed ? { undistributed: 'true' } : {}),
-    ...(filters.withoutQuotes ? { withoutQuotes: 'true' } : {}),
+    ...(distributed ? { distributed } : {}),
+    ...(quoted ? { quoted } : {}),
+    ...(selected ? { selected } : {}),
+    ...(invoiced ? { invoiced } : {}),
+    ...(shipped ? { shipped } : {}),
   };
 }
 
@@ -78,6 +80,8 @@ export function buildInboundRequestLinesQueryArgs({
   filters: RequestLinesFiltersValue;
 }): { companyId: string } & GetCompaniesCompanyIdRequestLinesInboundParams {
   const trimmedQ = filters.q.trim();
+  const buyerCompanyId = filters.buyerCompanyId.trim();
+  const quoted = pipelineParam(filters.quoted);
 
   return {
     companyId,
@@ -86,8 +90,8 @@ export function buildInboundRequestLinesQueryArgs({
     sortBy: 'requestCreatedAt',
     sortOrder: 'desc',
     ...(trimmedQ ? { q: trimmedQ } : {}),
-    ...(filters.status !== 'ALL' ? { status: filters.status } : {}),
-    ...(filters.withoutQuotes ? { withoutQuotes: 'true' } : {}),
+    ...(buyerCompanyId ? { buyerCompanyId } : {}),
+    ...(quoted ? { quoted } : {}),
   };
 }
 
@@ -98,7 +102,7 @@ export function clearFiltersOnTabChange(
   return {
     ...prev,
     createdByUserId: '',
-    undistributed: false,
+    buyerCompanyId: '',
   };
 }
 
@@ -108,11 +112,24 @@ export function areRequestLinesFiltersEqual(
 ): boolean {
   return (
     a.q === b.q &&
-    a.status === b.status &&
     a.createdByUserId === b.createdByUserId &&
-    a.undistributed === b.undistributed &&
-    a.withoutQuotes === b.withoutQuotes
+    a.buyerCompanyId === b.buyerCompanyId &&
+    a.distributed === b.distributed &&
+    a.quoted === b.quoted &&
+    a.selected === b.selected &&
+    a.invoiced === b.invoiced &&
+    a.shipped === b.shipped
   );
+}
+
+function countPipelineFilters(filters: RequestLinesFiltersValue): number {
+  let count = 0;
+  if (filters.distributed !== 'any') count += 1;
+  if (filters.quoted !== 'any') count += 1;
+  if (filters.selected !== 'any') count += 1;
+  if (filters.invoiced !== 'any') count += 1;
+  if (filters.shipped !== 'any') count += 1;
+  return count;
 }
 
 export function countActiveRequestLinesFilters(
@@ -121,11 +138,12 @@ export function countActiveRequestLinesFilters(
 ): number {
   let count = 0;
   if (filters.q.trim() !== '') count += 1;
-  if (filters.status !== 'ALL') count += 1;
-  if (filters.withoutQuotes) count += 1;
   if (tab === 'outbound') {
     if (filters.createdByUserId.trim() !== '') count += 1;
-    if (filters.undistributed) count += 1;
+    count += countPipelineFilters(filters);
+  } else {
+    if (filters.buyerCompanyId.trim() !== '') count += 1;
+    if (filters.quoted !== 'any') count += 1;
   }
   return count;
 }

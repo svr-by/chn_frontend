@@ -19,7 +19,7 @@ import { useSnackbar } from 'notistack';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 interface RequestDistributeToSupplierDialogProps {
   open: boolean;

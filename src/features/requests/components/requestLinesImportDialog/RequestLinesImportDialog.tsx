@@ -18,8 +18,8 @@ import {
 } from '@/api/endpoints/importsApi';
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200 } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200';
 import type { PostCompaniesCompanyIdImportsRequestLinesHtmPreview200 } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesHtmPreview200';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { FileUploadZone } from '@/components/FileUploadZone';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { FileUploadZone } from '@/components/forms/fileUploadZone/FileUploadZone';
 import {
   ImportFormatOptions,
   type ImportFormatValues,

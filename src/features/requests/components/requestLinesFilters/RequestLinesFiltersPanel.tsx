@@ -1,22 +1,23 @@
 import { useTranslation } from 'react-i18next';
 
-import { FiltersDrawer } from '@/components/FiltersDrawer';
+import { FiltersDrawer } from '@/components/filters/filtersDrawer/FiltersDrawer';
 import {
   RequestLinesFiltersForm,
+  type RequestLinesBuyerOption,
   type RequestLinesCreatedByOption,
 } from '@/features/requests/components/requestLinesFilters/RequestLinesFiltersForm';
 import {
   areRequestLinesFiltersEqual,
   type RequestLinesFiltersValue,
 } from '@/features/requests/lib/requestLinesFilters';
-import type { MaterialRequestStatus } from '@/types/api';
 
 interface RequestLinesFiltersPanelProps {
   draftFilters: RequestLinesFiltersValue;
   appliedFilters: RequestLinesFiltersValue;
-  statusOptions: Array<MaterialRequestStatus | 'ALL'>;
   createdByOptions: RequestLinesCreatedByOption[];
-  showExtendedFilters?: boolean;
+  buyerOptions: RequestLinesBuyerOption[];
+  showOutboundFilters?: boolean;
+  showInboundFilters?: boolean;
   drawerOpen: boolean;
   onDrawerOpenChange: (open: boolean) => void;
   onDraftChange: (next: RequestLinesFiltersValue) => void;
@@ -27,9 +28,10 @@ interface RequestLinesFiltersPanelProps {
 export function RequestLinesFiltersPanel({
   draftFilters,
   appliedFilters,
-  statusOptions,
   createdByOptions,
-  showExtendedFilters = false,
+  buyerOptions,
+  showOutboundFilters = false,
+  showInboundFilters = false,
   drawerOpen,
   onDrawerOpenChange,
   onDraftChange,
@@ -56,13 +58,14 @@ export function RequestLinesFiltersPanel({
       onApply={handleApply}
       onReset={onReset}
       applyDisabled={!isDirty}
-      width={{ xs: '100%', sm: 420 }}
+      width={{ xs: '100%', sm: 480 }}
     >
       <RequestLinesFiltersForm
         filters={draftFilters}
-        statusOptions={statusOptions}
         createdByOptions={createdByOptions}
-        showExtendedFilters={showExtendedFilters}
+        buyerOptions={buyerOptions}
+        showOutboundFilters={showOutboundFilters}
+        showInboundFilters={showInboundFilters}
         onChange={onDraftChange}
       />
     </FiltersDrawer>

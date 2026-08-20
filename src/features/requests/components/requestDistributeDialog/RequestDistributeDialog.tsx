@@ -26,7 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 
 export interface DistributePrefill {

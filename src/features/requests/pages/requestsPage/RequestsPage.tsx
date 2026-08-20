@@ -19,9 +19,9 @@ import {
   useListInboundRequestsQuery,
   useListRequestsQuery,
 } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { ListPagination } from '@/components/ListPagination';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { ListPagination } from '@/components/tables/listPagination/ListPagination';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { RequestCard } from '@/features/requests/components/requestCard/RequestCard';
 import { RequestsFiltersPanel } from '@/features/requests/components/requestsFilters/RequestsFiltersPanel';
 import {
@@ -139,14 +139,18 @@ export function RequestsPage() {
           </Stack>
 
           <Stack direction="row" alignItems="center" spacing={1}>
-            <Tabs
-              value={tab}
-              onChange={handleTabChange}
-              sx={{ flex: 1, minWidth: 0 }}
-            >
-              <Tab label={t('tabs.outbound')} value="outbound" />
-              <Tab label={t('tabs.inbound')} value="inbound" />
-            </Tabs>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider', flex: 1, minWidth: 0 }}>
+              <Tabs
+                value={tab}
+                onChange={handleTabChange}
+                variant="scrollable"
+                scrollButtons="auto"
+                aria-label={t('tabs.ariaLabel')}
+              >
+                <Tab label={t('tabs.outbound')} value="outbound" />
+                <Tab label={t('tabs.inbound')} value="inbound" />
+              </Tabs>
+            </Box>
             <IconButton
               aria-label={t('filters.open')}
               onClick={() => setFiltersOpen(true)}
@@ -202,7 +206,7 @@ export function RequestsPage() {
                 ? (outboundQuery.data?.requests ?? []).map((request) => (
                     <RequestCard
                       key={request.id}
-                      tab="outbound"
+                      direction="outbound"
                       request={request}
                       onClick={() => navigate(`/app/requests/${request.id}`)}
                     />
@@ -210,7 +214,7 @@ export function RequestsPage() {
                 : (inboundQuery.data?.requests ?? []).map((request) => (
                     <RequestCard
                       key={request.id}
-                      tab="inbound"
+                      direction="inbound"
                       request={request}
                       onClick={() =>
                         navigate(`/app/requests/inbound/${request.id}`)

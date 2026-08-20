@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { FiltersDrawer } from '@/components/FiltersDrawer';
+import { FiltersDrawer } from '@/components/filters/filtersDrawer/FiltersDrawer';
 import { RequestsFiltersForm } from '@/features/requests/components/requestsFilters/RequestsFiltersForm';
 import {
   areRequestsFiltersEqual,

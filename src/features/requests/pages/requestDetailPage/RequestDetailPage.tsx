@@ -22,7 +22,7 @@ import {
   DocumentDetailMetaItem,
   DocumentDetailMetaRow,
 } from '@/layouts/documentDetailLayout/DocumentDetailMeta';
-import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import {
   RequestAssigneeEditButton,
   RequestDueDateEditButton,
@@ -154,11 +154,11 @@ export function RequestDetailPage() {
                   value={inboundRequest.buyerCompany.name}
                 />
               ) : null}
-              {!isInbound && request.createdByUserName ? (
+              {!isInbound && request.createdBy?.name ? (
                 <DocumentDetailMetaItem
                   icon={<PersonOutlineOutlinedIcon />}
                   value={t('detail.createdBy', {
-                    name: request.createdByUserName,
+                    name: request.createdBy.name,
                   })}
                 />
               ) : null}
@@ -186,7 +186,7 @@ export function RequestDetailPage() {
                 icon={<AssignmentIndOutlinedIcon />}
                 label={t('form.assignee')}
                 value={
-                  request.assigneeUserName ?? t('form.assigneeUnassigned')
+                  request.assignee?.name ?? t('form.assigneeUnassigned')
                 }
                 action={
                   outboundRequest && canEdit ? (

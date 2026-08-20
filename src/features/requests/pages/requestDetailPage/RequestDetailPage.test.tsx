@@ -421,6 +421,7 @@ describe('RequestDetailPage', () => {
       screen.queryByRole('tab', { name: 'Suppliers' }),
     ).not.toBeInTheDocument();
     expect(screen.getByText('Test line')).toBeInTheDocument();
+    expect(screen.getByText('SKU-001')).toBeInTheDocument();
 
     await user.click(
       screen.getAllByRole('button', { name: 'More actions' })[0]!,

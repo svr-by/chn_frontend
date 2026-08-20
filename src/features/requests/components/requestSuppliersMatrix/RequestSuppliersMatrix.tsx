@@ -29,9 +29,9 @@ import {
   useGetRequestDistributionsQuery,
   useUpdateRequestDistributionMutation,
 } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { RequestDistributeToSupplierDialog } from '@/features/requests/components/requestSuppliersMatrix/RequestDistributeToSupplierDialog';
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 import { usePermissions } from '@/hooks/usePermissions';

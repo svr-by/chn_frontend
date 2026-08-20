@@ -33,10 +33,17 @@
       "openWithCount": "Фильтры ({{count}})",
       "close": "Закрыть фильтры",
       "q": "Поиск",
-      "status": "Статус заявки",
       "createdBy": "Автор",
-      "undistributed": "Только нераспределённые строки",
-      "withoutQuotes": "Только строки без КП",
+      "buyerCompany": "Покупатель",
+      "pipelineSection": "Процесс",
+      "distributed": "Распределено",
+      "quoted": "КП",
+      "selected": "Выбрано",
+      "invoiced": "Счёт",
+      "shipped": "Отгружено",
+      "filterAny": "Любой",
+      "filterYes": "Да",
+      "filterNo": "Нет",
       "apply": "Применить",
       "reset": "Сбросить"
     },
@@ -137,8 +144,8 @@
     "sortAsc": "По возрастанию",
     "sortDesc": "По убыванию",
     "queueAll": "Все",
-    "queueCreatedByMe": "Созданные мной",
-    "queueAssignedToMe": "Назначенные мне"
+    "queueCreatedByMe": "Мои",
+    "queueAssignedToMe": "Для меня"
   },
   "empty": {
     "list": "Заявки не найдены.",

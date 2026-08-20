@@ -19,9 +19,9 @@ import {
   useCloseRequestMutation,
   useDeleteRequestMutation,
 } from '@/api/endpoints/requestsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { MaterialRequestStatus } from '@/types/api';
 

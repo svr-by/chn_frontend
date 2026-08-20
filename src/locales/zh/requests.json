@@ -33,10 +33,17 @@
       "openWithCount": "筛选 ({{count}})",
       "close": "关闭筛选",
       "q": "搜索",
-      "status": "申请状态",
       "createdBy": "创建人",
-      "undistributed": "仅未分发行",
-      "withoutQuotes": "仅无报价行",
+      "buyerCompany": "买方",
+      "pipelineSection": "流程",
+      "distributed": "已分发",
+      "quoted": "已报价",
+      "selected": "已选择",
+      "invoiced": "已开票",
+      "shipped": "已发货",
+      "filterAny": "任意",
+      "filterYes": "是",
+      "filterNo": "否",
       "apply": "应用",
       "reset": "重置"
     },
@@ -137,8 +144,8 @@
     "sortAsc": "升序",
     "sortDesc": "降序",
     "queueAll": "全部",
-    "queueCreatedByMe": "我创建的",
-    "queueAssignedToMe": "分配给我"
+    "queueCreatedByMe": "我的",
+    "queueAssignedToMe": "为我"
   },
   "empty": {
     "list": "未找到申请。",

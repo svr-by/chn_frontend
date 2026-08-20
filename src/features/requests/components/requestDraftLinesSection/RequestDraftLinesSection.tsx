@@ -3,13 +3,15 @@ import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import UploadFileOutlinedIcon from '@mui/icons-material/UploadFileOutlined';
 import TranslateOutlinedIcon from '@mui/icons-material/TranslateOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PaginatedTable } from '@/components/PaginatedTable';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { RequestLineFormDialog } from '@/features/requests/components/requestLineFormDialog/RequestLineFormDialog';
 import {
   createEmptyDraftLine,
@@ -17,6 +19,11 @@ import {
   type DraftRequestLine,
   type RequestLineFormValues,
 } from '@/features/requests/lib/draftRequestLine';
+import {
+  MRT_NARROW_ACTIONS_SIZE,
+  MRT_NARROW_LINE_NUMBER_SIZE,
+  mrtFixedSizeColumnProps,
+} from '@/lib/mrtNarrowColumns';
 
 const PAGE_SIZE = 20;
 
@@ -74,59 +81,11 @@ export function RequestDraftLinesSection({
   const columns = useMemo<MRT_ColumnDef<NumberedDraftLine>[]>(
     () => [
       {
-        accessorKey: 'lineNumber',
-        header: t('columns.lineNumber'),
-        size: 10,
-        maxSize: 10,
-        muiTableHeadCellProps: { sx: { width: 20 } },
-        muiTableBodyCellProps: { sx: { width: 20 } },
-      },
-      {
-        accessorKey: 'description',
-        header: t('columns.description'),
-      },
-      {
-        accessorKey: 'quantity',
-        header: t('columns.quantity'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: { align: 'right' },
-        muiTableBodyCellProps: { align: 'right' },
-        Cell: ({ cell }) => <DecimalDisplay value={cell.getValue<string>()} />,
-      },
-      {
-        accessorKey: 'unit',
-        header: t('columns.unit'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: { align: 'center' },
-        muiTableBodyCellProps: { align: 'center' },
-        Cell: ({ cell }) => cell.getValue<string | undefined>() ?? '—',
-      },
-      {
-        accessorKey: 'notes',
-        size: 50,
-        maxSize: 200,
-        enableResizing: true,
-        header: t('columns.notes'),
-        Cell: ({ cell }) => cell.getValue<string | undefined>() ?? '—',
-      },
-      {
         id: 'actions',
-        header: t('columns.actions'),
-        size: 20,
-        maxSize: 20,
-        enableResizing: true,
-        muiTableHeadCellProps: { align: 'right' },
-        muiTableBodyCellProps: { align: 'right' },
+        header: '',
+        ...mrtFixedSizeColumnProps(MRT_NARROW_ACTIONS_SIZE * 2),
         Cell: ({ row }) => (
-          <Stack
-            direction="row"
-            spacing={0.5}
-            sx={{ justifyContent: 'flex-end' }}
-          >
+          <Stack direction="row" spacing={0}>
             <Tooltip title={t('actions.editLine')}>
               <IconButton
                 size="small"
@@ -156,6 +115,54 @@ export function RequestDraftLinesSection({
               </IconButton>
             </Tooltip>
           </Stack>
+        ),
+      },
+      {
+        id: 'lineNumber',
+        accessorKey: 'lineNumber',
+        header: t('columns.lineNumber'),
+        ...mrtFixedSizeColumnProps(MRT_NARROW_LINE_NUMBER_SIZE),
+      },
+      {
+        id: 'description',
+        accessorKey: 'description',
+        header: t('columns.description'),
+        grow: true,
+      },
+      {
+        id: 'notes',
+        accessorKey: 'notes',
+        header: t('columns.notes'),
+        size: 120,
+        grow: false,
+        Cell: ({ row }) => (
+          <ClampedTextDialog
+            text={row.original.notes}
+            title={t('form.notes')}
+            closeLabel={t('actions.cancel')}
+            previewLines={2}
+            icon={
+              <NotesOutlinedIcon
+                fontSize="small"
+                color="action"
+                sx={{ mt: 0.5, flex: '0 0 auto' }}
+              />
+            }
+          />
+        ),
+      },
+      {
+        id: 'quantity',
+        header: t('columns.quantity'),
+        size: 120,
+        grow: false,
+        muiTableBodyCellProps: { align: 'right' },
+        muiTableHeadCellProps: { align: 'right' },
+        Cell: ({ row }) => (
+          <DecimalDisplay
+            value={row.original.quantity}
+            suffix={row.original.unit ?? ''}
+          />
         ),
       },
     ],
@@ -196,6 +203,7 @@ export function RequestDraftLinesSection({
         pagination={pagination}
         onPaginationChange={setPagination}
         getRowId={(row) => row.clientId}
+        layoutMode="grid"
         renderBottomToolbarCustomActions={() => (
           <Stack direction="row" spacing={1}>
             <Button
