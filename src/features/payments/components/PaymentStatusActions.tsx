@@ -20,9 +20,9 @@ import {
   useConfirmPaymentMutation,
   useRejectPaymentMutation,
 } from '@/api/endpoints/paymentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 
 interface PaymentStatusActionsProps {
   companyId: string;

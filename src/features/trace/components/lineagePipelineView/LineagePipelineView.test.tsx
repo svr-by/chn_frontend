@@ -11,8 +11,8 @@ describe('LineagePipelineView', () => {
 
     expect(screen.getByText('Material request')).toBeInTheDocument();
     expect(screen.getByText('Supplier quotes')).toBeInTheDocument();
-    expect(screen.getByText('Request: Office supplies')).toBeInTheDocument();
-    expect(screen.getByText('Quotation: Supplier Ltd')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Office supplies' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Supplier Ltd' })).toBeInTheDocument();
     expect(screen.getAllByText('Line 1')).toHaveLength(2);
     expect(
       screen.getAllByText(
@@ -44,13 +44,11 @@ describe('LineagePipelineView', () => {
 
     expect(screen.queryByText('Purchase selections')).not.toBeInTheDocument();
     expect(screen.getByText('Selected')).toBeInTheDocument();
-    expect(screen.getByText(/Selected qty/)).toBeInTheDocument();
-    expect(screen.getByText('8.0000')).toBeInTheDocument();
     expect(
       screen.getByText(
         `${new Date('2026-01-03T00:00:00.000Z').toLocaleDateString()}, Jane Doe`,
       ),
     ).toBeInTheDocument();
-    expect(screen.getByText('Quotation: Supplier Ltd')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Supplier Ltd' })).toBeInTheDocument();
   });
 });

@@ -21,7 +21,7 @@ import {
   useCreateConsolidationMutation,
   useGetConsolidatableShippingInvoicesQuery,
 } from '@/api/endpoints/consolidationsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
 
 type TransportModeValue = NonNullable<ConsolidationTransportMode>;

@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetPaymentQuery } from '@/api/endpoints/paymentsApi';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { PaymentStatusActions } from '@/features/payments/components/PaymentStatusActions';

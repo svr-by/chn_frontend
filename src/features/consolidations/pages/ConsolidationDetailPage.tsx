@@ -8,7 +8,7 @@ import {
   useGetConsolidatableShippingInvoicesQuery,
   useGetConsolidationQuery,
 } from '@/api/endpoints/consolidationsApi';
-import { DocumentStatusProgress } from '@/components/DocumentStatusProgress';
+import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
 import { ConsolidationHeaderForm } from '@/features/consolidations/components/ConsolidationHeaderForm';

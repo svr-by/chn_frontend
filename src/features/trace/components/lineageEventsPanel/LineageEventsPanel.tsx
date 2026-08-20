@@ -16,7 +16,7 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import { useTranslation } from 'react-i18next';
 
 import { useLazyGetLineageEventsQuery } from '@/api/endpoints/traceApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useCursorList } from '@/hooks/useCursorList';
 import {
   getLineageEventActorName,

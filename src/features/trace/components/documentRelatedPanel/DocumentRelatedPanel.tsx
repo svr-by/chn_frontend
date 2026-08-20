@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import type { DocumentRelationshipsNodesItem } from '@/api/generated/models/documentRelationshipsNodesItem';
 import { useGetDocumentRelationshipsQuery } from '@/api/endpoints/traceApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import {
   buildRelatedGraphView,
   getRelationshipNodeLabel,

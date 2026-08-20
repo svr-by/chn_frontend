@@ -10,8 +10,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { LineageCreatedMeta } from '@/features/trace/components/lineagePipelineView/LineageCreatedMeta';
 import type { PipelineItem, PipelineStage } from '@/lib/lineagePipeline';
 import { getPipelineItemStatusLabel } from '@/lib/traceLabels';
@@ -27,8 +27,6 @@ export function LineagePipelineItemCard({
 }: LineagePipelineItemCardProps) {
   const { t } = useTranslation(['trace', 'enums', 'common']);
   const statusLabel = getPipelineItemStatusLabel(stage, item.status, t);
-  // const title = t(`pipeline.itemLabel.${stage}`, { label: item.label });
-  const title = `# ${item.label}`;
   const lineNumber = item.meta?.lineNumber;
   const companyName = item.meta?.companyName;
   const createdAt = item.meta?.createdAt;
@@ -58,7 +56,7 @@ export function LineagePipelineItemCard({
               underline="hover"
               fontWeight={600}
             >
-              {title}
+              {item.label}
             </Link>
             <Chip label={statusLabel} size="small" variant="outlined" />
           </Stack>

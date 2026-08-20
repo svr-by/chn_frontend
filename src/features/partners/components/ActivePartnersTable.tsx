@@ -13,13 +13,14 @@ import LinkOffOutlinedIcon from '@mui/icons-material/LinkOffOutlined';
 import { useTranslation } from 'react-i18next';
 
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
-import { PartnerStatusBadge } from '@/components/PartnerStatusBadge';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PartnerStatusBadge } from '@/components/status/partnerStatusBadge/PartnerStatusBadge';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import {
   PaginatedTable,
   type MRT_ColumnDef,
   type MRT_PaginationState,
-} from '@/components/PaginatedTable';
+} from '@/components/tables/paginatedTable/PaginatedTable';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 
 const PAGE_SIZE = 20;
 
@@ -31,11 +32,6 @@ interface ActivePartnersTableProps {
   actionsDisabled?: boolean;
 }
 
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString();
-}
-
 export function ActivePartnersTable({
   partners,
   isLoading = false,
@@ -43,7 +39,7 @@ export function ActivePartnersTable({
   onUnlink,
   actionsDisabled = false,
 }: ActivePartnersTableProps) {
-  const { t } = useTranslation('partners');
+  const { t, i18n } = useTranslation('partners');
   const [partnerToUnlink, setPartnerToUnlink] = useState<TradingPartner | null>(
     null,
   );
@@ -102,7 +98,8 @@ export function ActivePartnersTable({
         muiTableHeadCellProps: { align: 'center' },
         muiTableBodyCellProps: { align: 'center' },
         accessorFn: (row) => row.acceptedAt,
-        Cell: ({ cell }) => formatDate(cell.getValue<string | null>()),
+        Cell: ({ cell }) =>
+          formatLocalizedDate(cell.getValue<string | null>(), i18n.language),
       },
       {
         id: 'actions',

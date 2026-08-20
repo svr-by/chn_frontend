@@ -17,10 +17,10 @@ import { useSnackbar } from 'notistack';
 import type { ConsolidationShippingInvoiceEntry } from '@/api/generated/models/consolidationShippingInvoiceEntry';
 import type { ShippingInvoiceSummary } from '@/api/generated/models/shippingInvoiceSummary';
 import { useRemoveConsolidationShippingInvoiceMutation } from '@/api/endpoints/consolidationsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
-import { ShippingInvoiceStatusBadge } from '@/components/ShippingInvoiceStatusBadge';
-import { SimpleTable } from '@/components/SimpleTable';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { ShippingInvoiceStatusBadge } from '@/components/status/shippingInvoiceStatusBadge/ShippingInvoiceStatusBadge';
+import { SimpleTable } from '@/components/tables/simpleTable/SimpleTable';
 import { ConsolidationShippingInvoiceAddDialog } from '@/features/consolidations/components/ConsolidationShippingInvoiceAddDialog';
 
 interface ConsolidationShippingInvoicesTableProps {

@@ -23,7 +23,7 @@ import {
   useAcceptInviteMutation,
   useCreateCompanyMutation,
 } from '@/api/endpoints/companiesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import { authStorage } from '@/lib/authStorage';
 import {

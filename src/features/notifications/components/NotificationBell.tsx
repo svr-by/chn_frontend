@@ -3,7 +3,7 @@ import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import { Badge, IconButton } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { NotificationsDrawer } from '@/features/notifications/components/NotificationsDrawer';
 import { useNotificationUnreadPolling } from '@/hooks/useNotificationUnreadPolling';
 

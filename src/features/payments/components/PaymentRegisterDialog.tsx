@@ -15,8 +15,8 @@ import { z } from 'zod';
 
 import type { SupplierInvoice } from '@/api/generated/models/supplierInvoice';
 import { useRegisterPaymentMutation } from '@/api/endpoints/paymentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalInput } from '@/components/DecimalInput';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import { isDecimalLte, isValidDecimal, parseDecimal } from '@/lib/decimal';
 
 function remainingForPayment(remainingAmount: string): string | null {

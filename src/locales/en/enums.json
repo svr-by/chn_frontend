@@ -75,6 +75,7 @@
     "viewer": "Viewer"
   },
   "activityEventType": {
+    "QUOTE_SUBMITTED": "Quote submitted",
     "QUOTE_LINE_SELECTED": "Quote line selected",
     "QUOTE_LINE_SELECTION_UPDATED": "Quote line selection updated",
     "QUOTE_LINE_UNSELECTED": "Quote line unselected",
@@ -102,6 +103,7 @@
     "CONSOLIDATION_DELIVERED": "Consolidation delivered",
     "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "Shipping invoice added to consolidation",
     "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "Shipping invoice removed from consolidation",
+    "REQUEST_DISTRIBUTED": "Request distributed",
     "REQUEST_IMPORTED_FROM_INTEGRATION": "Request imported from integration",
     "REQUEST_UPDATED_FROM_INTEGRATION": "Request updated from integration"
   }

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useForgotPasswordMutation } from '@/api/endpoints/authApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { getApiLocale } from '@/lib/locale';
 
 const forgotSchema = z.object({

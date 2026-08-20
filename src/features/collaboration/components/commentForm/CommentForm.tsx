@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import { useCreateDocumentCommentMutation } from '@/api/endpoints/commentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 const MAX_COMMENT_LENGTH = 4000;
 

@@ -17,7 +17,7 @@ import {
   useReactivateCompanyMutation,
 } from '@/api/endpoints/companiesApi';
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { authStorage } from '@/lib/authStorage';
 import { getActiveMembership, isCompanyOperational } from '@/lib/permissions';

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import type { Notification } from '@/api/generated/models/notification';
 import { GetCompaniesCompanyIdNotificationsUnreadOnly } from '@/api/generated/models/getCompaniesCompanyIdNotificationsUnreadOnly';
 import { useLazyListNotificationsQuery } from '@/api/endpoints/notificationsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useCursorList } from '@/hooks/useCursorList';
 
 dayjs.extend(relativeTime);

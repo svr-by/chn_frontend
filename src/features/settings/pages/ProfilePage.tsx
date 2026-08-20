@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { CompanyStatusPanel } from '@/features/settings/components/CompanyStatusPanel';
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 import { usePermissions } from '@/hooks/usePermissions';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 import { isCompanyOperational } from '@/lib/permissions';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 
@@ -115,13 +116,8 @@ function InfoSection({ title, hint, children }: InfoSectionProps) {
   );
 }
 
-function formatDate(iso: string | null | undefined): string {
-  if (!iso) return '—';
-  return new Date(iso).toLocaleDateString();
-}
-
 export function ProfilePage() {
-  const { t } = useTranslation(['profile', 'enums']);
+  const { t, i18n } = useTranslation(['profile', 'enums']);
   const { user, membership } = usePermissions();
 
   if (!user) {
@@ -274,7 +270,7 @@ export function ProfilePage() {
                     />
                   }
                   label={t('profile:fields.joinedAt')}
-                  value={formatDate(membership.joinedAt)}
+                  value={formatLocalizedDate(membership.joinedAt, i18n.language)}
                 />
               </List>
             ) : (

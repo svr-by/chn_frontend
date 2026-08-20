@@ -15,7 +15,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { SupplierInvoiceSummaryStatus } from '@/api/generated/models/supplierInvoiceSummaryStatus';
 import { useListInvoicesQuery } from '@/api/endpoints/invoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
 

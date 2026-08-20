@@ -18,7 +18,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { CommentDocumentType } from '@/api/generated/models/commentDocumentType';
 import { useLazyListDocumentActivityQuery } from '@/api/endpoints/commentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import {
   getActivityItemActorName,
   getActivityItemLabel,

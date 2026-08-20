@@ -11,8 +11,8 @@ import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { useResetPasswordMutation } from '@/api/endpoints/authApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PasswordField } from '@/components/PasswordField';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PasswordField } from '@/components/forms/passwordField/PasswordField';
 
 const resetSchema = z
   .object({

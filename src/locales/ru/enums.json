@@ -75,6 +75,7 @@
     "viewer": "Наблюдатель"
   },
   "activityEventType": {
+    "QUOTE_SUBMITTED": "Котировка отправлена",
     "QUOTE_LINE_SELECTED": "Строка котировки выбрана",
     "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки котировки обновлён",
     "QUOTE_LINE_UNSELECTED": "Выбор строки котировки снят",
@@ -102,6 +103,7 @@
     "CONSOLIDATION_DELIVERED": "Консолидация доставлена",
     "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "Транспортная накладная добавлена в консолидацию",
     "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "Транспортная накладная удалена из консолидации",
+    "REQUEST_DISTRIBUTED": "Заявка распределена",
     "REQUEST_IMPORTED_FROM_INTEGRATION": "Заявка импортирована из интеграции",
     "REQUEST_UPDATED_FROM_INTEGRATION": "Заявка обновлена из интеграции"
   }

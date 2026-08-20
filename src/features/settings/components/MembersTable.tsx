@@ -10,8 +10,8 @@ import {
   PaginatedTable,
   type MRT_ColumnDef,
   type MRT_PaginationState,
-} from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+} from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import {
   formatMemberRole,
   formatUserName,

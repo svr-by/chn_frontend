@@ -31,7 +31,7 @@ import {
   useUpdateWebhookMutation,
 } from '@/api/endpoints/integrationApi';
 import type { IntegrationWebhook } from '@/api/generated/models/integrationWebhook';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { SecretRevealDialog } from '@/features/integrations/components/SecretRevealDialog';
 import { WebhookEventTypesField } from '@/features/integrations/components/WebhookEventTypesField';
 

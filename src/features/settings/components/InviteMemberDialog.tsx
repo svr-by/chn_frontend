@@ -18,7 +18,7 @@ import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { useInviteMemberMutation } from '@/api/endpoints/membersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { ASSIGNABLE_ROLES } from '@/features/settings/lib/assignableRoles';
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 import { getApiLocale } from '@/lib/locale';

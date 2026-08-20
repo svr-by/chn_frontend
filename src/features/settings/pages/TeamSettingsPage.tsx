@@ -8,8 +8,8 @@ import {
   useListInvitationsQuery,
   useListMembersQuery,
 } from '@/api/endpoints/membersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { InviteMemberDialog } from '@/features/settings/components/InviteMemberDialog';
 import { InvitationsTable } from '@/features/settings/components/InvitationsTable';
 import { MembersTable } from '@/features/settings/components/MembersTable';

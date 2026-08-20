@@ -8,7 +8,7 @@ import { z } from 'zod';
 
 import type { ShippingInvoice } from '@/api/generated/models/shippingInvoice';
 import { useUpdateShippingInvoiceMutation } from '@/api/endpoints/shippingInvoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 const headerSchema = z.object({
   trackingNumber: z.string().trim().optional(),

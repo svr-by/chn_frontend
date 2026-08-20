@@ -5,13 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useGetLineageTraceQuery } from '@/api/endpoints/traceApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { LineageEventsPanel } from '@/features/trace/components/lineageEventsPanel/LineageEventsPanel';
 import { LineagePipelineView } from '@/features/trace/components/lineagePipelineView/LineagePipelineView';
 import { useAppSelector } from '@/hooks/useAppSelector';
-import { BackLink } from '@/components/BackLink';
+import { BackLink } from '@/components/navigation/backLink/BackLink';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 
 const TAB_KEYS = ['pipeline', 'events'] as const;

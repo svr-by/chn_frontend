@@ -17,10 +17,10 @@ import {
   useUploadImportMutation,
 } from '@/api/endpoints/importsApi';
 import type { PostCompaniesCompanyIdImportsRequestLinesCsvPreview200 } from '@/api/generated/models/postCompaniesCompanyIdImportsRequestLinesCsvPreview200';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { BackLink } from '@/components/BackLink';
-import { FileUploadZone } from '@/components/FileUploadZone';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { BackLink } from '@/components/navigation/backLink/BackLink';
+import { FileUploadZone } from '@/components/forms/fileUploadZone/FileUploadZone';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import {
   ImportFormatOptions,
   type ImportFormatValues,

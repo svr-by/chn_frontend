@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useUploadPaymentProofMutation } from '@/api/endpoints/paymentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { FileUploadZone } from '@/components/FileUploadZone';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { FileUploadZone } from '@/components/forms/fileUploadZone/FileUploadZone';
 
 const PAYMENT_PROOF_ACCEPT: Accept = {
   'application/pdf': ['.pdf'],

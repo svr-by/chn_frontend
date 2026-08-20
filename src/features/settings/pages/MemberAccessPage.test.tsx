@@ -122,14 +122,20 @@ describe('MemberAccessPage', () => {
     );
   });
 
-  it('renders member access editor', () => {
+  it('renders member access editor', async () => {
+    const user = userEvent.setup();
     renderAccessPage();
 
     expect(screen.getByText('Viewer User')).toBeInTheDocument();
     expect(screen.getByText('viewer@example.com')).toBeInTheDocument();
     expect(screen.getByText('Permissions')).toBeInTheDocument();
     expect(screen.getByLabelText('Active')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+
+    await user.click(screen.getByRole('button', { name: 'More actions' }));
+    expect(screen.getByRole('menuitem', { name: 'Save' })).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
   });
 
   it('saves role change', async () => {
@@ -147,7 +153,8 @@ describe('MemberAccessPage', () => {
 
     await user.click(screen.getByRole('combobox', { name: 'Role' }));
     await user.click(await screen.findByRole('option', { name: 'Admin' }));
-    await user.click(screen.getByRole('button', { name: 'Save' }));
+    await user.click(screen.getByRole('button', { name: 'More actions' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Save' }));
 
     expect(updateMember).toHaveBeenCalledWith({
       companyId: COMPANY_ID,

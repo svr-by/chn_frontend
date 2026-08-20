@@ -10,8 +10,8 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { useRegisterMutation } from '@/api/endpoints/authApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PasswordField } from '@/components/PasswordField';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PasswordField } from '@/components/forms/passwordField/PasswordField';
 import { getApiLocale } from '@/lib/locale';
 
 const registerSchema = z.object({

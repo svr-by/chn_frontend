@@ -75,6 +75,7 @@
     "viewer": "查看者"
   },
   "activityEventType": {
+    "QUOTE_SUBMITTED": "报价已提交",
     "QUOTE_LINE_SELECTED": "报价行已选择",
     "QUOTE_LINE_SELECTION_UPDATED": "报价行选择已更新",
     "QUOTE_LINE_UNSELECTED": "报价行选择已取消",
@@ -102,6 +103,7 @@
     "CONSOLIDATION_DELIVERED": "集运已送达",
     "CONSOLIDATION_SHIPPING_INVOICE_ADDED": "运输发票已添加到集运",
     "CONSOLIDATION_SHIPPING_INVOICE_REMOVED": "运输发票已从集运中移除",
+    "REQUEST_DISTRIBUTED": "申请已分发",
     "REQUEST_IMPORTED_FROM_INTEGRATION": "申请已从集成导入",
     "REQUEST_UPDATED_FROM_INTEGRATION": "申请已从集成更新"
   }

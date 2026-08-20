@@ -13,8 +13,8 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineageLink } from '@/components/LineageLink';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineageLink } from '@/components/navigation/lineageLink/LineageLink';
 
 export interface LineageEntry {
   lineageId: string;

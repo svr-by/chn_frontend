@@ -21,7 +21,7 @@ import {
   useCreateProductMutation,
   useUpdateProductMutation,
 } from '@/api/endpoints/productsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 const productSchema = z.object({
   name: z.string().trim().min(1),

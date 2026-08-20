@@ -7,8 +7,8 @@ import { useSnackbar } from 'notistack';
 import { z } from 'zod';
 
 import { authApi, useLoginMutation } from '@/api/endpoints/authApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PasswordField } from '@/components/PasswordField';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PasswordField } from '@/components/forms/passwordField/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import {
   getSwitcherMemberships,

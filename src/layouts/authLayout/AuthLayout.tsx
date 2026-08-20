@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { AuthenticatedTopBar } from '@/components/AuthenticatedTopBar';
+import { AuthenticatedTopBar } from '@/components/navigation/authenticatedTopBar/AuthenticatedTopBar';
 import { authStorage } from '@/lib/authStorage';
 
 interface AuthLayoutProps {

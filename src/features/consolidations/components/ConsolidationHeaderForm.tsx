@@ -18,7 +18,7 @@ import { z } from 'zod';
 import type { Consolidation } from '@/api/generated/models/consolidation';
 import type { ConsolidationTransportMode } from '@/api/generated/models/consolidationTransportMode';
 import { useUpdateConsolidationMutation } from '@/api/endpoints/consolidationsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 type TransportModeValue = NonNullable<ConsolidationTransportMode>;
 

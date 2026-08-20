@@ -15,10 +15,10 @@ import { useTranslation } from 'react-i18next';
 import type { PaymentSummary } from '@/api/generated/models/paymentSummary';
 import type { PaymentSummaryStatus } from '@/api/generated/models/paymentSummaryStatus';
 import { useListPaymentsQuery } from '@/api/endpoints/paymentsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PaymentStatusBadge } from '@/components/PaymentStatusBadge';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PaymentStatusBadge } from '@/components/status/paymentStatusBadge/PaymentStatusBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 

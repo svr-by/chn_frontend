@@ -15,12 +15,12 @@ import { useSnackbar } from 'notistack';
 import type { ShippableLine } from '@/api/generated/models/shippableLine';
 import type { ShippingLine } from '@/api/generated/models/shippingLine';
 import { useDeleteShippingLineMutation } from '@/api/endpoints/shippingInvoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { LineageLink } from '@/components/LineageLink';
-import { PermissionGate } from '@/components/PermissionGate';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
-import { SimpleTable } from '@/components/SimpleTable';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { LineageLink } from '@/components/navigation/lineageLink/LineageLink';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
+import { SimpleTable } from '@/components/tables/simpleTable/SimpleTable';
 import { ShippingInvoiceLineFormDialog } from '@/features/shipping/components/ShippingInvoiceLineFormDialog';
 
 interface ShippingInvoiceLinesTableProps {

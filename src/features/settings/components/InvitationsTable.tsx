@@ -6,13 +6,13 @@ import { useSnackbar } from 'notistack';
 
 import type { GetCompaniesCompanyIdMembersInvitations200InvitationsItem } from '@/api/generated/models/getCompaniesCompanyIdMembersInvitations200InvitationsItem';
 import { useRevokeInvitationMutation } from '@/api/endpoints/membersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import {
   PaginatedTable,
   type MRT_ColumnDef,
   type MRT_PaginationState,
-} from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+} from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 
 const PAGE_SIZE = 20;

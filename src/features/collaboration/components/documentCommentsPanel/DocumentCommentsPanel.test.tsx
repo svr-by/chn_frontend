@@ -126,7 +126,7 @@ describe('DocumentCommentsPanel', () => {
     expect(otherCard).toHaveAttribute('data-own', 'false');
   });
 
-  it('renders older comments above newer ones near the input', async () => {
+  it('renders the comment form above comments with newest first', async () => {
     mockedUseLazyListDocumentCommentsQuery.mockReturnValue([
       vi.fn().mockReturnValue({
         unwrap: vi.fn().mockResolvedValue({
@@ -157,16 +157,15 @@ describe('DocumentCommentsPanel', () => {
       />,
     );
 
-    const oldest = await screen.findByText('Oldest comment');
+    const form = await screen.findByRole('button', { name: 'Post comment' });
     const newest = screen.getByText('Newest comment');
-    const form = screen.getByRole('button', { name: 'Post comment' });
+    const oldest = screen.getByText('Oldest comment');
 
     expect(
-      oldest.compareDocumentPosition(newest) &
-        Node.DOCUMENT_POSITION_FOLLOWING,
+      form.compareDocumentPosition(newest) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
     expect(
-      newest.compareDocumentPosition(form) & Node.DOCUMENT_POSITION_FOLLOWING,
+      newest.compareDocumentPosition(oldest) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
   });
 

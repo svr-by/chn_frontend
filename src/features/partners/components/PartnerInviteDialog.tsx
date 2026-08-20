@@ -23,7 +23,7 @@ import { z } from 'zod';
 
 import { isApiError } from '@/api/baseApi';
 import { useInvitePartnerMutation } from '@/api/endpoints/partnersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 const inviteSchema = z.object({
   email: z.string().trim().email(),

@@ -3,7 +3,7 @@ import { Box, Chip, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/DecimalDisplay';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { LineageCreatedMeta } from '@/features/trace/components/lineagePipelineView/LineageCreatedMeta';
 import type { PipelineSelection } from '@/lib/lineagePipeline';
 
@@ -44,9 +44,6 @@ export function LineagePipelineSelectionShell({
             variant="outlined"
             label={t('pipelineStatus.selected')}
           />
-          {/* <Typography variant="body2" color="text.secondary">
-            <DecimalDisplay value={selection.quantity} component="span" />
-          </Typography> */}
         </Stack>
         <LineageCreatedMeta
           createdAt={selection.createdAt}

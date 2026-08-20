@@ -17,9 +17,9 @@ import { useSnackbar } from 'notistack';
 
 import type { Product } from '@/api/generated/models/product';
 import { useListProductsQuery } from '@/api/endpoints/productsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PaginatedTable } from '@/components/PaginatedTable';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { PageShell } from '@/layouts/pageShell/PageShell';

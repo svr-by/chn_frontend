@@ -13,8 +13,8 @@ import {
   useRejectPartnerMutation,
   useUnlinkPartnerMutation,
 } from '@/api/endpoints/partnersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { PermissionGate } from '@/components/PermissionGate';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { ActivePartnersTable } from '@/features/partners/components/ActivePartnersTable';
 import { PartnerInviteDialog } from '@/features/partners/components/PartnerInviteDialog';
 import { PartnerInvitationsTable } from '@/features/partners/components/PartnerInvitationsTable';
@@ -150,24 +150,28 @@ export function PartnersPage() {
 
         <ApiErrorAlert error={pageError} />
 
-        <Tabs
-          value={tab}
-          onChange={(_event, value: PartnersTab) => setTab(value)}
-          sx={{ mb: 3 }}
-        >
-          <Tab
-            label={t('tabs.partners', {
-              count: partnersQuery.data?.partners.length ?? 0,
-            })}
-            value="partners"
-          />
-          <Tab
-            label={t('tabs.invitations', {
-              count: invitationsQuery.data?.partners.length ?? 0,
-            })}
-            value="invitations"
-          />
-        </Tabs>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', flex: 1, minWidth: 0, mb: 3 }}>
+          <Tabs
+            value={tab}
+            onChange={(_event, value: PartnersTab) => setTab(value)}
+            variant="scrollable"
+            scrollButtons="auto"
+            aria-label={t('tabs.ariaLabel')}
+          >
+            <Tab
+              label={t('tabs.partners', {
+                count: partnersQuery.data?.partners.length ?? 0,
+              })}
+              value="partners"
+            />
+            <Tab
+              label={t('tabs.invitations', {
+                count: invitationsQuery.data?.partners.length ?? 0,
+              })}
+              value="invitations"
+            />
+          </Tabs>
+        </Box>
 
         {tab === 'partners' && (
           <ActivePartnersTable

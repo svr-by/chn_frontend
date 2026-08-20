@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 import { Box, CircularProgress, Stack, Typography } from '@mui/material';
 
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentDetailActionsMenu } from './DocumentDetailActionsMenu';
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { SerializedError } from '@reduxjs/toolkit';
-import { BackLink } from '@/components/BackLink';
+import { BackLink } from '@/components/navigation/backLink/BackLink';
 import { PageShell, type PageShellMaxWidth } from '@/layouts/pageShell/PageShell';
 
 interface DocumentDetailLayoutProps {

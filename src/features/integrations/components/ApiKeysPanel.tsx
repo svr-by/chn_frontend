@@ -28,9 +28,10 @@ import {
   useRevokeApiKeyMutation,
 } from '@/api/endpoints/integrationApi';
 import { CompanyApiKeyScopesItem } from '@/api/generated/models/companyApiKeyScopesItem';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { IntegrationScopesField } from '@/features/integrations/components/IntegrationScopesField';
 import { SecretRevealDialog } from '@/features/integrations/components/SecretRevealDialog';
+import { formatLocalizedDateTime } from '@/lib/dateFormat';
 import { READ_ONLY_SCOPE_PRESET } from '@/lib/integrationScopes';
 
 const createApiKeySchema = z.object({
@@ -47,15 +48,8 @@ interface ApiKeysPanelProps {
   companyId: string;
 }
 
-function formatDate(value: string | null | undefined): string {
-  if (!value) {
-    return '—';
-  }
-  return new Date(value).toLocaleString();
-}
-
 export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
-  const { t } = useTranslation('integrations');
+  const { t, i18n } = useTranslation('integrations');
   const { enqueueSnackbar } = useSnackbar();
   const [createOpen, setCreateOpen] = useState(false);
   const [keyToRevoke, setKeyToRevoke] = useState<string | null>(null);
@@ -165,8 +159,12 @@ export function ApiKeysPanel({ companyId }: ApiKeysPanelProps) {
                   {apiKey.scopes.length} {t('apiKeys.scopeCount')}
                 </Typography>
               </TableCell>
-              <TableCell>{formatDate(apiKey.lastUsedAt)}</TableCell>
-              <TableCell>{formatDate(apiKey.expiresAt)}</TableCell>
+              <TableCell>
+                {formatLocalizedDateTime(apiKey.lastUsedAt, i18n.language)}
+              </TableCell>
+              <TableCell>
+                {formatLocalizedDateTime(apiKey.expiresAt, i18n.language)}
+              </TableCell>
               <TableCell align="right">
                 {!apiKey.revokedAt ? (
                   <Button

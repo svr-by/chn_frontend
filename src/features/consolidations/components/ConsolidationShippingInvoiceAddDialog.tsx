@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import type { ConsolidationShippingInvoiceEntry } from '@/api/generated/models/consolidationShippingInvoiceEntry';
 import type { ShippingInvoiceSummary } from '@/api/generated/models/shippingInvoiceSummary';
 import { useAddConsolidationShippingInvoiceMutation } from '@/api/endpoints/consolidationsApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 interface ConsolidationShippingInvoiceAddDialogProps {
   open: boolean;

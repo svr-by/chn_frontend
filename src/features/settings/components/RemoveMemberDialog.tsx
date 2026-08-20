@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
 import { useRemoveMemberMutation } from '@/api/endpoints/membersApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 interface RemoveMemberDialogProps {
   open: boolean;

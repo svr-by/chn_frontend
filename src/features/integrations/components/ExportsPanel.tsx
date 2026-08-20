@@ -20,7 +20,7 @@ import { z } from 'zod';
 
 import { useCreateExportJobMutation } from '@/api/endpoints/integrationApi';
 import { PostCompaniesCompanyIdIntegrationExportsBodyType } from '@/api/generated/models/postCompaniesCompanyIdIntegrationExportsBodyType';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useExportJobPolling } from '@/hooks/useExportJobPolling';
 import { downloadAuthenticatedFile } from '@/lib/downloadAuthenticatedFile';
 

@@ -25,10 +25,10 @@ import {
   useAddShippingLineMutation,
   useUpdateShippingLineMutation,
 } from '@/api/endpoints/shippingInvoicesApi';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
-import { DecimalDisplay } from '@/components/DecimalDisplay';
-import { DecimalInput } from '@/components/DecimalInput';
-import { RequestLineCancelledBadge } from '@/components/RequestLineCancelledBadge';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { isDecimalLte, isValidDecimal, parseDecimal } from '@/lib/decimal';
 
 function createLineSchema(maxQuantity: string) {

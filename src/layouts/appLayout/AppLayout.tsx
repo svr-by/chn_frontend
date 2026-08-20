@@ -27,13 +27,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useTranslation } from 'react-i18next';
 
-import { CompanySwitcher } from '@/components/CompanySwitcher';
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
-import { ThemeModeToggle } from '@/components/ThemeModeToggle';
+import { CompanySwitcher } from '@/components/navigation/companySwitcher/CompanySwitcher';
+import { LanguageSwitcher } from '@/components/navigation/languageSwitcher/LanguageSwitcher';
+import { ThemeModeToggle } from '@/components/navigation/themeModeToggle/ThemeModeToggle';
 import { useLogout } from '@/hooks/useLogout';
 import { usePermissions } from '@/hooks/usePermissions';
 import { useAppHistoryTracker } from '@/hooks/useSafeAppBack';
-import { GlobalFetchProgress } from '@/components/GlobalFetchProgress';
+import { GlobalFetchProgress } from '@/components/feedback/globalFetchProgress/GlobalFetchProgress';
 import { navConfig } from '@/lib/navConfig';
 
 const DRAWER_WIDTH = 260;

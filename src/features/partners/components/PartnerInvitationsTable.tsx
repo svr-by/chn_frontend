@@ -7,9 +7,10 @@ import { MaterialReactTable, type MRT_ColumnDef } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
-import { PartnerStatusBadge } from '@/components/PartnerStatusBadge';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PartnerStatusBadge } from '@/components/status/partnerStatusBadge/PartnerStatusBadge';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
+import { formatLocalizedDate } from '@/lib/dateFormat';
 
 interface PartnerInvitationsTableProps {
   partners: TradingPartner[];
@@ -22,10 +23,6 @@ interface PartnerInvitationsTableProps {
   highlightLinkId?: string | null;
 }
 
-function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString();
-}
-
 export function PartnerInvitationsTable({
   partners,
   isLoading = false,
@@ -36,7 +33,7 @@ export function PartnerInvitationsTable({
   actionsDisabled = false,
   highlightLinkId = null,
 }: PartnerInvitationsTableProps) {
-  const { t } = useTranslation('partners');
+  const { t, i18n } = useTranslation('partners');
 
   const sortedPartners = useMemo(
     () =>
@@ -81,7 +78,8 @@ export function PartnerInvitationsTable({
         id: 'invitedAt',
         header: t('columns.invitedAt'),
         accessorFn: (row) => row.invitedAt,
-        Cell: ({ cell }) => formatDate(cell.getValue<string>()),
+        Cell: ({ cell }) =>
+          formatLocalizedDate(cell.getValue<string>(), i18n.language),
       },
       {
         id: 'actions',

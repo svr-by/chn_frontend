@@ -33,7 +33,7 @@ import {
 } from '@/api/endpoints/integrationApi';
 import type { PartnerExternalMapping } from '@/api/generated/models/partnerExternalMapping';
 import { PartnerExternalMappingMappingType } from '@/api/generated/models/partnerExternalMappingMappingType';
-import { ApiErrorAlert } from '@/components/ApiErrorAlert';
+import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 
 const mappingSchema = z.object({
   mappingType: z.nativeEnum(PartnerExternalMappingMappingType),

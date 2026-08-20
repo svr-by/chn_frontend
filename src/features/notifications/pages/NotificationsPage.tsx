@@ -15,7 +15,7 @@ import {
   useMarkAllNotificationsReadMutation,
   useMarkNotificationReadMutation,
 } from '@/api/endpoints/notificationsApi';
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { NotificationsList } from '@/features/notifications/components/NotificationsList';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { resolveNotificationPath } from '@/lib/notificationRoutes';

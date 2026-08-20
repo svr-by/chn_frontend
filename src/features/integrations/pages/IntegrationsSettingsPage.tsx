@@ -2,7 +2,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
-import { PermissionGate } from '@/components/PermissionGate';
+import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { ApiKeysPanel } from '@/features/integrations/components/ApiKeysPanel';
 import { ExportsPanel } from '@/features/integrations/components/ExportsPanel';
 import { MappingsPanel } from '@/features/integrations/components/MappingsPanel';
