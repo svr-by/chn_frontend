@@ -1,10 +1,15 @@
 import { useTranslation } from 'react-i18next';
 
 import { FiltersDrawer } from '@/components/filters/filtersDrawer/FiltersDrawer';
-import { RequestsFiltersForm } from '@/features/requests/components/requestsFilters/RequestsFiltersForm';
+import {
+  RequestsFiltersForm,
+  type RequestsBuyerOption,
+  type RequestsMemberOption,
+} from '@/features/requests/components/requestsFilters/RequestsFiltersForm';
 import {
   areRequestsFiltersEqual,
   type RequestsFiltersValue,
+  type RequestsTab,
 } from '@/features/requests/lib/requestsFilters';
 import type { MaterialRequestStatus } from '@/types/api';
 
@@ -12,7 +17,11 @@ interface RequestsFiltersPanelProps {
   draftFilters: RequestsFiltersValue;
   appliedFilters: RequestsFiltersValue;
   statusOptions: Array<MaterialRequestStatus | 'ALL'>;
-  showExtendedFilters?: boolean;
+  tab: RequestsTab;
+  buyerOptions?: RequestsBuyerOption[];
+  memberOptions?: RequestsMemberOption[];
+  canFilterByMember?: boolean;
+  currentUserId?: string | null;
   drawerOpen: boolean;
   onDrawerOpenChange: (open: boolean) => void;
   onDraftChange: (next: RequestsFiltersValue) => void;
@@ -24,7 +33,11 @@ export function RequestsFiltersPanel({
   draftFilters,
   appliedFilters,
   statusOptions,
-  showExtendedFilters = false,
+  tab,
+  buyerOptions,
+  memberOptions,
+  canFilterByMember = false,
+  currentUserId = null,
   drawerOpen,
   onDrawerOpenChange,
   onDraftChange,
@@ -56,7 +69,11 @@ export function RequestsFiltersPanel({
       <RequestsFiltersForm
         filters={draftFilters}
         statusOptions={statusOptions}
-        showExtendedFilters={showExtendedFilters}
+        tab={tab}
+        buyerOptions={buyerOptions}
+        memberOptions={memberOptions}
+        canFilterByMember={canFilterByMember}
+        currentUserId={currentUserId}
         onChange={onDraftChange}
       />
     </FiltersDrawer>

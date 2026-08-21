@@ -1,4 +1,4 @@
-import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useEffect, useMemo, useState, type SyntheticEvent } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Badge,
@@ -15,6 +15,9 @@ import AddIcon from '@mui/icons-material/Add';
 import FilterListOutlinedIcon from '@mui/icons-material/FilterListOutlined';
 import { useTranslation } from 'react-i18next';
 
+import { TradingPartnerStatus } from '@/api/generated/models/tradingPartnerStatus';
+import { useListMembersQuery } from '@/api/endpoints/membersApi';
+import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import {
   useListInboundRequestsQuery,
   useListRequestsQuery,
@@ -45,7 +48,8 @@ export function RequestsPage() {
   const { t } = useTranslation('requests');
   const navigate = useNavigate();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
-  const { user } = usePermissions();
+  const { user, hasPermission } = usePermissions();
+  const canFilterByMember = hasPermission('viewMembers');
   const { direction: tab, setDirection } = usePreferredListDirection({
     paramName: 'tab',
     absentMeans: 'outbound',
@@ -61,6 +65,16 @@ export function RequestsPage() {
     ...DEFAULT_REQUESTS_FILTERS,
   });
 
+  const partnersQuery = useListPartnersQuery(
+    { companyId: companyId ?? '' },
+    { skip: !companyId || tab !== 'inbound' },
+  );
+
+  const membersQuery = useListMembersQuery(
+    { companyId: companyId ?? '' },
+    { skip: !companyId || tab !== 'outbound' || !canFilterByMember },
+  );
+
   useEffect(() => {
     setAppliedFilters((prev) => clearFiltersOnTabChange(tab, prev));
     setDraftFilters((prev) => clearFiltersOnTabChange(tab, prev));
@@ -70,13 +84,53 @@ export function RequestsPage() {
     setPageIndex(0);
   }, [tab, appliedFilters]);
 
+  const buyerOptions = useMemo(() => {
+    const partners = (partnersQuery.data?.partners ?? []).filter(
+      (partner) => partner.status === TradingPartnerStatus.ACTIVE,
+    );
+
+    return [
+      { label: t('statusFilter.all'), value: '' },
+      ...partners.map((partner) => ({
+        label: partner.company.name,
+        value: partner.company.id,
+      })),
+    ];
+  }, [partnersQuery.data?.partners, t]);
+
+  const memberOptions = useMemo(() => {
+    const members = (membersQuery.data?.members ?? []).filter(
+      (member) => member.user,
+    );
+
+    return [
+      { label: t('filters.memberAll'), value: '' },
+      ...members.map((member) => {
+        const memberUser = member.user!;
+        const name = [memberUser.firstName, memberUser.lastName]
+          .filter(Boolean)
+          .join(' ')
+          .trim();
+        const baseLabel = name || memberUser.email;
+        const label =
+          memberUser.id === user?.id
+            ? t('filters.memberMe', { name: baseLabel })
+            : baseLabel;
+
+        return {
+          label,
+          value: memberUser.id,
+        };
+      }),
+    ];
+  }, [membersQuery.data?.members, t, user?.id]);
+
   const outboundQuery = useListRequestsQuery(
     buildOutboundRequestsQueryArgs({
       companyId: companyId ?? '',
       limit: PAGE_SIZE,
       offset: pageIndex * PAGE_SIZE,
       filters: appliedFilters,
-      currentUserId: user?.id,
     }),
     { skip: !companyId || tab !== 'outbound' },
   );
@@ -173,7 +227,11 @@ export function RequestsPage() {
           draftFilters={draftFilters}
           appliedFilters={appliedFilters}
           statusOptions={statusOptions}
-          showExtendedFilters={tab === 'outbound'}
+          tab={tab}
+          buyerOptions={buyerOptions}
+          memberOptions={memberOptions}
+          canFilterByMember={canFilterByMember}
+          currentUserId={user?.id}
           drawerOpen={filtersOpen}
           onDrawerOpenChange={setFiltersOpen}
           onDraftChange={setDraftFilters}

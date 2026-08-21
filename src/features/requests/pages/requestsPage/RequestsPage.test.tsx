@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
+import { useListMembersQuery } from '@/api/endpoints/membersApi';
+import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import {
   useListInboundRequestsQuery,
   useListRequestsQuery,
@@ -31,6 +33,14 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
   };
 });
 
+vi.mock('@/api/endpoints/membersApi', () => ({
+  useListMembersQuery: vi.fn(),
+}));
+
+vi.mock('@/api/endpoints/partnersApi', () => ({
+  useListPartnersQuery: vi.fn(),
+}));
+
 vi.mock('@/api/endpoints/requestsApi', () => ({
   useListRequestsQuery: vi.fn(),
   useListInboundRequestsQuery: vi.fn(),
@@ -43,6 +53,8 @@ vi.mock('@/api/endpoints/requestsApi', () => ({
 }));
 
 const mockedUseGetMeQuery = vi.mocked(useGetMeQuery);
+const mockedUseListMembersQuery = vi.mocked(useListMembersQuery);
+const mockedUseListPartnersQuery = vi.mocked(useListPartnersQuery);
 const mockedUseListRequestsQuery = vi.mocked(useListRequestsQuery);
 const mockedUseListInboundRequestsQuery = vi.mocked(
   useListInboundRequestsQuery,
@@ -92,6 +104,20 @@ describe('RequestsPage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     localStorage.removeItem(PREFERRED_TRADING_ROLE_STORAGE_KEY);
+
+    mockedUseListMembersQuery.mockReturnValue({
+      data: { members: [] },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListMembersQuery>);
+
+    mockedUseListPartnersQuery.mockReturnValue({
+      data: { partners: [] },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useListPartnersQuery>);
 
     mockedUseListRequestsQuery.mockReturnValue({
       data: {
@@ -207,6 +233,66 @@ describe('RequestsPage', () => {
     expect(
       within(screen.getByRole('button', { name: 'Filters' })).getByText('1'),
     ).toBeInTheDocument();
+  });
+
+  it('shows simplified people queue without viewMembers', async () => {
+    const user = userEvent.setup();
+    mockViewOnlyUser();
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/requests" element={<RequestsPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/requests',
+      },
+    );
+
+    await openFilters(user);
+
+    expect(screen.getByRole('button', { name: 'Mine' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'For me' })).toBeInTheDocument();
+    expect(screen.queryByLabelText('Created by')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Assignee')).not.toBeInTheDocument();
+  });
+
+  it('shows member selects with viewMembers', async () => {
+    const user = userEvent.setup();
+    mockedUseGetMeQuery.mockReturnValue({
+      data: {
+        user: createTestUser({
+          memberships: [
+            createMembership({
+              effectivePermissions: [
+                'viewRequests',
+                'manageRequests',
+                'viewMembers',
+              ],
+            }),
+          ],
+        }),
+      },
+      isLoading: false,
+      isFetching: false,
+      refetch: vi.fn(),
+    } as ReturnType<typeof useGetMeQuery>);
+
+    renderWithProviders(
+      <Routes>
+        <Route path="/app/requests" element={<RequestsPage />} />
+      </Routes>,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+        route: '/app/requests',
+      },
+    );
+
+    await openFilters(user);
+
+    expect(screen.getByLabelText('Created by')).toBeInTheDocument();
+    expect(screen.getByLabelText('Assignee')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Mine' })).not.toBeInTheDocument();
   });
 
   it('hides new request button without manageRequests', () => {
