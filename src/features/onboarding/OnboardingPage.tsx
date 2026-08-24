@@ -37,7 +37,6 @@ import { setActiveCompanyId } from '@/store/slices/authSlice';
 
 const companySchema = z.object({
   name: z.string().min(3),
-  taxId: z.string().optional(),
 });
 
 type CompanyFormValues = z.infer<typeof companySchema>;
@@ -66,7 +65,7 @@ export function OnboardingPage() {
     formState: { errors },
   } = useForm<CompanyFormValues>({
     resolver: zodResolver(companySchema),
-    defaultValues: { name: '', taxId: '' },
+    defaultValues: { name: '' },
   });
 
   useEffect(() => {
@@ -101,7 +100,6 @@ export function OnboardingPage() {
     try {
       const result = await createCompany({
         name: values.name,
-        taxId: values.taxId || undefined,
       }).unwrap();
       dispatch(setActiveCompanyId(result.company.id));
       enqueueSnackbar(t('companyCreated'), { variant: 'success' });
@@ -138,15 +136,16 @@ export function OnboardingPage() {
         <ApiErrorAlert error={createState.error ?? acceptState.error} />
 
         {hasPendingInvites && (
+          <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
           <Tabs
             value={tab}
             onChange={(_event, value: number) => setTab(value)}
             variant="fullWidth"
-            sx={{ mb: 3 }}
           >
             <Tab label={t('pendingInvites')} />
             <Tab label={t('createCompany')} />
           </Tabs>
+          </Box>
         )}
 
         {hasPendingInvites && tab === 0 && (
@@ -218,14 +217,7 @@ export function OnboardingPage() {
               fullWidth
               margin="normal"
               error={Boolean(errors.name)}
-              helperText={errors.name?.message}
-              disabled={atOwnershipLimit}
-            />
-            <TextField
-              {...register('taxId')}
-              label={t('taxId')}
-              fullWidth
-              margin="normal"
+              helperText={errors.name?.message ?? t('companyNameHint')}
               disabled={atOwnershipLimit}
             />
             <Button
