@@ -60,7 +60,7 @@ function canAddOfferOrVariant(
   offer: QuoteOfferRow,
   editable: boolean,
 ): boolean {
-  if (!editable || offer.quoteLine?.selectedQuantity != null) {
+  if (!editable) {
     return false;
   }
   if (offer.quoteLine) {
@@ -292,7 +292,7 @@ export function QuoteLinesTable({
         muiTableHeadCellProps: { align: 'right' },
         Cell: ({ row }) =>
           row.original.quoteLine ? (
-            <DecimalDisplay value={row.original.requestedQuantity} suffix={row.original.unit} />
+            <DecimalDisplay value={row.original.quoteLine.quantity} suffix={row.original.unit} />
           ) : (
             '—'
           ),

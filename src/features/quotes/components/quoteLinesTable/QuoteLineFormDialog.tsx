@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
+import type { QuoteLineInputLeadTimeUnit } from '@/api/generated/models/quoteLineInputLeadTimeUnit';
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit } from '@/api/generated/models/postCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit';
 import {
   useAddQuoteLineMutation,
   useUpdateQuoteLineMutation,
@@ -31,13 +31,18 @@ import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert
 import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
+import enEnums from '@/locales/en/enums.json';
 
-const LEAD_TIME_UNITS = Object.values(
-  PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit,
-);
+type LeadTimeUnit = Exclude<QuoteLineInputLeadTimeUnit, null>;
 
-type LeadTimeUnit =
-  (typeof PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit)[keyof typeof PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit];
+const LEAD_TIME_UNITS = (
+  Object.keys(enEnums.leadTimeUnit) as Array<keyof typeof enEnums.leadTimeUnit>
+).map((key) => key.toUpperCase() as LeadTimeUnit);
+
+const LEAD_TIME_UNIT_ENUM = LEAD_TIME_UNITS as [
+  LeadTimeUnit,
+  ...LeadTimeUnit[],
+];
 
 type LineFormValues = {
   requestLineId: string;
@@ -94,11 +99,7 @@ export function QuoteLineFormDialog({
           }),
           leadTime: z.string().trim(),
           leadTimeUnit: z.union([
-            z.enum([
-              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.DAY,
-              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.WEEK,
-              PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.MONTH,
-            ]),
+            z.enum(LEAD_TIME_UNIT_ENUM),
             z.literal(''),
           ]),
           notes: z.string().trim().optional(),
@@ -206,7 +207,7 @@ export function QuoteLineFormDialog({
         line?.leadTime != null && line.leadTimeUnit
           ? String(line.leadTime)
           : '1',
-      leadTimeUnit: line?.leadTimeUnit ?? PostCompaniesCompanyIdQuotesQuoteIdLinesBodyLeadTimeUnit.WEEK,
+      leadTimeUnit: line?.leadTimeUnit ?? 'WEEK',
       notes: line?.notes ?? '',
     });
   }, [
