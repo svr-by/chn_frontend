@@ -9,8 +9,9 @@
   },
   "fields": {
     "name": "姓名",
+    "firstName": "名",
+    "lastName": "姓",
     "email": "邮箱",
-    "emailStatus": "邮箱验证",
     "companyName": "公司",
     "country": "国家",
     "taxId": "税号",
@@ -18,11 +19,23 @@
     "companyStatus": "公司状态",
     "joinedAt": "加入时间"
   },
-  "emailVerified": "已验证",
-  "emailNotVerified": "未验证",
+  "emailNotVerified": "邮箱尚未验证",
+  "resendVerification": "重新发送验证邮件",
   "companyActive": "活跃",
   "companyInactive": "已停用",
   "noActiveCompany": "未选择当前公司。",
+  "editName": "编辑姓名",
+  "editCompanyName": "编辑公司名称",
+  "editCountry": "编辑国家",
+  "editTaxId": "编辑税号",
+  "companyNameHint": "合作伙伴将看到此名称，不是法定名称。",
+  "actions": {
+    "cancel": "取消",
+    "save": "保存"
+  },
+  "toast": {
+    "updated": "已保存"
+  },
   "companyStatus": {
     "title": "公司状态",
     "activeHint": "该公司处于活跃状态。停用后，大部分操作将被阻止，直至重新激活。",

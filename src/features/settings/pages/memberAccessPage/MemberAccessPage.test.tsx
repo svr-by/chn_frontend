@@ -9,7 +9,7 @@ import {
   useUpdateMemberMutation,
   useUpdateMemberPermissionsMutation,
 } from '@/api/endpoints/membersApi';
-import { MemberAccessPage } from '@/features/settings/pages/MemberAccessPage';
+import { MemberAccessPage } from '@/features/settings/pages/memberAccessPage/MemberAccessPage';
 import { COMPANY_ID, createMembership, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 

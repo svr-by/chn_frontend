@@ -10,10 +10,10 @@ import {
 } from '@/api/endpoints/membersApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
-import { InviteMemberDialog } from '@/features/settings/components/InviteMemberDialog';
-import { InvitationsTable } from '@/features/settings/components/InvitationsTable';
-import { MembersTable } from '@/features/settings/components/MembersTable';
-import { RemoveMemberDialog } from '@/features/settings/components/RemoveMemberDialog';
+import { InviteMemberDialog } from '@/features/settings/components/inviteMemberDialog/InviteMemberDialog';
+import { InvitationsTable } from '@/features/settings/components/invitationsTable/InvitationsTable';
+import { MembersTable } from '@/features/settings/components/membersTable/MembersTable';
+import { RemoveMemberDialog } from '@/features/settings/components/removeMemberDialog/RemoveMemberDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 

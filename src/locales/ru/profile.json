@@ -9,8 +9,9 @@
   },
   "fields": {
     "name": "Имя",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
     "email": "Email",
-    "emailStatus": "Подтверждение email",
     "companyName": "Компания",
     "country": "Страна",
     "taxId": "ИНН",
@@ -18,11 +19,23 @@
     "companyStatus": "Статус компании",
     "joinedAt": "В компании с"
   },
-  "emailVerified": "Подтверждён",
-  "emailNotVerified": "Не подтверждён",
+  "emailNotVerified": "Email не подтверждён",
+  "resendVerification": "Отправить письмо подтверждения повторно",
   "companyActive": "Активна",
   "companyInactive": "Неактивна",
   "noActiveCompany": "Активная компания не выбрана.",
+  "editName": "Изменить имя",
+  "editCompanyName": "Изменить название компании",
+  "editCountry": "Изменить страну",
+  "editTaxId": "Изменить ИНН",
+  "companyNameHint": "Краткое название для партнёров, не юридическое наименование.",
+  "actions": {
+    "cancel": "Отмена",
+    "save": "Сохранить"
+  },
+  "toast": {
+    "updated": "Сохранено"
+  },
   "companyStatus": {
     "title": "Статус компании",
     "activeHint": "Компания активна. Деактивация блокирует большинство операций до повторной активации.",

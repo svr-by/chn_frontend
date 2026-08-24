@@ -9,7 +9,7 @@ import {
   useRemoveMemberMutation,
   useRevokeInvitationMutation,
 } from '@/api/endpoints/membersApi';
-import { TeamSettingsPage } from '@/features/settings/pages/TeamSettingsPage';
+import { TeamSettingsPage } from '@/features/settings/pages/teamSettingsPage/TeamSettingsPage';
 import { COMPANY_ID, createTestUser } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
 

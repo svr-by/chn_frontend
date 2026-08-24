@@ -9,8 +9,9 @@
   },
   "fields": {
     "name": "Name",
+    "firstName": "First name",
+    "lastName": "Last name",
     "email": "Email",
-    "emailStatus": "Email verification",
     "companyName": "Company",
     "country": "Country",
     "taxId": "Tax ID",
@@ -18,11 +19,23 @@
     "companyStatus": "Company status",
     "joinedAt": "Joined"
   },
-  "emailVerified": "Verified",
-  "emailNotVerified": "Not verified",
+  "emailNotVerified": "Email is not verified",
+  "resendVerification": "Resend verification email",
   "companyActive": "Active",
   "companyInactive": "Inactive",
   "noActiveCompany": "No active company selected.",
+  "editName": "Edit name",
+  "editCompanyName": "Edit company name",
+  "editCountry": "Edit country",
+  "editTaxId": "Edit tax ID",
+  "companyNameHint": "This is the name partners will see. Not the legal entity name.",
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save"
+  },
+  "toast": {
+    "updated": "Saved"
+  },
   "companyStatus": {
     "title": "Company status",
     "activeHint": "This company is active. Deactivating blocks most company operations until reactivated.",

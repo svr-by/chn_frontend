@@ -1,124 +1,34 @@
-import {
-  Box,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Chip, List, Stack, Typography } from '@mui/material';
 import BadgeOutlinedIcon from '@mui/icons-material/BadgeOutlined';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
-import MarkEmailUnreadOutlinedIcon from '@mui/icons-material/MarkEmailUnreadOutlined';
 import PauseCircleOutlineIcon from '@mui/icons-material/PauseCircleOutline';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import PublicOutlinedIcon from '@mui/icons-material/PublicOutlined';
 import ShieldOutlinedIcon from '@mui/icons-material/ShieldOutlined';
-import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { CompanyStatusPanel } from '@/features/settings/components/CompanyStatusPanel';
+import {
+  CompanyCountryEditButton,
+  CompanyNameEditButton,
+  CompanyTaxIdEditButton,
+} from '@/features/settings/components/companyProfileEditButtons/CompanyProfileEditButtons';
+import { CompanyStatusPanel } from '@/features/settings/components/companyStatusPanel/CompanyStatusPanel';
+import { ProfileInfoRow } from '@/features/settings/components/profileInfo/ProfileInfoRow';
+import { ProfileInfoSection } from '@/features/settings/components/profileInfo/ProfileInfoSection';
+import { ProfileNameEditButton } from '@/features/settings/components/profileNameEditButton/ProfileNameEditButton';
+import { ProfileResendVerificationButton } from '@/features/settings/components/profileResendVerificationButton/ProfileResendVerificationButton';
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
 import { usePermissions } from '@/hooks/usePermissions';
 import { formatLocalizedDate } from '@/lib/dateFormat';
 import { isCompanyOperational } from '@/lib/permissions';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 
-interface InfoRowProps {
-  icon: ReactNode;
-  label: string;
-  value: ReactNode;
-}
-
-function InfoRow({ icon, label, value }: InfoRowProps) {
-  return (
-    <ListItem
-      alignItems="flex-start"
-      sx={{
-        px: 0,
-        py: { xs: 1, sm: 1.25 },
-        '&:not(:last-of-type)': {
-          borderBottom: 1,
-          borderColor: 'divider',
-        },
-      }}
-    >
-      <ListItemIcon sx={{ minWidth: 36, mt: 0.35 }}>{icon}</ListItemIcon>
-      <ListItemText
-        sx={{ my: 0, minWidth: 0 }}
-        primary={
-          <Typography variant="caption" color="text.secondary" component="div">
-            {label}
-          </Typography>
-        }
-        secondary={
-          typeof value === 'string' || typeof value === 'number' ? (
-            <Typography
-              variant="body2"
-              color="text.primary"
-              component="span"
-              sx={{
-                display: 'block',
-                mt: 0.25,
-                wordBreak: 'break-word',
-              }}
-            >
-              {value}
-            </Typography>
-          ) : (
-            <Box sx={{ mt: 0.5 }}>{value}</Box>
-          )
-        }
-        slotProps={{
-          primary: { component: 'div' },
-          secondary: { component: 'div' },
-        }}
-      />
-    </ListItem>
-  );
-}
-
-interface InfoSectionProps {
-  title: string;
-  hint: string;
-  children: ReactNode;
-}
-
-function InfoSection({ title, hint, children }: InfoSectionProps) {
-  return (
-    <Paper
-      variant="outlined"
-      sx={{
-        p: { xs: 2, sm: 2.5 },
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column',
-        minWidth: 0,
-      }}
-    >
-      <Typography variant="subtitle1" component="h2">
-        {title}
-      </Typography>
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{ mt: 0.5, mb: 1.5 }}
-      >
-        {hint}
-      </Typography>
-      <Box sx={{ flex: 1, minWidth: 0 }}>{children}</Box>
-    </Paper>
-  );
-}
-
 export function ProfilePage() {
   const { t, i18n } = useTranslation(['profile', 'enums']);
-  const { user, membership } = usePermissions();
+  const { user, membership, hasPermission } = usePermissions();
 
   if (!user) {
     return null;
@@ -128,6 +38,7 @@ export function ProfilePage() {
     [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || '—';
   const company = membership?.company;
   const companyActive = company ? isCompanyOperational(company) : false;
+  const canManageCompany = hasPermission('manageCompany');
 
   return (
     <PageShell maxWidth="lg">
@@ -152,73 +63,104 @@ export function ProfilePage() {
             alignItems: 'stretch',
           }}
         >
-          <InfoSection
+          <ProfileInfoSection
             title={t('profile:sections.account')}
             hint={t('profile:sections.accountHint')}
           >
             <List disablePadding>
-              <InfoRow
+              <ProfileInfoRow
                 icon={<PersonOutlinedIcon fontSize="small" color="action" />}
                 label={t('profile:fields.name')}
                 value={displayName}
-              />
-              <InfoRow
-                icon={<EmailOutlinedIcon fontSize="small" color="action" />}
-                label={t('profile:fields.email')}
-                value={user.email}
-              />
-              <InfoRow
-                icon={
-                  user.emailVerified ? (
-                    <CheckCircleOutlineIcon fontSize="small" color="success" />
-                  ) : (
-                    <MarkEmailUnreadOutlinedIcon
-                      fontSize="small"
-                      color="warning"
-                    />
-                  )
-                }
-                label={t('profile:fields.emailStatus')}
-                value={
-                  <Chip
-                    size="small"
-                    color={user.emailVerified ? 'success' : 'warning'}
-                    variant="outlined"
-                    label={
-                      user.emailVerified
-                        ? t('profile:emailVerified')
-                        : t('profile:emailNotVerified')
-                    }
+                action={
+                  <ProfileNameEditButton
+                    firstName={user.firstName}
+                    lastName={user.lastName}
                   />
                 }
               />
+              <ProfileInfoRow
+                icon={<EmailOutlinedIcon fontSize="small" color="action" />}
+                label={t('profile:fields.email')}
+                value={
+                  user.emailVerified ? (
+                    user.email
+                  ) : (
+                    <Box>
+                      <Typography
+                        variant="body2"
+                        color="text.primary"
+                        sx={{ wordBreak: 'break-word' }}
+                      >
+                        {user.email}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="warning.main"
+                        sx={{ display: 'block', mt: 0.25 }}
+                      >
+                        {t('profile:emailNotVerified')}
+                      </Typography>
+                    </Box>
+                  )
+                }
+                action={
+                  !user.emailVerified ? (
+                    <ProfileResendVerificationButton />
+                  ) : undefined
+                }
+              />
             </List>
-          </InfoSection>
+          </ProfileInfoSection>
 
-          <InfoSection
+          <ProfileInfoSection
             title={t('profile:sections.company')}
             hint={t('profile:sections.companyHint')}
           >
             {company && membership ? (
               <List disablePadding>
-                <InfoRow
+                <ProfileInfoRow
                   icon={
                     <BusinessOutlinedIcon fontSize="small" color="action" />
                   }
                   label={t('profile:fields.companyName')}
                   value={company.name}
+                  action={
+                    canManageCompany ? (
+                      <CompanyNameEditButton
+                        companyId={company.id}
+                        name={company.name}
+                      />
+                    ) : undefined
+                  }
                 />
-                <InfoRow
+                <ProfileInfoRow
                   icon={<PublicOutlinedIcon fontSize="small" color="action" />}
                   label={t('profile:fields.country')}
                   value={company.country ?? '—'}
+                  action={
+                    canManageCompany ? (
+                      <CompanyCountryEditButton
+                        companyId={company.id}
+                        country={company.country}
+                      />
+                    ) : undefined
+                  }
                 />
-                <InfoRow
+                <ProfileInfoRow
                   icon={<BadgeOutlinedIcon fontSize="small" color="action" />}
                   label={t('profile:fields.taxId')}
                   value={company.taxId ?? '—'}
+                  action={
+                    canManageCompany ? (
+                      <CompanyTaxIdEditButton
+                        companyId={company.id}
+                        taxId={company.taxId}
+                      />
+                    ) : undefined
+                  }
                 />
-                <InfoRow
+                <ProfileInfoRow
                   icon={<ShieldOutlinedIcon fontSize="small" color="action" />}
                   label={t('profile:fields.role')}
                   value={
@@ -234,7 +176,7 @@ export function ProfilePage() {
                     />
                   }
                 />
-                <InfoRow
+                <ProfileInfoRow
                   icon={
                     companyActive ? (
                       <CheckCircleOutlineIcon
@@ -262,7 +204,7 @@ export function ProfilePage() {
                     />
                   }
                 />
-                <InfoRow
+                <ProfileInfoRow
                   icon={
                     <CalendarMonthOutlinedIcon
                       fontSize="small"
@@ -278,7 +220,7 @@ export function ProfilePage() {
                 {t('profile:noActiveCompany')}
               </Typography>
             )}
-          </InfoSection>
+          </ProfileInfoSection>
         </Box>
 
         <CompanyStatusPanel />

@@ -54,6 +54,7 @@ describe('AppLayout', () => {
                 name: 'Beta LLC',
                 taxId: null,
                 country: null,
+                isActive: true,
               },
               effectivePermissions: ['viewRequests'],
             }),

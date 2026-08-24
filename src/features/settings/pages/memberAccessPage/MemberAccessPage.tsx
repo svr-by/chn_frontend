@@ -27,7 +27,7 @@ import {
   useUpdateMemberPermissionsMutation,
 } from '@/api/endpoints/membersApi';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
-import { MemberPermissionsEditor } from '@/features/settings/components/MemberPermissionsEditor';
+import { MemberPermissionsEditor } from '@/features/settings/components/memberPermissionsEditor/MemberPermissionsEditor';
 import { ASSIGNABLE_ROLES } from '@/features/settings/lib/assignableRoles';
 import {
   formatMemberRole,
