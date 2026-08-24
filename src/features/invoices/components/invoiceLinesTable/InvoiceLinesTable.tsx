@@ -14,6 +14,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -24,6 +25,7 @@ import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
+import { InvoiceLinesCsvExportDialog } from '@/features/invoices/components/invoiceLinesCsv/InvoiceLinesCsvExportDialog';
 import { InvoiceLineFormDialog } from '@/features/invoices/components/invoiceLinesTable/InvoiceLineFormDialog';
 import { createInvoiceLineBaseColumns } from '@/features/invoices/lib/invoiceLineTableColumns';
 import { parseDecimal } from '@/lib/decimal';
@@ -59,6 +61,7 @@ export function InvoiceLinesTable({
   const { enqueueSnackbar } = useSnackbar();
 
   const [addDialogOpen, setAddDialogOpen] = useState(false);
+  const [csvExportOpen, setCsvExportOpen] = useState(false);
   const [editingLine, setEditingLine] = useState<InvoiceLine | null>(null);
   const [lineToDelete, setLineToDelete] = useState<InvoiceLine | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
@@ -167,21 +170,35 @@ export function InvoiceLinesTable({
         onPaginationChange={setPagination}
         getRowId={(row) => row.id}
         layoutMode="grid"
-        renderBottomToolbarCustomActions={
-          editable
-            ? () => (
-                <PermissionGate permission="manageInvoices">
-                  <Button
-                    variant="outlined"
-                    startIcon={<AddIcon />}
-                    onClick={() => setAddDialogOpen(true)}
-                  >
-                    {t('actions.addLine')}
-                  </Button>
-                </PermissionGate>
-              )
-            : undefined
-        }
+        renderBottomToolbarCustomActions={() => (
+          <Stack direction="row" spacing={1}>
+            {editable ? (
+              <PermissionGate permission="manageInvoices">
+                <Button
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  onClick={() => setAddDialogOpen(true)}
+                >
+                  {t('actions.addLine')}
+                </Button>
+              </PermissionGate>
+            ) : null}
+            <Button
+              variant="outlined"
+              startIcon={<FileDownloadOutlinedIcon />}
+              onClick={() => setCsvExportOpen(true)}
+            >
+              {t('actions.exportCsv')}
+            </Button>
+          </Stack>
+        )}
+      />
+
+      <InvoiceLinesCsvExportDialog
+        open={csvExportOpen}
+        onClose={() => setCsvExportOpen(false)}
+        companyId={companyId}
+        invoiceId={invoiceId}
       />
 
       <InvoiceDraftLineDialog

@@ -42,6 +42,7 @@
     "issue": "开具发票",
     "confirmInvoice": "确认发票",
     "addLine": "添加行",
+    "exportCsv": "下载 CSV",
     "editLine": "编辑",
     "deleteLine": "删除",
     "more": "更多操作",
@@ -160,6 +161,12 @@
     "mixedBuyer": "所有行必须属于同一买方。",
     "mixedCurrency": "所有行必须使用同一货币。",
     "currencyClearedLines": "因货币变更，行项目已清空。",
-    "linesInvalid": "请检查数量并移除重复行。"
+    "linesInvalid": "请检查数量并移除重复行。",
+    "csvExported": "CSV 已下载",
+    "csvExportFailed": "CSV 下载失败"
+  },
+  "csv": {
+    "exportTitle": "下载发票行 CSV",
+    "download": "下载"
   }
 }

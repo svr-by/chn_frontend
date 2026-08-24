@@ -42,6 +42,7 @@
     "issue": "Issue invoice",
     "confirmInvoice": "Confirm invoice",
     "addLine": "Add line",
+    "exportCsv": "Download CSV",
     "editLine": "Edit",
     "deleteLine": "Delete",
     "more": "More actions",
@@ -160,6 +161,12 @@
     "mixedBuyer": "All lines must belong to the same buyer.",
     "mixedCurrency": "All lines must use the same currency.",
     "currencyClearedLines": "Lines were cleared because the currency changed.",
-    "linesInvalid": "Check line quantities and remove duplicates."
+    "linesInvalid": "Check line quantities and remove duplicates.",
+    "csvExported": "CSV downloaded",
+    "csvExportFailed": "Failed to download CSV"
+  },
+  "csv": {
+    "exportTitle": "Download invoice lines CSV",
+    "download": "Download"
   }
 }
