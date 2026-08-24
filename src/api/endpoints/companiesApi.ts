@@ -1,6 +1,7 @@
 import {
   getGetCompaniesCompanyIdUrl,
   getGetCompaniesUrl,
+  getPatchCompaniesCompanyIdUrl,
   getPostCompaniesCompanyIdDeactivateUrl,
   getPostCompaniesCompanyIdMembersAcceptUrl,
   getPostCompaniesCompanyIdReactivateUrl,
@@ -9,6 +10,8 @@ import {
 import type {
   GetCompanies200,
   GetCompaniesCompanyId200,
+  PatchCompaniesCompanyId200,
+  PatchCompaniesCompanyIdBody,
   PostCompanies201,
   PostCompaniesBody,
   PostCompaniesCompanyIdDeactivate200,
@@ -35,6 +38,21 @@ export const companiesApi = baseApi.injectEndpoints({
     getCompany: builder.query<GetCompaniesCompanyId200, string>({
       query: (companyId) => ({ url: getGetCompaniesCompanyIdUrl(companyId) }),
       providesTags: (_result, _error, companyId) => [
+        { type: 'Company', id: companyId },
+      ],
+    }),
+    updateCompany: builder.mutation<
+      PatchCompaniesCompanyId200,
+      { companyId: string } & PatchCompaniesCompanyIdBody
+    >({
+      query: ({ companyId, ...body }) => ({
+        url: getPatchCompaniesCompanyIdUrl(companyId),
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_result, _error, { companyId }) => [
+        'Companies',
+        'Me',
         { type: 'Company', id: companyId },
       ],
     }),
@@ -83,6 +101,7 @@ export const {
   useListCompaniesQuery,
   useCreateCompanyMutation,
   useGetCompanyQuery,
+  useUpdateCompanyMutation,
   useAcceptInviteMutation,
   useDeactivateCompanyMutation,
   useReactivateCompanyMutation,

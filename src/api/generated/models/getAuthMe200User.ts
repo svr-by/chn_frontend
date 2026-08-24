@@ -3,6 +3,7 @@
  */
 import type { GetAuthMe200UserFirstName } from './getAuthMe200UserFirstName';
 import type { GetAuthMe200UserLastName } from './getAuthMe200UserLastName';
+import type { GetAuthMe200UserPreferredLocale } from './getAuthMe200UserPreferredLocale';
 import type { GetAuthMe200UserMembershipsItem } from './getAuthMe200UserMembershipsItem';
 import type { GetAuthMe200UserPendingInvitationsItem } from './getAuthMe200UserPendingInvitationsItem';
 
@@ -13,6 +14,7 @@ export type GetAuthMe200User = {
   email: string;
   firstName: GetAuthMe200UserFirstName;
   lastName: GetAuthMe200UserLastName;
+  preferredLocale: GetAuthMe200UserPreferredLocale;
   emailVerified: boolean;
   memberships: GetAuthMe200UserMembershipsItem[];
   pendingInvitations: GetAuthMe200UserPendingInvitationsItem[];

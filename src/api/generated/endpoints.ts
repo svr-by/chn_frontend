@@ -31,6 +31,7 @@ import type {
   GetCompaniesCompanyIdIntegrationWebhooks200,
   GetCompaniesCompanyIdInvoices200,
   GetCompaniesCompanyIdInvoicesInvoiceId200,
+  GetCompaniesCompanyIdInvoicesInvoiceIdLinesCsvParams,
   GetCompaniesCompanyIdInvoicesInvoiceIdShippableLines200,
   GetCompaniesCompanyIdInvoicesParams,
   GetCompaniesCompanyIdMembers200,
@@ -78,6 +79,10 @@ import type {
   GetCompaniesParams,
   HealthResponse,
   LineageTrace,
+  PatchAuthMe200,
+  PatchAuthMeBody,
+  PatchCompaniesCompanyId200,
+  PatchCompaniesCompanyIdBody,
   PatchCompaniesCompanyIdConsolidationsConsolidationId200,
   PatchCompaniesCompanyIdConsolidationsConsolidationIdBody,
   PatchCompaniesCompanyIdIntegrationMappingsMappingId200,
@@ -108,6 +113,7 @@ import type {
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdBody,
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineId200,
   PatchCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesLineIdBody,
+  PostAuthChangePasswordBody,
   PostAuthForgotPassword200,
   PostAuthForgotPasswordBody,
   PostAuthLogin200,
@@ -197,6 +203,8 @@ import type {
   PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdLinesBody,
   PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkDelivered200,
   PostCompaniesCompanyIdShippingInvoicesShippingInvoiceIdMarkInTransit200,
+  PostCompaniesCompanyIdTransferOwnership200,
+  PostCompaniesCompanyIdTransferOwnershipBody,
   PutCompaniesCompanyIdIntegrationRequestsExternalId200,
   PutCompaniesCompanyIdIntegrationRequestsExternalIdBody,
   PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200,
@@ -510,6 +518,191 @@ export const getAuthMe = async ( options?: RequestInit): Promise<getAuthMeRespon
   
   const data: getAuthMeResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getAuthMeResponse
+}
+
+
+
+export type patchAuthMeResponse200 = {
+  data: PatchAuthMe200
+  status: 200
+}
+
+export type patchAuthMeResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type patchAuthMeResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type patchAuthMeResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type patchAuthMeResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type patchAuthMeResponseSuccess = (patchAuthMeResponse200) & {
+  headers: Headers;
+};
+export type patchAuthMeResponseError = (patchAuthMeResponse400 | patchAuthMeResponse401 | patchAuthMeResponse403 | patchAuthMeResponse404) & {
+  headers: Headers;
+};
+
+export type patchAuthMeResponse = (patchAuthMeResponseSuccess | patchAuthMeResponseError)
+
+export const getPatchAuthMeUrl = () => {
+
+
+  
+
+  return `/auth/me`
+}
+
+export const patchAuthMe = async (patchAuthMeBody: PatchAuthMeBody, options?: RequestInit): Promise<patchAuthMeResponse> => {
+  
+  const res = await fetch(getPatchAuthMeUrl(),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchAuthMeBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: patchAuthMeResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as patchAuthMeResponse
+}
+
+
+
+export type postAuthChangePasswordResponse200 = {
+  data: AuthTokens
+  status: 200
+}
+
+export type postAuthChangePasswordResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthChangePasswordResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthChangePasswordResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthChangePasswordResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthChangePasswordResponseSuccess = (postAuthChangePasswordResponse200) & {
+  headers: Headers;
+};
+export type postAuthChangePasswordResponseError = (postAuthChangePasswordResponse400 | postAuthChangePasswordResponse401 | postAuthChangePasswordResponse403 | postAuthChangePasswordResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthChangePasswordResponse = (postAuthChangePasswordResponseSuccess | postAuthChangePasswordResponseError)
+
+export const getPostAuthChangePasswordUrl = () => {
+
+
+  
+
+  return `/auth/change-password`
+}
+
+export const postAuthChangePassword = async (postAuthChangePasswordBody: PostAuthChangePasswordBody, options?: RequestInit): Promise<postAuthChangePasswordResponse> => {
+  
+  const res = await fetch(getPostAuthChangePasswordUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postAuthChangePasswordBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthChangePasswordResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthChangePasswordResponse
+}
+
+
+
+export type postAuthDeactivateResponse204 = {
+  data: void
+  status: 204
+}
+
+export type postAuthDeactivateResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postAuthDeactivateResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postAuthDeactivateResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postAuthDeactivateResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postAuthDeactivateResponseSuccess = (postAuthDeactivateResponse204) & {
+  headers: Headers;
+};
+export type postAuthDeactivateResponseError = (postAuthDeactivateResponse400 | postAuthDeactivateResponse401 | postAuthDeactivateResponse403 | postAuthDeactivateResponse404) & {
+  headers: Headers;
+};
+
+export type postAuthDeactivateResponse = (postAuthDeactivateResponseSuccess | postAuthDeactivateResponseError)
+
+export const getPostAuthDeactivateUrl = () => {
+
+
+  
+
+  return `/auth/deactivate`
+}
+
+export const postAuthDeactivate = async ( options?: RequestInit): Promise<postAuthDeactivateResponse> => {
+  
+  const res = await fetch(getPostAuthDeactivateUrl(),
+  {      
+    ...options,
+    method: 'POST'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postAuthDeactivateResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postAuthDeactivateResponse
 }
 
 
@@ -949,6 +1142,132 @@ export const getCompaniesCompanyId = async (companyId: string, options?: Request
   
   const data: getCompaniesCompanyIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdResponse
+}
+
+
+
+export type patchCompaniesCompanyIdResponse200 = {
+  data: PatchCompaniesCompanyId200
+  status: 200
+}
+
+export type patchCompaniesCompanyIdResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type patchCompaniesCompanyIdResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type patchCompaniesCompanyIdResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type patchCompaniesCompanyIdResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type patchCompaniesCompanyIdResponseSuccess = (patchCompaniesCompanyIdResponse200) & {
+  headers: Headers;
+};
+export type patchCompaniesCompanyIdResponseError = (patchCompaniesCompanyIdResponse400 | patchCompaniesCompanyIdResponse401 | patchCompaniesCompanyIdResponse403 | patchCompaniesCompanyIdResponse404) & {
+  headers: Headers;
+};
+
+export type patchCompaniesCompanyIdResponse = (patchCompaniesCompanyIdResponseSuccess | patchCompaniesCompanyIdResponseError)
+
+export const getPatchCompaniesCompanyIdUrl = (companyId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}`
+}
+
+export const patchCompaniesCompanyId = async (companyId: string,
+    patchCompaniesCompanyIdBody: PatchCompaniesCompanyIdBody, options?: RequestInit): Promise<patchCompaniesCompanyIdResponse> => {
+  
+  const res = await fetch(getPatchCompaniesCompanyIdUrl(companyId),
+  {      
+    ...options,
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      patchCompaniesCompanyIdBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: patchCompaniesCompanyIdResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as patchCompaniesCompanyIdResponse
+}
+
+
+
+export type postCompaniesCompanyIdTransferOwnershipResponse200 = {
+  data: PostCompaniesCompanyIdTransferOwnership200
+  status: 200
+}
+
+export type postCompaniesCompanyIdTransferOwnershipResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdTransferOwnershipResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdTransferOwnershipResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdTransferOwnershipResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdTransferOwnershipResponseSuccess = (postCompaniesCompanyIdTransferOwnershipResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdTransferOwnershipResponseError = (postCompaniesCompanyIdTransferOwnershipResponse400 | postCompaniesCompanyIdTransferOwnershipResponse401 | postCompaniesCompanyIdTransferOwnershipResponse403 | postCompaniesCompanyIdTransferOwnershipResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdTransferOwnershipResponse = (postCompaniesCompanyIdTransferOwnershipResponseSuccess | postCompaniesCompanyIdTransferOwnershipResponseError)
+
+export const getPostCompaniesCompanyIdTransferOwnershipUrl = (companyId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/transfer-ownership`
+}
+
+export const postCompaniesCompanyIdTransferOwnership = async (companyId: string,
+    postCompaniesCompanyIdTransferOwnershipBody: PostCompaniesCompanyIdTransferOwnershipBody, options?: RequestInit): Promise<postCompaniesCompanyIdTransferOwnershipResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdTransferOwnershipUrl(companyId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postCompaniesCompanyIdTransferOwnershipBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdTransferOwnershipResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdTransferOwnershipResponse
 }
 
 
@@ -3741,6 +4060,78 @@ export const deleteCompaniesCompanyIdInvoicesInvoiceId = async (companyId: strin
   
   const data: deleteCompaniesCompanyIdInvoicesInvoiceIdResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdInvoicesInvoiceIdResponse
+}
+
+
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse200 = {
+  data: string
+  status: 200
+}
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponseSuccess = (getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse200) & {
+  headers: Headers;
+};
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponseError = (getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse400 | getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse401 | getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse403 | getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse404) & {
+  headers: Headers;
+};
+
+export type getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse = (getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponseSuccess | getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponseError)
+
+export const getGetCompaniesCompanyIdInvoicesInvoiceIdLinesCsvUrl = (companyId: string,
+    invoiceId: string,
+    params?: GetCompaniesCompanyIdInvoicesInvoiceIdLinesCsvParams,) => {
+  const normalizedParams = new URLSearchParams();
+
+  Object.entries(params || {}).forEach(([key, value]) => {
+    
+    if (value !== undefined) {
+      normalizedParams.append(key, value === null ? 'null' : value.toString())
+    }
+  });
+
+  const stringifiedParams = normalizedParams.toString();
+
+  return stringifiedParams.length > 0 ? `/companies/${companyId}/invoices/${invoiceId}/lines/csv?${stringifiedParams}` : `/companies/${companyId}/invoices/${invoiceId}/lines/csv`
+}
+
+export const getCompaniesCompanyIdInvoicesInvoiceIdLinesCsv = async (companyId: string,
+    invoiceId: string,
+    params?: GetCompaniesCompanyIdInvoicesInvoiceIdLinesCsvParams, options?: RequestInit): Promise<getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse> => {
+  
+  const res = await fetch(getGetCompaniesCompanyIdInvoicesInvoiceIdLinesCsvUrl(companyId,invoiceId,params),
+  {      
+    ...options,
+    method: 'GET'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as getCompaniesCompanyIdInvoicesInvoiceIdLinesCsvResponse
 }
 
 

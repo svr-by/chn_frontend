@@ -1,5 +1,6 @@
 import {
   getGetAuthMeUrl,
+  getPatchAuthMeUrl,
   getPostAuthForgotPasswordUrl,
   getPostAuthLoginUrl,
   getPostAuthLogoutUrl,
@@ -11,6 +12,8 @@ import {
 } from '@/api/generated/endpoints';
 import type {
   GetAuthMe200,
+  PatchAuthMe200,
+  PatchAuthMeBody,
   PostAuthForgotPassword200,
   PostAuthForgotPasswordBody,
   PostAuthLogin200,
@@ -86,6 +89,14 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({ url: getGetAuthMeUrl() }),
       providesTags: ['Me'],
     }),
+    updateMe: builder.mutation<PatchAuthMe200, PatchAuthMeBody>({
+      query: (body) => ({
+        url: getPatchAuthMeUrl(),
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['Me'],
+    }),
     refresh: builder.mutation<
       { accessToken: string; refreshToken: string },
       PostAuthRefreshBody
@@ -155,6 +166,7 @@ export const {
   useLogoutMutation,
   useGetMeQuery,
   useLazyGetMeQuery,
+  useUpdateMeMutation,
   useRefreshMutation,
   useVerifyEmailMutation,
   useResendVerificationMutation,
