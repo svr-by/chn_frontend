@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 import type { MRT_ColumnDef } from 'material-react-table';
 import type { TFunction } from 'i18next';
 

@@ -29,7 +29,6 @@ import {
   InvoiceNotesEditButton,
   InvoiceNumberEditButton,
 } from '@/features/invoices/components/invoiceHeaderForm/InvoiceHeaderForm';
-import { InvoiceAmountSummary } from '@/features/invoices/components/InvoiceAmountSummary';
 import { InvoiceLinesTable } from '@/features/invoices/components/invoiceLinesTable/InvoiceLinesTable';
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
 import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
@@ -85,7 +84,7 @@ export function InvoiceDetailPage() {
     invoice.status !== 'DRAFT' &&
     (invoice.payments?.length ?? 0) > 0;
 
-  const { createShippingInvoiceFromInvoice, isCreating: isCreatingShipping } =
+  const { createShippingInvoiceFromInvoice } =
     useCreateShippingInvoiceFromInvoice();
 
   const shippableQuery = useGetShippableLinesQuery(

@@ -1,9 +1,8 @@
 import type { ReactNode } from 'react';
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Chip, Stack } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
-import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { LineageCreatedMeta } from '@/features/trace/components/lineagePipelineView/LineageCreatedMeta';
 import type { PipelineSelection } from '@/lib/lineagePipeline';
 

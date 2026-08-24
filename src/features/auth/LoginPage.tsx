@@ -12,7 +12,6 @@ import { PasswordField } from '@/components/forms/passwordField/PasswordField';
 import { useAppDispatch } from '@/hooks/useAppDispatch';
 import {
   getSwitcherMemberships,
-  isEmailVerified,
   resolveActiveCompanyId,
   resolveAuthenticatedRedirect,
 } from '@/lib/permissions';

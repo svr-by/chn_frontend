@@ -12,8 +12,6 @@ interface InvoiceAmountSummaryProps {
 
 export function InvoiceAmountSummary({
   totalAmount,
-  confirmedPaidAmount,
-  remainingAmount,
   currency,
 }: InvoiceAmountSummaryProps) {
   const { t } = useTranslation('invoices');
