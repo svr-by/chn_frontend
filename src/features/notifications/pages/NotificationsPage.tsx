@@ -27,6 +27,7 @@ export function NotificationsPage() {
   const { enqueueSnackbar } = useSnackbar();
   const companyId = useAppSelector((state) => state.auth.activeCompanyId);
   const [filter, setFilter] = useState<'all' | 'unread'>('all');
+  const [listRefreshKey, setListRefreshKey] = useState(0);
 
   const [markRead] = useMarkNotificationReadMutation();
   const [markAllRead, markAllState] = useMarkAllNotificationsReadMutation();
@@ -38,6 +39,7 @@ export function NotificationsPage() {
 
     try {
       await markAllRead({ companyId }).unwrap();
+      setListRefreshKey((key) => key + 1);
       enqueueSnackbar(t('markAllReadSuccess'), { variant: 'success' });
     } catch {
       enqueueSnackbar(t('markAllReadError'), { variant: 'error' });
@@ -49,18 +51,21 @@ export function NotificationsPage() {
       return;
     }
 
+    const path = resolveNotificationPath(notification);
+
     if (!notification.readAt) {
       try {
         await markRead({
           companyId,
           notificationId: notification.id,
         }).unwrap();
+        if (!path) {
+          setListRefreshKey((key) => key + 1);
+        }
       } catch {
         enqueueSnackbar(t('markReadError'), { variant: 'error' });
       }
     }
-
-    const path = resolveNotificationPath(notification);
 
     if (path) {
       navigate(path);
@@ -117,6 +122,7 @@ export function NotificationsPage() {
           <NotificationsList
             companyId={companyId}
             unreadOnly={filter === 'unread'}
+            refreshKey={listRefreshKey}
             onNotificationClick={(notification) =>
               void handleNotificationClick(notification)
             }

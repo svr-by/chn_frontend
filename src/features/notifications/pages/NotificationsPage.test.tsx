@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
 import {
@@ -88,5 +89,55 @@ describe('NotificationsPage', () => {
     expect(
       screen.getByRole('button', { name: 'Unread only' }),
     ).toBeInTheDocument();
+  });
+
+  it('reloads the list after marking all as read', async () => {
+    const user = userEvent.setup();
+    const listTrigger = vi.fn().mockReturnValue({
+      unwrap: vi
+        .fn()
+        .mockResolvedValueOnce({
+          notifications: [
+            createNotification({ id: 'n1', readAt: null, title: 'Unread one' }),
+          ],
+          nextCursor: null,
+        })
+        .mockResolvedValueOnce({
+          notifications: [
+            createNotification({
+              id: 'n1',
+              readAt: '2026-01-01T00:00:00.000Z',
+              title: 'Unread one',
+            }),
+          ],
+          nextCursor: null,
+        }),
+    });
+    const markAllRead = vi
+      .fn()
+      .mockReturnValue({ unwrap: vi.fn().mockResolvedValue({ updatedCount: 1 }) });
+
+    mockedUseLazyListNotificationsQuery.mockReturnValue([
+      listTrigger,
+      { isLoading: false, reset: vi.fn() },
+      { lastArg: undefined },
+    ] as unknown as ReturnType<typeof useLazyListNotificationsQuery>);
+    mockedUseMarkAllNotificationsReadMutation.mockReturnValue([
+      markAllRead,
+      { isLoading: false, reset: vi.fn() },
+    ] as ReturnType<typeof useMarkAllNotificationsReadMutation>);
+
+    renderWithProviders(<NotificationsPage />, {
+      preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+    });
+
+    expect(await screen.findByText('Unread one')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Mark all read' }));
+
+    await waitFor(() => {
+      expect(markAllRead).toHaveBeenCalledWith({ companyId: COMPANY_ID });
+      expect(listTrigger).toHaveBeenCalledTimes(2);
+    });
   });
 });

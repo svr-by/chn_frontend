@@ -26,12 +26,15 @@ const PAGE_SIZE = 20;
 interface NotificationsListProps {
   companyId: string;
   unreadOnly?: boolean;
+  /** Bump to reload after mutations — list state lives in useCursorList, not RTK. */
+  refreshKey?: number;
   onNotificationClick?: (notification: Notification) => void;
 }
 
 export function NotificationsList({
   companyId,
   unreadOnly = false,
+  refreshKey = 0,
   onNotificationClick,
 }: NotificationsListProps) {
   const { t } = useTranslation('notifications');
@@ -55,7 +58,7 @@ export function NotificationsList({
     [companyId, trigger, unreadOnly],
   );
 
-  const resetKey = `${companyId}-${unreadOnly ? 'unread' : 'all'}`;
+  const resetKey = `${companyId}-${unreadOnly ? 'unread' : 'all'}-${refreshKey}`;
   const { items, hasMore, isLoading, isLoadingMore, error, loadMore } =
     useCursorList({
       enabled: Boolean(companyId),
