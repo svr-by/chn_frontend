@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import { useGetUnreadNotificationCountQuery } from '@/api/endpoints/notificationsApi';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -16,25 +14,11 @@ export function useNotificationUnreadPolling() {
     {
       skip: !companyId || !canView,
       pollingInterval: canView ? POLLING_INTERVAL_MS : 0,
+      skipPollingIfUnfocused: true,
       refetchOnFocus: true,
       refetchOnReconnect: true,
     },
   );
-
-  useEffect(() => {
-    if (!companyId || !canView) {
-      return;
-    }
-
-    function handleFocus() {
-      void query.refetch();
-    }
-
-    window.addEventListener('focus', handleFocus);
-    return () => {
-      window.removeEventListener('focus', handleFocus);
-    };
-  }, [canView, companyId, query]);
 
   return {
     unreadCount: query.data?.count ?? 0,
