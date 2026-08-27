@@ -1,0 +1,64 @@
+{
+  "title": "How CHN works",
+  "subtitle": "Follow the steps in order — from team setup to invoices.",
+  "stepLabel": "Step {{step}}",
+  "articles": {
+    "overview": {
+      "title": "Overview",
+      "summary": "The full path from setup to invoice.",
+      "body1": "1. Invite your team and set roles. 2. Link partner companies. 3. Create and send a material request. 4. Collect quotes and select lines. 5. Issue or receive an invoice.",
+      "body2": "Buyers and suppliers work in the same product. Each company controls access with roles and permissions.",
+      "body3": "Open the steps below in order. Later stages (payments, shipments, consolidations) will appear as those modules open up.",
+      "next": "Next: Team"
+    },
+    "team": {
+      "title": "Team",
+      "summary": "Step 1: Invite people and assign access.",
+      "before": "You already have a company. Start by bringing colleagues in.",
+      "body1": "1. Open Team and invite members by email.",
+      "body2": "2. Assign a role (procurement, logistics, accounting, and so on) so each person sees the right modules.",
+      "body3": "3. Owners can fine-tune permissions per person. When the team is ready, move on to partners.",
+      "cta": "Open Team",
+      "next": "Next: Partners"
+    },
+    "partners": {
+      "title": "Partners",
+      "summary": "Step 2: Link companies before any documents move.",
+      "before": "First set up the team (or continue alone). Partners are required before requests can reach another company.",
+      "body1": "1. Open Partners and send a link invitation to a supplier or client.",
+      "body2": "2. Wait until the other company accepts — without an active partnership, procurement documents cannot flow.",
+      "body3": "3. Accept inbound partner requests if other companies invite you. Then you can create requests.",
+      "cta": "Open Partners",
+      "next": "Next: Requests"
+    },
+    "requests": {
+      "title": "Requests",
+      "summary": "Step 3: List materials and send them to suppliers.",
+      "before": "Active partner links must exist before suppliers can receive a request.",
+      "body1": "1. (Buyer) Create a material request and add lines with quantities and deadlines — manually or via file import.",
+      "body2": "2. (Buyer) Send the request to one or more partner suppliers.",
+      "body3": "3. (Supplier) Open inbound requests from clients and prepare to reply with a quote.",
+      "cta": "Open Requests",
+      "next": "Next: Quotes"
+    },
+    "quotes": {
+      "title": "Quotes",
+      "summary": "Step 4: Reply with prices, then compare and select.",
+      "before": "A request must already be sent to suppliers.",
+      "body1": "1. (Supplier) Open the inbound request and prepare a quote with unit prices, lead times, and terms.",
+      "body2": "2. (Buyer) Compare quotes from different suppliers in one place.",
+      "body3": "3. (Buyer) Select quantities per line — different lines can come from different suppliers. Selected quantities become the basis for the invoice.",
+      "cta": "Open Quotes",
+      "next": "Next: Invoices"
+    },
+    "invoices": {
+      "title": "Invoices",
+      "summary": "Step 5: Bill for the selected lines.",
+      "before": "Complete line selection on quotes before creating an invoice.",
+      "body1": "1. (Supplier) Create an invoice for the quantities the buyer selected.",
+      "body2": "2. (Buyer) Review the invoice; register payment and attach proof when ready (payment is the next stage beyond this guide).",
+      "body3": "3. Invoices stay linked to the earlier request and quote lines so you can always trace where an amount came from.",
+      "cta": "Open Invoices"
+    }
+  }
+}

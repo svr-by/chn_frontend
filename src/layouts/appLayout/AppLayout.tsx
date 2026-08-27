@@ -23,7 +23,10 @@ import {
   useTheme,
 } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import MenuIcon from '@mui/icons-material/Menu';
+import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import { NotificationBell } from '@/features/notifications/components/NotificationBell';
 import { useTranslation } from 'react-i18next';
 
@@ -73,6 +76,11 @@ export function AppLayout() {
   function handleProfile() {
     setUserMenuAnchor(null);
     navigate('/app/settings/profile');
+  }
+
+  function handleHelp() {
+    setUserMenuAnchor(null);
+    navigate('/app/help');
   }
 
   const drawer = (
@@ -184,13 +192,25 @@ export function AppLayout() {
             onClose={() => setUserMenuAnchor(null)}
           >
             <MenuItem onClick={handleProfile}>
-              {t('common:app.profile')}
+              <ListItemIcon>
+                <PersonOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('common:app.profile')}</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={handleHelp}>
+              <ListItemIcon>
+                <HelpOutlineOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('common:app.help')}</ListItemText>
             </MenuItem>
             <MenuItem
               onClick={() => void handleLogout()}
               disabled={isLoggingOut}
             >
-              {t('common:app.logout')}
+              <ListItemIcon>
+                <LogoutOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('common:app.logout')}</ListItemText>
             </MenuItem>
           </Menu>
         </Toolbar>

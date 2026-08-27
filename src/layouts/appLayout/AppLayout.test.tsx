@@ -1,5 +1,6 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Route, Routes } from 'react-router-dom';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
@@ -94,5 +95,34 @@ describe('AppLayout', () => {
     expect(screen.getAllByLabelText('Company').length).toBeGreaterThan(0);
     expect(screen.getByTestId('notification-bell')).toBeInTheDocument();
     expect(screen.getByText('Home content')).toBeInTheDocument();
+  });
+
+  it('navigates to help from the account menu', async () => {
+    const user = userEvent.setup();
+
+    renderWithProviders(
+      <AppThemeProvider>
+        <Routes>
+          <Route path="/app" element={<AppLayout />}>
+            <Route index element={<div>Home content</div>} />
+            <Route path="help" element={<div>Help content</div>} />
+          </Route>
+        </Routes>
+      </AppThemeProvider>,
+      {
+        route: '/app',
+        preloadedState: {
+          auth: {
+            activeCompanyId: COMPANY_ID,
+            isBootstrapped: true,
+          },
+        },
+      },
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Account menu' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Help' }));
+
+    expect(screen.getByText('Help content')).toBeInTheDocument();
   });
 });

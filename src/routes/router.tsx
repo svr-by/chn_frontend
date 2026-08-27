@@ -13,7 +13,6 @@ import { VerifyEmailPromptPage } from '@/features/auth/VerifyEmailPromptPage';
 import { OnboardingPage } from '@/features/onboarding/OnboardingPage';
 import { ProductsPage } from '@/features/products/pages/ProductsPage';
 import { RequestDetailPage } from '@/features/requests/pages/requestDetailPage/RequestDetailPage';
-import { InboundRequestsPage } from '@/features/requests/pages/inboundRequestsPage/InboundRequestsPage';
 import { QuoteDetailPage } from '@/features/quotes/pages/quoteDetailPage/QuoteDetailPage';
 import { QuotesPage } from '@/features/quotes/pages/quotesPage/QuotesPage';
 import { InvoicesPage } from '@/features/invoices/pages/invoicesPage/InvoicesPage';
@@ -36,6 +35,7 @@ import { MemberAccessPage } from '@/features/settings/pages/memberAccessPage/Mem
 import { TeamSettingsPage } from '@/features/settings/pages/teamSettingsPage/TeamSettingsPage';
 import { IntegrationsSettingsPage } from '@/features/integrations/pages/IntegrationsSettingsPage';
 import { ProfilePage } from '@/features/settings/pages/profilePage/ProfilePage';
+import { HelpPage } from '@/features/help/pages/helpPage/HelpPage';
 import { PartnersPage } from '@/features/partners/pages/PartnersPage';
 import { AppLayout } from '@/layouts/appLayout/AppLayout';
 import { AuthLayout } from '@/layouts/authLayout/AuthLayout';
@@ -147,7 +147,10 @@ export const router = createBrowserRouter([
               { path: 'request-lines', element: <RequestLinesPage /> },
               { path: 'requests/import', element: <RequestImportPage /> },
               { path: 'requests/new', element: <RequestNewPage /> },
-              { path: 'requests/inbound', element: <InboundRequestsPage /> },
+              {
+                path: 'requests/inbound',
+                element: <Navigate to="/app/requests?tab=inbound" replace />,
+              },
               {
                 path: 'requests/inbound/:requestId',
                 element: <RequestDetailPage />,
@@ -183,6 +186,7 @@ export const router = createBrowserRouter([
                 element: <IntegrationsSettingsPage />,
               },
               { path: 'settings/profile', element: <ProfilePage /> },
+              { path: 'help', element: <HelpPage /> },
               ...stubRoutes,
             ],
           },
