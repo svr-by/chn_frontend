@@ -1,6 +1,7 @@
 import type { TFunction } from 'i18next';
 
 import type { ActivityItem } from '@/api/generated/models/activityItem';
+import { getActivityEventTypeLabel } from '@/lib/activityEventLabels';
 
 export function getActivityItemLabel(item: ActivityItem, t: TFunction): string {
   if (item.source === 'comment' && item.body) {
@@ -8,12 +9,7 @@ export function getActivityItemLabel(item: ActivityItem, t: TFunction): string {
   }
 
   if (item.source === 'event' && item.eventType) {
-    const key = `enums:activityEventType.${item.eventType}`;
-    const translated = t(key);
-    if (translated !== key) {
-      return translated;
-    }
-    return item.eventType;
+    return getActivityEventTypeLabel(item.eventType, t);
   }
 
   if (item.body) {

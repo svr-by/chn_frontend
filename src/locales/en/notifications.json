@@ -10,5 +10,9 @@
   "all": "All",
   "unreadOnly": "Unread only",
   "viewAll": "View all notifications",
-  "noPermission": "You do not have permission to view notifications."
+  "noPermission": "You do not have permission to view notifications.",
+  "titles": {
+    "COMMENT_ADDED": "New comment on document",
+    "PARTNER_INVITATION_RECEIVED": "Partner invitation received"
+  }
 }

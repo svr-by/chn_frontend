@@ -10,5 +10,9 @@
   "all": "全部",
   "unreadOnly": "仅未读",
   "viewAll": "查看全部通知",
-  "noPermission": "您没有查看通知的权限。"
+  "noPermission": "您没有查看通知的权限。",
+  "titles": {
+    "COMMENT_ADDED": "文档有新评论",
+    "PARTNER_INVITATION_RECEIVED": "收到合作伙伴邀请"
+  }
 }

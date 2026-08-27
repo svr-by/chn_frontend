@@ -17,7 +17,6 @@ export function resolveNotificationPath(
   }
 
   const isRequestDistributedForSupplier =
-    notification.documentEventId === 'REQUEST_DISTRIBUTED' ||
     notification.title.toLowerCase().includes('request distributed');
 
   if (isRequestDistributedForSupplier && notification.documentId) {

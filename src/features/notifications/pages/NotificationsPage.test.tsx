@@ -81,7 +81,7 @@ describe('NotificationsPage', () => {
     });
 
     expect(
-      await screen.findByText('New comment on invoice'),
+      await screen.findByText('New comment on document'),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Mark all read' }),
@@ -98,7 +98,12 @@ describe('NotificationsPage', () => {
         .fn()
         .mockResolvedValueOnce({
           notifications: [
-            createNotification({ id: 'n1', readAt: null, title: 'Unread one' }),
+            createNotification({
+              id: 'n1',
+              type: 'DOCUMENT_STATUS_CHANGED',
+              readAt: null,
+              title: 'Unread one',
+            }),
           ],
           nextCursor: null,
         })
@@ -106,6 +111,7 @@ describe('NotificationsPage', () => {
           notifications: [
             createNotification({
               id: 'n1',
+              type: 'DOCUMENT_STATUS_CHANGED',
               readAt: '2026-01-01T00:00:00.000Z',
               title: 'Unread one',
             }),

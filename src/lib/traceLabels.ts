@@ -3,6 +3,7 @@ import type { TFunction } from 'i18next';
 import type { DocumentRelationshipsNodesItemDocumentType } from '@/api/generated/models/documentRelationshipsNodesItemDocumentType';
 import type { LineageEvent } from '@/api/generated/models/lineageEvent';
 import type { TraceSearchItemPipelineStatus } from '@/api/generated/models/traceSearchItemPipelineStatus';
+import { getActivityEventTypeLabel } from '@/lib/activityEventLabels';
 import type { PipelineStage } from '@/lib/lineagePipeline';
 
 const DOCUMENT_STATUS_ENUM_KEYS = {
@@ -107,13 +108,7 @@ export function getLineageEventLabel(
   event: LineageEvent,
   t: TFunction,
 ): string {
-  const key = `enums:activityEventType.${event.eventType}`;
-  const translated = t(key);
-  if (translated !== key) {
-    return translated;
-  }
-
-  return event.eventType;
+  return getActivityEventTypeLabel(event.eventType, t);
 }
 
 export function getLineageEventActorName(

@@ -347,6 +347,8 @@ export function createTestUser(
     memberships: [createMembership()],
     pendingInvitations: [],
     ...overrides,
+    preferredLocale:
+      overrides.preferredLocale !== undefined ? overrides.preferredLocale : 'en',
   };
 }
 

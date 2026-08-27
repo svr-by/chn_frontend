@@ -12,7 +12,7 @@ describe('resolveNotificationPath', () => {
       documentType: 'MATERIAL_REQUEST',
       documentId: '00000000-0000-0000-0000-000000000050',
       commentId: null,
-      documentEventId: 'REQUEST_DISTRIBUTED',
+      documentEventId: '00000000-0000-0000-0000-000000000099',
       partnerLinkId: null,
       title: 'Request distributed',
       body: null,

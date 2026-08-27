@@ -67,7 +67,7 @@ export function NotificationsDrawer({
 
   return (
     <Drawer anchor="right" open={open} onClose={onClose}>
-      <Box sx={{ width: { xs: '100vw', sm: 400 }, p: 2 }}>
+      <Box sx={{ width: { xs: '80vw', sm: 400 }, p: 2 }}>
         <Stack spacing={2}>
           <Stack
             direction="row"

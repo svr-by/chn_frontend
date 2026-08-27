@@ -18,6 +18,7 @@ import { GetCompaniesCompanyIdNotificationsUnreadOnly } from '@/api/generated/mo
 import { useLazyListNotificationsQuery } from '@/api/endpoints/notificationsApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useCursorList } from '@/hooks/useCursorList';
+import { getNotificationTitle } from '@/lib/notificationLabels';
 
 dayjs.extend(relativeTime);
 
@@ -127,7 +128,7 @@ export function NotificationsList({
                       component="span"
                       fontWeight={isUnread ? 600 : 400}
                     >
-                      {notification.title}
+                      {getNotificationTitle(notification, t)}
                     </Typography>
                   </Stack>
                 }
