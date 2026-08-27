@@ -23,8 +23,8 @@ import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate'
 import { ProductFormDialog } from '@/features/products/components/ProductFormDialog';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { PageShell } from '@/layouts/pageShell/PageShell';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 type ActiveFilter = 'all' | 'true' | 'false';
 
@@ -35,7 +35,7 @@ export function ProductsPage() {
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');

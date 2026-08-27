@@ -36,8 +36,8 @@ import { RequestDistributeToSupplierDialog } from '@/features/requests/component
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 import { usePermissions } from '@/hooks/usePermissions';
 import { mrtEllipsisCellContentSx } from '@/lib/mrtNarrowColumns';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 interface RequestSuppliersMatrixProps {
   companyId: string;
@@ -118,7 +118,7 @@ export function RequestSuppliersMatrix({
     useState<RequestDistribution | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   const canManageDistributions =

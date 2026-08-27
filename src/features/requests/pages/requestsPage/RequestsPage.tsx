@@ -41,8 +41,8 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePermissions } from '@/hooks/usePermissions';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/pageShell/PageShell';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 export function RequestsPage() {
   const { t } = useTranslation('requests');
@@ -128,8 +128,8 @@ export function RequestsPage() {
   const outboundQuery = useListRequestsQuery(
     buildOutboundRequestsQueryArgs({
       companyId: companyId ?? '',
-      limit: PAGE_SIZE,
-      offset: pageIndex * PAGE_SIZE,
+      limit: DEFAULT_PAGE_SIZE,
+      offset: pageIndex * DEFAULT_PAGE_SIZE,
       filters: appliedFilters,
     }),
     { skip: !companyId || tab !== 'outbound' },
@@ -138,8 +138,8 @@ export function RequestsPage() {
   const inboundQuery = useListInboundRequestsQuery(
     buildInboundRequestsQueryArgs({
       companyId: companyId ?? '',
-      limit: PAGE_SIZE,
-      offset: pageIndex * PAGE_SIZE,
+      limit: DEFAULT_PAGE_SIZE,
+      offset: pageIndex * DEFAULT_PAGE_SIZE,
       filters: appliedFilters,
     }),
     { skip: !companyId || tab !== 'inbound' },
@@ -285,7 +285,7 @@ export function RequestsPage() {
               count={total}
               page={pageIndex}
               onPageChange={setPageIndex}
-              rowsPerPage={PAGE_SIZE}
+              rowsPerPage={DEFAULT_PAGE_SIZE}
             />
           </Stack>
         )}

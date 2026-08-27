@@ -30,13 +30,13 @@ import {
 } from '@/features/quotes/lib/quoteComparisonSelection';
 import { SELECTABLE_REQUEST_STATUSES } from '@/features/quotes/lib/quoteSelection';
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
 
-const PAGE_SIZE = 20;
 
 export interface OfferSelectionProps {
   companyId: string;
@@ -76,7 +76,7 @@ export function QuoteComparisonMatrix({
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

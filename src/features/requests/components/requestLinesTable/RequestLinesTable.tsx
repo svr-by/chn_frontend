@@ -27,8 +27,8 @@ import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate'
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { RequestLineFormDialog } from '@/features/requests/components/requestLineFormDialog/RequestLineFormDialog';
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 interface RequestLinesTableProps {
   companyId: string;
@@ -51,7 +51,7 @@ export function RequestLinesTable({
   const [lineToDelete, setLineToDelete] = useState<RequestLine | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   const [deleteLine, deleteState] = useDeleteRequestLineMutation();

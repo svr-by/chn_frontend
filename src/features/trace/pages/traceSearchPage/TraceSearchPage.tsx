@@ -28,11 +28,11 @@ import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate'
 import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { getPipelineStatusLabel } from '@/lib/traceLabels';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 
 dayjs.extend(relativeTime);
 
-const PAGE_SIZE = 20;
 
 type StatusFilter = keyof typeof GetCompaniesCompanyIdTraceSearchStatus | 'ALL';
 
@@ -60,7 +60,7 @@ export function TraceSearchPage() {
   );
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

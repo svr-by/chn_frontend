@@ -54,8 +54,8 @@ import {
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
 import { parseDecimal } from '@/lib/decimal';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 function canAddOfferOrVariant(
   offer: QuoteOfferRow,
@@ -116,7 +116,7 @@ export function QuoteLinesTable({
   } | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
   const showCsvActions = Boolean(materialRequestId) && (canExportCsv || canImportCsv);
 

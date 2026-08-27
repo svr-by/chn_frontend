@@ -34,8 +34,8 @@ import { useAppSelector } from '@/hooks/useAppSelector';
 import { usePreferredListDirection } from '@/hooks/usePreferredListDirection';
 import { PageShell } from '@/layouts/pageShell/PageShell';
 import type { ListDirection } from '@/lib/preferredDirection';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 const DIRECTION_TABS: ListDirection[] = ['inbound', 'outbound'];
 
@@ -92,8 +92,8 @@ export function InvoicesPage() {
     buildInvoicesListQueryArgs({
       companyId: companyId ?? '',
       direction,
-      limit: PAGE_SIZE,
-      offset: pageIndex * PAGE_SIZE,
+      limit: DEFAULT_PAGE_SIZE,
+      offset: pageIndex * DEFAULT_PAGE_SIZE,
       filters: appliedFilters,
       requestId: requestIdFilter,
     }),
@@ -258,7 +258,7 @@ export function InvoicesPage() {
               count={total}
               page={pageIndex}
               onPageChange={setPageIndex}
-              rowsPerPage={PAGE_SIZE}
+              rowsPerPage={DEFAULT_PAGE_SIZE}
             />
           </Stack>
         )}

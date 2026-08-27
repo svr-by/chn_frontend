@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useLazyGetLineageEventsQuery } from '@/api/endpoints/traceApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useCursorList } from '@/hooks/useCursorList';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   getLineageEventActorName,
   getLineageEventLabel,
@@ -25,7 +26,6 @@ import {
 
 dayjs.extend(relativeTime);
 
-const PAGE_SIZE = 20;
 
 interface LineageEventsPanelProps {
   companyId: string;
@@ -44,7 +44,7 @@ export function LineageEventsPanel({
       const result = await trigger({
         companyId,
         lineageId,
-        limit: PAGE_SIZE,
+        limit: DEFAULT_PAGE_SIZE,
         cursor,
       }).unwrap();
       return {

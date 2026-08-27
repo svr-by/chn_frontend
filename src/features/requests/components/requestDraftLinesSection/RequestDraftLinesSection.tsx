@@ -26,8 +26,8 @@ import {
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
 import { RequestLineDescriptionCell } from '@/features/requests/lib/requestLineDescription';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 type NumberedDraftLine = DraftRequestLine & { lineNumber: number };
 
@@ -53,7 +53,7 @@ export function RequestDraftLinesSection({
   const [editingLine, setEditingLine] = useState<DraftRequestLine | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

@@ -30,8 +30,8 @@ import { InvoiceLinesCsvExportDialog } from '@/features/invoices/components/invo
 import { InvoiceLineFormDialog } from '@/features/invoices/components/invoiceLinesTable/InvoiceLineFormDialog';
 import { createInvoiceLineBaseColumns } from '@/features/invoices/lib/invoiceLineTableColumns';
 import { parseDecimal } from '@/lib/decimal';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 interface InvoiceLinesTableProps {
   companyId: string;
@@ -67,7 +67,7 @@ export function InvoiceLinesTable({
   const [lineToDelete, setLineToDelete] = useState<InvoiceLine | null>(null);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   const [deleteLine, deleteState] = useDeleteInvoiceLineMutation();

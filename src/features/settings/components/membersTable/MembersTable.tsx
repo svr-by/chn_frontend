@@ -17,8 +17,8 @@ import {
   formatUserName,
 } from '@/features/settings/lib/memberDisplay';
 import { usePermissions } from '@/hooks/usePermissions';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 interface MembersTableProps {
   members: CompanyMember[];
@@ -44,7 +44,7 @@ export function MembersTable({
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

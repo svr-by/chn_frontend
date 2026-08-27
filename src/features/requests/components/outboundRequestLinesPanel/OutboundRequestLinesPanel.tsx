@@ -10,12 +10,12 @@ import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTabl
 import { RequestLinePipelineIcons } from '@/features/requests/components/outboundRequestLinesPanel/RequestLinePipelineIcons';
 import { createRequestLineListBaseColumns } from '@/features/requests/lib/requestLineListTableColumns';
 import { formatLocalizedDate } from '@/lib/dateFormat';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   buildOutboundRequestLinesQueryArgs,
   type RequestLinesFiltersValue,
 } from '@/features/requests/lib/requestLinesFilters';
 
-const PAGE_SIZE = 20;
 
 interface OutboundRequestLinesPanelProps {
   companyId: string;
@@ -30,7 +30,7 @@ export const OutboundRequestLinesPanel = memo(function OutboundRequestLinesPanel
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

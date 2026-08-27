@@ -14,8 +14,8 @@ import {
 } from '@/components/tables/paginatedTable/PaginatedTable';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { formatMemberRole } from '@/features/settings/lib/memberDisplay';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 type Invitation = GetCompaniesCompanyIdMembersInvitations200InvitationsItem;
 
@@ -38,7 +38,7 @@ export function InvitationsTable({
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

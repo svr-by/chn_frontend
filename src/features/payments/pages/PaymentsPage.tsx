@@ -21,8 +21,8 @@ import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTabl
 import { PaymentStatusBadge } from '@/components/status/paymentStatusBadge/PaymentStatusBadge';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { PageShell } from '@/layouts/pageShell/PageShell';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 const STATUS_OPTIONS: Array<PaymentSummaryStatus | 'ALL'> = [
   'ALL',
@@ -42,7 +42,7 @@ export function PaymentsPage() {
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
   const [statusFilter, setStatusFilter] = useState<
     PaymentSummaryStatus | 'ALL'

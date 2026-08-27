@@ -11,13 +11,13 @@ import { RequestLineCancelledBadge } from '@/components/status/requestLineCancel
 import { InvoiceDraftLineDialog } from '@/features/invoices/components/InvoiceDraftLineDialog';
 import type { DraftInvoiceLine } from '@/features/invoices/lib/draftInvoiceLine';
 import { parseDecimal } from '@/lib/decimal';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
 
-const PAGE_SIZE = 20;
 
 type NumberedDraftLine = DraftInvoiceLine & { lineNumber: number };
 
@@ -46,7 +46,7 @@ export function InvoiceDraftLinesSection({
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

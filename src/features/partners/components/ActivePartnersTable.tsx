@@ -21,8 +21,8 @@ import {
   type MRT_PaginationState,
 } from '@/components/tables/paginatedTable/PaginatedTable';
 import { formatLocalizedDate } from '@/lib/dateFormat';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
-const PAGE_SIZE = 20;
 
 interface ActivePartnersTableProps {
   partners: TradingPartner[];
@@ -46,7 +46,7 @@ export function ActivePartnersTable({
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

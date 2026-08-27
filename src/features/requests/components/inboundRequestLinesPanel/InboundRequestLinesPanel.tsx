@@ -10,12 +10,12 @@ import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { createRequestLineListBaseColumns } from '@/features/requests/lib/requestLineListTableColumns';
 import { formatLocalizedDate } from '@/lib/dateFormat';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   buildInboundRequestLinesQueryArgs,
   type RequestLinesFiltersValue,
 } from '@/features/requests/lib/requestLinesFilters';
 
-const PAGE_SIZE = 20;
 
 interface InboundRequestLinesPanelProps {
   companyId: string;
@@ -30,7 +30,7 @@ export const InboundRequestLinesPanel = memo(function InboundRequestLinesPanel({
 
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: 0,
-    pageSize: PAGE_SIZE,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
   useEffect(() => {

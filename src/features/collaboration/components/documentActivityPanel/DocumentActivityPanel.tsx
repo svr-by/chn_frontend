@@ -24,10 +24,10 @@ import {
   getActivityItemLabel,
 } from '@/lib/activityLabels';
 import { useCursorList } from '@/hooks/useCursorList';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
 dayjs.extend(relativeTime);
 
-const PAGE_SIZE = 20;
 
 interface DocumentActivityPanelProps {
   companyId: string;
@@ -49,7 +49,7 @@ export function DocumentActivityPanel({
         companyId,
         documentType,
         documentId,
-        limit: PAGE_SIZE,
+        limit: DEFAULT_PAGE_SIZE,
         cursor,
       }).unwrap();
       return {

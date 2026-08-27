@@ -19,10 +19,10 @@ import { useLazyListNotificationsQuery } from '@/api/endpoints/notificationsApi'
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { useCursorList } from '@/hooks/useCursorList';
 import { getNotificationTitle } from '@/lib/notificationLabels';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 
 dayjs.extend(relativeTime);
 
-const PAGE_SIZE = 20;
 
 interface NotificationsListProps {
   companyId: string;
@@ -45,7 +45,7 @@ export function NotificationsList({
     async (cursor?: string) => {
       const result = await trigger({
         companyId,
-        limit: PAGE_SIZE,
+        limit: DEFAULT_PAGE_SIZE,
         cursor,
         unreadOnly: unreadOnly
           ? GetCompaniesCompanyIdNotificationsUnreadOnly.true
