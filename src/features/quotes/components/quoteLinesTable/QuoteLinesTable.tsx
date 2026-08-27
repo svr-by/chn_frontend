@@ -35,6 +35,7 @@ import { useDeleteQuoteLineMutation } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
+import { ResponsiveIconButton } from '@/components/actions/responsiveIconButton/ResponsiveIconButton';
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
@@ -530,23 +531,21 @@ export function QuoteLinesTable({
             ? () => (
                 <Stack direction="row" spacing={1}>
                   {canExportCsv ? (
-                    <Button
+                    <ResponsiveIconButton
                       variant="outlined"
-                      startIcon={<FileDownloadOutlinedIcon />}
+                      label={t('actions.exportCsv')}
+                      icon={<FileDownloadOutlinedIcon />}
                       onClick={() => setCsvExportOpen(true)}
-                    >
-                      {t('actions.exportCsv')}
-                    </Button>
+                    />
                   ) : null}
                   {canImportCsv ? (
                     <PermissionGate permission="manageQuotes">
-                      <Button
+                      <ResponsiveIconButton
                         variant="outlined"
-                        startIcon={<UploadFileOutlinedIcon />}
+                        label={t('actions.importCsv')}
+                        icon={<UploadFileOutlinedIcon />}
                         onClick={() => setCsvImportOpen(true)}
-                      >
-                        {t('actions.importCsv')}
-                      </Button>
+                      />
                     </PermissionGate>
                   ) : null}
                 </Stack>

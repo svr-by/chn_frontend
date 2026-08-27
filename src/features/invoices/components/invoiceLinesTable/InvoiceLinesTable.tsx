@@ -21,6 +21,7 @@ import { useSnackbar } from 'notistack';
 
 import type { InvoiceLine } from '@/api/generated/models/invoiceLine';
 import { useDeleteInvoiceLineMutation } from '@/api/endpoints/invoicesApi';
+import { ResponsiveIconButton } from '@/components/actions/responsiveIconButton/ResponsiveIconButton';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
@@ -174,22 +175,20 @@ export function InvoiceLinesTable({
           <Stack direction="row" spacing={1}>
             {editable ? (
               <PermissionGate permission="manageInvoices">
-                <Button
+                <ResponsiveIconButton
                   variant="outlined"
-                  startIcon={<AddIcon />}
+                  label={t('actions.addLine')}
+                  icon={<AddIcon />}
                   onClick={() => setAddDialogOpen(true)}
-                >
-                  {t('actions.addLine')}
-                </Button>
+                />
               </PermissionGate>
             ) : null}
-            <Button
+            <ResponsiveIconButton
               variant="outlined"
-              startIcon={<FileDownloadOutlinedIcon />}
+              label={t('actions.exportCsv')}
+              icon={<FileDownloadOutlinedIcon />}
               onClick={() => setCsvExportOpen(true)}
-            >
-              {t('actions.exportCsv')}
-            </Button>
+            />
           </Stack>
         )}
       />
