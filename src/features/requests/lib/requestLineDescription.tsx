@@ -1,19 +1,16 @@
 import { Stack, Typography } from '@mui/material';
 
-export type RequestLineSkuSource = {
-  description: string;
-  attributes?: { importSku?: unknown } | null;
-  product?: { sku?: string | null } | null;
-};
+import { mrtEllipsisCellContentSx } from '@/lib/mrtNarrowColumns';
+import {
+  getRequestLineDisplaySku,
+  type RequestLineSkuSource,
+} from '@/lib/requestLineSku';
 
-export function getRequestLineImportSku(line: RequestLineSkuSource) {
-  const value = line.attributes?.importSku;
-  return typeof value === 'string' && value.trim() ? value : null;
-}
-
-export function getRequestLineDisplaySku(line: RequestLineSkuSource) {
-  return line.product?.sku ?? getRequestLineImportSku(line);
-}
+export type { RequestLineSkuSource } from '@/lib/requestLineSku';
+export {
+  getRequestLineDisplaySku,
+  getRequestLineImportSku,
+} from '@/lib/requestLineSku';
 
 export function RequestLineDescriptionCell({
   line,
@@ -23,10 +20,21 @@ export function RequestLineDescriptionCell({
   const sku = getRequestLineDisplaySku(line);
 
   return (
-    <Stack spacing={0.5}>
-      <Typography variant="body2">{line.description}</Typography>
+    <Stack spacing={0.5} sx={{ minWidth: 0, overflow: 'hidden' }}>
+      <Typography
+        variant="body2"
+        title={line.description}
+        sx={mrtEllipsisCellContentSx}
+      >
+        {line.description}
+      </Typography>
       {sku ? (
-        <Typography variant="caption" color="text.secondary">
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          title={sku}
+          sx={mrtEllipsisCellContentSx}
+        >
           {sku}
         </Typography>
       ) : null}

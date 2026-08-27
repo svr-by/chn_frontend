@@ -179,6 +179,7 @@
     "product": "产品（可选）",
     "productPlaceholder": "搜索目录",
     "description": "描述",
+    "sku": "SKU",
     "quantity": "数量",
     "unit": "单位",
     "addLineTitle": "添加行",

@@ -28,6 +28,7 @@ import type {
   DraftRequestLine,
   RequestLineFormValues,
 } from '@/features/requests/lib/draftRequestLine';
+import { getRequestLineImportSku } from '@/lib/requestLineSku';
 
 type ApiModeProps = {
   mode?: 'api';
@@ -60,6 +61,7 @@ const EMPTY_FORM_VALUES: RequestLineFormValues = {
   description: '',
   quantity: '',
   unit: '',
+  sku: '',
   notes: '',
 };
 
@@ -107,6 +109,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
           message: t('validation:invalidQuantity'),
         }),
         unit: z.string().trim().optional(),
+        sku: z.string().trim().optional(),
         notes: z.string().trim().optional(),
       }),
     [t],
@@ -140,6 +143,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
         description: draftLine?.description ?? '',
         quantity: draftLine?.quantity ?? '',
         unit: draftLine?.unit ?? '',
+        sku: draftLine?.sku ?? '',
         notes: draftLine?.notes ?? '',
       });
       return;
@@ -167,6 +171,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       description: line?.description ?? '',
       quantity: line?.quantity ?? '',
       unit: line?.unit ?? '',
+      sku: getRequestLineImportSku(line ?? { description: '' }) ?? '',
       notes: line?.notes ?? '',
     });
   }, [open, line, draftLine, isLocal, reset]);
@@ -195,6 +200,8 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       return;
     }
 
+    const trimmedSku = values.sku?.trim() || '';
+
     const payload = {
       companyId,
       requestId: props.requestId,
@@ -203,6 +210,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
       unit: values.unit || undefined,
       notes: values.notes || undefined,
       ...(values.productId ? { productId: values.productId } : {}),
+      ...(trimmedSku ? { attributes: { importSku: trimmedSku } } : {}),
     };
 
     if (isEdit && line) {
@@ -212,6 +220,10 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
         productId: values.productId ?? null,
         unit: values.unit || null,
         notes: values.notes || null,
+        attributes: {
+          ...(line.attributes ?? {}),
+          importSku: trimmedSku || null,
+        },
       }).unwrap();
     } else {
       await addLine(payload).unwrap();
@@ -264,6 +276,7 @@ export function RequestLineFormDialog(props: RequestLineFormDialogProps) {
               helperText={errors.description?.message}
               {...register('description')}
             />
+            <TextField label={t('form.sku')} fullWidth {...register('sku')} />
             <DecimalInput
               label={t('form.quantity')}
               fullWidth

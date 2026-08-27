@@ -13,6 +13,7 @@ import { LineagePipelineView } from '@/features/trace/components/lineagePipeline
 import { useAppSelector } from '@/hooks/useAppSelector';
 import { BackLink } from '@/components/navigation/backLink/BackLink';
 import { PageShell } from '@/layouts/pageShell/PageShell';
+import { getRequestLineDisplaySku } from '@/lib/requestLineSku';
 
 const TAB_KEYS = ['pipeline', 'events'] as const;
 type TabKey = (typeof TAB_KEYS)[number];
@@ -37,6 +38,10 @@ export function TraceDetailPage() {
   );
 
   const trace = traceQuery.data;
+  const requestLineSku = trace
+    ? getRequestLineDisplaySku(trace.requestLine)
+    : null;
+  const requestLineNotes = trace?.requestLine.notes?.trim() || null;
 
   useEffect(() => {
     if (
@@ -87,7 +92,7 @@ export function TraceDetailPage() {
 
           {trace ? (
             <>
-              <Stack spacing={1}>
+              <Stack spacing={0.5}>
                 <Stack
                   direction="row"
                   spacing={1}
@@ -101,6 +106,16 @@ export function TraceDetailPage() {
                     cancelledAt={trace.requestLine.cancelledAt}
                   />
                 </Stack>
+                {requestLineSku ? (
+                  <Typography variant="caption" color="text.secondary">
+                    {requestLineSku}
+                  </Typography>
+                ) : null}
+                {requestLineNotes ? (
+                  <Typography variant="body2" color="text.secondary">
+                    {requestLineNotes}
+                  </Typography>
+                ) : null}
               </Stack>
 
               <Box>

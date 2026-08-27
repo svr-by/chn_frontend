@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { IconButton, Stack, Tooltip, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -9,6 +9,7 @@ import TranslateOutlinedIcon from '@mui/icons-material/TranslateOutlined';
 import type { MRT_ColumnDef, MRT_PaginationState } from 'material-react-table';
 import { useTranslation } from 'react-i18next';
 
+import { ResponsiveIconButton } from '@/components/actions/responsiveIconButton/ResponsiveIconButton';
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
@@ -24,6 +25,7 @@ import {
   MRT_NARROW_LINE_NUMBER_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
+import { RequestLineDescriptionCell } from '@/features/requests/lib/requestLineDescription';
 
 const PAGE_SIZE = 20;
 
@@ -128,6 +130,7 @@ export function RequestDraftLinesSection({
         accessorKey: 'description',
         header: t('columns.description'),
         grow: true,
+        Cell: ({ row }) => <RequestLineDescriptionCell line={row.original} />,
       },
       {
         id: 'notes',
@@ -206,31 +209,28 @@ export function RequestDraftLinesSection({
         layoutMode="grid"
         renderBottomToolbarCustomActions={() => (
           <Stack direction="row" spacing={1}>
-            <Button
+            <ResponsiveIconButton
               type="button"
               variant="outlined"
-              startIcon={<AddIcon />}
+              label={t('actions.addLine')}
+              icon={<AddIcon />}
               onClick={openAddDialog}
-            >
-              {t('actions.addLine')}
-            </Button>
-            <Button
+            />
+            <ResponsiveIconButton
               type="button"
               variant="outlined"
-              startIcon={<UploadFileOutlinedIcon />}
+              label={t('actions.importFromFile')}
+              icon={<UploadFileOutlinedIcon />}
               onClick={onImportClick}
-            >
-              {t('actions.importFromFile')}
-            </Button>
-            <Button
+            />
+            <ResponsiveIconButton
               type="button"
               variant="outlined"
-              startIcon={<TranslateOutlinedIcon />}
+              label={t('actions.translate')}
+              icon={<TranslateOutlinedIcon />}
               onClick={onTranslateClick}
               disabled={lines.length === 0}
-            >
-              {t('actions.translate')}
-            </Button>
+            />
           </Stack>
         )}
       />

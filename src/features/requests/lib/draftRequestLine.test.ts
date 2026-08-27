@@ -2,10 +2,12 @@ import { describe, expect, it } from 'vitest';
 
 import {
   applyTranslatedPreviewToDraftLines,
+  createEmptyDraftLine,
   draftLinesToCreatePayload,
   draftLinesToTranslatePreview,
   isCsvImportFile,
   mapPreviewRowsToDraftLines,
+  updateDraftLine,
   type DraftRequestLine,
 } from '@/features/requests/lib/draftRequestLine';
 
@@ -101,6 +103,32 @@ describe('draftRequestLine helpers', () => {
         notes: 'rush',
       },
     ]);
+  });
+
+  it('creates and updates draft lines with trimmed sku', () => {
+    const created = createEmptyDraftLine({
+      description: 'Bolt',
+      quantity: '10',
+      sku: '  B-1  ',
+    });
+    expect(created).toMatchObject({
+      description: 'Bolt',
+      quantity: '10',
+      sku: 'B-1',
+    });
+    expect(created.clientId).toBeTruthy();
+
+    const updated = updateDraftLine(created, {
+      description: 'Bolt M8',
+      quantity: '12',
+      sku: '   ',
+    });
+    expect(updated).toMatchObject({
+      clientId: created.clientId,
+      description: 'Bolt M8',
+      quantity: '12',
+    });
+    expect(updated.sku).toBeUndefined();
   });
 
   it('maps draft lines to a translate preview and applies translated texts', () => {

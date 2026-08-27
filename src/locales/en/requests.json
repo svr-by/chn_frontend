@@ -179,6 +179,7 @@
     "product": "Product (optional)",
     "productPlaceholder": "Search catalog",
     "description": "Description",
+    "sku": "SKU",
     "quantity": "Quantity",
     "unit": "Unit",
     "addLineTitle": "Add line",

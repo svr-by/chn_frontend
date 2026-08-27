@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   getRequestLineDisplaySku,
   getRequestLineImportSku,
-} from '@/features/requests/lib/requestLineDescription';
+} from '@/lib/requestLineSku';
 
 describe('getRequestLineImportSku', () => {
   it('returns import sku from attributes', () => {
@@ -45,5 +45,14 @@ describe('getRequestLineDisplaySku', () => {
         product: { sku: null },
       }),
     ).toBe('PAPER-A4');
+  });
+
+  it('falls back to top-level draft sku when product and import sku are missing', () => {
+    expect(
+      getRequestLineDisplaySku({
+        description: 'Paper',
+        sku: 'DRAFT-1',
+      }),
+    ).toBe('DRAFT-1');
   });
 });

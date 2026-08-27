@@ -19,6 +19,7 @@ export type RequestLineFormValues = {
   description: string;
   quantity: string;
   unit?: string;
+  sku?: string;
   notes?: string;
 };
 
@@ -38,6 +39,7 @@ export function createEmptyDraftLine(
     description: values.description,
     quantity: values.quantity,
     unit: values.unit || undefined,
+    sku: values.sku?.trim() || undefined,
     productId: values.productId || undefined,
     notes: values.notes || undefined,
   };
@@ -52,6 +54,7 @@ export function updateDraftLine(
     description: values.description,
     quantity: values.quantity,
     unit: values.unit || undefined,
+    sku: values.sku?.trim() || undefined,
     productId: values.productId || undefined,
     notes: values.notes || undefined,
   };

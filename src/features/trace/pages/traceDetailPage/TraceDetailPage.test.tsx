@@ -65,7 +65,13 @@ describe('TraceDetailPage', () => {
 
   it('renders lineage pipeline when trace is found', () => {
     vi.mocked(useGetLineageTraceQuery).mockReturnValue({
-      data: createLineageTrace(),
+      data: createLineageTrace({
+        requestLine: {
+          ...createLineageTrace().requestLine,
+          attributes: { importSku: 'PAPER-A4' },
+          notes: 'A4 white, 80gsm',
+        },
+      }),
       isLoading: false,
       isFetching: false,
       error: undefined,
@@ -90,6 +96,8 @@ describe('TraceDetailPage', () => {
     expect(screen.getByRole('tab', { name: 'Graph' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Events' })).toBeInTheDocument();
     expect(screen.getAllByText('Office paper').length).toBeGreaterThan(0);
+    expect(screen.getByText('PAPER-A4')).toBeInTheDocument();
+    expect(screen.getByText('A4 white, 80gsm')).toBeInTheDocument();
     expect(screen.getAllByText(/Supplier Ltd/).length).toBeGreaterThan(0);
   });
 
