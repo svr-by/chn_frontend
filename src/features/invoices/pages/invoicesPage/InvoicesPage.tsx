@@ -123,9 +123,10 @@ export function InvoicesPage() {
       <Stack spacing={3} sx={{ flex: 1, minHeight: 0 }}>
         <Stack spacing={0}>
           <Stack
-            direction="row"
+            direction={{ xs: 'column', sm: 'row' }}
             justifyContent="space-between"
-            alignItems="flex-start"
+            alignItems={{ xs: 'stretch', sm: 'flex-start' }}
+            spacing={2}
           >
             <Box>
               <Typography variant="h5" component="h1">

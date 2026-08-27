@@ -116,13 +116,6 @@ export const InboundRequestLinesPanel = memo(function InboundRequestLinesPanel({
           return formatLocalizedDate(value, i18n.language);
         },
       },
-      {
-        accessorKey: 'updatedAt',
-        header: t('requestLines.columns.updatedAt'),
-        size: 120,
-        grow: false,
-        Cell: ({ cell }) => formatLocalizedDate(cell.getValue<string | null>(), i18n.language),
-      },
     ],
     [t, i18n.language],
   );

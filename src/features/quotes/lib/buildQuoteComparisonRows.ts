@@ -22,7 +22,7 @@ export function buildQuoteComparisonRows(
   return lines.map((line) => {
     const offersBySupplier = new Map<string, QuoteOffer[]>();
 
-    for (const offer of line.offers) {
+    for (const offer of line.offers ?? []) {
       const supplierId = offer.supplierCompany.id;
       const group = offersBySupplier.get(supplierId) ?? [];
       group.push(offer);
@@ -53,13 +53,15 @@ export function buildQuoteComparisonRows(
 }
 
 export function comparisonHasOffers(lines: QuoteComparisonLine[]): boolean {
-  return lines.some((line) => line.offers.length > 0);
+  return lines.some((line) => (line.offers?.length ?? 0) > 0);
 }
 
 export function comparisonHasSelectableOffers(
   lines: QuoteComparisonLine[],
 ): boolean {
   return lines.some((line) =>
-    line.offers.some((offer) => SELECTABLE_QUOTE_STATUSES.has(offer.status)),
+    (line.offers ?? []).some((offer) =>
+      SELECTABLE_QUOTE_STATUSES.has(offer.status),
+    ),
   );
 }

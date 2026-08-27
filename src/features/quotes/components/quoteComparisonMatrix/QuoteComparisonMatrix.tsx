@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Stack,
-  Typography,
   useTheme,
 } from '@mui/material';
 import { alpha } from '@mui/material/styles';
@@ -22,7 +21,6 @@ import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/Line
 import { OffersNestedTable } from '@/features/quotes/components/quoteComparisonMatrix/OffersNestedTable';
 import {
   buildQuoteComparisonRows,
-  comparisonHasOffers,
   comparisonHasSelectableOffers,
   type QuoteComparisonLineRow,
 } from '@/features/quotes/lib/buildQuoteComparisonRows';
@@ -67,7 +65,6 @@ export function QuoteComparisonMatrix({
     () => comparisonQuery.data?.lines ?? [],
     [comparisonQuery.data?.lines],
   );
-  const hasOffers = useMemo(() => comparisonHasOffers(lines), [lines]);
   const requestStatus = comparisonQuery.data?.request
     ?.status as MaterialRequestStatus | undefined;
   const selectionEnabled =
@@ -109,7 +106,7 @@ export function QuoteComparisonMatrix({
         ...mrtFixedSizeColumnProps(MRT_NARROW_ACTIONS_SIZE),
         Cell: ({ row }) => (
           <LineRowActionsMenu
-            lineageId={row.original.requestLine.lineageId}
+            lineageId={row.original.requestLine?.lineageId ?? ''}
             moreLabel={t('actions.more')}
             openTraceLabel={t('actions.openTrace')}
           />
@@ -119,13 +116,13 @@ export function QuoteComparisonMatrix({
         id: 'lineNumber',
         header: t('comparison.columns.lineNumber'),
         ...mrtFixedSizeColumnProps(MRT_NARROW_LINE_NUMBER_SIZE),
-        Cell: ({ row }) => row.original.requestLine.lineNumber,
+        Cell: ({ row }) => row.original.requestLine?.lineNumber ?? null,
       },
       {
         id: 'description',
         header: t('comparison.columns.description'),
         grow: true,
-        Cell: ({ row }) => row.original.requestLine.description,
+        Cell: ({ row }) => row.original.requestLine?.description ?? null,
       },
       {
         id: 'quantity',
@@ -140,8 +137,8 @@ export function QuoteComparisonMatrix({
         },
         Cell: ({ row }) => (
           <DecimalDisplay
-            value={row.original.requestLine.quantity}
-            suffix={row.original.requestLine.unit ?? '—'}
+            value={row.original.requestLine?.quantity}
+            suffix={row.original.requestLine?.unit ?? '—'}
           />
         ),
       },
@@ -159,7 +156,7 @@ export function QuoteComparisonMatrix({
         Cell: ({ row }) => (
           <DecimalDisplay
             value={sumLineSelectedQuantity(row.original)}
-            suffix={row.original.requestLine.unit ?? '—'}
+            suffix={row.original.requestLine?.unit ?? '—'}
           />
         ),
       },
@@ -180,11 +177,10 @@ export function QuoteComparisonMatrix({
     onPaginationChange: setPagination,
     enableBottomToolbar: true,
     enableExpandAll: true,
-    getRowCanExpand: (row) => row.original.offers.length > 0,
+    getRowCanExpand: (row) => (row.original.offers?.length ?? 0) > 0,
     state: {
       expanded,
       pagination,
-      isLoading: comparisonQuery.isLoading,
       showProgressBars: comparisonQuery.isFetching,
     },
     onExpandedChange: setExpanded,
@@ -213,7 +209,7 @@ export function QuoteComparisonMatrix({
       };
     },
     renderDetailPanel: ({ row }) => {
-      if (row.original.offers.length === 0) {
+      if ((row.original.offers?.length ?? 0) === 0) {
         return null;
       }
 
@@ -231,7 +227,7 @@ export function QuoteComparisonMatrix({
             companyId={companyId}
             selectionEnabled={selectionEnabled}
             materialRequestId={requestId}
-            unit={row.original.requestLine.unit}
+            unit={row.original.requestLine?.unit}
           />
         </Box>
       );
@@ -242,17 +238,7 @@ export function QuoteComparisonMatrix({
     <Stack spacing={2}>
       <ApiErrorAlert error={comparisonQuery.error} />
 
-      {comparisonQuery.isLoading ? (
-        <Typography color="text.secondary">
-          {t('comparison.loading')}
-        </Typography>
-      ) : !hasOffers ? (
-        <Typography color="text.secondary">{t('comparison.empty')}</Typography>
-      ) : (
-        <Box>
-          <MaterialReactTable table={table} />
-        </Box>
-      )}
+      <MaterialReactTable table={table} />
     </Stack>
   );
 }

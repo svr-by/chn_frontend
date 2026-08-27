@@ -35,6 +35,7 @@ import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate'
 import { RequestDistributeToSupplierDialog } from '@/features/requests/components/requestSuppliersMatrix/RequestDistributeToSupplierDialog';
 import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLineTableColumns';
 import { usePermissions } from '@/hooks/usePermissions';
+import { mrtEllipsisCellContentSx } from '@/lib/mrtNarrowColumns';
 
 const PAGE_SIZE = 20;
 
@@ -347,17 +348,20 @@ export function RequestSuppliersMatrix({
           muiTableHeadCellProps: { align: 'center' },
           muiTableBodyCellProps: { align: 'center' },
           Header: () => (
-            <Stack spacing={0.75} alignItems="center">
+            <Stack spacing={0.75} alignItems="center" sx={{ width: '100%', minWidth: 0 }}>
               <Stack
                 direction="row"
                 spacing={0.5}
                 alignItems="center"
-                justifyContent="center"
+                justifyContent="left"
+                sx={{ minWidth: 0, maxWidth: '100%', width: '100%' }}
               >
                 <Typography
                   variant="subtitle2"
-                  textAlign="center"
+                  textAlign="left"
                   color={isRejected ? 'error' : 'text.primary'}
+                  title={distribution.supplierCompany.name}
+                  sx={{ ...mrtEllipsisCellContentSx, flex: '1 1 auto' }}
                 >
                   {distribution.supplierCompany.name}
                 </Typography>
@@ -375,6 +379,7 @@ export function RequestSuppliersMatrix({
                       fontSize="small"
                       color="error"
                       aria-label={t('distributions.rejected')}
+                      sx={{ flexShrink: 0 }}
                     />
                   </Tooltip>
                 ) : null}
@@ -503,41 +508,33 @@ export function RequestSuppliersMatrix({
         }
       />
 
-      {distributionsQuery.isLoading ? (
-        <Typography color="text.secondary">
-          {t('suppliersMatrix.loading')}
-        </Typography>
-      ) : requestLines.length === 0 ? (
-        <Typography color="text.secondary">{t('empty.lines')}</Typography>
-      ) : (
-        <PaginatedTable
-          columns={columns}
-          data={pagedLines}
-          rowCount={requestLines.length}
-          pagination={pagination}
-          onPaginationChange={setPagination}
-          getRowId={(row) => row.id}
-          layoutMode="grid"
-          isLoading={distributionsQuery.isLoading}
-          isFetching={distributionsQuery.isFetching}
-          renderBottomToolbarCustomActions={
-            canManageDistributions
-              ? () => (
-                  <PermissionGate permission="manageRequests">
-                    <Button
-                      variant="outlined"
-                      startIcon={<AddIcon />}
-                      disabled={requestLines.length === 0}
-                      onClick={() => setAddSupplierOpen(true)}
-                    >
-                      {t('actions.addSupplier')}
-                    </Button>
-                  </PermissionGate>
-                )
-              : undefined
-          }
-        />
-      )}
+      <PaginatedTable
+        columns={columns}
+        data={pagedLines}
+        rowCount={requestLines.length}
+        pagination={pagination}
+        onPaginationChange={setPagination}
+        getRowId={(row) => row.id}
+        layoutMode="grid"
+        isLoading={distributionsQuery.isLoading}
+        isFetching={distributionsQuery.isFetching}
+        renderBottomToolbarCustomActions={
+          canManageDistributions
+            ? () => (
+                <PermissionGate permission="manageRequests">
+                  <Button
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    disabled={requestLines.length === 0}
+                    onClick={() => setAddSupplierOpen(true)}
+                  >
+                    {t('actions.addSupplier')}
+                  </Button>
+                </PermissionGate>
+              )
+            : undefined
+        }
+      />
 
       <RequestDistributeToSupplierDialog
         open={addSupplierOpen}

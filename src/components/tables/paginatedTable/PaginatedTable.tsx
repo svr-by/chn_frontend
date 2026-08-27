@@ -90,7 +90,6 @@ export function PaginatedTable<T extends object>({
     positionGlobalFilter,
     muiSearchTextFieldProps,
     onGlobalFilterChange,
-    enableDensityToggle: false,
     enableHiding: false,
     enableColumnFilters,
     enableRowSelection,

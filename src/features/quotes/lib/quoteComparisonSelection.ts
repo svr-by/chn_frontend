@@ -22,7 +22,7 @@ export function sumLineSelectedQuantity(
   let hasSelection = false;
   let total = parseDecimal('0');
 
-  for (const offerRow of line.offers) {
+  for (const offerRow of line.offers ?? []) {
     const selected = resolveSelectedQuantity(offerRow.offer);
     if (selected == null) {
       continue;
@@ -35,6 +35,9 @@ export function sumLineSelectedQuantity(
 }
 
 export function lineIsOverOrdered(line: QuoteComparisonLineRow): boolean {
+  if (!line.requestLine?.quantity) {
+    return false;
+  }
   const selectedTotal = sumLineSelectedQuantity(line);
   if (selectedTotal == null) {
     return false;

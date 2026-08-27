@@ -8,6 +8,7 @@ import {
 } from 'material-react-table';
 
 import { getMrtLocalization } from '@/lib/mrtLocalization';
+import { mergeMrtBodyCellProps } from '@/lib/mrtNarrowColumns';
 
 export function useAppMaterialReactTable<TData extends MRT_RowData>(
   options: MRT_TableOptions<TData>,
@@ -26,6 +27,8 @@ export function useAppMaterialReactTable<TData extends MRT_RowData>(
     muiTablePaperProps,
     layoutMode,
     localization: optionsLocalization,
+    muiTableBodyCellProps,
+    initialState,
     ...restOptions
   } = options;
 
@@ -56,12 +59,18 @@ export function useAppMaterialReactTable<TData extends MRT_RowData>(
   return useMaterialReactTable({
     enableColumnActions: false,
     enableColumnFilters: false,
+    enableDensityToggle: false,
     enableSorting: false,
     enableTopToolbar: false,
     layoutMode: layoutMode ?? (isMobile ? 'grid-no-grow' : 'semantic'),
     localization: optionsLocalization ?? localization,
     muiTableContainerProps: resolvedContainerProps,
     muiTablePaperProps: resolvedPaperProps,
+    muiTableBodyCellProps: mergeMrtBodyCellProps(muiTableBodyCellProps),
+    initialState: {
+      density: 'compact',
+      ...initialState,
+    },
     ...restOptions,
   });
 }
