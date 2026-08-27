@@ -57,6 +57,7 @@ export function InvoiceLinesCsvExportDialog({
       await downloadAuthenticatedFile({
         url: `${baseUrl}${path}`,
         companyId,
+        filename: 'invoice-lines.csv',
       });
       enqueueSnackbar(t('toast.csvExported'), { variant: 'success' });
       onClose();

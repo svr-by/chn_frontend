@@ -57,6 +57,7 @@ export function QuoteLinesCsvExportDialog({
       await downloadAuthenticatedFile({
         url: `${baseUrl}${path}`,
         companyId,
+        filename: 'quote-lines.csv',
       });
       enqueueSnackbar(t('toast.csvExported'), { variant: 'success' });
       onClose();

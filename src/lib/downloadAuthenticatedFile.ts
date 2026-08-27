@@ -58,7 +58,7 @@ export async function downloadAuthenticatedFile({
     parseFilenameFromContentDisposition(
       response.headers.get('Content-Disposition'),
     ) ??
-    'export.json';
+    'export.csv';
 
   const objectUrl = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
