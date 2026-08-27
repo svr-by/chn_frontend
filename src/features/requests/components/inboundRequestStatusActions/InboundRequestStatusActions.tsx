@@ -24,34 +24,84 @@ import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentD
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { CreateQuoteFromInboundDialog } from '@/features/quotes/components/createQuoteFromInboundDialog/CreateQuoteFromInboundDialog';
 
-interface InboundRequestStatusActionsProps {
+interface InboundRequestActionsProps {
   companyId: string;
   requestId: string;
   requestTitle: string;
   buyerName?: string;
 }
 
-export function InboundRequestStatusActions({
-  companyId,
-  requestId,
-  requestTitle,
-  buyerName,
-}: InboundRequestStatusActionsProps) {
-  const { t } = useTranslation('requests');
-  const navigate = useNavigate();
-  const { enqueueSnackbar } = useSnackbar();
-  const [rejectOpen, setRejectOpen] = useState(false);
-  const [createOpen, setCreateOpen] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
-
+function useExistingOutboundQuote(companyId: string, requestId: string) {
   const quotesQuery = useListQuotesQuery(
     { companyId, requestId, limit: 1, offset: 0, direction: 'outbound' },
     { skip: !companyId || !requestId },
   );
 
-  const [rejectInboundRequest, rejectState] = useRejectInboundRequestMutation();
+  return quotesQuery.data?.quotes[0];
+}
 
-  const existingQuote = quotesQuery.data?.quotes[0];
+/** Visible Create quote / Open quote CTA for the document header. */
+export function InboundRequestHeaderActions({
+  companyId,
+  requestId,
+  requestTitle,
+  buyerName,
+}: InboundRequestActionsProps) {
+  const { t } = useTranslation('requests');
+  const navigate = useNavigate();
+  const [createOpen, setCreateOpen] = useState(false);
+  const existingQuote = useExistingOutboundQuote(companyId, requestId);
+
+  if (existingQuote) {
+    return (
+      <Button
+        variant="outlined"
+        size="small"
+        startIcon={<OpenInNewOutlinedIcon />}
+        onClick={() => navigate(`/app/quotes/${existingQuote.id}`)}
+      >
+        {t('inbound.actions.openQuote')}
+      </Button>
+    );
+  }
+
+  return (
+    <PermissionGate permission="manageQuotes">
+      <Button
+        variant="contained"
+        size="small"
+        startIcon={<RequestQuoteOutlinedIcon />}
+        onClick={() => setCreateOpen(true)}
+      >
+        {t('inbound.actions.createQuote')}
+      </Button>
+      <CreateQuoteFromInboundDialog
+        open={createOpen}
+        onClose={() => setCreateOpen(false)}
+        companyId={companyId}
+        lockedRequest={{
+          id: requestId,
+          title: requestTitle,
+          buyerName,
+        }}
+      />
+    </PermissionGate>
+  );
+}
+
+/** Secondary inbound actions for the header ⋮ menu (Reject). */
+export function InboundRequestStatusActions({
+  companyId,
+  requestId,
+}: Pick<InboundRequestActionsProps, 'companyId' | 'requestId'>) {
+  const { t } = useTranslation('requests');
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
+  const existingQuote = useExistingOutboundQuote(companyId, requestId);
+
+  const [rejectInboundRequest, rejectState] = useRejectInboundRequestMutation();
 
   async function handleReject() {
     await rejectInboundRequest({
@@ -67,26 +117,11 @@ export function InboundRequestStatusActions({
   }
 
   if (existingQuote) {
-    return (
-      <DocumentActionMenuItem
-        onClick={() => navigate(`/app/quotes/${existingQuote.id}`)}
-      >
-        <ListItemIcon>
-          <OpenInNewOutlinedIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>{t('inbound.actions.openQuote')}</ListItemText>
-      </DocumentActionMenuItem>
-    );
+    return null;
   }
 
   return (
     <PermissionGate permission="manageQuotes">
-      <DocumentActionMenuItem onClick={() => setCreateOpen(true)}>
-        <ListItemIcon>
-          <RequestQuoteOutlinedIcon fontSize="small" />
-        </ListItemIcon>
-        <ListItemText>{t('inbound.actions.createQuote')}</ListItemText>
-      </DocumentActionMenuItem>
       <DocumentActionMenuItem
         onClick={() => setRejectOpen(true)}
         sx={{ color: 'error.main' }}
@@ -96,17 +131,6 @@ export function InboundRequestStatusActions({
         </ListItemIcon>
         <ListItemText>{t('inbound.actions.reject')}</ListItemText>
       </DocumentActionMenuItem>
-
-      <CreateQuoteFromInboundDialog
-        open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        companyId={companyId}
-        lockedRequest={{
-          id: requestId,
-          title: requestTitle,
-          buyerName,
-        }}
-      />
 
       <Dialog open={rejectOpen} onClose={() => setRejectOpen(false)}>
         <DialogTitle>{t('inbound.reject.title')}</DialogTitle>

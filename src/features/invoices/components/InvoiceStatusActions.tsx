@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Dialog,
@@ -10,6 +11,7 @@ import {
   Typography,
 } from '@mui/material';
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined';
+import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -17,13 +19,14 @@ import { useSnackbar } from 'notistack';
 import type { SupplierInvoiceStatus } from '@/api/generated/models/supplierInvoiceStatus';
 import {
   useConfirmInvoiceMutation,
+  useDeleteInvoiceMutation,
   useIssueInvoiceMutation,
 } from '@/api/endpoints/invoicesApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 
-interface InvoiceStatusActionsProps {
+interface InvoiceActionsProps {
   companyId: string;
   invoiceId: string;
   requestIds?: string[];
@@ -31,22 +34,20 @@ interface InvoiceStatusActionsProps {
   status: SupplierInvoiceStatus;
 }
 
-export function InvoiceStatusActions({
+/** Visible Issue CTA for draft invoices in the document header. */
+export function InvoiceHeaderActions({
   companyId,
   invoiceId,
   requestIds,
   quoteIds,
   status,
-}: InvoiceStatusActionsProps) {
+}: InvoiceActionsProps) {
   const { t } = useTranslation('invoices');
   const { enqueueSnackbar } = useSnackbar();
   const [issueOpen, setIssueOpen] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-
   const [issueInvoice, issueState] = useIssueInvoiceMutation();
-  const [confirmInvoice, confirmState] = useConfirmInvoiceMutation();
 
-  if (status !== 'DRAFT' && status !== 'PAID') {
+  if (status !== 'DRAFT') {
     return null;
   }
 
@@ -59,6 +60,76 @@ export function InvoiceStatusActions({
     }).unwrap();
     enqueueSnackbar(t('toast.issued'), { variant: 'success' });
     setIssueOpen(false);
+  }
+
+  return (
+    <PermissionGate permission="manageInvoices">
+      <Button
+        variant="contained"
+        size="small"
+        startIcon={<SendOutlinedIcon />}
+        onClick={() => setIssueOpen(true)}
+      >
+        {t('actions.issue')}
+      </Button>
+
+      <Dialog open={issueOpen} onClose={() => setIssueOpen(false)}>
+        <DialogTitle>{t('confirm.issueTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={issueState.error} />
+          <Typography>{t('confirm.issueMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIssueOpen(false)}>
+            {t('actions.dismiss')}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => void handleIssue()}
+            disabled={issueState.isLoading}
+          >
+            {t('actions.issue')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </PermissionGate>
+  );
+}
+
+/** Secondary invoice actions for the header ⋮ menu (Delete, Confirm). */
+export function InvoiceStatusActions({
+  companyId,
+  invoiceId,
+  requestIds,
+  quoteIds,
+  status,
+}: InvoiceActionsProps) {
+  const { t } = useTranslation('invoices');
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const [deleteInvoice, deleteState] = useDeleteInvoiceMutation();
+  const [confirmInvoice, confirmState] = useConfirmInvoiceMutation();
+
+  const canDelete = status === 'DRAFT';
+  const canConfirm = status === 'PAID';
+
+  if (!canDelete && !canConfirm) {
+    return null;
+  }
+
+  async function handleDelete() {
+    await deleteInvoice({
+      companyId,
+      invoiceId,
+      requestIds,
+      quoteIds,
+    }).unwrap();
+    enqueueSnackbar(t('toast.deleted'), { variant: 'success' });
+    setDeleteOpen(false);
+    navigate('/app/invoices');
   }
 
   async function handleConfirm() {
@@ -74,15 +145,18 @@ export function InvoiceStatusActions({
 
   return (
     <PermissionGate permission="manageInvoices">
-      {status === 'DRAFT' ? (
-        <DocumentActionMenuItem onClick={() => setIssueOpen(true)}>
-          <ListItemIcon>
-            <SendOutlinedIcon fontSize="small" />
+      {canDelete ? (
+        <DocumentActionMenuItem
+          onClick={() => setDeleteOpen(true)}
+          sx={{ color: 'error.main' }}
+        >
+          <ListItemIcon sx={{ color: 'inherit' }}>
+            <DeleteOutlineOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText>{t('actions.issue')}</ListItemText>
+          <ListItemText>{t('actions.delete')}</ListItemText>
         </DocumentActionMenuItem>
       ) : null}
-      {status === 'PAID' ? (
+      {canConfirm ? (
         <DocumentActionMenuItem onClick={() => setConfirmOpen(true)}>
           <ListItemIcon>
             <CheckCircleOutlineOutlinedIcon fontSize="small" />
@@ -91,22 +165,24 @@ export function InvoiceStatusActions({
         </DocumentActionMenuItem>
       ) : null}
 
-      <Dialog open={issueOpen} onClose={() => setIssueOpen(false)}>
-        <DialogTitle>{t('confirm.issueTitle')}</DialogTitle>
+      <Dialog open={deleteOpen} onClose={() => setDeleteOpen(false)}>
+        <DialogTitle>{t('confirm.deleteTitle')}</DialogTitle>
         <DialogContent>
-          <ApiErrorAlert error={issueState.error} />
-          <Typography>{t('confirm.issueMessage')}</Typography>
+          <ApiErrorAlert error={deleteState.error} />
+          <Typography>{t('confirm.deleteMessage')}</Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIssueOpen(false)}>
+          <Button onClick={() => setDeleteOpen(false)}>
             {t('actions.dismiss')}
           </Button>
           <Button
+            color="error"
             variant="contained"
-            onClick={handleIssue}
-            disabled={issueState.isLoading}
+            startIcon={<DeleteOutlineOutlinedIcon />}
+            onClick={() => void handleDelete()}
+            disabled={deleteState.isLoading}
           >
-            {t('actions.issue')}
+            {t('actions.delete')}
           </Button>
         </DialogActions>
       </Dialog>
@@ -123,7 +199,7 @@ export function InvoiceStatusActions({
           </Button>
           <Button
             variant="contained"
-            onClick={handleConfirm}
+            onClick={() => void handleConfirm()}
             disabled={confirmState.isLoading}
           >
             {t('actions.confirmInvoice')}

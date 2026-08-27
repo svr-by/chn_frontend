@@ -1,5 +1,12 @@
 import type { ReactNode } from 'react';
-import { Box, CircularProgress, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  CircularProgress,
+  Stack,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DocumentDetailActionsMenu } from './DocumentDetailActionsMenu';
@@ -13,6 +20,8 @@ interface DocumentDetailLayoutProps {
   titleAction?: ReactNode;
   subtitle?: string | null;
   statusBadge?: ReactNode;
+  /** Visible primary/secondary actions next to the header ⋮ menu. */
+  headerActions?: ReactNode;
   /** Menu items (DocumentActionMenuItem) + optional dialogs for the header ⋮ menu. */
   actionMenuItems?: ReactNode;
   meta?: ReactNode;
@@ -29,6 +38,7 @@ export function DocumentDetailLayout({
   titleAction,
   subtitle,
   statusBadge,
+  headerActions,
   actionMenuItems,
   meta,
   loading = false,
@@ -37,6 +47,9 @@ export function DocumentDetailLayout({
   maxWidth = 'xl',
   children,
 }: DocumentDetailLayoutProps) {
+  const theme = useTheme();
+  const isCompact = useMediaQuery(theme.breakpoints.down('sm'));
+
   if (loading) {
     return (
       <PageShell maxWidth={maxWidth}>
@@ -47,6 +60,12 @@ export function DocumentDetailLayout({
     );
   }
 
+  const menu = actionMenuItems ? (
+    <DocumentDetailActionsMenu>{actionMenuItems}</DocumentDetailActionsMenu>
+  ) : null;
+  const hasTitleRowActions =
+    Boolean(actionMenuItems) || (!isCompact && Boolean(headerActions));
+
   return (
     <PageShell maxWidth={maxWidth}>
       <Stack spacing={3}>
@@ -54,44 +73,59 @@ export function DocumentDetailLayout({
 
         <ApiErrorAlert error={error} />
 
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          spacing={1}
-        >
-          <Box sx={{ minWidth: 0, flex: 1 }}>
+        <Box>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="flex-start"
+            spacing={1}
+          >
             <Stack
               direction="row"
               spacing={1}
               alignItems="center"
               flexWrap="wrap"
+              sx={{ minWidth: 0, flex: 1 }}
             >
               <Typography variant="h5" component="h1">
                 {title}
               </Typography>
               {titleAction ?? null}
             </Stack>
-            {statusBadge ? <Box sx={{ mt: 1 }}>{statusBadge}</Box> : null}
-            {subtitle ? (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mt: 0.5 }}
+            {hasTitleRowActions ? (
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                sx={{ flexShrink: 0, pt: 0.25 }}
               >
-                {subtitle}
-              </Typography>
+                {!isCompact ? (headerActions ?? null) : null}
+                {menu}
+              </Stack>
             ) : null}
-            {meta ? <Box sx={{ mt: 1 }}>{meta}</Box> : null}
-          </Box>
-          {actionMenuItems ? (
-            <Box sx={{ flexShrink: 0, pt: 0.25 }}>
-              <DocumentDetailActionsMenu>
-                {actionMenuItems}
-              </DocumentDetailActionsMenu>
+          </Stack>
+          {isCompact && headerActions ? (
+            <Box
+              sx={{
+                mt: 1,
+                '& .MuiButton-root': { width: '100%' },
+              }}
+            >
+              {headerActions}
             </Box>
           ) : null}
-        </Stack>
+          {statusBadge ? <Box sx={{ mt: 1 }}>{statusBadge}</Box> : null}
+          {subtitle ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ mt: 0.5 }}
+            >
+              {subtitle}
+            </Typography>
+          ) : null}
+          {meta ? <Box sx={{ mt: 1 }}>{meta}</Box> : null}
+        </Box>
 
         {children}
       </Stack>

@@ -1,5 +1,6 @@
 import {
   getDeleteCompaniesCompanyIdInvoicesInvoiceIdLinesLineIdUrl,
+  getDeleteCompaniesCompanyIdInvoicesInvoiceIdUrl,
   getGetCompaniesCompanyIdInvoicesInvoiceIdShippableLinesUrl,
   getGetCompaniesCompanyIdInvoicesInvoiceIdUrl,
   getGetCompaniesCompanyIdInvoicesUrl,
@@ -235,6 +236,26 @@ export const invoicesApi = baseApi.injectEndpoints({
         { companyId, invoiceId, requestIds, quoteIds },
       ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
     }),
+    deleteInvoice: builder.mutation<
+      void,
+      {
+        companyId: string;
+        invoiceId: string;
+      } & InvoiceCacheMeta
+    >({
+      query: ({ companyId, invoiceId }) => ({
+        url: getDeleteCompaniesCompanyIdInvoicesInvoiceIdUrl(
+          companyId,
+          invoiceId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, invoiceId, requestIds, quoteIds },
+      ) => invoiceDetailTags(companyId, invoiceId, { requestIds, quoteIds }),
+    }),
     issueInvoice: builder.mutation<
       PostCompaniesCompanyIdInvoicesInvoiceIdIssue200,
       {
@@ -300,6 +321,7 @@ export const {
   useAddInvoiceLineMutation,
   useUpdateInvoiceLineMutation,
   useDeleteInvoiceLineMutation,
+  useDeleteInvoiceMutation,
   useIssueInvoiceMutation,
   useConfirmInvoiceMutation,
   useGetShippableLinesQuery,

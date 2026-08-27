@@ -2,7 +2,10 @@ import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 
 import { useGetMeQuery } from '@/api/endpoints/authApi';
-import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
+import {
+  InvoiceHeaderActions,
+  InvoiceStatusActions,
+} from '@/features/invoices/components/InvoiceStatusActions';
 import {
   COMPANY_ID,
   createMembership,
@@ -24,6 +27,10 @@ vi.mock('@/api/endpoints/authApi', async (importOriginal) => {
 
 vi.mock('@/api/endpoints/invoicesApi', () => ({
   useIssueInvoiceMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
+  useDeleteInvoiceMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
@@ -55,7 +62,26 @@ describe('InvoiceStatusActions', () => {
     } as ReturnType<typeof useGetMeQuery>);
   });
 
-  it('shows issue button for DRAFT', () => {
+  it('shows issue button for DRAFT in header actions', () => {
+    renderWithProviders(
+      <InvoiceHeaderActions
+        companyId={COMPANY_ID}
+        invoiceId={INVOICE_ID}
+        requestIds={[REQUEST_ID]}
+        quoteIds={[QUOTE_ID]}
+        status="DRAFT"
+      />,
+      {
+        preloadedState: { auth: { activeCompanyId: COMPANY_ID } as never },
+      },
+    );
+
+    expect(
+      screen.getByRole('button', { name: 'Issue invoice' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows delete action for DRAFT', () => {
     renderWithProviders(
       <InvoiceStatusActions
         companyId={COMPANY_ID}
@@ -69,7 +95,7 @@ describe('InvoiceStatusActions', () => {
       },
     );
 
-    expect(screen.getByText('Issue invoice')).toBeInTheDocument();
+    expect(screen.getByText('Delete invoice')).toBeInTheDocument();
   });
 
   it('shows confirm button for PAID', () => {

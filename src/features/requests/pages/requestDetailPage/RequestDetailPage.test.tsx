@@ -422,6 +422,9 @@ describe('RequestDetailPage', () => {
     ).not.toBeInTheDocument();
     expect(screen.getByText('Test line')).toBeInTheDocument();
     expect(screen.getByText('SKU-001')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Create quote' }),
+    ).toBeInTheDocument();
 
     await user.click(
       screen.getAllByRole('button', { name: 'More actions' })[0]!,

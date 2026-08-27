@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useParams } from 'react-router-dom';
-import { Link, ListItemIcon, ListItemText } from '@mui/material';
+import { Link } from '@mui/material';
 import BusinessOutlinedIcon from '@mui/icons-material/BusinessOutlined';
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 import EventOutlinedIcon from '@mui/icons-material/EventOutlined';
 import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import ScheduleOutlinedIcon from '@mui/icons-material/ScheduleOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
@@ -16,17 +15,18 @@ import {
   useGetInboundRequestQuery,
   useGetRequestQuery,
 } from '@/api/endpoints/requestsApi';
-import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import {
   DocumentDetailMeta,
   DocumentDetailMetaItem,
   DocumentDetailMetaRow,
 } from '@/layouts/documentDetailLayout/DocumentDetailMeta';
-import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 import { DocumentStatusProgress } from '@/components/status/documentStatusProgress/DocumentStatusProgress';
 import { DocumentDetailTabs } from '@/features/collaboration/components/documentDetailTabs/DocumentDetailTabs';
 import { DocumentDetailLayout } from '@/layouts/documentDetailLayout/DocumentDetailLayout';
-import { QuoteStatusActions } from '@/features/quotes/components/quoteStatusActions/QuoteStatusActions';
+import {
+  QuoteHeaderActions,
+  QuoteStatusActions,
+} from '@/features/quotes/components/quoteStatusActions/QuoteStatusActions';
 import { useAppSelector } from '@/hooks/useAppSelector';
 import {
   QuoteCurrencyEditButton,
@@ -189,37 +189,26 @@ export function QuoteDetailPage() {
       loading={quoteQuery.isLoading}
       error={quoteQuery.error}
       backFallbackTo="/app/quotes"
+      headerActions={
+        quote && isSupplier ? (
+          <QuoteHeaderActions
+            companyId={companyId}
+            quoteId={quote.id}
+            materialRequestId={quote.materialRequest?.id}
+            status={quote.status}
+            canCreateInvoice={canCreateInvoice}
+          />
+        ) : null
+      }
       actionMenuItems={
         quote && isSupplier ? (
-          <>
-            <QuoteStatusActions
-              companyId={companyId}
-              quoteId={quote.id}
-              materialRequestId={quote.materialRequest?.id}
-              status={quote.status}
-              hasSelections={hasSelections}
-            />
-            {canCreateInvoice ? (
-              <PermissionGate permission="manageInvoices">
-                <DocumentActionMenuItem
-                  onClick={() =>
-                    navigate(
-                      `/app/invoices/new?quoteId=${quote.id}${
-                        materialRequestId
-                          ? `&requestId=${materialRequestId}`
-                          : ''
-                      }`,
-                    )
-                  }
-                >
-                  <ListItemIcon>
-                    <ReceiptLongOutlinedIcon fontSize="small" />
-                  </ListItemIcon>
-                  <ListItemText>{t('actions.createInvoice')}</ListItemText>
-                </DocumentActionMenuItem>
-              </PermissionGate>
-            ) : null}
-          </>
+          <QuoteStatusActions
+            companyId={companyId}
+            quoteId={quote.id}
+            materialRequestId={quote.materialRequest?.id}
+            status={quote.status}
+            hasSelections={hasSelections}
+          />
         ) : null
       }
       meta={
@@ -235,9 +224,7 @@ export function QuoteDetailPage() {
                       to={requestLink}
                       underline="hover"
                     >
-                      {isSupplier
-                        ? t('detail.inboundRequest')
-                        : t('detail.outboundRequest')}{' '}
+                      {t('detail.request')}{' '}
                       {materialRequestTitle ?? '—'}
                     </Link>
                   }

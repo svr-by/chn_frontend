@@ -30,7 +30,10 @@ import {
   RequestPriorityEditButton,
   RequestTitleEditButton,
 } from '@/features/requests/components/requestHeaderForm/RequestHeaderForm';
-import { InboundRequestStatusActions } from '@/features/requests/components/inboundRequestStatusActions/InboundRequestStatusActions';
+import {
+  InboundRequestHeaderActions,
+  InboundRequestStatusActions,
+} from '@/features/requests/components/inboundRequestStatusActions/InboundRequestStatusActions';
 import { RequestLinesTable } from '@/features/requests/components/requestLinesTable/RequestLinesTable';
 import { RequestSuppliersMatrix } from '@/features/requests/components/requestSuppliersMatrix/RequestSuppliersMatrix';
 import { RequestStatusActions } from '@/features/requests/components/requestStatusActions/RequestStatusActions';
@@ -124,14 +127,22 @@ export function RequestDetailPage() {
       loading={requestQuery.isLoading}
       error={requestQuery.error}
       backFallbackTo={listFallback}
+      headerActions={
+        request && isInbound ? (
+          <InboundRequestHeaderActions
+            companyId={companyId}
+            requestId={request.id}
+            requestTitle={request.title}
+            buyerName={inboundRequest?.buyerCompany.name}
+          />
+        ) : null
+      }
       actionMenuItems={
         request ? (
           isInbound ? (
             <InboundRequestStatusActions
               companyId={companyId}
               requestId={request.id}
-              requestTitle={request.title}
-              buyerName={inboundRequest?.buyerCompany.name}
             />
           ) : (
             <RequestStatusActions

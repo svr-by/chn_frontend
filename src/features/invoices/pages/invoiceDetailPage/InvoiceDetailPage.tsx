@@ -31,7 +31,10 @@ import {
 } from '@/features/invoices/components/invoiceHeaderForm/InvoiceHeaderForm';
 import { InvoiceLinesTable } from '@/features/invoices/components/invoiceLinesTable/InvoiceLinesTable';
 import { InvoicePaymentsTable } from '@/features/invoices/components/InvoicePaymentsTable';
-import { InvoiceStatusActions } from '@/features/invoices/components/InvoiceStatusActions';
+import {
+  InvoiceHeaderActions,
+  InvoiceStatusActions,
+} from '@/features/invoices/components/InvoiceStatusActions';
 import { requestIdsFromInvoiceLines } from '@/features/invoices/lib/invoicesFilters';
 import { PaymentRegisterDialog } from '@/features/payments/components/PaymentRegisterDialog';
 import { useCreateShippingInvoiceFromInvoice } from '@/features/shipping/hooks/useCreateShippingInvoiceFromInvoice';
@@ -142,6 +145,16 @@ export function InvoiceDetailPage() {
       loading={invoiceQuery.isLoading}
       error={invoiceQuery.error}
       backFallbackTo="/app/invoices"
+      headerActions={
+        invoice ? (
+          <InvoiceHeaderActions
+            companyId={companyId}
+            invoiceId={invoice.id}
+            requestIds={requestIds}
+            status={invoice.status}
+          />
+        ) : null
+      }
       actionMenuItems={
         invoice ? (
           <>

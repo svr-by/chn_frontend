@@ -8,9 +8,11 @@ import {
   DialogTitle,
   ListItemIcon,
   ListItemText,
+  Stack,
   Typography,
 } from '@mui/material';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import UndoOutlinedIcon from '@mui/icons-material/UndoOutlined';
 import { useTranslation } from 'react-i18next';
@@ -26,7 +28,7 @@ import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert
 import { DocumentActionMenuItem } from '@/layouts/documentDetailLayout/DocumentDetailActionsMenu';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
 
-interface QuoteStatusActionsProps {
+interface QuoteActionsProps {
   companyId: string;
   quoteId: string;
   materialRequestId?: string;
@@ -34,30 +36,27 @@ interface QuoteStatusActionsProps {
   hasSelections?: boolean;
 }
 
-export function QuoteStatusActions({
+interface QuoteHeaderActionsProps extends Omit<QuoteActionsProps, 'hasSelections'> {
+  canCreateInvoice?: boolean;
+}
+
+/** Visible primary CTAs for the document header (Submit, Create invoice). */
+export function QuoteHeaderActions({
   companyId,
   quoteId,
   materialRequestId,
   status,
-  hasSelections = false,
-}: QuoteStatusActionsProps) {
+  canCreateInvoice = false,
+}: QuoteHeaderActionsProps) {
   const { t } = useTranslation('quotes');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [submitConfirmOpen, setSubmitConfirmOpen] = useState(false);
-  const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
-  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
-
   const [submitQuote, submitState] = useSubmitQuoteMutation();
-  const [unsubmitQuote, unsubmitState] = useUnsubmitQuoteMutation();
-  const [deleteQuote, deleteState] = useDeleteQuoteMutation();
 
   const canSubmit = status === 'DRAFT';
-  const canUnsubmit = status === 'SUBMITTED' && !hasSelections;
-  const canDelete =
-    status === 'DRAFT' || (status === 'SUBMITTED' && !hasSelections);
 
-  if (!canSubmit && !canUnsubmit && !canDelete) {
+  if (!canSubmit && !canCreateInvoice) {
     return null;
   }
 
@@ -65,6 +64,94 @@ export function QuoteStatusActions({
     await submitQuote({ companyId, quoteId, materialRequestId }).unwrap();
     enqueueSnackbar(t('toast.submitted'), { variant: 'success' });
     setSubmitConfirmOpen(false);
+  }
+
+  return (
+    <Stack
+      direction={{ xs: 'column', sm: 'row' }}
+      spacing={1}
+      alignItems={{ xs: 'stretch', sm: 'center' }}
+    >
+      {canSubmit ? (
+        <PermissionGate permission="manageQuotes">
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<SendOutlinedIcon />}
+            onClick={() => setSubmitConfirmOpen(true)}
+          >
+            {t('actions.submit')}
+          </Button>
+
+          <Dialog
+            open={submitConfirmOpen}
+            onClose={() => setSubmitConfirmOpen(false)}
+          >
+            <DialogTitle>{t('confirm.submitTitle')}</DialogTitle>
+            <DialogContent>
+              <ApiErrorAlert error={submitState.error} />
+              <Typography>{t('confirm.submitMessage')}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setSubmitConfirmOpen(false)}>
+                {t('actions.cancel')}
+              </Button>
+              <Button
+                variant="contained"
+                startIcon={<SendOutlinedIcon />}
+                onClick={() => void handleSubmit()}
+                disabled={submitState.isLoading}
+              >
+                {t('actions.submit')}
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </PermissionGate>
+      ) : null}
+
+      {canCreateInvoice ? (
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<ReceiptLongOutlinedIcon />}
+          onClick={() =>
+            navigate(
+              `/app/invoices/new?quoteId=${quoteId}${
+                materialRequestId ? `&requestId=${materialRequestId}` : ''
+              }`,
+            )
+          }
+        >
+          {t('actions.createInvoice')}
+        </Button>
+      ) : null}
+    </Stack>
+  );
+}
+
+/** Secondary quote actions for the header ⋮ menu (Unsubmit, Delete). */
+export function QuoteStatusActions({
+  companyId,
+  quoteId,
+  materialRequestId,
+  status,
+  hasSelections = false,
+}: QuoteActionsProps) {
+  const { t } = useTranslation('quotes');
+  const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
+  const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+
+  const [unsubmitQuote, unsubmitState] = useUnsubmitQuoteMutation();
+  const [deleteQuote, deleteState] = useDeleteQuoteMutation();
+
+  const canUnsubmit = status === 'SUBMITTED' && !hasSelections;
+  const canDelete =
+    status === 'DRAFT' || (status === 'SUBMITTED' && !hasSelections);
+
+  if (!canUnsubmit && !canDelete) {
+    return null;
   }
 
   async function handleUnsubmit() {
@@ -82,14 +169,6 @@ export function QuoteStatusActions({
 
   return (
     <PermissionGate permission="manageQuotes">
-      {canSubmit ? (
-        <DocumentActionMenuItem onClick={() => setSubmitConfirmOpen(true)}>
-          <ListItemIcon>
-            <SendOutlinedIcon fontSize="small" />
-          </ListItemIcon>
-          <ListItemText>{t('actions.submit')}</ListItemText>
-        </DocumentActionMenuItem>
-      ) : null}
       {canUnsubmit ? (
         <DocumentActionMenuItem onClick={() => setUnsubmitConfirmOpen(true)}>
           <ListItemIcon>
@@ -109,30 +188,6 @@ export function QuoteStatusActions({
           <ListItemText>{t('actions.delete')}</ListItemText>
         </DocumentActionMenuItem>
       ) : null}
-
-      <Dialog
-        open={submitConfirmOpen}
-        onClose={() => setSubmitConfirmOpen(false)}
-      >
-        <DialogTitle>{t('confirm.submitTitle')}</DialogTitle>
-        <DialogContent>
-          <ApiErrorAlert error={submitState.error} />
-          <Typography>{t('confirm.submitMessage')}</Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setSubmitConfirmOpen(false)}>
-            {t('actions.cancel')}
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<SendOutlinedIcon />}
-            onClick={() => void handleSubmit()}
-            disabled={submitState.isLoading}
-          >
-            {t('actions.submit')}
-          </Button>
-        </DialogActions>
-      </Dialog>
 
       <Dialog
         open={unsubmitConfirmOpen}
