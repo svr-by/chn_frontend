@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Box, Chip, Stack } from '@mui/material';
+import { Box, Chip, Stack, Typography } from '@mui/material';
 import { alpha } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,7 @@ export function LineagePipelineSelectionShell({
   children,
 }: LineagePipelineSelectionShellProps) {
   const { t } = useTranslation('trace');
+  const selectionNotes = selection.notes?.trim() || null;
 
   return (
     <Box
@@ -44,6 +45,15 @@ export function LineagePipelineSelectionShell({
             label={t('pipelineStatus.selected')}
           />
         </Stack>
+        {selectionNotes ? (
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+          >
+            {selectionNotes}
+          </Typography>
+        ) : null}
         <LineageCreatedMeta
           createdAt={selection.createdAt}
           createdBy={selection.createdBy}

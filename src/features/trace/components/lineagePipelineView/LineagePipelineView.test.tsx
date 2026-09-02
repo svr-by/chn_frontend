@@ -44,6 +44,7 @@ describe('LineagePipelineView', () => {
 
     expect(screen.queryByText('Purchase selections')).not.toBeInTheDocument();
     expect(screen.getByText('Selected')).toBeInTheDocument();
+    expect(screen.getByText('Preferred supplier')).toBeInTheDocument();
     expect(
       screen.getByText(
         `${new Date('2026-01-03T00:00:00.000Z').toLocaleDateString()}, Jane Doe`,

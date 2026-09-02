@@ -136,4 +136,51 @@ describe('buildLineagePipeline', () => {
     });
     expect(quoteItem?.link).toBe(`/app/quotes/${QUOTE_ID}`);
   });
+
+  it('includes line notes in quote and invoice meta when present', () => {
+    const trace = createLineageTrace({
+      invoices: [
+        {
+          invoiceId: INVOICE_ID,
+          company: {
+            id: '00000000-0000-0000-0000-000000000030',
+            name: 'Supplier Ltd',
+          },
+          status: 'ISSUED',
+          currency: 'USD',
+          number: 'INV-001',
+          createdAt: '2026-01-02T00:00:00.000Z',
+          createdBy: {
+            id: '00000000-0000-0000-0000-000000000001',
+            name: 'Jane Doe',
+          },
+          line: {
+            id: '00000000-0000-0000-0000-000000000111',
+            lineNumber: 1,
+            lineageId: '00000000-0000-0000-0000-000000000052',
+            quantity: '10.0000',
+            unitPrice: '5.0000',
+            lineTotal: '50.0000',
+            notes: 'Net 30',
+          },
+          payments: [],
+        },
+      ],
+    });
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.notes = '  Rush order  ';
+
+    const quoteItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'quotes',
+    )?.items[0];
+    const invoiceItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'invoices',
+    )?.items[0];
+
+    expect(quoteItem?.meta?.notes).toBe('Rush order');
+    expect(invoiceItem?.meta?.notes).toBe('Net 30');
+  });
 });

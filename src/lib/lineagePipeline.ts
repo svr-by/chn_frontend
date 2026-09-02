@@ -50,6 +50,13 @@ function documentMeta(doc: {
   };
 }
 
+function optionalLineNotes(
+  notes: string | null | undefined,
+): Record<string, string> {
+  const trimmed = notes?.trim();
+  return trimmed ? { notes: trimmed } : {};
+}
+
 export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
   const steps: PipelineStep[] = [
     {
@@ -93,13 +100,14 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
             quantity: quote.line.quantity,
             lineTotal: quote.line.lineTotal,
             currency: quote.currency,
+            ...optionalLineNotes(quote.line.notes),
             ...documentMeta(quote),
           },
           selection: selection
             ? {
                 id: selection.id,
                 quantity: selection.quantity,
-                notes: selection.notes ?? undefined,
+                notes: selection.notes?.trim() || undefined,
                 createdAt: selection.createdAt,
                 createdBy: selection.createdBy?.name ?? undefined,
               }
@@ -121,6 +129,7 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
           lineTotal: invoice.line.lineTotal,
           currency: invoice.currency,
           payments: String(invoice.payments.length),
+          ...optionalLineNotes(invoice.line.notes),
           ...documentMeta(invoice),
         },
       })),

@@ -29,6 +29,7 @@ export function LineagePipelineItemCard({
   const statusLabel = getPipelineItemStatusLabel(stage, item.status, t);
   const lineNumber = item.meta?.lineNumber;
   const companyName = item.meta?.companyName;
+  const lineNotes = item.meta?.notes?.trim() || null;
   const createdAt = item.meta?.createdAt;
   const createdBy = item.meta?.createdBy;
 
@@ -100,6 +101,16 @@ export function LineagePipelineItemCard({
               <DecimalDisplay value={item.meta.unitPrice} suffix={item.meta.currency ?? ''} groupDigits />
               {' = '}
               <DecimalDisplay value={item.meta.lineTotal} suffix={item.meta.currency ?? ''} groupDigits />
+            </Typography>
+          ) : null}
+
+          {(stage === 'quotes' || stage === 'invoices') && lineNotes ? (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+            >
+              {lineNotes}
             </Typography>
           ) : null}
 
