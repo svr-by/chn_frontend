@@ -84,6 +84,7 @@
     "description": "描述",
     "product": "产品",
     "quantity": "数量",
+    "selectedQuantity": "已选数量",
     "unit": "单位",
     "notes": "备注",
     "lineage": "溯源",
@@ -256,10 +257,14 @@
     "allLines": "将向该供应商发送全部 {{count}} 个行项目。",
     "supplier": "供应商",
     "supplierPlaceholder": "选择供应商",
+    "notifyEmail": "通知员工邮箱",
+    "notifyEmailPlaceholder": "name@supplier.com",
+    "notifyEmailHelper": "可选。将向该邮箱发送分发通知。",
     "validation": {
       "supplierRequired": "请选择供应商。",
       "linesRequired": "请为 {{supplier}} 分配至少一行。",
-      "linesSelectedRequired": "请至少选择一个行项目。"
+      "linesSelectedRequired": "请至少选择一个行项目。",
+      "notifyEmailInvalid": "请输入有效的邮箱地址。"
     },
     "toast": {
       "success": "申请已分发给供应商"

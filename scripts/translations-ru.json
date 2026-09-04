@@ -508,7 +508,7 @@
   "Select document lifecycle events to subscribe to.": "Выберите события жизненного цикла документов для подписки.",
   "Select partner companies to receive this request.": "Выберите компании-партнёры для получения этой заявки.",
   "Selected": "Выбрано",
-  "Selected qty": "Выбранное кол-во",
+  "Selected qty": "Заказано",
   "Selected quantity exceeds the quoted quantity.": "Выбранное количество превышает количество в предложении.",
   "Selected: {{name}}": "Выбрано: {{name}}",
   "Selection": "Выбор",

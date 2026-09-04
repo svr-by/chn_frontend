@@ -5,14 +5,12 @@ import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { LineRowActionsMenu } from '@/components/actions/lineRowActionsMenu/LineRowActionsMenu';
-import {
-  RequestLineDescriptionCell,
-  type RequestLineSkuSource,
-} from '@/features/requests/lib/requestLineDescription';
+import { RequestLineDescriptionCell } from '@/features/requests/lib/requestLineDescription';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   mrtFixedSizeColumnProps,
 } from '@/lib/mrtNarrowColumns';
+import type { RequestLineSkuSource } from '@/lib/requestLineSku';
 
 type RequestsTFunction = TFunction<'requests'>;
 
@@ -22,6 +20,7 @@ export interface RequestLineListRowBase extends RequestLineSkuSource {
   quantity: string;
   unit?: string | null;
   notes?: string | null;
+  cancelledAt?: string | null;
 }
 
 export function createRequestLineListActionsColumn<T extends RequestLineListRowBase>(

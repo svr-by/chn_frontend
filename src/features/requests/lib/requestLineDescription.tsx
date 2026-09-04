@@ -1,33 +1,41 @@
 import { Stack, Typography } from '@mui/material';
 
+import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { mrtEllipsisCellContentSx } from '@/lib/mrtNarrowColumns';
 import {
   getRequestLineDisplaySku,
   type RequestLineSkuSource,
 } from '@/lib/requestLineSku';
 
-export type { RequestLineSkuSource } from '@/lib/requestLineSku';
-export {
-  getRequestLineDisplaySku,
-  getRequestLineImportSku,
-} from '@/lib/requestLineSku';
+type RequestLineDescriptionSource = RequestLineSkuSource & {
+  cancelledAt?: string | null;
+};
 
 export function RequestLineDescriptionCell({
   line,
 }: {
-  line: RequestLineSkuSource;
+  line: RequestLineDescriptionSource;
 }) {
   const sku = getRequestLineDisplaySku(line);
 
   return (
     <Stack spacing={0.5} sx={{ minWidth: 0, overflow: 'hidden' }}>
-      <Typography
-        variant="body2"
-        title={line.description}
-        sx={mrtEllipsisCellContentSx}
+      <Stack
+        direction="row"
+        spacing={1}
+        alignItems="center"
+        flexWrap="wrap"
+        sx={{ minWidth: 0 }}
       >
-        {line.description}
-      </Typography>
+        <Typography
+          variant="body2"
+          title={line.description}
+          sx={{ ...mrtEllipsisCellContentSx, flex: '1 1 auto', minWidth: 0 }}
+        >
+          {line.description}
+        </Typography>
+        <RequestLineCancelledBadge cancelledAt={line.cancelledAt} />
+      </Stack>
       {sku ? (
         <Typography
           variant="caption"

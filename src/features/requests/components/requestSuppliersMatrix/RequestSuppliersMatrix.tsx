@@ -37,6 +37,7 @@ import { createRequestLineBaseColumns } from '@/features/requests/lib/requestLin
 import { usePermissions } from '@/hooks/usePermissions';
 import { mrtEllipsisCellContentSx } from '@/lib/mrtNarrowColumns';
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
+import { isRequestLineCancelled } from '@/lib/requestLineCancelled';
 
 
 interface RequestSuppliersMatrixProps {
@@ -103,7 +104,7 @@ export function RequestSuppliersMatrix({
   requestLines,
   requestStatus,
 }: RequestSuppliersMatrixProps) {
-  const { t } = useTranslation('requests');
+  const { t } = useTranslation(['requests', 'common']);
   const { enqueueSnackbar } = useSnackbar();
   const { hasPermission } = usePermissions();
   const [addSupplierOpen, setAddSupplierOpen] = useState(false);
@@ -123,6 +124,12 @@ export function RequestSuppliersMatrix({
 
   const canManageDistributions =
     requestStatus !== 'CLOSED' && hasPermission('manageRequests');
+
+  const activeRequestLines = useMemo(
+    () =>
+      requestLines.filter((line) => !isRequestLineCancelled(line.cancelledAt)),
+    [requestLines],
+  );
 
   const distributionsQuery = useGetRequestDistributionsQuery(
     { companyId, requestId },
@@ -436,6 +443,9 @@ export function RequestSuppliersMatrix({
             </Stack>
           ),
           Cell: ({ row }) => {
+            const lineCancelled = isRequestLineCancelled(
+              row.original.cancelledAt,
+            );
             const checked = draftIds.has(row.original.id);
             const lockedByQuote =
               checked &&
@@ -443,7 +453,8 @@ export function RequestSuppliersMatrix({
               quotedLineKeys.has(
                 `${distribution.supplierCompany.id}:${row.original.id}`,
               );
-            const checkboxDisabled = !canEditDistributionLines || lockedByQuote;
+            const checkboxDisabled =
+              !canEditDistributionLines || lockedByQuote || lineCancelled;
 
             const checkbox = (
               <Checkbox
@@ -472,6 +483,14 @@ export function RequestSuppliersMatrix({
                 }}
               />
             );
+
+            if (lineCancelled) {
+              return (
+                <Tooltip title={t('common:requestLine.cancelledOnRequest')}>
+                  <span>{checkbox}</span>
+                </Tooltip>
+              );
+            }
 
             return lockedByQuote ? (
               <Tooltip title={t('distributions.lineHasQuote')}>
@@ -518,6 +537,11 @@ export function RequestSuppliersMatrix({
         layoutMode="grid"
         isLoading={distributionsQuery.isLoading}
         isFetching={distributionsQuery.isFetching}
+        muiTableBodyRowProps={({ row }) =>
+          isRequestLineCancelled(row.original.cancelledAt)
+            ? { sx: { opacity: 0.6 } }
+            : {}
+        }
         renderBottomToolbarCustomActions={
           canManageDistributions
             ? () => (
@@ -525,7 +549,7 @@ export function RequestSuppliersMatrix({
                   <Button
                     variant="outlined"
                     startIcon={<AddIcon />}
-                    disabled={requestLines.length === 0}
+                    disabled={activeRequestLines.length === 0}
                     onClick={() => setAddSupplierOpen(true)}
                   >
                     {t('actions.addSupplier')}
@@ -540,7 +564,7 @@ export function RequestSuppliersMatrix({
         open={addSupplierOpen}
         companyId={companyId}
         requestId={requestId}
-        requestLineIds={requestLines.map((line) => line.id)}
+        requestLineIds={activeRequestLines.map((line) => line.id)}
         excludeSupplierCompanyIds={distributions.map(
           (distribution) => distribution.supplierCompany.id,
         )}

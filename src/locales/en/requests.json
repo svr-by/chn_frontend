@@ -84,6 +84,7 @@
     "description": "Description",
     "product": "Product",
     "quantity": "Quantity",
+    "selectedQuantity": "Selected qty",
     "unit": "Unit",
     "notes": "Notes",
     "lineage": "Trace",
@@ -256,10 +257,14 @@
     "allLines": "All {{count}} position(s) will be sent to the supplier.",
     "supplier": "Supplier",
     "supplierPlaceholder": "Select a supplier",
+    "notifyEmail": "Notify employee email",
+    "notifyEmailPlaceholder": "name@supplier.com",
+    "notifyEmailHelper": "Optional. Sends a distribution notification to this email.",
     "validation": {
       "supplierRequired": "Select a supplier.",
       "linesRequired": "Assign at least one line to {{supplier}}.",
-      "linesSelectedRequired": "Select at least one position."
+      "linesSelectedRequired": "Select at least one position.",
+      "notifyEmailInvalid": "Enter a valid email address."
     },
     "toast": {
       "success": "Request distributed to suppliers"

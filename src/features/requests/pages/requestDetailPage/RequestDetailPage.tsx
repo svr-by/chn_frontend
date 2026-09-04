@@ -297,6 +297,7 @@ export function RequestDetailPage() {
                             requestId={request.id}
                             lines={request.lines}
                             editable={canEdit}
+                            showSelectedQuantity
                           />
                         </Stack>
                       ),

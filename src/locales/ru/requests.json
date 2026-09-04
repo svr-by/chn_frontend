@@ -84,6 +84,7 @@
     "description": "Описание",
     "product": "Товар",
     "quantity": "Количество",
+    "selectedQuantity": "Заказано",
     "unit": "Единица",
     "notes": "Примечания",
     "lineage": "Трассировка",
@@ -256,10 +257,14 @@
     "allLines": "Поставщику будут отправлены все позиции ({{count}}).",
     "supplier": "Поставщик",
     "supplierPlaceholder": "Выберите поставщика",
+    "notifyEmail": "Email сотрудника для оповещения",
+    "notifyEmailPlaceholder": "name@supplier.com",
+    "notifyEmailHelper": "Необязательно. На этот адрес уйдёт уведомление о распределении.",
     "validation": {
       "supplierRequired": "Выберите поставщика.",
       "linesRequired": "Назначьте хотя бы одну позицию поставщику {{supplier}}.",
-      "linesSelectedRequired": "Выберите хотя бы одну позицию."
+      "linesSelectedRequired": "Выберите хотя бы одну позицию.",
+      "notifyEmailInvalid": "Введите корректный email."
     },
     "toast": {
       "success": "Заявка распределена поставщикам"

@@ -80,6 +80,32 @@ export function createRequestLineQuantityColumn(
   };
 }
 
+export function createRequestLineSelectedQuantityColumn(
+  t: RequestsTFunction,
+): MRT_ColumnDef<RequestLine & { selectedQuantity?: string | null }> {
+  return {
+    id: 'selectedQuantity',
+    header: t('columns.selectedQuantity'),
+    size: 120,
+    grow: false,
+    muiTableBodyCellProps: {
+      align: 'right',
+    },
+    muiTableHeadCellProps: {
+      align: 'right',
+    },
+    Cell: ({ row }) => {
+      const selectedQuantity = Number(row.original.selectedQuantity);
+      return (
+        <DecimalDisplay
+          value={selectedQuantity > 0 ? selectedQuantity.toString() : null}
+          suffix={row.original.unit ?? ''}
+        />
+      );
+    },
+  };
+}
+
 export function createRequestLineBaseColumns(
   t: RequestsTFunction,
   options?: {

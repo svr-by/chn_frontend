@@ -15,11 +15,14 @@ import {
 import { Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
+import { z } from 'zod';
 
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 import { useListPartnersQuery } from '@/api/endpoints/partnersApi';
 import { useDistributeRequestMutation } from '@/api/endpoints/requestsApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+
+const notifyEmailSchema = z.string().trim().email();
 
 interface RequestDistributeToSupplierDialogProps {
   open: boolean;
@@ -43,6 +46,7 @@ export function RequestDistributeToSupplierDialog({
   const { t } = useTranslation('requests');
   const { enqueueSnackbar } = useSnackbar();
   const [supplier, setSupplier] = useState<TradingPartner | null>(null);
+  const [notifyEmail, setNotifyEmail] = useState('');
   const [validationError, setValidationError] = useState<string | null>(null);
 
   const partnersQuery = useListPartnersQuery(
@@ -80,6 +84,7 @@ export function RequestDistributeToSupplierDialog({
     }
 
     setSupplier(null);
+    setNotifyEmail('');
     setValidationError(null);
   }, [open]);
 
@@ -94,6 +99,15 @@ export function RequestDistributeToSupplierDialog({
       return;
     }
 
+    const trimmedNotifyEmail = notifyEmail.trim();
+    if (
+      trimmedNotifyEmail &&
+      !notifyEmailSchema.safeParse(trimmedNotifyEmail).success
+    ) {
+      setValidationError(t('distribute.validation.notifyEmailInvalid'));
+      return;
+    }
+
     try {
       await distributeRequest({
         companyId,
@@ -103,12 +117,16 @@ export function RequestDistributeToSupplierDialog({
           {
             supplierCompanyId: supplier.company.id,
             requestLineIds,
+            ...(trimmedNotifyEmail
+              ? { notifyEmail: trimmedNotifyEmail }
+              : {}),
           },
         ],
       }).unwrap();
 
       enqueueSnackbar(t('distribute.toast.success'), { variant: 'success' });
       setSupplier(null);
+      setNotifyEmail('');
       setValidationError(null);
       onDistributed?.();
       onClose();
@@ -119,6 +137,7 @@ export function RequestDistributeToSupplierDialog({
 
   function handleClose() {
     setSupplier(null);
+    setNotifyEmail('');
     setValidationError(null);
     onClose();
   }
@@ -152,23 +171,41 @@ export function RequestDistributeToSupplierDialog({
               {t('distribute.allAssigned')}
             </Typography>
           ) : (
-            <Autocomplete
-              options={availablePartners}
-              value={supplier}
-              onChange={(_event, value) => {
-                setValidationError(null);
-                setSupplier(value);
-              }}
-              getOptionLabel={(option) => option.company.name}
-              isOptionEqualToValue={(option, value) => option.id === value.id}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t('distribute.supplier')}
-                  placeholder={t('distribute.supplierPlaceholder')}
-                />
-              )}
-            />
+            <>
+              <Autocomplete
+                options={availablePartners}
+                value={supplier}
+                onChange={(_event, value) => {
+                  setValidationError(null);
+                  setSupplier(value);
+                  setNotifyEmail('');
+                }}
+                getOptionLabel={(option) => option.company.name}
+                isOptionEqualToValue={(option, value) => option.id === value.id}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label={t('distribute.supplier')}
+                    placeholder={t('distribute.supplierPlaceholder')}
+                  />
+                )}
+              />
+
+              <TextField
+                label={t('distribute.notifyEmail')}
+                placeholder={t('distribute.notifyEmailPlaceholder')}
+                helperText={t('distribute.notifyEmailHelper')}
+                type="email"
+                autoComplete="email"
+                value={notifyEmail}
+                disabled={!supplier}
+                onChange={(event) => {
+                  setValidationError(null);
+                  setNotifyEmail(event.target.value);
+                }}
+                fullWidth
+              />
+            </>
           )}
 
           {validationError ? (
