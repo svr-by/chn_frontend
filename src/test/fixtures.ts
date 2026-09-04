@@ -24,6 +24,7 @@ import type { Consolidation } from '@/api/generated/models/consolidation';
 import type { ConsolidationShippingInvoiceEntry } from '@/api/generated/models/consolidationShippingInvoiceEntry';
 import type { ConsolidationSummary } from '@/api/generated/models/consolidationSummary';
 import type { ShippingLine } from '@/api/generated/models/shippingLine';
+import type { RequestDetailLine } from '@/api/generated/models/requestDetailLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import type { TradingPartner } from '@/api/generated/models/tradingPartner';
 import type { Comment } from '@/api/generated/models/comment';
@@ -173,6 +174,16 @@ export function createRequestLine(
     },
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-01T00:00:00.000Z',
+    ...overrides,
+  };
+}
+
+export function createRequestDetailLine(
+  overrides: Partial<RequestDetailLine> = {},
+): RequestDetailLine {
+  return {
+    ...createRequestLine(),
+    selectedQuantity: '0',
     ...overrides,
   };
 }
@@ -365,6 +376,8 @@ export function createQuoteLine(overrides: Partial<QuoteLine> = {}): QuoteLine {
     leadTime: null,
     leadTimeUnit: null,
     notes: null,
+    rejectedAt: null,
+    rejectionReason: null,
     requestLine: {
       id: REQUEST_LINE_ID,
       lineNumber: 1,
@@ -501,6 +514,8 @@ export function createQuoteComparison(
             leadTime: 2,
             leadTimeUnit: 'WEEK',
             notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T00:00:00.000Z',
@@ -516,6 +531,8 @@ export function createQuoteComparison(
             leadTime: null,
             leadTimeUnit: null,
             notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T01:00:00.000Z',
@@ -543,6 +560,8 @@ export function createQuoteComparison(
             leadTime: null,
             leadTimeUnit: null,
             notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
             currency: 'USD',
             status: 'SUBMITTED',
             createdAt: '2026-01-03T00:00:00.000Z',
@@ -1049,7 +1068,11 @@ export function createLineageTrace(
           quantity: '10.0000',
           unitPrice: '5.0000',
           lineTotal: '50.0000',
+          leadTime: null,
+          leadTimeUnit: null,
           notes: null,
+          rejectedAt: null,
+          rejectionReason: null,
           selectionLine: null,
         },
       },

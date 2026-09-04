@@ -7,4 +7,6 @@ export type PostCompaniesCompanyIdRequestsRequestIdDistributeBodyDistributionsIt
   supplierCompanyId: string;
   /** @minItems 1 */
   requestLineIds: string[];
+  /** @pattern ^(?!\.)(?!.*\.\.)([A-Za-z0-9_'+\-\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}$ */
+  notifyEmail?: string;
 };

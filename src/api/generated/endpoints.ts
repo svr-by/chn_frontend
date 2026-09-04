@@ -5,6 +5,8 @@ import type {
   AuthTokens,
   DeleteCompaniesCompanyIdConsolidationsConsolidationIdShippingInvoicesShippingInvoiceId200,
   DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
+  DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+  DeleteCompaniesCompanyIdQuotesQuoteIdReject200,
   DeleteCompaniesCompanyIdRequestsRequestIdLinesLineId200,
   DocumentRelationships,
   ErrorResponse,
@@ -183,6 +185,10 @@ import type {
   PostCompaniesCompanyIdQuotesQuoteIdLines201,
   PostCompaniesCompanyIdQuotesQuoteIdLinesBody,
   PostCompaniesCompanyIdQuotesQuoteIdLinesCsv200,
+  PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+  PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody,
+  PostCompaniesCompanyIdQuotesQuoteIdReject200,
+  PostCompaniesCompanyIdQuotesQuoteIdRejectBody,
   PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
   PostCompaniesCompanyIdQuotesQuoteIdUnsubmit200,
   PostCompaniesCompanyIdReactivate200,
@@ -3545,6 +3551,134 @@ export const postCompaniesCompanyIdQuotesQuoteIdUnsubmit = async (companyId: str
 
 
 
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse200 = {
+  data: PostCompaniesCompanyIdQuotesQuoteIdReject200
+  status: 200
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponseSuccess = (postCompaniesCompanyIdQuotesQuoteIdRejectResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponseError = (postCompaniesCompanyIdQuotesQuoteIdRejectResponse400 | postCompaniesCompanyIdQuotesQuoteIdRejectResponse401 | postCompaniesCompanyIdQuotesQuoteIdRejectResponse403 | postCompaniesCompanyIdQuotesQuoteIdRejectResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdQuotesQuoteIdRejectResponse = (postCompaniesCompanyIdQuotesQuoteIdRejectResponseSuccess | postCompaniesCompanyIdQuotesQuoteIdRejectResponseError)
+
+export const getPostCompaniesCompanyIdQuotesQuoteIdRejectUrl = (companyId: string,
+    quoteId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/quotes/${quoteId}/reject`
+}
+
+export const postCompaniesCompanyIdQuotesQuoteIdReject = async (companyId: string,
+    quoteId: string,
+    postCompaniesCompanyIdQuotesQuoteIdRejectBody: PostCompaniesCompanyIdQuotesQuoteIdRejectBody, options?: RequestInit): Promise<postCompaniesCompanyIdQuotesQuoteIdRejectResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdQuotesQuoteIdRejectUrl(companyId,quoteId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postCompaniesCompanyIdQuotesQuoteIdRejectBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdQuotesQuoteIdRejectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdQuotesQuoteIdRejectResponse
+}
+
+
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse200 = {
+  data: DeleteCompaniesCompanyIdQuotesQuoteIdReject200
+  status: 200
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponseSuccess = (deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse200) & {
+  headers: Headers;
+};
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponseError = (deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse400 | deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse401 | deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse403 | deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse404) & {
+  headers: Headers;
+};
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse = (deleteCompaniesCompanyIdQuotesQuoteIdRejectResponseSuccess | deleteCompaniesCompanyIdQuotesQuoteIdRejectResponseError)
+
+export const getDeleteCompaniesCompanyIdQuotesQuoteIdRejectUrl = (companyId: string,
+    quoteId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/quotes/${quoteId}/reject`
+}
+
+export const deleteCompaniesCompanyIdQuotesQuoteIdReject = async (companyId: string,
+    quoteId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse> => {
+  
+  const res = await fetch(getDeleteCompaniesCompanyIdQuotesQuoteIdRejectUrl(companyId,quoteId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdQuotesQuoteIdRejectResponse
+}
+
+
+
 export type putCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionResponse200 = {
   data: PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200
   status: 200
@@ -3673,6 +3807,138 @@ export const deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection = async (
   
   const data: deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionResponse['data'] = body ? JSON.parse(body) : {}
   return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionResponse
+}
+
+
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse200 = {
+  data: PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200
+  status: 200
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseSuccess = (postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse200) & {
+  headers: Headers;
+};
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseError = (postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse400 | postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse401 | postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse403 | postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse404) & {
+  headers: Headers;
+};
+
+export type postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse = (postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseSuccess | postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseError)
+
+export const getPostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl = (companyId: string,
+    quoteId: string,
+    lineId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/quotes/${quoteId}/lines/${lineId}/reject`
+}
+
+export const postCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject = async (companyId: string,
+    quoteId: string,
+    lineId: string,
+    postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody: PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody, options?: RequestInit): Promise<postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse> => {
+  
+  const res = await fetch(getPostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl(companyId,quoteId,lineId),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as postCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse
+}
+
+
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse200 = {
+  data: DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200
+  status: 200
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse400 = {
+  data: ErrorResponse
+  status: 400
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse401 = {
+  data: ErrorResponse
+  status: 401
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse403 = {
+  data: ErrorResponse
+  status: 403
+}
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse404 = {
+  data: ErrorResponse
+  status: 404
+}
+    
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseSuccess = (deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse200) & {
+  headers: Headers;
+};
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseError = (deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse400 | deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse401 | deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse403 | deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse404) & {
+  headers: Headers;
+};
+
+export type deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse = (deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseSuccess | deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponseError)
+
+export const getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl = (companyId: string,
+    quoteId: string,
+    lineId: string,) => {
+
+
+  
+
+  return `/companies/${companyId}/quotes/${quoteId}/lines/${lineId}/reject`
+}
+
+export const deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject = async (companyId: string,
+    quoteId: string,
+    lineId: string, options?: RequestInit): Promise<deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse> => {
+  
+  const res = await fetch(getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl(companyId,quoteId,lineId),
+  {      
+    ...options,
+    method: 'DELETE'
+    
+    
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text();
+  
+  const data: deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse['data'] = body ? JSON.parse(body) : {}
+  return { data, status: res.status, headers: res.headers } as deleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectResponse
 }
 
 

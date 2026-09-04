@@ -1,13 +1,17 @@
 import {
+  getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl,
   getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelectionUrl,
   getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
+  getDeleteCompaniesCompanyIdQuotesQuoteIdRejectUrl,
   getDeleteCompaniesCompanyIdQuotesQuoteIdUrl,
   getGetCompaniesCompanyIdQuotesQuoteIdBillableLinesUrl,
   getGetCompaniesCompanyIdQuotesQuoteIdUrl,
   getGetCompaniesCompanyIdQuotesUrl,
   getPatchCompaniesCompanyIdQuotesQuoteIdLinesLineIdUrl,
   getPatchCompaniesCompanyIdQuotesQuoteIdUrl,
+  getPostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl,
   getPostCompaniesCompanyIdQuotesQuoteIdLinesUrl,
+  getPostCompaniesCompanyIdQuotesQuoteIdRejectUrl,
   getPostCompaniesCompanyIdQuotesQuoteIdSubmitUrl,
   getPostCompaniesCompanyIdQuotesQuoteIdUnsubmitUrl,
   getPostCompaniesCompanyIdQuotesUrl,
@@ -15,6 +19,8 @@ import {
 } from '@/api/generated/endpoints';
 import type {
   DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineId200,
+  DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+  DeleteCompaniesCompanyIdQuotesQuoteIdReject200,
   GetCompaniesCompanyIdQuotes200,
   GetCompaniesCompanyIdQuotesParams,
   GetCompaniesCompanyIdQuotesQuoteId200,
@@ -27,6 +33,10 @@ import type {
   PostCompaniesCompanyIdQuotesBody,
   PostCompaniesCompanyIdQuotesQuoteIdLines201,
   PostCompaniesCompanyIdQuotesQuoteIdLinesBody,
+  PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+  PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody,
+  PostCompaniesCompanyIdQuotesQuoteIdReject200,
+  PostCompaniesCompanyIdQuotesQuoteIdRejectBody,
   PostCompaniesCompanyIdQuotesQuoteIdSubmit200,
   PostCompaniesCompanyIdQuotesQuoteIdUnsubmit200,
   PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200,
@@ -64,8 +74,19 @@ function quoteSelectionTags(
   quoteId: string,
   materialRequestId?: string,
 ) {
-  const tags = quoteDetailTags(companyId, quoteId, materialRequestId);
-  tags.push({ type: 'Quotes', id: `billable-${quoteId}` });
+  const tags: Array<
+    | { type: 'Quotes'; id: string }
+    | { type: 'Requests'; id: string }
+    | { type: 'LineageTrace' }
+    | { type: 'LineageEvents' }
+    | { type: 'Trace'; id: string }
+  > = [
+    ...quoteDetailTags(companyId, quoteId, materialRequestId),
+    { type: 'Quotes', id: `billable-${quoteId}` },
+    { type: 'LineageTrace' },
+    { type: 'LineageEvents' },
+    { type: 'Trace', id: companyId },
+  ];
   if (materialRequestId) {
     tags.push({ type: 'Requests', id: `${materialRequestId}-comparison` });
   }
@@ -276,6 +297,104 @@ export const quotesApi = baseApi.injectEndpoints({
         { companyId, quoteId, materialRequestId },
       ) => quoteDetailTags(companyId, quoteId, materialRequestId),
     }),
+    rejectQuote: builder.mutation<
+      PostCompaniesCompanyIdQuotesQuoteIdReject200,
+      {
+        companyId: string;
+        quoteId: string;
+        materialRequestId?: string;
+      } & PostCompaniesCompanyIdQuotesQuoteIdRejectBody
+    >({
+      query: ({
+        companyId,
+        quoteId,
+        materialRequestId: _requestId,
+        ...body
+      }) => ({
+        url: getPostCompaniesCompanyIdQuotesQuoteIdRejectUrl(companyId, quoteId),
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
+    unrejectQuote: builder.mutation<
+      DeleteCompaniesCompanyIdQuotesQuoteIdReject200,
+      {
+        companyId: string;
+        quoteId: string;
+        materialRequestId?: string;
+      }
+    >({
+      query: ({ companyId, quoteId }) => ({
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdRejectUrl(
+          companyId,
+          quoteId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
+    rejectQuoteLine: builder.mutation<
+      PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+      {
+        companyId: string;
+        quoteId: string;
+        lineId: string;
+        materialRequestId?: string;
+      } & PostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectBody
+    >({
+      query: ({
+        companyId,
+        quoteId,
+        lineId,
+        materialRequestId: _requestId,
+        ...body
+      }) => ({
+        url: getPostCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
+    unrejectQuoteLine: builder.mutation<
+      DeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdReject200,
+      {
+        companyId: string;
+        quoteId: string;
+        lineId: string;
+        materialRequestId?: string;
+      }
+    >({
+      query: ({ companyId, quoteId, lineId }) => ({
+        url: getDeleteCompaniesCompanyIdQuotesQuoteIdLinesLineIdRejectUrl(
+          companyId,
+          quoteId,
+          lineId,
+        ),
+        method: 'DELETE',
+      }),
+      invalidatesTags: (
+        _result,
+        _error,
+        { companyId, quoteId, materialRequestId },
+      ) => quoteSelectionTags(companyId, quoteId, materialRequestId),
+    }),
     putQuoteLineSelection: builder.mutation<
       PutCompaniesCompanyIdQuotesQuoteIdLinesLineIdSelection200,
       {
@@ -361,6 +480,10 @@ export const {
   useDeleteQuoteMutation,
   useSubmitQuoteMutation,
   useUnsubmitQuoteMutation,
+  useRejectQuoteMutation,
+  useUnrejectQuoteMutation,
+  useRejectQuoteLineMutation,
+  useUnrejectQuoteLineMutation,
   usePutQuoteLineSelectionMutation,
   useDeleteQuoteLineSelectionMutation,
   useGetQuoteBillableLinesQuery,
