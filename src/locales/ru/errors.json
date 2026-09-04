@@ -41,7 +41,7 @@
   "IMPORT_JOB_NOT_FOUND": "Задание импорта не найдено.",
   "IMPORT_JOB_NOT_CONFIRMABLE": "Это задание импорта нельзя подтвердить.",
   "IMPORT_NO_VALID_ROWS": "Нет допустимых строк для импорта.",
-  "SELECTION_LINE_NOT_FOUND": "Выбор на этой строке котировки не найден.",
+  "SELECTION_LINE_NOT_FOUND": "Выбор на этой строке предложения не найден.",
   "SELECTION_INVALID_QUANTITY": "Выбранное количество должно быть больше нуля.",
   "SELECTION_QUANTITY_EXCEEDS_QUOTE": "Выбранное количество превышает количество в предложении.",
   "SELECTION_LINE_HAS_INVOICES": "Нельзя снять выбор — по нему уже выставлен счёт.",

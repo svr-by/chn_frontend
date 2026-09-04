@@ -148,9 +148,9 @@
     }
   },
   "webhookEventTypes": {
-    "QUOTE_LINE_SELECTED": "Строка котировки выбрана",
-    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки котировки обновлён",
-    "QUOTE_LINE_UNSELECTED": "Выбор строки котировки снят",
+    "QUOTE_LINE_SELECTED": "Строка предложения выбрана",
+    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки предложения обновлён",
+    "QUOTE_LINE_UNSELECTED": "Выбор строки предложения снят",
     "INVOICE_CREATED": "Счёт создан",
     "INVOICE_ISSUED": "Счёт выставлен",
     "INVOICE_CONFIRMED": "Счёт подтверждён",
