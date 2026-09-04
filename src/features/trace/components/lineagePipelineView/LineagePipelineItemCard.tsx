@@ -8,9 +8,11 @@ import {
   Stack,
   Typography,
 } from '@mui/material';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
+import { QuoteLineRejectedBadge } from '@/components/status/quoteLineRejectedBadge/QuoteLineRejectedBadge';
 import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { LineageCreatedMeta } from '@/features/trace/components/lineagePipelineView/LineageCreatedMeta';
 import type { PipelineItem, PipelineStage } from '@/lib/lineagePipeline';
@@ -21,13 +23,21 @@ export interface LineagePipelineItemCardProps {
   item: PipelineItem;
 }
 
+function statusChipColor(
+  status: string,
+): 'default' | 'info' | 'warning' | 'success' | 'error' {
+  if (status === 'REJECTED') {
+    return 'error';
+  }
+  return 'default';
+}
+
 export function LineagePipelineItemCard({
   stage,
   item,
 }: LineagePipelineItemCardProps) {
   const { t } = useTranslation(['trace', 'enums', 'common']);
   const statusLabel = getPipelineItemStatusLabel(stage, item.status, t);
-  const lineNumber = item.meta?.lineNumber;
   const companyName = item.meta?.companyName;
   const lineNotes = item.meta?.notes?.trim() || null;
   const createdAt = item.meta?.createdAt;
@@ -41,7 +51,7 @@ export function LineagePipelineItemCard({
     : null;
 
   return (
-    <Card variant="outlined" sx={{ maxWidth: 420 }}>
+    <Card variant="outlined" sx={{ width: '100%', height: '100%' }}>
       <CardContent sx={{ py: 1.5, '&:last-child': { pb: 1.5 } }}>
         <Stack spacing={1}>
           <Stack
@@ -59,7 +69,12 @@ export function LineagePipelineItemCard({
             >
               {item.label}
             </Link>
-            <Chip label={statusLabel} size="small" variant="outlined" />
+            <Chip
+              label={statusLabel}
+              size="small"
+              variant="outlined"
+              color={statusChipColor(item.status)}
+            />
           </Stack>
 
           {companyName ? (
@@ -68,50 +83,62 @@ export function LineagePipelineItemCard({
             </Typography>
           ) : null}
 
-          {lineNumber ? (
-            <Stack
-              direction="row"
-              spacing={1}
-              alignItems="center"
-              flexWrap="wrap"
-            >
-              <Typography variant="body2" color="text.secondary">
-                {t('common:requestLine.lineNumber', { number: lineNumber })}
-              </Typography>
-              {stage === 'request' ? (
-                <RequestLineCancelledBadge
-                  cancelledAt={item.meta?.cancelledAt}
-                />
-              ) : null}
-            </Stack>
-          ) : null}
-
           {stage === 'request' && item.meta ? (
             <Box>
               <Typography variant="body2" color="text.secondary">
-                <DecimalDisplay value={item.meta.quantity} suffix={item.meta.unit ?? ''} />
+                <DecimalDisplay
+                  value={item.meta.quantity}
+                  suffix={item.meta.unit ?? ''}
+                />
               </Typography>
             </Box>
           ) : null}
 
           {(stage === 'quotes' || stage === 'invoices') && item.meta ? (
             <Typography variant="body2" color="text.secondary">
-              <DecimalDisplay value={item.meta.quantity} suffix={item.meta.unit ?? ''} />
+              <DecimalDisplay
+                value={item.meta.quantity}
+                suffix={item.meta.unit ?? ''}
+              />
               {' x '}
-              <DecimalDisplay value={item.meta.unitPrice} suffix={item.meta.currency ?? ''} groupDigits />
+              <DecimalDisplay
+                value={item.meta.unitPrice}
+                suffix={item.meta.currency ?? ''}
+                groupDigits
+              />
               {' = '}
-              <DecimalDisplay value={item.meta.lineTotal} suffix={item.meta.currency ?? ''} groupDigits />
+              <DecimalDisplay
+                value={item.meta.lineTotal}
+                suffix={item.meta.currency ?? ''}
+                groupDigits
+              />
+            </Typography>
+          ) : null}
+
+          {stage === 'quotes' &&
+          item.meta?.leadTime != null &&
+          item.meta.leadTimeUnit ? (
+            <Typography variant="body2" color="text.secondary">
+              {item.meta.leadTime}{' '}
+              {t(`enums:leadTimeUnit.${item.meta.leadTimeUnit.toLowerCase()}`)}
             </Typography>
           ) : null}
 
           {(stage === 'quotes' || stage === 'invoices') && lineNotes ? (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-            >
-              {lineNotes}
-            </Typography>
+            <Stack direction="row" spacing={1} alignItems="flex-start">
+              <NotesOutlinedIcon
+                fontSize="small"
+                color="action"
+                sx={{ mt: 0.25, flex: '0 0 auto' }}
+              />
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+              >
+                {lineNotes}
+              </Typography>
+            </Stack>
           ) : null}
 
           {stage === 'invoices' && item.meta ? (
@@ -156,6 +183,20 @@ export function LineagePipelineItemCard({
           ) : null}
 
           <LineageCreatedMeta createdAt={createdAt} createdBy={createdBy} />
+
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            {stage === 'request' ? (
+              <RequestLineCancelledBadge
+                cancelledAt={item.meta?.cancelledAt}
+              />
+            ) : null}
+            {stage === 'quotes' ? (
+              <QuoteLineRejectedBadge
+                rejectedAt={item.meta?.rejectedAt}
+                rejectionReason={item.meta?.rejectionReason}
+              />
+            ) : null}
+          </Box>
         </Stack>
       </CardContent>
     </Card>

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildLineagePipeline } from '@/lib/lineagePipeline';
+import {
+  buildLineagePipeline,
+  groupPipelineItemsByDocument,
+} from '@/lib/lineagePipeline';
 import {
   createLineageTrace,
   INVOICE_ID,
@@ -182,5 +185,154 @@ describe('buildLineagePipeline', () => {
 
     expect(quoteItem?.meta?.notes).toBe('Rush order');
     expect(invoiceItem?.meta?.notes).toBe('Net 30');
+  });
+
+  it('includes rejectedAt and rejectionReason in quote meta when present', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.rejectedAt = '2026-07-15T10:00:00.000Z';
+    quote.line.rejectionReason = 'Too expensive';
+
+    const quoteItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'quotes',
+    )?.items[0];
+
+    expect(quoteItem?.meta?.rejectedAt).toBe('2026-07-15T10:00:00.000Z');
+    expect(quoteItem?.meta?.rejectionReason).toBe('Too expensive');
+  });
+
+  it('includes leadTime in quote meta when present', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.leadTime = 2;
+    quote.line.leadTimeUnit = 'WEEK';
+
+    const quoteItem = buildLineagePipeline(trace).find(
+      (step) => step.stage === 'quotes',
+    )?.items[0];
+
+    expect(quoteItem?.meta?.leadTime).toBe('2');
+    expect(quoteItem?.meta?.leadTimeUnit).toBe('WEEK');
+  });
+
+  it('groups quote cards by documentId and sorts by lineNumber within a document', () => {
+    const quoteA = '00000000-0000-0000-0000-0000000000aa';
+    const quoteB = '00000000-0000-0000-0000-0000000000bb';
+    const company = {
+      id: '00000000-0000-0000-0000-000000000030',
+      name: 'Supplier Ltd',
+    };
+    const createdBy = {
+      id: '00000000-0000-0000-0000-000000000001',
+      name: 'Jane Doe',
+    };
+
+    const trace = createLineageTrace({
+      quotes: [
+        {
+          quoteId: quoteB,
+          company,
+          status: 'SUBMITTED',
+          currency: 'USD',
+          number: 'Q-B',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          createdBy,
+          line: {
+            id: '00000000-0000-0000-0000-000000000201',
+            lineNumber: 1,
+            lineageId: '00000000-0000-0000-0000-000000000052',
+            quantity: '1',
+            unitPrice: '1',
+            lineTotal: '1',
+            leadTime: null,
+            leadTimeUnit: null,
+            notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
+            selectionLine: null,
+          },
+        },
+        {
+          quoteId: quoteA,
+          company,
+          status: 'SUBMITTED',
+          currency: 'USD',
+          number: 'Q-A-2',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          createdBy,
+          line: {
+            id: '00000000-0000-0000-0000-000000000202',
+            lineNumber: 2,
+            lineageId: '00000000-0000-0000-0000-000000000052',
+            quantity: '1',
+            unitPrice: '1',
+            lineTotal: '1',
+            leadTime: null,
+            leadTimeUnit: null,
+            notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
+            selectionLine: null,
+          },
+        },
+        {
+          quoteId: quoteA,
+          company,
+          status: 'SUBMITTED',
+          currency: 'USD',
+          number: 'Q-A-1',
+          createdAt: '2026-01-01T00:00:00.000Z',
+          createdBy,
+          line: {
+            id: '00000000-0000-0000-0000-000000000203',
+            lineNumber: 1,
+            lineageId: '00000000-0000-0000-0000-000000000052',
+            quantity: '1',
+            unitPrice: '1',
+            lineTotal: '1',
+            leadTime: null,
+            leadTimeUnit: null,
+            notes: null,
+            rejectedAt: null,
+            rejectionReason: null,
+            selectionLine: null,
+          },
+        },
+      ],
+    });
+
+    const quoteItems =
+      buildLineagePipeline(trace).find((step) => step.stage === 'quotes')
+        ?.items ?? [];
+
+    expect(quoteItems.map((item) => item.documentId)).toEqual([
+      quoteA,
+      quoteA,
+      quoteB,
+    ]);
+    expect(quoteItems.map((item) => item.meta?.lineNumber)).toEqual([
+      '1',
+      '2',
+      '1',
+    ]);
+  });
+
+  it('groups consecutive same-document items into rows', () => {
+    const items = [
+      { documentId: 'a', label: 'a1', status: 'X', link: '#' },
+      { documentId: 'a', label: 'a2', status: 'X', link: '#' },
+      { documentId: 'b', label: 'b1', status: 'X', link: '#' },
+    ];
+
+    expect(groupPipelineItemsByDocument(items)).toEqual([
+      [items[0], items[1]],
+      [items[2]],
+    ]);
   });
 });

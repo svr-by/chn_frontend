@@ -57,6 +57,35 @@ function optionalLineNotes(
   return trimmed ? { notes: trimmed } : {};
 }
 
+/** Keep cards from the same document adjacent; order lines within a document. */
+function sortPipelineItemsByDocument(items: PipelineItem[]): PipelineItem[] {
+  return [...items].sort((a, b) => {
+    const byDoc = a.documentId.localeCompare(b.documentId);
+    if (byDoc !== 0) {
+      return byDoc;
+    }
+    return (
+      Number(a.meta?.lineNumber ?? 0) - Number(b.meta?.lineNumber ?? 0)
+    );
+  });
+}
+
+/** Group already-sorted items into runs that share a documentId. */
+export function groupPipelineItemsByDocument(
+  items: PipelineItem[],
+): PipelineItem[][] {
+  const groups: PipelineItem[][] = [];
+  for (const item of items) {
+    const lastGroup = groups[groups.length - 1];
+    if (lastGroup?.[0]?.documentId === item.documentId) {
+      lastGroup.push(item);
+    } else {
+      groups.push([item]);
+    }
+  }
+  return groups;
+}
+
 export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
   const steps: PipelineStep[] = [
     {
@@ -86,90 +115,110 @@ export function buildLineagePipeline(trace: LineageTrace): PipelineStep[] {
     },
     {
       stage: 'quotes',
-      items: trace.quotes.map((quote) => {
-        const selection = quote.line.selectionLine;
+      items: sortPipelineItemsByDocument(
+        trace.quotes.map((quote) => {
+          const selection = quote.line.selectionLine;
 
-        return {
-          documentId: quote.quoteId,
-          label: quote.number ?? quote.company.name,
-          status: quote.status,
-          link: resolveDocumentPath('SUPPLIER_QUOTE', quote.quoteId) ?? '#',
-          meta: {
-            lineNumber: String(quote.line.lineNumber),
-            unitPrice: quote.line.unitPrice,
-            quantity: quote.line.quantity,
-            lineTotal: quote.line.lineTotal,
-            currency: quote.currency,
-            ...optionalLineNotes(quote.line.notes),
-            ...documentMeta(quote),
-          },
-          selection: selection
-            ? {
-                id: selection.id,
-                quantity: selection.quantity,
-                notes: selection.notes?.trim() || undefined,
-                createdAt: selection.createdAt,
-                createdBy: selection.createdBy?.name ?? undefined,
-              }
-            : undefined,
-        };
-      }),
+          return {
+            documentId: quote.quoteId,
+            label: quote.number ?? quote.company.name,
+            status: quote.status,
+            link: resolveDocumentPath('SUPPLIER_QUOTE', quote.quoteId) ?? '#',
+            meta: {
+              lineNumber: String(quote.line.lineNumber),
+              unitPrice: quote.line.unitPrice,
+              quantity: quote.line.quantity,
+              lineTotal: quote.line.lineTotal,
+              currency: quote.currency,
+              ...optionalLineNotes(quote.line.notes),
+              ...documentMeta(quote),
+              ...(quote.line.leadTime != null && quote.line.leadTimeUnit
+                ? {
+                    leadTime: String(quote.line.leadTime),
+                    leadTimeUnit: quote.line.leadTimeUnit,
+                  }
+                : {}),
+              ...(quote.line.rejectedAt
+                ? { rejectedAt: quote.line.rejectedAt }
+                : {}),
+              ...(quote.line.rejectionReason?.trim()
+                ? { rejectionReason: quote.line.rejectionReason.trim() }
+                : {}),
+            },
+            selection: selection
+              ? {
+                  id: selection.id,
+                  quantity: selection.quantity,
+                  notes: selection.notes?.trim() || undefined,
+                  createdAt: selection.createdAt,
+                  createdBy: selection.createdBy?.name ?? undefined,
+                }
+              : undefined,
+          };
+        }),
+      ),
     },
     {
       stage: 'invoices',
-      items: trace.invoices.map((invoice) => ({
-        documentId: invoice.invoiceId,
-        label: invoice.number || invoice.invoiceId.slice(0, 8),
-        status: invoice.status,
-        link: resolveDocumentPath('INVOICE', invoice.invoiceId) ?? '#',
-        meta: {
-          lineNumber: String(invoice.line.lineNumber),
-          unitPrice: invoice.line.unitPrice,
-          quantity: invoice.line.quantity,
-          lineTotal: invoice.line.lineTotal,
-          currency: invoice.currency,
-          payments: String(invoice.payments.length),
-          ...optionalLineNotes(invoice.line.notes),
-          ...documentMeta(invoice),
-        },
-      })),
+      items: sortPipelineItemsByDocument(
+        trace.invoices.map((invoice) => ({
+          documentId: invoice.invoiceId,
+          label: invoice.number || invoice.invoiceId.slice(0, 8),
+          status: invoice.status,
+          link: resolveDocumentPath('INVOICE', invoice.invoiceId) ?? '#',
+          meta: {
+            lineNumber: String(invoice.line.lineNumber),
+            unitPrice: invoice.line.unitPrice,
+            quantity: invoice.line.quantity,
+            lineTotal: invoice.line.lineTotal,
+            currency: invoice.currency,
+            payments: String(invoice.payments.length),
+            ...optionalLineNotes(invoice.line.notes),
+            ...documentMeta(invoice),
+          },
+        })),
+      ),
     },
     {
       stage: 'shipments',
-      items: trace.shipments.map((shipment) => ({
-        documentId: shipment.shippingInvoiceId,
-        label:
-          shipment.trackingNumber ??
-          shipment.carrier ??
-          shipment.shippingInvoiceId.slice(0, 8),
-        status: shipment.status,
-        link:
-          resolveDocumentPath('SHIPPING_INVOICE', shipment.shippingInvoiceId) ??
-          '#',
-        meta: {
-          lineNumber: String(shipment.line.lineNumber),
-          carrier: shipment.carrier ?? '',
-          trackingNumber: shipment.trackingNumber ?? '',
-          ...documentMeta(shipment),
-        },
-      })),
+      items: sortPipelineItemsByDocument(
+        trace.shipments.map((shipment) => ({
+          documentId: shipment.shippingInvoiceId,
+          label:
+            shipment.trackingNumber ??
+            shipment.carrier ??
+            shipment.shippingInvoiceId.slice(0, 8),
+          status: shipment.status,
+          link:
+            resolveDocumentPath('SHIPPING_INVOICE', shipment.shippingInvoiceId) ??
+            '#',
+          meta: {
+            lineNumber: String(shipment.line.lineNumber),
+            carrier: shipment.carrier ?? '',
+            trackingNumber: shipment.trackingNumber ?? '',
+            ...documentMeta(shipment),
+          },
+        })),
+      ),
     },
     {
       stage: 'consolidations',
-      items: trace.consolidations.map((consolidation) => ({
-        documentId: consolidation.consolidationId,
-        label: consolidation.consolidationId.slice(0, 8),
-        status: consolidation.status,
-        link:
-          resolveDocumentPath('CONSOLIDATION', consolidation.consolidationId) ??
-          '#',
-        meta: {
-          transportMode: consolidation.transportMode ?? '',
-          trackingNumber: consolidation.trackingNumber ?? '',
-          linkedViaShippingInvoiceId: consolidation.linkedViaShippingInvoiceId,
-          ...documentMeta(consolidation),
-        },
-      })),
+      items: sortPipelineItemsByDocument(
+        trace.consolidations.map((consolidation) => ({
+          documentId: consolidation.consolidationId,
+          label: consolidation.consolidationId.slice(0, 8),
+          status: consolidation.status,
+          link:
+            resolveDocumentPath('CONSOLIDATION', consolidation.consolidationId) ??
+            '#',
+          meta: {
+            transportMode: consolidation.transportMode ?? '',
+            trackingNumber: consolidation.trackingNumber ?? '',
+            linkedViaShippingInvoiceId: consolidation.linkedViaShippingInvoiceId,
+            ...documentMeta(consolidation),
+          },
+        })),
+      ),
     },
   ];
 

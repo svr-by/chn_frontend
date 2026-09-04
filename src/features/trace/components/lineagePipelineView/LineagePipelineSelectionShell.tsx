@@ -21,12 +21,14 @@ export function LineagePipelineSelectionShell({
   return (
     <Box
       sx={{
-        maxWidth: 420,
+        width: '100%',
+        height: '100%',
         p: 1.5,
         border: 1,
         borderColor: 'success.main',
         borderRadius: 2,
         bgcolor: (theme) => alpha(theme.palette.success.main, 0.08),
+        boxSizing: 'border-box',
       }}
     >
       <Stack spacing={0.75} sx={{ mb: 1.5 }}>

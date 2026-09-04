@@ -13,7 +13,6 @@ describe('LineagePipelineView', () => {
     expect(screen.getByText('Supplier quotes')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Office supplies' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Supplier Ltd' })).toBeInTheDocument();
-    expect(screen.getAllByText('Line 1')).toHaveLength(2);
     expect(
       screen.getAllByText(
         `${new Date('2026-01-01T00:00:00.000Z').toLocaleDateString()}, Jane Doe`,
@@ -51,5 +50,33 @@ describe('LineagePipelineView', () => {
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Supplier Ltd' })).toBeInTheDocument();
+  });
+
+  it('shows rejected badge on quote offers', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.rejectedAt = '2026-07-15T10:00:00.000Z';
+    quote.line.rejectionReason = 'Too expensive';
+
+    renderWithProviders(<LineagePipelineView trace={trace} />);
+
+    expect(screen.getByText('Rejected')).toBeInTheDocument();
+  });
+
+  it('shows lead time on quote offers', () => {
+    const trace = createLineageTrace();
+    const quote = trace.quotes[0];
+    if (!quote) {
+      throw new Error('expected a quote in the fixture');
+    }
+    quote.line.leadTime = 2;
+    quote.line.leadTimeUnit = 'WEEK';
+
+    renderWithProviders(<LineagePipelineView trace={trace} />);
+
+    expect(screen.getByText('2 Weeks')).toBeInTheDocument();
   });
 });

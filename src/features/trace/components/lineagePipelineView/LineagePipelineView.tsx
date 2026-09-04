@@ -1,5 +1,5 @@
-import { Fragment } from 'react';
 import {
+  Box,
   Stack,
   Step,
   StepContent,
@@ -12,10 +12,45 @@ import { useTranslation } from 'react-i18next';
 import type { LineageTrace } from '@/api/generated/models/lineageTrace';
 import { LineagePipelineItemCard } from '@/features/trace/components/lineagePipelineView/LineagePipelineItemCard';
 import { LineagePipelineSelectionShell } from '@/features/trace/components/lineagePipelineView/LineagePipelineSelectionShell';
-import { buildLineagePipeline } from '@/lib/lineagePipeline';
+import {
+  buildLineagePipeline,
+  groupPipelineItemsByDocument,
+  type PipelineItem,
+  type PipelineStage,
+} from '@/lib/lineagePipeline';
 
 interface LineagePipelineViewProps {
   trace: LineageTrace;
+}
+
+function renderPipelineItem(
+  stage: PipelineStage,
+  item: PipelineItem,
+  index: number,
+) {
+  const key = `${stage}-${item.documentId}-${index}`;
+  const card = <LineagePipelineItemCard stage={stage} item={item} />;
+  const content = item.selection ? (
+    <LineagePipelineSelectionShell selection={item.selection}>
+      {card}
+    </LineagePipelineSelectionShell>
+  ) : (
+    card
+  );
+
+  return (
+    <Box
+      key={key}
+      sx={{
+        width: '100%',
+        maxWidth: 420,
+        minWidth: 0,
+        flex: { sm: '1 1 280px' },
+      }}
+    >
+      {content}
+    </Box>
+  );
 }
 
 export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
@@ -42,25 +77,20 @@ export function LineagePipelineView({ trace }: LineagePipelineViewProps) {
               </Typography>
             ) : (
               <Stack spacing={1.5} sx={{ pb: 2 }}>
-                {step.items.map((item, index) => {
-                  const key = `${step.stage}-${item.documentId}-${index}`;
-                  const card = (
-                    <LineagePipelineItemCard stage={step.stage} item={item} />
-                  );
-
-                  if (!item.selection) {
-                    return <Fragment key={key}>{card}</Fragment>;
-                  }
-
-                  return (
-                    <LineagePipelineSelectionShell
-                      key={key}
-                      selection={item.selection}
-                    >
-                      {card}
-                    </LineagePipelineSelectionShell>
-                  );
-                })}
+                {groupPipelineItemsByDocument(step.items).map((group) => (
+                  <Stack
+                    key={`${step.stage}-${group[0]?.documentId ?? 'group'}`}
+                    direction={{ xs: 'column', sm: 'row' }}
+                    spacing={1.5}
+                    alignItems="stretch"
+                    useFlexGap
+                    sx={{ flexWrap: { sm: 'wrap' } }}
+                  >
+                    {group.map((item, index) =>
+                      renderPipelineItem(step.stage, item, index),
+                    )}
+                  </Stack>
+                ))}
               </Stack>
             )}
           </StepContent>

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Box, Stack, Tab, Tabs, Typography } from '@mui/material';
+import NotesOutlinedIcon from '@mui/icons-material/NotesOutlined';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from 'notistack';
 
@@ -112,9 +113,16 @@ export function TraceDetailPage() {
                   </Typography>
                 ) : null}
                 {requestLineNotes ? (
-                  <Typography variant="body2" color="text.secondary">
-                    {requestLineNotes}
-                  </Typography>
+                  <Stack direction="row" spacing={1} alignItems="flex-start">
+                    <NotesOutlinedIcon
+                      fontSize="small"
+                      color="action"
+                      sx={{ mt: 0.25, flex: '0 0 auto' }}
+                    />
+                    <Typography variant="body2" color="text.secondary">
+                      {requestLineNotes}
+                    </Typography>
+                  </Stack>
                 ) : null}
               </Stack>
 
