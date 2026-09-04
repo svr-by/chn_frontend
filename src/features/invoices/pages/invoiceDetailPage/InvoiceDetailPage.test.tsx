@@ -59,6 +59,10 @@ vi.mock('@/api/endpoints/invoicesApi', () => ({
     vi.fn(),
     { isLoading: false, reset: vi.fn() },
   ]),
+  useDeleteInvoiceMutation: vi.fn(() => [
+    vi.fn(),
+    { isLoading: false, reset: vi.fn() },
+  ]),
   useConfirmInvoiceMutation: vi.fn(() => [
     vi.fn(),
     { isLoading: false, reset: vi.fn() },

@@ -11,6 +11,7 @@ import {
   useListRequestsQuery,
 } from '@/api/endpoints/requestsApi';
 import { RequestsPage } from '@/features/requests/pages/requestsPage/RequestsPage';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import {
   PREFERRED_TRADING_ROLE_STORAGE_KEY,
   readPreferredTradingRole,
@@ -122,7 +123,7 @@ describe('RequestsPage', () => {
     mockedUseListRequestsQuery.mockReturnValue({
       data: {
         requests: [createMaterialRequestSummary()],
-        pagination: { total: 1, limit: 20, offset: 0 },
+        pagination: { total: 1, limit: DEFAULT_PAGE_SIZE, offset: 0 },
       },
       isLoading: false,
       isFetching: false,
@@ -132,7 +133,7 @@ describe('RequestsPage', () => {
     mockedUseListInboundRequestsQuery.mockReturnValue({
       data: {
         requests: [createInboundMaterialRequestSummary()],
-        pagination: { total: 1, limit: 20, offset: 0 },
+        pagination: { total: 1, limit: DEFAULT_PAGE_SIZE, offset: 0 },
       },
       isLoading: false,
       isFetching: false,
@@ -163,7 +164,7 @@ describe('RequestsPage', () => {
     expect(mockedUseListRequestsQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         companyId: COMPANY_ID,
-        limit: 20,
+        limit: DEFAULT_PAGE_SIZE,
         offset: 0,
       }),
       expect.objectContaining({ skip: false }),

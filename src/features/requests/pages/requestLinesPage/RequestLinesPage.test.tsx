@@ -8,6 +8,7 @@ import {
   useListRequestLinesQuery,
 } from '@/api/endpoints/requestsApi';
 import { useListMembersQuery } from '@/api/endpoints/membersApi';
+import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
 import { RequestLinesPage } from '@/features/requests/pages/requestLinesPage/RequestLinesPage';
 import { COMPANY_ID, createRequestLineListItem } from '@/test/fixtures';
 import { renderWithProviders } from '@/test/render';
@@ -50,7 +51,7 @@ describe('RequestLinesPage', () => {
     mockedUseListRequestLinesQuery.mockReturnValue({
       data: {
         items: [createRequestLineListItem()],
-        pagination: { total: 1, limit: 20, offset: 0 },
+        pagination: { total: 1, limit: DEFAULT_PAGE_SIZE, offset: 0 },
       },
       isLoading: false,
       isFetching: false,
@@ -59,7 +60,7 @@ describe('RequestLinesPage', () => {
     mockedUseListInboundRequestLinesQuery.mockReturnValue({
       data: {
         items: [],
-        pagination: { total: 0, limit: 20, offset: 0 },
+        pagination: { total: 0, limit: DEFAULT_PAGE_SIZE, offset: 0 },
       },
       isLoading: false,
       isFetching: false,
@@ -86,7 +87,7 @@ describe('RequestLinesPage', () => {
     expect(mockedUseListRequestLinesQuery).toHaveBeenCalledWith(
       expect.objectContaining({
         companyId: COMPANY_ID,
-        limit: 20,
+        limit: DEFAULT_PAGE_SIZE,
         offset: 0,
         sortBy: 'requestCreatedAt',
         sortOrder: 'desc',
