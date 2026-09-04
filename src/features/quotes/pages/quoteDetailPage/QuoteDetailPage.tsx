@@ -201,8 +201,9 @@ export function QuoteDetailPage() {
         ) : null
       }
       actionMenuItems={
-        quote && isSupplier ? (
+        quote && (isSupplier || isBuyer) ? (
           <QuoteStatusActions
+            actor={isBuyer ? 'buyer' : 'supplier'}
             companyId={companyId}
             quoteId={quote.id}
             materialRequestId={quote.materialRequest?.id}
@@ -318,6 +319,7 @@ export function QuoteDetailPage() {
                   lines={quote.lines}
                   requestLines={requestLines}
                   editable={canEdit}
+                  allowReject={selectionEnabled}
                   selectionMode={isBuyer ? 'buyer' : 'supplier'}
                   selectionEnabled={selectionEnabled}
                   canExportCsv={canExportCsv}

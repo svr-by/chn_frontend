@@ -1,6 +1,8 @@
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
+import { isQuoteLineRejected } from '@/lib/quoteLineRejected';
+import { isRequestLineCancelled } from '@/lib/requestLineCancelled';
 
 export type QuoteOfferRow = {
   id: string;
@@ -10,6 +12,8 @@ export type QuoteOfferRow = {
   requestedQuantity: string;
   unit: string | null;
   cancelledAt: string | null;
+  rejectedAt: string | null;
+  rejectionReason: string | null;
   quoteLine: QuoteLine | null;
   variantIndex: number;
   variantCount: number;
@@ -32,10 +36,13 @@ function rowsFromQuoteLineGroup(
     requestedQuantity: quoteLine.requestLine.quantity,
     unit: quoteLine.requestLine.unit ?? null,
     cancelledAt: quoteLine.requestLine.cancelledAt,
+    rejectedAt: quoteLine.rejectedAt,
+    rejectionReason: quoteLine.rejectionReason,
     quoteLine,
     variantIndex: index + 1,
     variantCount,
-    canAddVariant: options.canAddVariant,
+    canAddVariant:
+      options.canAddVariant && !isQuoteLineRejected(quoteLine.rejectedAt),
     isLastInGroup: index === sorted.length - 1,
   }));
 }
@@ -57,15 +64,17 @@ export function buildQuoteOfferRows(
   }
 
   if (requestLines.length > 0) {
-    const activeRequestLineIds = new Set(requestLines.map((line) => line.id));
+    const requestLineIds = new Set(requestLines.map((line) => line.id));
 
-    const activeRows = [...requestLines]
+    const requestRows = [...requestLines]
       .sort((a, b) => a.lineNumber - b.lineNumber)
       .flatMap((requestLine) => {
         const group = quoteLinesByRequestLineId.get(requestLine.id) ?? [];
         const variantCount = group.length;
-        const canAddVariant =
-          editable && variantCount < MAX_QUOTE_LINE_VARIANTS;
+        const canAddVariantBase =
+          editable &&
+          !isRequestLineCancelled(requestLine.cancelledAt) &&
+          variantCount < MAX_QUOTE_LINE_VARIANTS;
 
         if (group.length === 0) {
           return [
@@ -77,10 +86,12 @@ export function buildQuoteOfferRows(
               requestedQuantity: requestLine.quantity,
               unit: requestLine.unit ?? null,
               cancelledAt: requestLine.cancelledAt,
+              rejectedAt: null,
+              rejectionReason: null,
               quoteLine: null,
               variantIndex: 0,
               variantCount: 0,
-              canAddVariant,
+              canAddVariant: canAddVariantBase,
               isLastInGroup: true,
             } satisfies QuoteOfferRow,
           ];
@@ -95,17 +106,20 @@ export function buildQuoteOfferRows(
             requestedQuantity: requestLine.quantity,
             unit: requestLine.unit ?? null,
             cancelledAt: requestLine.cancelledAt,
+            rejectedAt: quoteLine.rejectedAt,
+            rejectionReason: quoteLine.rejectionReason,
             quoteLine,
             variantIndex: index + 1,
             variantCount,
-            canAddVariant,
+            canAddVariant:
+              canAddVariantBase && !isQuoteLineRejected(quoteLine.rejectedAt),
             isLastInGroup: index === group.length - 1,
           }),
         );
       });
 
-    const cancelledOfferRows = [...quoteLinesByRequestLineId.entries()]
-      .filter(([requestLineId]) => !activeRequestLineIds.has(requestLineId))
+    const orphanOfferRows = [...quoteLinesByRequestLineId.entries()]
+      .filter(([requestLineId]) => !requestLineIds.has(requestLineId))
       .sort(([, groupA], [, groupB]) => {
         const lineNumberA = groupA[0]?.requestLine.lineNumber ?? 0;
         const lineNumberB = groupB[0]?.requestLine.lineNumber ?? 0;
@@ -115,7 +129,7 @@ export function buildQuoteOfferRows(
         rowsFromQuoteLineGroup(group, { canAddVariant: false }),
       );
 
-    return [...activeRows, ...cancelledOfferRows];
+    return [...requestRows, ...orphanOfferRows];
   }
 
   return [...quoteLinesByRequestLineId.entries()]
@@ -126,7 +140,10 @@ export function buildQuoteOfferRows(
     })
     .flatMap(([, group]) =>
       rowsFromQuoteLineGroup(group, {
-        canAddVariant: editable && group.length < MAX_QUOTE_LINE_VARIANTS,
+        canAddVariant:
+          editable &&
+          !isRequestLineCancelled(group[0]?.requestLine.cancelledAt) &&
+          group.length < MAX_QUOTE_LINE_VARIANTS,
       }),
     );
 }

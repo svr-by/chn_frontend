@@ -29,6 +29,7 @@ export function ComparisonMobileCards({
   rows,
   companyId,
   selectionEnabled,
+  allowRejectOffers,
   materialRequestId,
 }: ComparisonMobileCardsProps) {
   const { t } = useTranslation('quotes');
@@ -131,6 +132,7 @@ export function ComparisonMobileCards({
                           row={offerRow}
                           companyId={companyId}
                           selectionEnabled={selectionEnabled}
+                          allowRejectOffers={allowRejectOffers}
                           materialRequestId={materialRequestId}
                           unit={lineRow.requestLine.unit}
                         />

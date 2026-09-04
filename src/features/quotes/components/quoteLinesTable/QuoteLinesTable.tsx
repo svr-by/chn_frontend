@@ -12,6 +12,7 @@ import {
   Menu,
   MenuItem,
   Stack,
+  TextField,
   Tooltip,
   Typography,
   useTheme,
@@ -19,6 +20,7 @@ import {
 import { alpha } from '@mui/material/styles';
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import AddIcon from '@mui/icons-material/Add';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -31,13 +33,17 @@ import { useSnackbar } from 'notistack';
 
 import type { QuoteLine } from '@/api/generated/models/quoteLine';
 import type { RequestLine } from '@/api/generated/models/requestLine';
-import { useDeleteQuoteLineMutation } from '@/api/endpoints/quotesApi';
+import {
+  useDeleteQuoteLineMutation,
+  useRejectQuoteLineMutation,
+} from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
 import { ResponsiveIconButton } from '@/components/actions/responsiveIconButton/ResponsiveIconButton';
 import { PaginatedTable } from '@/components/tables/paginatedTable/PaginatedTable';
 import { PermissionGate } from '@/components/auth/permissionGate/PermissionGate';
+import { QuoteLineRejectedBadge } from '@/components/status/quoteLineRejectedBadge/QuoteLineRejectedBadge';
 import { RequestLineCancelledBadge } from '@/components/status/requestLineCancelledBadge/RequestLineCancelledBadge';
 import { QuoteLinesCsvExportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvExportDialog';
 import { QuoteLinesCsvImportDialog } from '@/features/quotes/components/quoteLinesCsv/QuoteLinesCsvImportDialog';
@@ -47,7 +53,7 @@ import {
 } from '@/features/quotes/lib/buildQuoteOfferRows';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
 import { QuoteLineFormDialog } from './QuoteLineFormDialog';
-import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import { QuoteOfferDecisionCell } from '@/features/quotes/components/quoteOfferDecision/QuoteOfferDecisionCell';
 import {
   MRT_NARROW_ACTIONS_SIZE,
   MRT_NARROW_LINE_NUMBER_SIZE,
@@ -55,19 +61,25 @@ import {
 } from '@/lib/mrtNarrowColumns';
 import { parseDecimal } from '@/lib/decimal';
 import { DEFAULT_PAGE_SIZE } from '@/lib/pagination';
+import { isQuoteLineRejected } from '@/lib/quoteLineRejected';
+import { isRequestLineCancelled } from '@/lib/requestLineCancelled';
 
 
 function canAddOfferOrVariant(
   offer: QuoteOfferRow,
   editable: boolean,
 ): boolean {
-  if (!editable) {
+  if (
+    !editable ||
+    isRequestLineCancelled(offer.cancelledAt) ||
+    isQuoteLineRejected(offer.rejectedAt)
+  ) {
     return false;
   }
   if (offer.quoteLine) {
     return offer.canAddVariant && offer.isLastInGroup;
   }
-  return true;
+  return offer.canAddVariant;
 }
 
 interface QuoteLinesTableProps {
@@ -78,6 +90,8 @@ interface QuoteLinesTableProps {
   lines: QuoteLine[];
   requestLines: RequestLine[];
   editable: boolean;
+  /** Buyer reject/unreject without full line edit. */
+  allowReject?: boolean;
   selectionMode?: 'none' | 'buyer' | 'supplier';
   selectionEnabled?: boolean;
   canExportCsv?: boolean;
@@ -92,6 +106,7 @@ export function QuoteLinesTable({
   lines,
   requestLines,
   editable,
+  allowReject = false,
   selectionMode = 'none',
   selectionEnabled = false,
   canExportCsv = false,
@@ -110,6 +125,8 @@ export function QuoteLinesTable({
     string | null
   >(null);
   const [lineToDelete, setLineToDelete] = useState<QuoteLine | null>(null);
+  const [lineToReject, setLineToReject] = useState<QuoteLine | null>(null);
+  const [rejectionReason, setRejectionReason] = useState('');
   const [actionsMenu, setActionsMenu] = useState<{
     anchor: HTMLElement;
     row: QuoteOfferRow;
@@ -121,6 +138,7 @@ export function QuoteLinesTable({
   const showCsvActions = Boolean(materialRequestId) && (canExportCsv || canImportCsv);
 
   const [deleteLine, deleteState] = useDeleteQuoteLineMutation();
+  const [rejectLine, rejectState] = useRejectQuoteLineMutation();
 
   const quoteLineCountByRequestLineId = useMemo(() => {
     const counts = new Map<string, number>();
@@ -132,8 +150,9 @@ export function QuoteLinesTable({
 
   const hasAvailableRequestLines = requestLines.some(
     (requestLine) =>
+      !isRequestLineCancelled(requestLine.cancelledAt) &&
       (quoteLineCountByRequestLineId.get(requestLine.id) ?? 0) <
-      MAX_QUOTE_LINE_VARIANTS,
+        MAX_QUOTE_LINE_VARIANTS,
   );
 
   const rows = useMemo(
@@ -225,11 +244,17 @@ export function QuoteLinesTable({
         header: t('columns.requestLine'),
         grow: true,
         Cell: ({ row }) => (
-          <Stack direction="row" spacing={1} flexWrap="wrap">
+          <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
             <span>{row.original.description}</span>
             <RequestLineCancelledBadge
               cancelledAt={row.original.cancelledAt}
             />
+            {selectionMode === 'buyer' ? null : (
+              <QuoteLineRejectedBadge
+                rejectedAt={row.original.rejectedAt}
+                rejectionReason={row.original.rejectionReason}
+              />
+            )}
           </Stack>
         ),
       },
@@ -237,8 +262,6 @@ export function QuoteLinesTable({
         id: 'notes',
         header: t('columns.notes'),
         size: 120,
-        muiTableBodyCellProps: { align: 'right' },
-        muiTableHeadCellProps: { align: 'right' },
         Cell: ({ row }) => (
           <ClampedTextDialog
             text={row.original.quoteLine?.notes}
@@ -301,7 +324,7 @@ export function QuoteLinesTable({
       {
         id: 'selectedQuantity',
         header: t('columns.selectedQuantity'),
-        size: 150,
+        size: 180,
         grow: false,
         muiTableBodyCellProps: { align: 'right' },
         muiTableHeadCellProps: { align: 'right' },
@@ -313,15 +336,18 @@ export function QuoteLinesTable({
 
           if (selectionMode === 'buyer') {
             return (
-              <QuoteLineSelectionCell
+              <QuoteOfferDecisionCell
                 companyId={companyId}
                 quoteId={quoteId}
                 lineId={quoteLine.id}
                 maxQuantity={quoteLine.quantity}
                 selectedQuantity={quoteLine.selectedQuantity}
+                rejectedAt={quoteLine.rejectedAt}
+                rejectionReason={quoteLine.rejectionReason}
                 unit={row.original.unit}
                 materialRequestId={materialRequestId}
-                disabled={!selectionEnabled}
+                selectionEnabled={selectionEnabled}
+                allowReject={allowReject}
               />
             );
           }
@@ -377,7 +403,7 @@ export function QuoteLinesTable({
     ];
 
     return baseColumns;
-  }, [actionsMenu?.row.id, currency, editable, positionsTotal, selectionEnabled, selectionMode, companyId, quoteId, materialRequestId, t]);
+  }, [actionsMenu?.row.id, allowReject, currency, editable, positionsTotal, selectionEnabled, selectionMode, companyId, quoteId, materialRequestId, t]);
 
   function closeActionsMenu() {
     setActionsMenu(null);
@@ -387,6 +413,17 @@ export function QuoteLinesTable({
   const menuCanAdd = actionsMenu
     ? canAddOfferOrVariant(actionsMenu.row, editable)
     : false;
+  const menuLineRejected = isQuoteLineRejected(menuQuoteLine?.rejectedAt);
+  const menuCanEditOrDelete =
+    editable &&
+    menuQuoteLine != null &&
+    menuQuoteLine.selectedQuantity == null &&
+    !menuLineRejected;
+  const menuCanReject =
+    editable &&
+    menuQuoteLine != null &&
+    menuQuoteLine.selectedQuantity == null &&
+    !menuLineRejected;
 
   async function handleDeleteConfirm() {
     if (!lineToDelete) {
@@ -402,6 +439,25 @@ export function QuoteLinesTable({
 
     enqueueSnackbar(t('toast.lineDeleted'), { variant: 'success' });
     setLineToDelete(null);
+  }
+
+  async function handleRejectConfirm() {
+    if (!lineToReject) {
+      return;
+    }
+
+    const reason = rejectionReason.trim();
+    await rejectLine({
+      companyId,
+      quoteId,
+      lineId: lineToReject.id,
+      materialRequestId,
+      ...(reason ? { reason } : {}),
+    }).unwrap();
+
+    enqueueSnackbar(t('toast.lineRejected'), { variant: 'success' });
+    setLineToReject(null);
+    setRejectionReason('');
   }
 
   function closeDialog() {
@@ -430,7 +486,9 @@ export function QuoteLinesTable({
         ) : null}
       </Stack>
 
-      <ApiErrorAlert error={deleteState.error} />
+      <ApiErrorAlert
+        error={deleteState.error ?? rejectState.error}
+      />
 
       <Menu
         anchorEl={actionsMenu?.anchor ?? null}
@@ -472,7 +530,7 @@ export function QuoteLinesTable({
             </MenuItem>
           </PermissionGate>
         ) : null}
-        {editable && menuQuoteLine && menuQuoteLine.selectedQuantity == null ? (
+        {menuCanEditOrDelete ? (
           <PermissionGate permission="manageQuotes">
             <MenuItem
               onClick={() => {
@@ -500,6 +558,22 @@ export function QuoteLinesTable({
             </MenuItem>
           </PermissionGate>
         ) : null}
+        {menuCanReject && menuQuoteLine ? (
+          <PermissionGate permission="manageQuotes">
+            <MenuItem
+              onClick={() => {
+                setLineToReject(menuQuoteLine);
+                closeActionsMenu();
+              }}
+              sx={{ color: 'error.main' }}
+            >
+              <ListItemIcon sx={{ color: 'inherit' }}>
+                <CloseOutlinedIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText>{t('actions.rejectLine')}</ListItemText>
+            </MenuItem>
+          </PermissionGate>
+        ) : null}
       </Menu>
 
       <PaginatedTable
@@ -512,9 +586,12 @@ export function QuoteLinesTable({
         layoutMode="grid"
         muiTableBodyRowProps={({ row }) => {
           const isSelected = row.original.quoteLine?.selectedQuantity != null;
+          const isCancelled = isRequestLineCancelled(row.original.cancelledAt);
+          const isRejected = isQuoteLineRejected(row.original.rejectedAt);
           return {
             sx: {
               bgcolor: isSelected ? selectedRowBg : 'transparent',
+              opacity: isCancelled || isRejected ? 0.6 : undefined,
             },
           };
         }}
@@ -610,6 +687,45 @@ export function QuoteLinesTable({
             disabled={deleteState.isLoading}
           >
             {t('actions.deleteLine')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={Boolean(lineToReject)}
+        onClose={() => {
+          setLineToReject(null);
+          setRejectionReason('');
+        }}
+      >
+        <DialogTitle>{t('confirm.rejectLineTitle')}</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>{t('confirm.rejectLineMessage')}</Typography>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            label={t('confirm.rejectLineReason')}
+            value={rejectionReason}
+            onChange={(event) => setRejectionReason(event.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setLineToReject(null);
+              setRejectionReason('');
+            }}
+          >
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => void handleRejectConfirm()}
+            disabled={rejectState.isLoading}
+          >
+            {t('actions.rejectLine')}
           </Button>
         </DialogActions>
       </Dialog>

@@ -23,7 +23,7 @@
   },
   "supplierQuoteStatus": {
     "draft": "Черновик",
-    "submitted": "Выставлено",
+    "submitted": "Отправлено",
     "partially_accepted": "Частично принято",
     "accepted": "Принято",
     "rejected": "Отклонено"
@@ -75,10 +75,14 @@
     "viewer": "Наблюдатель"
   },
   "activityEventType": {
-    "QUOTE_SUBMITTED": "Котировка отправлена",
-    "QUOTE_LINE_SELECTED": "Строка котировки выбрана",
-    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки котировки обновлён",
-    "QUOTE_LINE_UNSELECTED": "Выбор строки котировки снят",
+    "QUOTE_SUBMITTED": "Предложение отправлено",
+    "QUOTE_LINE_SELECTED": "Строка предложения выбрана",
+    "QUOTE_LINE_SELECTION_UPDATED": "Выбор строки предложения обновлён",
+    "QUOTE_LINE_UNSELECTED": "Выбор строки предложения снят",
+    "QUOTE_LINE_REJECTED": "Предложение отклонено",
+    "QUOTE_LINE_UNREJECTED": "Отклонение предложения снято",
+    "QUOTE_REJECTED": "Предложение отклонено",
+    "QUOTE_UNREJECTED": "Отклонение предложения снято",
     "INVOICE_CREATED": "Счёт создан",
     "INVOICE_LINE_ADDED": "Позиция счёта добавлена",
     "INVOICE_LINE_UPDATED": "Позиция счёта обновлена",

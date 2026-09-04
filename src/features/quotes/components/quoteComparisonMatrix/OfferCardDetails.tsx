@@ -3,13 +3,10 @@ import { Link, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
-import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import { QuoteOfferDecisionCell } from '@/features/quotes/components/quoteOfferDecision/QuoteOfferDecisionCell';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonOfferRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
-import {
-  formatQuoteDate,
-  resolveSelectedQuantity,
-} from '@/features/quotes/lib/quoteComparisonSelection';
+import { formatQuoteDate } from '@/features/quotes/lib/quoteComparisonSelection';
 
 interface OfferCardDetailsProps extends OfferSelectionProps {
   row: QuoteComparisonOfferRow;
@@ -20,6 +17,7 @@ export function OfferCardDetails({
   row,
   companyId,
   selectionEnabled,
+  allowRejectOffers,
   materialRequestId,
   unit,
 }: OfferCardDetailsProps) {
@@ -65,15 +63,18 @@ export function OfferCardDetails({
           {t('comparison.columns.notes')}: {offer.notes.trim()}
         </Typography>
       ) : null}
-      <QuoteLineSelectionCell
+      <QuoteOfferDecisionCell
         companyId={companyId}
         quoteId={offer.quoteId}
         lineId={offer.quoteLineId}
         maxQuantity={offer.quantity}
-        selectedQuantity={resolveSelectedQuantity(offer)}
+        selectedQuantity={offer.selectedQuantity}
+        rejectedAt={offer.rejectedAt}
+        rejectionReason={offer.rejectionReason}
         unit={unit}
         materialRequestId={materialRequestId}
-        disabled={!selectionEnabled}
+        selectionEnabled={selectionEnabled}
+        allowReject={allowRejectOffers}
       />
     </Stack>
   );

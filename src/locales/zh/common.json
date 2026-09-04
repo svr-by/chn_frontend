@@ -38,6 +38,10 @@
     "lineNumber": "行 {{number}}"
   },
 
+  "quoteLine": {
+    "rejected": "已拒绝"
+  },
+
   "documentStatus": {
     "progress": "单据状态"
   }

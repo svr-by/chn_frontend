@@ -57,6 +57,10 @@
     "delete": "删除报价",
     "withdraw": "撤回报价",
     "unsubmit": "退回草稿",
+    "reject": "拒绝报价",
+    "unreject": "撤销拒绝",
+    "rejectLine": "拒绝报价行",
+    "unrejectLine": "撤销拒绝",
     "createInvoice": "创建发票",
     "addLine": "添加行",
     "addOffer": "添加报价",
@@ -129,6 +133,16 @@
     "withdrawMessage": "撤回已提交的报价？若买方已在行上做出选择，此操作无法撤销。",
     "unsubmitTitle": "退回草稿",
     "unsubmitMessage": "将此报价退回草稿？退回后可再次编辑并提交。",
+    "rejectTitle": "拒绝报价",
+    "rejectMessage": "拒绝此报价？买方将看到已拒绝状态。",
+    "rejectReason": "原因（可选）",
+    "unrejectTitle": "撤销拒绝",
+    "unrejectMessage": "清除拒绝并恢复此报价？",
+    "rejectLineTitle": "拒绝报价行",
+    "rejectLineMessage": "拒绝此申请行的报价？",
+    "rejectLineReason": "原因（可选）",
+    "unrejectLineTitle": "撤销拒绝",
+    "unrejectLineMessage": "清除此报价行的拒绝状态？",
     "deleteLineTitle": "删除行",
     "deleteLineMessage": "从报价中移除此行？"
   },
@@ -180,6 +194,10 @@
     "csvExportFailed": "下载 CSV 失败",
     "csvImported": "已从 CSV 更新报价行",
     "unsubmitted": "报价已退回草稿",
+    "rejected": "报价已拒绝",
+    "unrejected": "已撤销报价拒绝",
+    "lineRejected": "报价行已拒绝",
+    "lineUnrejected": "已撤销报价行拒绝",
     "selectionSaved": "行已选择",
     "selectionUpdated": "选择已更新",
     "selectionRemoved": "选择已移除",
@@ -209,5 +227,10 @@
     "validation": {
       "quantity": "请输入有效数量"
     }
+  },
+  "decision": {
+    "select": "选择报价",
+    "reject": "拒绝报价行",
+    "editRejection": "撤销拒绝"
   }
 }

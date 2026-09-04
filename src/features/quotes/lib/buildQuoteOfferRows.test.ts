@@ -44,6 +44,57 @@ describe('buildQuoteOfferRows', () => {
     expect(rows[1]?.quoteLine?.id).toBe(cancelledOffer.id);
   });
 
+  it('disables add/variant for rejected quote lines', () => {
+    const activeLine = createRequestLine();
+    const rejectedOffer = createQuoteLine({
+      rejectedAt: '2026-07-15T10:00:00.000Z',
+      rejectionReason: 'Out of stock',
+    });
+
+    const rows = buildQuoteOfferRows([rejectedOffer], [activeLine], true);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.rejectedAt).toBe('2026-07-15T10:00:00.000Z');
+    expect(rows[0]?.rejectionReason).toBe('Out of stock');
+    expect(rows[0]?.canAddVariant).toBe(false);
+  });
+
+  it('disables add/variant for cancelled lines included in request.lines', () => {
+    const activeLine = createRequestLine();
+    const cancelledLine = createRequestLine({
+      id: CANCELLED_REQUEST_LINE_ID,
+      lineNumber: 2,
+      description: 'Cancelled bolt',
+      quantity: '5',
+      cancelledAt: '2026-07-15T10:00:00.000Z',
+    });
+    const cancelledOffer = createQuoteLine({
+      id: '00000000-0000-0000-0000-000000000088',
+      requestLineId: CANCELLED_REQUEST_LINE_ID,
+      requestLine: {
+        id: CANCELLED_REQUEST_LINE_ID,
+        lineNumber: 2,
+        description: 'Cancelled bolt',
+        quantity: '5',
+        unit: 'pcs',
+        cancelledAt: '2026-07-15T10:00:00.000Z',
+      },
+    });
+    const activeOffer = createQuoteLine();
+
+    const rows = buildQuoteOfferRows(
+      [activeOffer, cancelledOffer],
+      [activeLine, cancelledLine],
+      true,
+    );
+
+    expect(rows).toHaveLength(2);
+    expect(rows[0]?.canAddVariant).toBe(true);
+    expect(rows[1]?.requestLineId).toBe(CANCELLED_REQUEST_LINE_ID);
+    expect(rows[1]?.cancelledAt).toBe('2026-07-15T10:00:00.000Z');
+    expect(rows[1]?.canAddVariant).toBe(false);
+  });
+
   it('propagates cancelledAt from nested requestLine when requestLines is empty', () => {
     const cancelledOffer = createQuoteLine({
       requestLine: {
@@ -56,10 +107,11 @@ describe('buildQuoteOfferRows', () => {
       },
     });
 
-    const rows = buildQuoteOfferRows([cancelledOffer], [], false);
+    const rows = buildQuoteOfferRows([cancelledOffer], [], true);
 
     expect(rows).toHaveLength(1);
     expect(rows[0]?.cancelledAt).toBe('2026-07-20T12:00:00.000Z');
+    expect(rows[0]?.canAddVariant).toBe(false);
   });
 
   it('sorts buyer rows by request line number regardless of API order', () => {

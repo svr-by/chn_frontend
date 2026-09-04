@@ -2,6 +2,7 @@ import type { QuoteComparisonLine } from '@/api/generated/models/quoteComparison
 import type { QuoteComparisonRequestLine } from '@/api/generated/models/quoteComparisonRequestLine';
 import type { QuoteOffer } from '@/api/generated/models/quoteOffer';
 import { SELECTABLE_QUOTE_STATUSES } from '@/features/quotes/lib/quoteSelection';
+import { isQuoteLineRejected } from '@/lib/quoteLineRejected';
 
 export type QuoteComparisonOfferRow = {
   id: string;
@@ -60,8 +61,10 @@ export function comparisonHasSelectableOffers(
   lines: QuoteComparisonLine[],
 ): boolean {
   return lines.some((line) =>
-    (line.offers ?? []).some((offer) =>
-      SELECTABLE_QUOTE_STATUSES.has(offer.status),
+    (line.offers ?? []).some(
+      (offer) =>
+        SELECTABLE_QUOTE_STATUSES.has(offer.status) &&
+        !isQuoteLineRejected(offer.rejectedAt),
     ),
   );
 }

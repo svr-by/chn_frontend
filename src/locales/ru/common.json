@@ -38,6 +38,10 @@
     "lineNumber": "Строка {{number}}"
   },
 
+  "quoteLine": {
+    "rejected": "Отклонена"
+  },
+
   "documentStatus": {
     "progress": "Статус документа"
   }

@@ -41,6 +41,8 @@ import {
 export interface OfferSelectionProps {
   companyId: string;
   selectionEnabled: boolean;
+  /** Buyer may reject/unreject offers (request in quoting window). */
+  allowRejectOffers: boolean;
   materialRequestId: string;
 }
 
@@ -67,10 +69,11 @@ export function QuoteComparisonMatrix({
   );
   const requestStatus = comparisonQuery.data?.request
     ?.status as MaterialRequestStatus | undefined;
+  const requestAllowsBuyerActions =
+    requestStatus != null && SELECTABLE_REQUEST_STATUSES.has(requestStatus);
   const selectionEnabled =
-    requestStatus != null &&
-    SELECTABLE_REQUEST_STATUSES.has(requestStatus) &&
-    comparisonHasSelectableOffers(lines);
+    requestAllowsBuyerActions && comparisonHasSelectableOffers(lines);
+  const allowRejectOffers = requestAllowsBuyerActions;
 
   const tableData = useMemo(() => buildQuoteComparisonRows(lines), [lines]);
 
@@ -226,6 +229,7 @@ export function QuoteComparisonMatrix({
             offers={row.original.offers}
             companyId={companyId}
             selectionEnabled={selectionEnabled}
+            allowRejectOffers={allowRejectOffers}
             materialRequestId={requestId}
             unit={row.original.requestLine?.unit}
           />

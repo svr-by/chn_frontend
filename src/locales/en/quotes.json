@@ -57,6 +57,10 @@
     "delete": "Delete quote",
     "withdraw": "Withdraw quote",
     "unsubmit": "Return to draft",
+    "reject": "Reject quote",
+    "unreject": "Undo reject",
+    "rejectLine": "Reject offer",
+    "unrejectLine": "Undo reject",
     "createInvoice": "Create invoice",
     "addLine": "Add line",
     "addOffer": "Add offer",
@@ -129,6 +133,16 @@
     "withdrawMessage": "Withdraw this submitted quote? This cannot be undone if buyer selections exist on it.",
     "unsubmitTitle": "Return to draft",
     "unsubmitMessage": "Move this quote back to draft? You can edit and submit it again.",
+    "rejectTitle": "Reject quote",
+    "rejectMessage": "Reject this quote? The buyer will see it as rejected.",
+    "rejectReason": "Reason (optional)",
+    "unrejectTitle": "Undo reject",
+    "unrejectMessage": "Clear the rejection and restore this quote?",
+    "rejectLineTitle": "Reject offer",
+    "rejectLineMessage": "Reject this offer for the request line?",
+    "rejectLineReason": "Reason (optional)",
+    "unrejectLineTitle": "Undo reject",
+    "unrejectLineMessage": "Clear the rejection for this offer?",
     "deleteLineTitle": "Delete line",
     "deleteLineMessage": "Remove this offer from the quote?"
   },
@@ -175,6 +189,10 @@
     "lineUpdated": "Offer updated",
     "lineDeleted": "Offer deleted",
     "unsubmitted": "Quote returned to draft",
+    "rejected": "Quote rejected",
+    "unrejected": "Quote rejection cleared",
+    "lineRejected": "Offer rejected",
+    "lineUnrejected": "Offer rejection cleared",
     "selectionSaved": "Line selected",
     "selectionUpdated": "Selection updated",
     "selectionRemoved": "Selection removed",
@@ -209,5 +227,10 @@
     "validation": {
       "quantity": "Enter a valid quantity"
     }
+  },
+  "decision": {
+    "select": "Select offer",
+    "reject": "Reject offer",
+    "editRejection": "Undo reject"
   }
 }

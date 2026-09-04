@@ -28,6 +28,7 @@ import {
   useUpdateQuoteLineMutation,
 } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
+import { isRequestLineCancelled } from '@/lib/requestLineCancelled';
 import { DecimalInput } from '@/components/forms/decimalInput/DecimalInput';
 import { isValidDecimal } from '@/lib/decimal';
 import { MAX_QUOTE_LINE_VARIANTS } from '@/features/quotes/lib/quoteLineVariants';
@@ -165,6 +166,9 @@ export function QuoteLineFormDialog({
       requestLines.filter((requestLine) => {
         if (isEdit) {
           return requestLine.id === line?.requestLineId;
+        }
+        if (isRequestLineCancelled(requestLine.cancelledAt)) {
+          return false;
         }
         const count = quoteLineCountByRequestLineId.get(requestLine.id) ?? 0;
         return count < MAX_QUOTE_LINE_VARIANTS;

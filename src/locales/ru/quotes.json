@@ -24,7 +24,7 @@
     "requestLine": "Позиция заявки",
     "quantity": "Запрошено",
     "offerQuantity": "Кол-во в КП",
-    "selectedQuantity": "Выбранное кол-во",
+    "selectedQuantity": "Заказано",
     "unitPrice": "Цена за единицу",
     "lineTotal": "Итого по позиции",
     "leadTime": "Срок поставки",
@@ -57,6 +57,10 @@
     "delete": "Удалить",
     "withdraw": "Отозвать",
     "unsubmit": "Вернуть в черновик",
+    "reject": "Отклонить КП",
+    "unreject": "Отменить отклонение",
+    "rejectLine": "Отклонить предложение",
+    "unrejectLine": "Отменить отклонение",
     "createInvoice": "Создать счёт",
     "addLine": "Добавить позицию",
     "addOffer": "Добавить предложение",
@@ -129,6 +133,16 @@
     "withdrawMessage": "Отозвать отправленное КП? Действие нельзя отменить, если на строках уже есть выбор покупателя.",
     "unsubmitTitle": "Вернуть в черновик",
     "unsubmitMessage": "Вернуть это КП в черновик? После этого его можно снова редактировать и отправить.",
+    "rejectTitle": "Отклонить коммерческое предложение",
+    "rejectMessage": "Отклонить это КП? Покупатель увидит статус «Отклонено».",
+    "rejectReason": "Причина (необязательно)",
+    "unrejectTitle": "Отменить отклонение",
+    "unrejectMessage": "Снять отклонение и восстановить это КП?",
+    "rejectLineTitle": "Отклонить предложение",
+    "rejectLineMessage": "Отклонить это предложение по позиции заявки?",
+    "rejectLineReason": "Причина (необязательно)",
+    "unrejectLineTitle": "Отменить отклонение",
+    "unrejectLineMessage": "Снять отклонение с этого предложения?",
     "deleteLineTitle": "Удалить позицию",
     "deleteLineMessage": "Удалить это предложение из КП?"
   },
@@ -180,6 +194,10 @@
     "csvExportFailed": "Не удалось скачать CSV",
     "csvImported": "Позиции КП обновлены из CSV",
     "unsubmitted": "КП возвращено в черновик",
+    "rejected": "КП отклонено",
+    "unrejected": "Отклонение КП снято",
+    "lineRejected": "Предложение отклонено",
+    "lineUnrejected": "Отклонение предложения снято",
     "selectionSaved": "Строка выбрана",
     "selectionUpdated": "Выбор обновлён",
     "selectionRemoved": "Выбор снят",
@@ -201,7 +219,7 @@
     "selectTitle": "Выбор строки",
     "editTitle": "Изменить выбор",
     "removeTitle": "Снять выбор",
-    "removeMessage": "Снять выбор с этой строки котировки?",
+    "removeMessage": "Снять выбор с этой строки предложения?",
     "quantity": "Выбранное количество",
     "notes": "Заметки",
     "maxQuantityHint": "Макс.: {{quantity}}",
@@ -209,5 +227,10 @@
     "validation": {
       "quantity": "Введите корректное количество"
     }
+  },
+  "decision": {
+    "select": "Выбрать предложение",
+    "reject": "Отклонить предложение",
+    "editRejection": "Снять отклонение"
   }
 }

@@ -39,6 +39,10 @@
     "lineNumber": "Line {{number}}"
   },
 
+  "quoteLine": {
+    "rejected": "Rejected"
+  },
+
   "documentStatus": {
     "progress": "Document status"
   }

@@ -8,15 +8,15 @@ import { useTranslation } from 'react-i18next';
 
 import { DecimalDisplay } from '@/components/dataDisplay/decimalDisplay/DecimalDisplay';
 import { ClampedTextDialog } from '@/components/dataDisplay/clampedTextDialog/ClampedTextDialog';
-import { QuoteLineSelectionCell } from '@/features/quotes/components/quoteLineSelection/QuoteLineSelectionCell';
+import { QuoteOfferDecisionCell } from '@/features/quotes/components/quoteOfferDecision/QuoteOfferDecisionCell';
 import type { OfferSelectionProps } from '@/features/quotes/components/quoteComparisonMatrix/QuoteComparisonMatrix';
 import type { QuoteComparisonOfferRow } from '@/features/quotes/lib/buildQuoteComparisonRows';
 import {
   formatQuoteDate,
   hasSelectedQuantity,
-  resolveSelectedQuantity,
 } from '@/features/quotes/lib/quoteComparisonSelection';
 import { useAppMaterialReactTable } from '@/hooks/useAppMaterialReactTable';
+import { isQuoteLineRejected } from '@/lib/quoteLineRejected';
 
 interface OffersNestedTableProps extends OfferSelectionProps {
   offers: QuoteComparisonOfferRow[];
@@ -27,6 +27,7 @@ export function OffersNestedTable({
   offers,
   companyId,
   selectionEnabled,
+  allowRejectOffers,
   materialRequestId,
   unit,
 }: OffersNestedTableProps) {
@@ -154,25 +155,35 @@ export function OffersNestedTable({
       {
         id: 'selection',
         header: t('columns.selectedQuantity'),
-        size: 120,
+        size: 160,
         grow: false,
         muiTableHeadCellProps: { align: 'right' },
         muiTableBodyCellProps: { align: 'right' },
         Cell: ({ row }) => (
-          <QuoteLineSelectionCell
+          <QuoteOfferDecisionCell
             companyId={companyId}
             quoteId={row.original.offer.quoteId}
             lineId={row.original.offer.quoteLineId}
             maxQuantity={row.original.offer.quantity}
-            selectedQuantity={resolveSelectedQuantity(row.original.offer)}
+            selectedQuantity={row.original.offer.selectedQuantity}
+            rejectedAt={row.original.offer.rejectedAt}
+            rejectionReason={row.original.offer.rejectionReason}
             unit={unit}
             materialRequestId={materialRequestId}
-            disabled={!selectionEnabled}
+            selectionEnabled={selectionEnabled}
+            allowReject={allowRejectOffers}
           />
         ),
       },
     ],
-    [companyId, materialRequestId, selectionEnabled, t, unit],
+    [
+      allowRejectOffers,
+      companyId,
+      materialRequestId,
+      selectionEnabled,
+      t,
+      unit,
+    ],
   );
 
   const table = useAppMaterialReactTable({
@@ -193,9 +204,11 @@ export function OffersNestedTable({
     },
     muiTableBodyRowProps: ({ row }) => {
       const isSelected = hasSelectedQuantity(row.original.offer);
+      const isRejected = isQuoteLineRejected(row.original.offer.rejectedAt);
       return {
         sx: {
           bgcolor: isSelected ? selectedRowBg : 'transparent',
+          opacity: isRejected ? 0.6 : undefined,
         },
       };
     },

@@ -9,8 +9,10 @@ import {
   ListItemIcon,
   ListItemText,
   Stack,
+  TextField,
   Typography,
 } from '@mui/material';
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
 import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
@@ -21,7 +23,9 @@ import { useSnackbar } from 'notistack';
 import type { SupplierQuoteStatus } from '@/api/generated/models/supplierQuoteStatus';
 import {
   useDeleteQuoteMutation,
+  useRejectQuoteMutation,
   useSubmitQuoteMutation,
+  useUnrejectQuoteMutation,
   useUnsubmitQuoteMutation,
 } from '@/api/endpoints/quotesApi';
 import { ApiErrorAlert } from '@/components/feedback/apiErrorAlert/ApiErrorAlert';
@@ -34,6 +38,8 @@ interface QuoteActionsProps {
   materialRequestId?: string;
   status: SupplierQuoteStatus;
   hasSelections?: boolean;
+  /** Buyer: reject/unreject. Supplier: unsubmit/delete/reject (no unreject). */
+  actor?: 'supplier' | 'buyer';
 }
 
 interface QuoteHeaderActionsProps extends Omit<QuoteActionsProps, 'hasSelections'> {
@@ -129,28 +135,42 @@ export function QuoteHeaderActions({
   );
 }
 
-/** Secondary quote actions for the header ⋮ menu (Unsubmit, Delete). */
+/** Secondary quote actions for the header ⋮ menu (Unsubmit, Reject, Delete). */
 export function QuoteStatusActions({
   companyId,
   quoteId,
   materialRequestId,
   status,
   hasSelections = false,
+  actor = 'supplier',
 }: QuoteActionsProps) {
   const { t } = useTranslation('quotes');
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [unsubmitConfirmOpen, setUnsubmitConfirmOpen] = useState(false);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [unrejectOpen, setUnrejectOpen] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState('');
 
   const [unsubmitQuote, unsubmitState] = useUnsubmitQuoteMutation();
   const [deleteQuote, deleteState] = useDeleteQuoteMutation();
+  const [rejectQuote, rejectState] = useRejectQuoteMutation();
+  const [unrejectQuote, unrejectState] = useUnrejectQuoteMutation();
 
-  const canUnsubmit = status === 'SUBMITTED' && !hasSelections;
+  const isBuyer = actor === 'buyer';
+  const canUnsubmit =
+    !isBuyer && status === 'SUBMITTED' && !hasSelections;
   const canDelete =
-    status === 'DRAFT' || (status === 'SUBMITTED' && !hasSelections);
+    !isBuyer &&
+    (status === 'DRAFT' || (status === 'SUBMITTED' && !hasSelections));
+  const canReject = isBuyer
+    ? (status === 'SUBMITTED' || status === 'PARTIALLY_ACCEPTED') &&
+      !hasSelections
+    : (status === 'DRAFT' || status === 'SUBMITTED') && !hasSelections;
+  const canUnreject = isBuyer && status === 'REJECTED';
 
-  if (!canUnsubmit && !canDelete) {
+  if (!canUnsubmit && !canDelete && !canReject && !canUnreject) {
     return null;
   }
 
@@ -167,6 +187,25 @@ export function QuoteStatusActions({
     navigate('/app/quotes');
   }
 
+  async function handleReject() {
+    const reason = rejectionReason.trim();
+    await rejectQuote({
+      companyId,
+      quoteId,
+      materialRequestId,
+      ...(reason ? { reason } : {}),
+    }).unwrap();
+    enqueueSnackbar(t('toast.rejected'), { variant: 'success' });
+    setRejectOpen(false);
+    setRejectionReason('');
+  }
+
+  async function handleUnreject() {
+    await unrejectQuote({ companyId, quoteId, materialRequestId }).unwrap();
+    enqueueSnackbar(t('toast.unrejected'), { variant: 'success' });
+    setUnrejectOpen(false);
+  }
+
   return (
     <PermissionGate permission="manageQuotes">
       {canUnsubmit ? (
@@ -175,6 +214,25 @@ export function QuoteStatusActions({
             <UndoOutlinedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>{t('actions.unsubmit')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+      {canReject ? (
+        <DocumentActionMenuItem
+          onClick={() => setRejectOpen(true)}
+          sx={{ color: 'error.main' }}
+        >
+          <ListItemIcon sx={{ color: 'inherit' }}>
+            <CloseOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.reject')}</ListItemText>
+        </DocumentActionMenuItem>
+      ) : null}
+      {canUnreject ? (
+        <DocumentActionMenuItem onClick={() => setUnrejectOpen(true)}>
+          <ListItemIcon>
+            <UndoOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{t('actions.unreject')}</ListItemText>
         </DocumentActionMenuItem>
       ) : null}
       {canDelete ? (
@@ -209,6 +267,67 @@ export function QuoteStatusActions({
             disabled={unsubmitState.isLoading}
           >
             {t('actions.unsubmit')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        open={rejectOpen}
+        onClose={() => {
+          setRejectOpen(false);
+          setRejectionReason('');
+        }}
+      >
+        <DialogTitle>{t('confirm.rejectTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={rejectState.error} />
+          <Typography sx={{ mb: 2 }}>{t('confirm.rejectMessage')}</Typography>
+          <TextField
+            fullWidth
+            multiline
+            minRows={3}
+            label={t('confirm.rejectReason')}
+            value={rejectionReason}
+            onChange={(event) => setRejectionReason(event.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setRejectOpen(false);
+              setRejectionReason('');
+            }}
+          >
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => void handleReject()}
+            disabled={rejectState.isLoading}
+          >
+            {t('actions.reject')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={unrejectOpen} onClose={() => setUnrejectOpen(false)}>
+        <DialogTitle>{t('confirm.unrejectTitle')}</DialogTitle>
+        <DialogContent>
+          <ApiErrorAlert error={unrejectState.error} />
+          <Typography>{t('confirm.unrejectMessage')}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUnrejectOpen(false)}>
+            {t('actions.cancel')}
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<UndoOutlinedIcon />}
+            onClick={() => void handleUnreject()}
+            disabled={unrejectState.isLoading}
+          >
+            {t('actions.unreject')}
           </Button>
         </DialogActions>
       </Dialog>
